@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://c386wvanu3qax" path="res://addons/kenney_prototype_textures/orange/texture_02.png" id="1_2vj2h"]
 [ext_resource type="PackedScene" uid="uid://b2qkvvwsis1my" path="res://scenes/player/player.tscn" id="1_72ix8"]
+[ext_resource type="Script" uid="uid://clr7dkm6ukvg5" path="res://scenes/levels/main.gd" id="1_j4d2a"]
 [ext_resource type="PackedScene" uid="uid://bfgguye5eh16" path="res://scenes/physics_objects/physics_box.tscn" id="3_y0acb"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y0acb"]
@@ -13,6 +14,7 @@ albedo_texture = ExtResource("1_2vj2h")
 data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
 
 [node name="MainTestScene" type="Node3D" unique_id=321426474]
+script = ExtResource("1_j4d2a")
 
 [node name="Plane" type="StaticBody3D" parent="." unique_id=165069804]
 transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, 0, 0, 0)
