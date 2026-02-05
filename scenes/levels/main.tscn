@@ -2,8 +2,24 @@
 
 [ext_resource type="Texture2D" uid="uid://c386wvanu3qax" path="res://addons/kenney_prototype_textures/orange/texture_02.png" id="1_2vj2h"]
 [ext_resource type="PackedScene" uid="uid://b2qkvvwsis1my" path="res://scenes/player/player.tscn" id="1_72ix8"]
-[ext_resource type="Script" uid="uid://clr7dkm6ukvg5" path="res://scenes/levels/main.gd" id="1_j4d2a"]
 [ext_resource type="PackedScene" uid="uid://bfgguye5eh16" path="res://scenes/physics_objects/physics_box.tscn" id="3_y0acb"]
+
+[sub_resource type="GDScript" id="GDScript_y0acb"]
+script/source = "extends Node3D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	var result = Steam.steamInitEx()
+	print(result)
+	if result.status == 0:  # 0 means success in steamInitEx
+		print(\"Hello, \", Steam.getPersonaName())
+	else:
+		print(\"Failed: \", result.verbal)
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	Steam.run_callbacks()
+"
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y0acb"]
 albedo_texture = ExtResource("1_2vj2h")
@@ -14,7 +30,7 @@ albedo_texture = ExtResource("1_2vj2h")
 data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
 
 [node name="MainTestScene" type="Node3D" unique_id=321426474]
-script = ExtResource("1_j4d2a")
+script = SubResource("GDScript_y0acb")
 
 [node name="Plane" type="StaticBody3D" parent="." unique_id=165069804]
 transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, 0, 0, 0)

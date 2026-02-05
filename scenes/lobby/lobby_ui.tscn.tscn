@@ -1,0 +1,104 @@
+[gd_scene format=3 uid="uid://u7q38862f2cl"]
+
+[ext_resource type="Script" uid="uid://kip0ibucftcd" path="res://scenes/lobby/lobby_ui.tscn.gd" id="1_2pq4l"]
+
+[node name="LobbyUI" type="Control" unique_id=474558022]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 4.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_2pq4l")
+
+[node name="HostButton" type="Button" parent="." unique_id=1503356061]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.12900001
+anchor_right = 0.5
+anchor_bottom = 0.12900001
+offset_left = -55.5
+offset_top = 38.407997
+offset_right = 55.5
+offset_bottom = 69.408
+grow_horizontal = 2
+text = "Host Game"
+
+[node name="JoinButton" type="Button" parent="." unique_id=1888311846]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -43.5
+offset_top = -15.5
+offset_right = 43.5
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Join Game"
+
+[node name="CodeInput" type="LineEdit" parent="." unique_id=1480381208]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -86.0
+offset_top = -274.0
+offset_right = 94.25
+offset_bottom = -243.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Enter Lobby Code"
+
+[node name="StatusLabel" type="Label" parent="." unique_id=1588222291]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="PlayerList" type="ItemList" parent="." unique_id=1905288090]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -238.0
+offset_top = -20.0
+offset_right = -112.0
+offset_bottom = 20.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="CodeLabel" type="Label" parent="." unique_id=1655288725]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.30400002
+anchor_right = 0.5
+anchor_bottom = 0.30400002
+offset_left = -30.0
+offset_top = 5.0079803
+offset_right = 18.0
+offset_bottom = 28.00798
+grow_horizontal = 2
+
+[node name="CopyButton" type="Button" parent="." unique_id=1575602086]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 66.0
+offset_top = 194.0
+offset_right = 234.0
+offset_bottom = 225.0
+grow_horizontal = 2
+text = "Copy Code if Hosting"

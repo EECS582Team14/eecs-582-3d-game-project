@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="EECS582-3D-game-project"
-run/main_scene="uid://ddsbl570mlpfl"
+run/main_scene="uid://u7q38862f2cl"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+LobbyManager="*uid://dspgq01y1yeua"
 
 [input]
 
