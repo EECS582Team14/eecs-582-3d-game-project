@@ -50,6 +50,11 @@ transform = Transform3D(7.4768405, 0, 0, 0, 31.43923, 0, 0, 0, 375.0038, -104.96
 mesh = SubResource("BoxMesh_u81e1")
 surface_material_override/0 = SubResource("StandardMaterial3D_b6bv0")
 
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=101249040]
+transform = Transform3D(7.4768405, 0, 0, 0, 31.43923, 0, 0, 0, 375.0038, 152.31789, 14.166117, -17.556795)
+mesh = SubResource("BoxMesh_u81e1")
+surface_material_override/0 = SubResource("StandardMaterial3D_b6bv0")
+
 [node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1032852329]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -158.61353, 21.45504, 0)
 light_energy = 0.0
