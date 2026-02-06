@@ -24,8 +24,9 @@ func _ready():
 # Call this when ready to start the game (e.g., from a "Start Game" button)
 func start_game():
 	if LobbyManager.is_host():
+		# Send start to other players, then load level
+		# Don't call _load_game_level here - the signal handler will do it
 		NetworkManager.send_game_start()
-		_load_game_level()
 	else:
 		print("Only the host can start the game")
 
