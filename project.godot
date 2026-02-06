@@ -17,7 +17,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-LobbyManager="*uid://dspgq01y1yeua"
+LobbyManager="*res://scripts/lobby_manager.gd"
+NetworkManager="*res://scripts/network_manager.gd"
+GameManager="*res://scripts/game_manager.gd"
 
 [input]
 

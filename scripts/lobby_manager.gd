@@ -44,6 +44,9 @@ func _on_lobby_created(result: int, new_lobby_id: int):
 	else:
 		print("Failed to create lobby: ", result)
 
+func get_my_steam_id() -> int:
+	return Steam.getSteamID()
+
 # ============ FIND ============
 
 func find_lobbies():
@@ -74,6 +77,8 @@ func _on_lobby_joined(joined_lobby_id: int, _permissions: int, _locked: bool, re
 		lobby_id = joined_lobby_id
 		print("Joined lobby: ", lobby_id)
 		_refresh_lobby_members()
+		# Establish P2P connections with existing members
+		NetworkManager.establish_p2p_with_lobby()
 		lobby_joined.emit(lobby_id)
 	else:
 		print("Failed to join: ", result)
@@ -84,13 +89,17 @@ func _on_lobby_joined(joined_lobby_id: int, _permissions: int, _locked: bool, re
 func _on_lobby_chat_update(changed_lobby_id: int, changed_user_id: int, _making_change_id: int, chat_state: int):
 	if changed_lobby_id != lobby_id:
 		return
-	
+
 	if chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_ENTERED:
 		player_joined.emit(changed_user_id)
+		# Establish P2P with the new player
+		_refresh_lobby_members()
+		NetworkManager.establish_p2p_with_lobby()
 	elif chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_LEFT or chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_DISCONNECTED:
 		player_left.emit(changed_user_id)
-	
-	_refresh_lobby_members()
+		_refresh_lobby_members()
+	else:
+		_refresh_lobby_members()
 
 func _refresh_lobby_members():
 	lobby_members.clear()

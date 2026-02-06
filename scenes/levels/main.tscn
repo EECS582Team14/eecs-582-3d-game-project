@@ -4,23 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://b2qkvvwsis1my" path="res://scenes/player/player.tscn" id="1_72ix8"]
 [ext_resource type="PackedScene" uid="uid://bfgguye5eh16" path="res://scenes/physics_objects/physics_box.tscn" id="3_y0acb"]
 
-[sub_resource type="GDScript" id="GDScript_y0acb"]
-script/source = "extends Node3D
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	var result = Steam.steamInitEx()
-	print(result)
-	if result.status == 0:  # 0 means success in steamInitEx
-		print(\"Hello, \", Steam.getPersonaName())
-	else:
-		print(\"Failed: \", result.verbal)
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	Steam.run_callbacks()
-"
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y0acb"]
 albedo_texture = ExtResource("1_2vj2h")
 
@@ -29,8 +12,10 @@ albedo_texture = ExtResource("1_2vj2h")
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_72ix8"]
 data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
 
+[sub_resource type="Environment" id="Environment_y0acb"]
+background_mode = 2
+
 [node name="MainTestScene" type="Node3D" unique_id=321426474]
-script = SubResource("GDScript_y0acb")
 
 [node name="Plane" type="StaticBody3D" parent="." unique_id=165069804]
 transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, 0, 0, 0)
@@ -47,3 +32,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 
 [node name="PhysicsBox" parent="." unique_id=983159765 instance=ExtResource("3_y0acb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -6)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1358368005]
+transform = Transform3D(0.3009222, 0.9536487, 2.3286792e-10, -0.015944503, 0.00503126, 0.9998602, 0.9535154, -0.3008801, 0.016719474, 0, 12.086119, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=494983248]
+environment = SubResource("Environment_y0acb")
