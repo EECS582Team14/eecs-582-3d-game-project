@@ -1,19 +1,29 @@
 [gd_scene format=3 uid="uid://ddsbl570mlpfl"]
 
 [ext_resource type="Texture2D" uid="uid://dkk3fp8xgkqxs" path="res://scenes/levels/main_assets/space_floor.jpg" id="1_2vj2h"]
+[ext_resource type="Texture2D" uid="uid://bg7owu4icm2pp" path="res://scenes/levels/main_assets/space_wall.jpg" id="3_j4d2a"]
 [ext_resource type="PackedScene" uid="uid://bfgguye5eh16" path="res://scenes/physics_objects/physics_box.tscn" id="3_y0acb"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_0ip28"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2vj2h"]
 albedo_texture = ExtResource("1_2vj2h")
-uv1_scale = Vector3(2, 2, 2)
+uv1_scale = Vector3(20, 20, 20)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_72ix8"]
 data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
 
 [sub_resource type="Environment" id="Environment_y0acb"]
-background_mode = 2
+background_mode = 1
+ambient_light_source = 2
+
+[sub_resource type="BoxMesh" id="BoxMesh_u81e1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b6bv0"]
+cull_mode = 2
+disable_ambient_light = true
+albedo_texture = ExtResource("3_j4d2a")
+uv1_scale = Vector3(18, 4, 4)
 
 [node name="MainTestScene" type="Node3D" unique_id=321426474]
 
@@ -21,6 +31,7 @@ background_mode = 2
 transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, 0, 0, 0)
 
 [node name="MeshInstance" type="MeshInstance3D" parent="Plane" unique_id=1489737476]
+transform = Transform3D(35.91695, 0, 0, 0, 0.998411, 0, 0, 0, 31.83115, 0.031955972, 0.032498162, 0.029381303)
 mesh = SubResource("PlaneMesh_0ip28")
 surface_material_override/0 = SubResource("StandardMaterial3D_2vj2h")
 
@@ -30,8 +41,14 @@ shape = SubResource("ConcavePolygonShape3D_72ix8")
 [node name="PhysicsBox" parent="." unique_id=983159765 instance=ExtResource("3_y0acb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -6)
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1358368005]
-transform = Transform3D(0.3009222, 0.9536487, 2.3286792e-10, -0.015944503, 0.00503126, 0.9998602, 0.9535154, -0.3008801, 0.016719474, 0, 12.086119, 0)
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=494983248]
 environment = SubResource("Environment_y0acb")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=991322394]
+transform = Transform3D(7.4768405, 0, 0, 0, 31.43923, 0, 0, 0, 375.0038, -104.96533, 14.166117, -17.556795)
+mesh = SubResource("BoxMesh_u81e1")
+surface_material_override/0 = SubResource("StandardMaterial3D_b6bv0")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1032852329]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -158.61353, 21.45504, 0)
+light_energy = 4.718
