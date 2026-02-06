@@ -1,12 +1,13 @@
 [gd_scene format=3 uid="uid://ddsbl570mlpfl"]
 
-[ext_resource type="Texture2D" uid="uid://c386wvanu3qax" path="res://addons/kenney_prototype_textures/orange/texture_02.png" id="1_2vj2h"]
+[ext_resource type="Texture2D" uid="uid://dkk3fp8xgkqxs" path="res://scenes/levels/main_assets/space_floor.jpg" id="1_2vj2h"]
 [ext_resource type="PackedScene" uid="uid://bfgguye5eh16" path="res://scenes/physics_objects/physics_box.tscn" id="3_y0acb"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y0acb"]
-albedo_texture = ExtResource("1_2vj2h")
-
 [sub_resource type="PlaneMesh" id="PlaneMesh_0ip28"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2vj2h"]
+albedo_texture = ExtResource("1_2vj2h")
+uv1_scale = Vector3(2, 2, 2)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_72ix8"]
 data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
@@ -20,8 +21,8 @@ background_mode = 2
 transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, 0, 0, 0)
 
 [node name="MeshInstance" type="MeshInstance3D" parent="Plane" unique_id=1489737476]
-material_override = SubResource("StandardMaterial3D_y0acb")
 mesh = SubResource("PlaneMesh_0ip28")
+surface_material_override/0 = SubResource("StandardMaterial3D_2vj2h")
 
 [node name="CollisionShape" type="CollisionShape3D" parent="Plane" unique_id=1560800712]
 shape = SubResource("ConcavePolygonShape3D_72ix8")

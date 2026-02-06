@@ -65,10 +65,14 @@ func _on_lobby_match_list(lobbies: Array):
 	print("Found ", lobbies.size(), " lobbies")
 	var lobby_data: Array = []
 	for lob_id in lobbies:
+		var player_count = Steam.getNumLobbyMembers(lob_id)
+		# Skip empty/orphaned lobbies
+		if player_count <= 0:
+			continue
 		lobby_data.append({
 			"id": lob_id,
 			"name": Steam.getLobbyData(lob_id, "name"),
-			"player_count": Steam.getNumLobbyMembers(lob_id),
+			"player_count": player_count,
 			"max_players": Steam.getLobbyMemberLimit(lob_id)
 		})
 	lobby_list_received.emit(lobby_data)
@@ -123,9 +127,16 @@ func _refresh_lobby_members():
 
 func leave_lobby():
 	if lobby_id != 0:
+		print("Leaving lobby: ", lobby_id)
+		NetworkManager.close_all_sessions()
 		Steam.leaveLobby(lobby_id)
 		lobby_id = 0
 		lobby_members.clear()
+
+func _notification(what):
+	# Auto-cleanup when the game is closing
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		leave_lobby()
 
 # ============ HELPERS ============
 
