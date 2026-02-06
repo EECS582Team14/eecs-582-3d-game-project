@@ -7,6 +7,8 @@ signal player_joined(steam_id)
 signal player_left(steam_id)
 signal lobby_list_received(lobbies)
 
+const GAME_TAG: String = "outliar"
+
 var lobby_id: int = 0
 var lobby_members: Array = []
 
@@ -40,6 +42,7 @@ func _on_lobby_created(result: int, new_lobby_id: int):
 		print("Lobby created: ", lobby_id)
 		Steam.setLobbyJoinable(lobby_id, true)
 		Steam.setLobbyData(lobby_id, "name", Steam.getPersonaName() + "'s Game")
+		Steam.setLobbyData(lobby_id, "game_tag", GAME_TAG)
 		# Allow Steam relay as fallback for P2P
 		Steam.allowP2PPacketRelay(true)
 		_refresh_lobby_members()
@@ -54,6 +57,7 @@ func get_my_steam_id() -> int:
 
 func find_lobbies():
 	print("Searching for lobbies...")
+	Steam.addRequestLobbyListStringFilter("game_tag", GAME_TAG, Steam.LOBBY_COMPARISON_EQUAL)
 	Steam.addRequestLobbyListDistanceFilter(Steam.LOBBY_DISTANCE_FILTER_WORLDWIDE)
 	Steam.requestLobbyList()
 
