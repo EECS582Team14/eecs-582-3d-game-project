@@ -101,8 +101,14 @@ func _read_p2p_packets():
 			if packet.is_empty():
 				break
 
-			var sender_steam_id: int = packet["steam_id_remote"]
-			var data = bytes_to_var(packet["data"])
+			# Debug: print packet keys to find correct key names
+			print("Packet keys: ", packet.keys())
+
+			var sender_steam_id: int = packet.get("steam_id_remote", packet.get("steamIDRemote", 0))
+			var raw_data = packet.get("data", PackedByteArray())
+			if sender_steam_id == 0 or raw_data.is_empty():
+				break
+			var data = bytes_to_var(raw_data)
 
 			_handle_packet(sender_steam_id, data)
 

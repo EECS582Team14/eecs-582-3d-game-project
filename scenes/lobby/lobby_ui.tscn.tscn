@@ -29,36 +29,6 @@ offset_bottom = 69.408
 grow_horizontal = 2
 text = "Host Game"
 
-[node name="JoinButton" type="Button" parent="." unique_id=1888311846]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -43.5
-offset_top = -15.5
-offset_right = 43.5
-offset_bottom = 15.5
-grow_horizontal = 2
-grow_vertical = 2
-text = "Join Game"
-
-[node name="CodeInput" type="LineEdit" parent="." unique_id=1480381208]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -86.0
-offset_top = -274.0
-offset_right = 94.25
-offset_bottom = -243.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "Enter Lobby Code"
-
 [node name="StatusLabel" type="Label" parent="." unique_id=1588222291]
 layout_mode = 0
 offset_right = 40.0
@@ -78,31 +48,6 @@ offset_bottom = 89.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="CodeLabel" type="Label" parent="." unique_id=1655288725]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.30400002
-anchor_right = 0.5
-anchor_bottom = 0.30400002
-offset_left = -62.0
-offset_top = -3.9920197
-offset_right = 210.0
-offset_bottom = 31.00798
-grow_horizontal = 2
-
-[node name="CopyButton" type="Button" parent="." unique_id=1575602086]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -139.0
-offset_top = 188.0
-offset_right = -72.0
-offset_bottom = 219.0
-grow_horizontal = 2
-text = "Copy"
-
 [node name="StartButton" type="Button" parent="." unique_id=430246099]
 layout_mode = 1
 anchors_preset = 8
@@ -117,3 +62,18 @@ offset_bottom = -58.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Start Game"
+
+[node name="RefreshButton" type="Button" parent="." unique_id=1491967666]
+layout_mode = 0
+offset_left = 528.0
+offset_top = 215.0
+offset_right = 596.0
+offset_bottom = 246.0
+text = "Refresh"
+
+[node name="LobbyList" type="ItemList" parent="." unique_id=1923475287]
+layout_mode = 0
+offset_left = 412.0
+offset_top = 294.0
+offset_right = 746.0
+offset_bottom = 542.0
