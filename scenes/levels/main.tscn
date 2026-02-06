@@ -52,7 +52,11 @@ surface_material_override/0 = SubResource("StandardMaterial3D_b6bv0")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1032852329]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -158.61353, 21.45504, 0)
-light_energy = 4.718
+light_energy = 0.0
+
+[node name="OmniLight3D" type="DirectionalLight3D" parent="OmniLight3D" unique_id=734030219]
+transform = Transform3D(0.80022913, -0.5094936, 0.31630614, 0.5620308, 0.8211426, -0.09922813, -0.20917633, 0.25717902, 0.9434533, 95.856155, -4.2173576, 0)
+light_energy = 2.5
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1940237270]
 transform = Transform3D(-0.2231332, -0.5229904, -0.82261336, 0.82707125, -0.54820627, 0.12418908, -0.51591146, -0.65264904, 0.55487335, 3.6523867, 50.105957, 0)
