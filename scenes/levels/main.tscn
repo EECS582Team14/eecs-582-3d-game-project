@@ -36,6 +36,7 @@ mesh = SubResource("PlaneMesh_0ip28")
 surface_material_override/0 = SubResource("StandardMaterial3D_2vj2h")
 
 [node name="CollisionShape" type="CollisionShape3D" parent="Plane" unique_id=1560800712]
+transform = Transform3D(40, 0, 0, 0, 40, 0, 0, 0, 60, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_72ix8")
 
 [node name="PhysicsBox" parent="." unique_id=983159765 instance=ExtResource("3_y0acb")]
