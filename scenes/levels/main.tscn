@@ -83,7 +83,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.799679, 53.245773)
 light_energy = 2.109
 
 [node name="Room" parent="." unique_id=1196894346 instance=ExtResource("4_j4d2a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 85.82916, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 247.82916, 0, 0)
 
 [node name="Room2" parent="." unique_id=1164216897 instance=ExtResource("4_j4d2a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -85.57716, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -268.9311, 0, 0)
+
+[node name="Room3" parent="." unique_id=1760512583 instance=ExtResource("4_j4d2a")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.8667297, 0, -224.82306)
+
+[node name="Room4" parent="." unique_id=218133360 instance=ExtResource("4_j4d2a")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.8667297, 0, 248.17694)
