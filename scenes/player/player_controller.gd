@@ -6,7 +6,7 @@ extends CharacterBody3D
 
 # Export variables
 ## Controls the movement speed of the player
-@export var speed: float = 5.0
+@export var speed: float = 7.0
 ## Controls the mouse sensitivity for looking around
 @export var mouse_sensitivity: float = 0.3
 ## How fast remote players interpolate to their target position

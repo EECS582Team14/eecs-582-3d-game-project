@@ -84,3 +84,6 @@ light_energy = 2.109
 
 [node name="Room" parent="." unique_id=1196894346 instance=ExtResource("4_j4d2a")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 85.82916, 0, 0)
+
+[node name="Room2" parent="." unique_id=1164216897 instance=ExtResource("4_j4d2a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -85.57716, 0, 0)
