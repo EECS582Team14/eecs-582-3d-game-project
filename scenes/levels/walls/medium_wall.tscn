@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://bkggral86i4ul"]
+
+[ext_resource type="Texture2D" uid="uid://ix02t0avys0" path="res://addons/kenney_prototype_textures/red/texture_02.png" id="1_65on8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_01n6d"]
+albedo_texture = ExtResource("1_65on8")
+
+[sub_resource type="BoxMesh" id="BoxMesh_7s30g"]
+size = Vector3(15, 2.4, 0.1)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_65on8"]
+data = PackedVector3Array(-7.5, 1.1999999, 0.049999997, 7.5, 1.1999999, 0.049999997, -7.5, -1.1999999, 0.049999997, 7.5, 1.1999999, 0.049999997, 7.5, -1.1999999, 0.049999997, -7.5, -1.1999999, 0.049999997, 7.5, 1.1999999, -0.049999997, -7.5, 1.1999999, -0.049999997, 7.5, -1.1999999, -0.049999997, -7.5, 1.1999999, -0.049999997, -7.5, -1.1999999, -0.049999997, 7.5, -1.1999999, -0.049999997, 7.5, 1.1999999, 0.049999997, 7.5, 1.1999999, -0.049999997, 7.5, -1.1999999, 0.049999997, 7.5, 1.1999999, -0.049999997, 7.5, -1.1999999, -0.049999997, 7.5, -1.1999999, 0.049999997, -7.5, 1.1999999, -0.049999997, -7.5, 1.1999999, 0.049999997, -7.5, -1.1999999, -0.049999997, -7.5, 1.1999999, 0.049999997, -7.5, -1.1999999, 0.049999997, -7.5, -1.1999999, -0.049999997, 7.5, 1.1999999, 0.049999997, -7.5, 1.1999999, 0.049999997, 7.5, 1.1999999, -0.049999997, -7.5, 1.1999999, 0.049999997, -7.5, 1.1999999, -0.049999997, 7.5, 1.1999999, -0.049999997, -7.5, -1.1999999, 0.049999997, 7.5, -1.1999999, 0.049999997, -7.5, -1.1999999, -0.049999997, 7.5, -1.1999999, 0.049999997, 7.5, -1.1999999, -0.049999997, -7.5, -1.1999999, -0.049999997)
+
+[node name="MediumWall" type="StaticBody3D" unique_id=2142856834]
+
+[node name="WallMesh" type="MeshInstance3D" parent="." unique_id=1194586519]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+material_override = SubResource("StandardMaterial3D_01n6d")
+mesh = SubResource("BoxMesh_7s30g")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1444745770]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+shape = SubResource("ConcavePolygonShape3D_65on8")

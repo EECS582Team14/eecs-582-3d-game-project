@@ -1,18 +1,6 @@
 [gd_scene format=3 uid="uid://ddsbl570mlpfl"]
 
-[ext_resource type="Texture2D" uid="uid://dkk3fp8xgkqxs" path="res://scenes/levels/main_assets/space_floor.jpg" id="1_2vj2h"]
-[ext_resource type="PackedScene" uid="uid://db31cq10waew1" path="res://scenes/levels/wall.tscn" id="3_j4d2a"]
-[ext_resource type="PackedScene" uid="uid://bfgguye5eh16" path="res://scenes/physics_objects/physics_box.tscn" id="3_y0acb"]
-[ext_resource type="PackedScene" uid="uid://bh10178mmbkjr" path="res://scenes/levels/room.tscn" id="4_j4d2a"]
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_0ip28"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2vj2h"]
-albedo_texture = ExtResource("1_2vj2h")
-uv1_scale = Vector3(20, 20, 20)
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_72ix8"]
-data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
+[ext_resource type="PackedScene" uid="uid://bxtun6wfrtimw" path="res://scenes/levels/upper_deck.tscn" id="1_72ix8"]
 
 [sub_resource type="Environment" id="Environment_y0acb"]
 background_mode = 1
@@ -20,76 +8,10 @@ ambient_light_source = 2
 
 [node name="MainTestScene" type="Node3D" unique_id=321426474]
 
-[node name="Plane" type="StaticBody3D" parent="." unique_id=165069804]
-transform = Transform3D(15, 0, 0, 0, 15, 0, 0, 0, 15, 0, 0, 0)
-
-[node name="MeshInstance" type="MeshInstance3D" parent="Plane" unique_id=1489737476]
-transform = Transform3D(30.015562, 0, 0, 0, 0.7957535, 0, 0, 0, 24.709597, 0.031955972, 0.032498162, 0.02938129)
-mesh = SubResource("PlaneMesh_0ip28")
-surface_material_override/0 = SubResource("StandardMaterial3D_2vj2h")
-
-[node name="CollisionShape" type="CollisionShape3D" parent="Plane" unique_id=1560800712]
-transform = Transform3D(40, 0, 0, 0, 40, 0, 0, 0, 60, 0, 0, 0)
-shape = SubResource("ConcavePolygonShape3D_72ix8")
-
-[node name="PhysicsBox" parent="." unique_id=983159765 instance=ExtResource("3_y0acb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -6)
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=494983248]
 environment = SubResource("Environment_y0acb")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1032852329]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -158.61353, 21.45504, 0)
-light_energy = 0.0
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1107601667]
+transform = Transform3D(-0.57666874, 0.79389215, -0.19284254, 0.38048655, 0.46986175, 0.7965299, 0.7229682, 0.38595992, -0.5730199, 0, 5.635, 0)
 
-[node name="OmniLight3D" type="DirectionalLight3D" parent="OmniLight3D" unique_id=734030219]
-transform = Transform3D(0.80022913, -0.5094936, 0.31630614, 0.5620308, 0.8211426, -0.09922813, -0.20917633, 0.25717902, 0.9434533, 95.856155, -4.2173576, 0)
-light_energy = 2.5
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1940237270]
-transform = Transform3D(-0.2231332, -0.5229904, -0.82261336, 0.82707125, -0.54820627, 0.12418908, -0.51591146, -0.65264904, 0.55487335, 3.6523867, 50.105957, 0)
-light_energy = 4.802
-light_indirect_energy = 1.13
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="DirectionalLight3D" unique_id=134416116]
-transform = Transform3D(-0.22313327, -0.5229905, -0.8226132, 0.8270713, -0.54820627, 0.12418914, -0.51591146, -0.6526491, 0.5548735, 47.96245, 153.96202, 163.35553)
-light_energy = 2.584
-light_indirect_energy = 1.13
-
-[node name="SideWall" parent="." unique_id=886512475 instance=ExtResource("3_j4d2a")]
-transform = Transform3D(0.7019683, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
-
-[node name="SideWall2" parent="." unique_id=961445951 instance=ExtResource("3_j4d2a")]
-transform = Transform3D(0.7019683, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -40)
-
-[node name="FrontWall3" parent="." unique_id=676350866 instance=ExtResource("3_j4d2a")]
-transform = Transform3D(-1.14658905e-08, 0, 1, 0, 1, 0, -0.262309, 0, -4.371139e-08, 43.51969, 0, -23.699375)
-
-[node name="FrontWall4" parent="." unique_id=1091306956 instance=ExtResource("3_j4d2a")]
-transform = Transform3D(-1.14658905e-08, 0, 1, 0, 1, 0, -0.262309, 0, -4.371139e-08, -42.694977, 0, -23.699375)
-
-[node name="FrontWall5" parent="." unique_id=1361580059 instance=ExtResource("3_j4d2a")]
-transform = Transform3D(-1.14658905e-08, 0, 1, 0, 1, 0, -0.262309, 0, -4.371139e-08, -42.694977, 0, 23.484707)
-
-[node name="FrontWall2" parent="." unique_id=410146034 instance=ExtResource("3_j4d2a")]
-transform = Transform3D(-1.14658905e-08, 0, 1, 0, 1, 0, -0.262309, 0, -4.371139e-08, 43.51969, 0, 23.604992)
-
-[node name="OmniLight3D2" type="OmniLight3D" parent="." unique_id=1812128288]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.799679, 31.077072)
-light_energy = 2.109
-
-[node name="OmniLight3D3" type="OmniLight3D" parent="." unique_id=1862093973]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.799679, 53.245773)
-light_energy = 2.109
-
-[node name="Room" parent="." unique_id=1196894346 instance=ExtResource("4_j4d2a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 247.82916, 0, 0)
-
-[node name="Room2" parent="." unique_id=1164216897 instance=ExtResource("4_j4d2a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -268.9311, 0, 0)
-
-[node name="Room3" parent="." unique_id=1760512583 instance=ExtResource("4_j4d2a")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.8667297, 0, -224.82306)
-
-[node name="Room4" parent="." unique_id=218133360 instance=ExtResource("4_j4d2a")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.8667297, 0, 248.17694)
+[node name="UpperDeck" parent="." unique_id=1269834158 instance=ExtResource("1_72ix8")]

@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://slrafd7wesfx"]
+
+[ext_resource type="Texture2D" uid="uid://ix02t0avys0" path="res://addons/kenney_prototype_textures/red/texture_02.png" id="1_0cvsr"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wf7ci"]
+albedo_texture = ExtResource("1_0cvsr")
+
+[sub_resource type="BoxMesh" id="BoxMesh_v14vt"]
+size = Vector3(7, 2.4, 0.1)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_yh8p5"]
+data = PackedVector3Array(-3.5, 1.1999999, 0.049999997, 3.5, 1.1999999, 0.049999997, -3.5, -1.1999999, 0.049999997, 3.5, 1.1999999, 0.049999997, 3.5, -1.1999999, 0.049999997, -3.5, -1.1999999, 0.049999997, 3.5, 1.1999999, -0.049999997, -3.5, 1.1999999, -0.049999997, 3.5, -1.1999999, -0.049999997, -3.5, 1.1999999, -0.049999997, -3.5, -1.1999999, -0.049999997, 3.5, -1.1999999, -0.049999997, 3.5, 1.1999999, 0.049999997, 3.5, 1.1999999, -0.049999997, 3.5, -1.1999999, 0.049999997, 3.5, 1.1999999, -0.049999997, 3.5, -1.1999999, -0.049999997, 3.5, -1.1999999, 0.049999997, -3.5, 1.1999999, -0.049999997, -3.5, 1.1999999, 0.049999997, -3.5, -1.1999999, -0.049999997, -3.5, 1.1999999, 0.049999997, -3.5, -1.1999999, 0.049999997, -3.5, -1.1999999, -0.049999997, 3.5, 1.1999999, 0.049999997, -3.5, 1.1999999, 0.049999997, 3.5, 1.1999999, -0.049999997, -3.5, 1.1999999, 0.049999997, -3.5, 1.1999999, -0.049999997, 3.5, 1.1999999, -0.049999997, -3.5, -1.1999999, 0.049999997, 3.5, -1.1999999, 0.049999997, -3.5, -1.1999999, -0.049999997, 3.5, -1.1999999, 0.049999997, 3.5, -1.1999999, -0.049999997, -3.5, -1.1999999, -0.049999997)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_npajp"]
+albedo_texture = ExtResource("1_0cvsr")
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ihxgi"]
+data = PackedVector3Array(-3.5, 1.1999999, 0.049999997, 3.5, 1.1999999, 0.049999997, -3.5, -1.1999999, 0.049999997, 3.5, 1.1999999, 0.049999997, 3.5, -1.1999999, 0.049999997, -3.5, -1.1999999, 0.049999997, 3.5, 1.1999999, -0.049999997, -3.5, 1.1999999, -0.049999997, 3.5, -1.1999999, -0.049999997, -3.5, 1.1999999, -0.049999997, -3.5, -1.1999999, -0.049999997, 3.5, -1.1999999, -0.049999997, 3.5, 1.1999999, 0.049999997, 3.5, 1.1999999, -0.049999997, 3.5, -1.1999999, 0.049999997, 3.5, 1.1999999, -0.049999997, 3.5, -1.1999999, -0.049999997, 3.5, -1.1999999, 0.049999997, -3.5, 1.1999999, -0.049999997, -3.5, 1.1999999, 0.049999997, -3.5, -1.1999999, -0.049999997, -3.5, 1.1999999, 0.049999997, -3.5, -1.1999999, 0.049999997, -3.5, -1.1999999, -0.049999997, 3.5, 1.1999999, 0.049999997, -3.5, 1.1999999, 0.049999997, 3.5, 1.1999999, -0.049999997, -3.5, 1.1999999, 0.049999997, -3.5, 1.1999999, -0.049999997, 3.5, 1.1999999, -0.049999997, -3.5, -1.1999999, 0.049999997, 3.5, -1.1999999, 0.049999997, -3.5, -1.1999999, -0.049999997, 3.5, -1.1999999, 0.049999997, 3.5, -1.1999999, -0.049999997, -3.5, -1.1999999, -0.049999997)
+
+[sub_resource type="BoxMesh" id="BoxMesh_0cvsr"]
+size = Vector3(1, 0.2, 0.1)
+
+[node name="MediumDoor" type="StaticBody3D" unique_id=85418194]
+
+[node name="LeftWallMesh" type="MeshInstance3D" parent="." unique_id=216799511]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.2, 0)
+material_override = SubResource("StandardMaterial3D_wf7ci")
+mesh = SubResource("BoxMesh_v14vt")
+
+[node name="LeftWallCollision" type="CollisionShape3D" parent="." unique_id=1358849198]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.2, 0)
+shape = SubResource("ConcavePolygonShape3D_yh8p5")
+
+[node name="RightWallMesh" type="MeshInstance3D" parent="." unique_id=103009560]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.2, 0)
+material_override = SubResource("StandardMaterial3D_npajp")
+mesh = SubResource("BoxMesh_v14vt")
+
+[node name="RightWallCollision" type="CollisionShape3D" parent="." unique_id=975945540]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.2, 0)
+shape = SubResource("ConcavePolygonShape3D_ihxgi")
+
+[node name="UpperWallMesh" type="MeshInstance3D" parent="." unique_id=1455677624]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
+mesh = SubResource("BoxMesh_0cvsr")

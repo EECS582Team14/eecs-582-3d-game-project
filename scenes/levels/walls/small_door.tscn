@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://chdj8l5glva0"]
+
+[ext_resource type="Texture2D" uid="uid://ix02t0avys0" path="res://addons/kenney_prototype_textures/red/texture_02.png" id="1_wmmo6"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nt50k"]
+albedo_texture = ExtResource("1_wmmo6")
+
+[sub_resource type="BoxMesh" id="BoxMesh_1phkd"]
+size = Vector3(1.75, 2.4, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ng1kr"]
+albedo_texture = ExtResource("1_wmmo6")
+
+[sub_resource type="BoxMesh" id="BoxMesh_4cw3w"]
+size = Vector3(1, 0.2, 0.1)
+
+[node name="SmallDoor" type="StaticBody3D" unique_id=1087523963]
+
+[node name="LeftWallMesh" type="MeshInstance3D" parent="." unique_id=105002263]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.375, 1.2, 0)
+material_override = SubResource("StandardMaterial3D_nt50k")
+mesh = SubResource("BoxMesh_1phkd")
+
+[node name="RightWallMesh" type="MeshInstance3D" parent="." unique_id=1418340966]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.375, 1.2, 0)
+material_override = SubResource("StandardMaterial3D_ng1kr")
+mesh = SubResource("BoxMesh_1phkd")
+
+[node name="UpperWallMesh" type="MeshInstance3D" parent="." unique_id=1401205919]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
+mesh = SubResource("BoxMesh_4cw3w")
