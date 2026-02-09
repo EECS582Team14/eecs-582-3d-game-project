@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://dkk3fp8xgkqxs" path="res://scenes/levels/main_assets/space_floor.jpg" id="1_2vj2h"]
 [ext_resource type="PackedScene" uid="uid://db31cq10waew1" path="res://scenes/levels/wall.tscn" id="3_j4d2a"]
 [ext_resource type="PackedScene" uid="uid://bfgguye5eh16" path="res://scenes/physics_objects/physics_box.tscn" id="3_y0acb"]
+[ext_resource type="PackedScene" uid="uid://bh10178mmbkjr" path="res://scenes/levels/room.tscn" id="4_j4d2a"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_0ip28"]
 
@@ -80,3 +81,6 @@ light_energy = 2.109
 [node name="OmniLight3D3" type="OmniLight3D" parent="." unique_id=1862093973]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.799679, 53.245773)
 light_energy = 2.109
+
+[node name="Room" parent="." unique_id=1196894346 instance=ExtResource("4_j4d2a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 85.82916, 0, 0)

@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://bh10178mmbkjr"]
+
+[ext_resource type="PackedScene" uid="uid://db31cq10waew1" path="res://scenes/levels/wall.tscn" id="1_hyv2i"]
+
+[node name="Room" type="Node3D" unique_id=1196894346]
+
+[node name="SideWall" parent="." unique_id=886512475 instance=ExtResource("1_hyv2i")]
+transform = Transform3D(0.7019683, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
+
+[node name="SideWall2" parent="." unique_id=548134279 instance=ExtResource("1_hyv2i")]
+transform = Transform3D(0.7019683, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -40)
+
+[node name="FrontWall3" parent="." unique_id=2003165381 instance=ExtResource("1_hyv2i")]
+transform = Transform3D(-1.14658905e-08, 0, 1, 0, 1, 0, -0.262309, 0, -4.371139e-08, 43.51969, 0, -23.699375)
+
+[node name="FrontWall4" parent="." unique_id=479742729 instance=ExtResource("1_hyv2i")]
+transform = Transform3D(-1.14658905e-08, 0, 1, 0, 1, 0, -0.262309, 0, -4.371139e-08, -42.694977, 0, -23.699375)
+
+[node name="FrontWall5" parent="." unique_id=1833140922 instance=ExtResource("1_hyv2i")]
+transform = Transform3D(-1.14658905e-08, 0, 1, 0, 1, 0, -0.262309, 0, -4.371139e-08, -42.694977, 0, 23.484707)
+
+[node name="FrontWall2" parent="." unique_id=2092379643 instance=ExtResource("1_hyv2i")]
+transform = Transform3D(-1.14658905e-08, 0, 1, 0, 1, 0, -0.262309, 0, -4.371139e-08, 43.51969, 0, 23.604992)
