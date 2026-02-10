@@ -14,6 +14,7 @@ radius = 0.3
 height = 1.2
 
 [node name="Player" type="CharacterBody3D" unique_id=119440718]
+floor_snap_length = 0.4
 script = ExtResource("1_dovo2")
 
 [node name="PhysicsCollider" type="CollisionShape3D" parent="." unique_id=616283659]

@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://bfgguye5eh16" path="res://scenes/physics_objects/physics_box.tscn" id="4_mgbrt"]
 [ext_resource type="PackedScene" uid="uid://chdj8l5glva0" path="res://scenes/levels/walls/small_door.tscn" id="5_fjw4p"]
 [ext_resource type="PackedScene" uid="uid://bkggral86i4ul" path="res://scenes/levels/walls/medium_wall.tscn" id="5_vucmy"]
+[ext_resource type="PackedScene" uid="uid://dmapmbx6ymccv" path="res://elevatorShell.tscn" id="6_fjw4p"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]
 size = Vector2(20, 60)
@@ -19,10 +20,10 @@ load_path = "res://.godot/imported/texture_08.png-9f039f47cba295ef5881d7b94c369b
 albedo_texture = SubResource("CompressedTexture2D_mgbrt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_0ip28"]
-size = Vector3(20, 0.1, 60)
+size = Vector3(50, 0.1, 60)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_fjw4p"]
-data = PackedVector3Array(-10, 0.049999997, 30, 10, 0.049999997, 30, -10, -0.049999997, 30, 10, 0.049999997, 30, 10, -0.049999997, 30, -10, -0.049999997, 30, 10, 0.049999997, -30, -10, 0.049999997, -30, 10, -0.049999997, -30, -10, 0.049999997, -30, -10, -0.049999997, -30, 10, -0.049999997, -30, 10, 0.049999997, 30, 10, 0.049999997, -30, 10, -0.049999997, 30, 10, 0.049999997, -30, 10, -0.049999997, -30, 10, -0.049999997, 30, -10, 0.049999997, -30, -10, 0.049999997, 30, -10, -0.049999997, -30, -10, 0.049999997, 30, -10, -0.049999997, 30, -10, -0.049999997, -30, 10, 0.049999997, 30, -10, 0.049999997, 30, 10, 0.049999997, -30, -10, 0.049999997, 30, -10, 0.049999997, -30, 10, 0.049999997, -30, -10, -0.049999997, 30, 10, -0.049999997, 30, -10, -0.049999997, -30, 10, -0.049999997, 30, 10, -0.049999997, -30, -10, -0.049999997, -30)
+data = PackedVector3Array(-25, 0.049999997, 30, 25, 0.049999997, 30, -25, -0.049999997, 30, 25, 0.049999997, 30, 25, -0.049999997, 30, -25, -0.049999997, 30, 25, 0.049999997, -30, -25, 0.049999997, -30, 25, -0.049999997, -30, -25, 0.049999997, -30, -25, -0.049999997, -30, 25, -0.049999997, -30, 25, 0.049999997, 30, 25, 0.049999997, -30, 25, -0.049999997, 30, 25, 0.049999997, -30, 25, -0.049999997, -30, 25, -0.049999997, 30, -25, 0.049999997, -30, -25, 0.049999997, 30, -25, -0.049999997, -30, -25, 0.049999997, 30, -25, -0.049999997, 30, -25, -0.049999997, -30, 25, 0.049999997, 30, -25, 0.049999997, 30, 25, 0.049999997, -30, -25, 0.049999997, 30, -25, 0.049999997, -30, 25, 0.049999997, -30, -25, -0.049999997, 30, 25, -0.049999997, 30, -25, -0.049999997, -30, 25, -0.049999997, 30, 25, -0.049999997, -30, -25, -0.049999997, -30)
 
 [node name="UpperDeck" type="Node3D" unique_id=1269834158]
 
@@ -43,7 +44,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 material_override = SubResource("StandardMaterial3D_0llye")
 mesh = SubResource("BoxMesh_0ip28")
 
-[node name="FloorCollision" type="CollisionShape3D" parent="Floor" unique_id=784613358]
+[node name="FloorCollision" type="CollisionShape3D" parent="Floor" unique_id=775385888]
 shape = SubResource("ConcavePolygonShape3D_fjw4p")
 
 [node name="Nexus" type="Node3D" parent="." unique_id=1800847303]
@@ -93,5 +94,42 @@ omni_range = 15.0
 [node name="Cams" type="Node3D" parent="." unique_id=682191193]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -20)
 
-[node name="SmallDoor" parent="Cams" unique_id=1087523963 instance=ExtResource("5_fjw4p")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0, 5)
+[node name="CamsDoor" parent="Cams" unique_id=1087523963 instance=ExtResource("5_fjw4p")]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, -0.3000002, 0, 5)
+
+[node name="NorthCamWall" parent="Cams" unique_id=1747157587 instance=ExtResource("5_vucmy")]
+transform = Transform3D(0.7431331, 0, -0.66914356, 0, 1, 0, 0.66914356, 0, 0.7431331, 3.1434593, -4.7683716e-07, 0)
+
+[node name="WestCamWall" parent="Cams" unique_id=1472808536 instance=ExtResource("5_vucmy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.45, 0, 5)
+
+[node name="CamsLight" type="OmniLight3D" parent="Cams" unique_id=507472300]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2.3, 2)
+omni_range = 6.0
+
+[node name="Intercom" type="Node3D" parent="." unique_id=235793160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -20)
+
+[node name="IntercomDoor" parent="Intercom" unique_id=561552896 instance=ExtResource("5_fjw4p")]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0.3, 0, 5)
+
+[node name="NorthIntercomWall" parent="Intercom" unique_id=1672430869 instance=ExtResource("5_vucmy")]
+transform = Transform3D(0.7431448, 0, 0.6691306, 0, 1, 0, -0.6691306, 0, 0.7431448, -3.143, 0, 0)
+
+[node name="WestCamWall" parent="Intercom" unique_id=843526226 instance=ExtResource("5_vucmy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.45, 0, 5)
+
+[node name="IntercomLight" type="OmniLight3D" parent="Intercom" unique_id=424525013]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 2.3, 2)
+omni_range = 6.0
+
+[node name="Elevator" type="Node3D" parent="." unique_id=228239539]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+
+[node name="ElevatorShell" parent="Elevator" unique_id=1267073090 instance=ExtResource("6_fjw4p")]
+transform = Transform3D(-0.6, 0, -9.059749e-08, 0, 0.3, 0, 9.059749e-08, 0, -0.6, 0, 0, 0)
+
+[node name="IntercomLight" type="OmniLight3D" parent="Elevator" unique_id=977861543]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
+omni_range = 3.0
+omni_attenuation = 0.75
