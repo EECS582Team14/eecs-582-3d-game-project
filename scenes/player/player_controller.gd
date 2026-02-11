@@ -56,14 +56,16 @@ func _ready() -> void:
 		camera.current = true
 		# Connect to receive remote player states
 		NetworkManager.player_state_received.connect(_on_player_state_received)
-		
+		NetworkManager.health_update_received.connect(_on_health_update_received)
+
 		health_bar.max_value = max_health
 		health_bar.value = current_health
 		
 	else:
-		# Remote player - disable camera and input
+		# Remote player - disable camera, input, and HUD
 		camera.current = false
 		set_process_input(false)
+		$HUD.visible = false
 
 # _input() handles input events
 func _input(event: InputEvent) -> void:
@@ -89,8 +91,8 @@ func _input(event: InputEvent) -> void:
 				_is_mouse_captured = false
 		elif event.key_label == KEY_H and event.pressed:
 			current_health -= 10
-			#health_changed.emit(current_health)
 			health_bar.value = current_health
+			NetworkManager.send_health_update(current_health)
 		
 	# If the input is a mouse button event
 	if event is InputEventMouseButton:
@@ -168,6 +170,11 @@ func _on_player_state_received(sender_steam_id: int, state: Dictionary) -> void:
 		player._target_position = state.position
 		player._target_rotation_y = state.rotation_y
 		player._target_camera_rotation_x = state.camera_rotation_x
+
+func _on_health_update_received(sender_steam_id: int, health: int) -> void:
+	var player = NetworkManager.get_player(sender_steam_id)
+	if player and player != self:
+		player.current_health = health
 
 # Apply gravity for local player
 func _apply_gravity(delta: float) -> void:
