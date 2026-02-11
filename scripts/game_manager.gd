@@ -15,6 +15,13 @@ const GAME_LEVEL = "res://scenes/levels/main.tscn"
 	Vector3(0, 1, 3),
 ]
 
+const PLAYER_COLORS: Array[Color] = [
+	Color.GREEN,
+	Color.DODGER_BLUE,
+	Color.ORANGE_RED,
+	Color.GOLD,
+]
+
 var players_container: Node3D = null
 
 func _ready():
@@ -76,6 +83,12 @@ func _spawn_all_players():
 		spawn_index += 1
 
 		players_container.add_child(player)
+
+		# Assign a unique color to each player
+		var color = PLAYER_COLORS[(spawn_index - 1) % PLAYER_COLORS.size()]
+		var mat = StandardMaterial3D.new()
+		mat.albedo_color = color
+		player.get_node("CapsuleMesh").material_override = mat
 
 		# Register with NetworkManager
 		NetworkManager.register_player(player_steam_id, player)

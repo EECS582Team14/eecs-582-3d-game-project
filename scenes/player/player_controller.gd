@@ -13,6 +13,7 @@ extends CharacterBody3D
 @export var interpolation_speed: float = 15.0
 ## Initial Player health
 @export var max_health: int = 200
+@export var jump_velocity: float = 5.0
 
 @onready var current_health: int = max_health
 
@@ -104,6 +105,8 @@ func _physics_process(delta: float) -> void:
 	if is_local_player:
 		_process_local_movement(delta)
 		_apply_gravity(delta)
+		if is_on_floor() and Input.is_action_just_pressed("jump"):
+			velocity.y = jump_velocity
 		move_and_slide()
 		_send_network_update(delta)
 	else:
