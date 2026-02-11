@@ -13,11 +13,12 @@ albedo_texture = ExtResource("1_8afob")
 radius = 0.3
 height = 1.2
 
-[sub_resource type="CanvasTexture" id="CanvasTexture_dovo2"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gmlin"]
-texture = SubResource("CanvasTexture_dovo2")
-modulate_color = Color(0, 0, 0, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dovo2"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gmlin"]
 bg_color = Color(1, 0, 0, 1)
@@ -67,7 +68,7 @@ offset_right = 57.0
 offset_bottom = 193.0
 grow_vertical = 0
 rotation = 4.712389
-theme_override_styles/background = SubResource("StyleBoxTexture_gmlin")
+theme_override_styles/background = SubResource("StyleBoxFlat_dovo2")
 theme_override_styles/fill = SubResource("StyleBoxFlat_gmlin")
 value = 50.0
 fill_mode = 2
