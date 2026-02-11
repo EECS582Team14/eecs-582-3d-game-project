@@ -68,18 +68,16 @@ func _on_voice_data_received(sender_steam_id: int, compressed_audio: PackedByteA
 		return
 
 	var pcm_data: PackedByteArray = decompressed["uncompressed"]
+	# "size" is the actual byte count of real audio — the rest of the buffer is empty
+	var actual_byte_size: int = decompressed["size"]
+	var num_samples: int = actual_byte_size / 2
 	var playback: AudioStreamGeneratorPlayback = voice_playbacks[sender_steam_id]
-
-	# If buffer is almost full, clear it to prevent stale audio buildup
-	var frames_available = playback.get_frames_available()
-	var num_samples = pcm_data.size() / 2
-	if frames_available < num_samples:
-		return  # Drop this packet rather than garbling with partial data
 
 	# Convert 16-bit signed PCM samples to float frames and push to audio stream
 	for i in range(num_samples):
-		var sample_value = pcm_data.decode_s16(i * 2) / 32768.0
-		playback.push_frame(Vector2(sample_value, sample_value))
+		if playback.can_push_buffer(1):
+			var sample_value = pcm_data.decode_s16(i * 2) / 32768.0
+			playback.push_frame(Vector2(sample_value, sample_value))
 
 # ============ PLAYER SETUP ============
 
