@@ -11,6 +11,12 @@ extends CharacterBody3D
 @export var mouse_sensitivity: float = 0.3
 ## How fast remote players interpolate to their target position
 @export var interpolation_speed: float = 15.0
+## Initial Player health
+@export var max_health: int = 200
+
+@onready var current_health: int = max_health
+
+@onready var health_bar = $HUD/ProgressBar
 
 # Load child nodes
 @onready var camera: Camera3D = $PlayerCamera
@@ -32,6 +38,8 @@ var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 const NETWORK_UPDATE_RATE: float = 1.0 / 30.0  # 30 updates per second
 var _network_update_timer: float = 0.0
 
+# Signals
+signal health_changed(new_health)
 
 # _ready() calls when the node is added to the scene
 func _ready() -> void:
@@ -47,6 +55,10 @@ func _ready() -> void:
 		camera.current = true
 		# Connect to receive remote player states
 		NetworkManager.player_state_received.connect(_on_player_state_received)
+		
+		health_bar.max_value = max_health
+		health_bar.value = current_health
+		
 	else:
 		# Remote player - disable camera and input
 		camera.current = false
@@ -74,6 +86,10 @@ func _input(event: InputEvent) -> void:
 			if _is_mouse_captured:
 				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 				_is_mouse_captured = false
+		elif event.key_label == KEY_H and event.pressed:
+			current_health -= 10
+			#health_changed.emit(current_health)
+			health_bar.value = current_health
 		
 	# If the input is a mouse button event
 	if event is InputEventMouseButton:

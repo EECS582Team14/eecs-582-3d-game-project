@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://brmykabvkdtnv" path="res://addons/kenney_prototype_textures/green/texture_02.png" id="1_8afob"]
 [ext_resource type="Script" uid="uid://c6n04dpp1btgn" path="res://scenes/player/player_controller.gd" id="1_dovo2"]
+[ext_resource type="Script" uid="uid://bwo0f0hi3lio2" path="res://scenes/player/progress_bar.gd" id="3_gmlin"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_x7p2l"]
 size = Vector3(0.4, 1.2, 0.4)
@@ -42,7 +43,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ProgressBar" type="ProgressBar" parent="HUD" unique_id=1319594526]
+[node name="ProgressBar" type="ProgressBar" parent="HUD" unique_id=1319594526 node_paths=PackedStringArray("player")]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -58,5 +59,7 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_gmlin")
 value = 100.0
 fill_mode = 2
 show_percentage = false
+script = ExtResource("3_gmlin")
+player = NodePath("../..")
 
 [connection signal="health_changed" from="." to="HUD/ProgressBar" method="_on_player_health_changed"]
