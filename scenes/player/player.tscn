@@ -13,10 +13,24 @@ albedo_texture = ExtResource("1_8afob")
 radius = 0.3
 height = 1.2
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dovo2"]
+[sub_resource type="CanvasTexture" id="CanvasTexture_dovo2"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gmlin"]
+texture = SubResource("CanvasTexture_dovo2")
+modulate_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gmlin"]
 bg_color = Color(1, 0, 0, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="Player" type="CharacterBody3D" unique_id=119440718]
 floor_snap_length = 0.4
@@ -53,9 +67,9 @@ offset_right = 57.0
 offset_bottom = 193.0
 grow_vertical = 0
 rotation = 4.712389
-theme_override_styles/background = SubResource("StyleBoxEmpty_dovo2")
+theme_override_styles/background = SubResource("StyleBoxTexture_gmlin")
 theme_override_styles/fill = SubResource("StyleBoxFlat_gmlin")
-value = 100.0
+value = 50.0
 fill_mode = 2
 show_percentage = false
 
