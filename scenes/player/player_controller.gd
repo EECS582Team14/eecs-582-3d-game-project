@@ -135,8 +135,9 @@ func _process_local_movement(_delta: float) -> void:
 	# Normalize the direction vector to ensure consistent speed in all directions
 	var input_direction = direction.normalized()
 
-	# Calculate the velocity based on input direction and speed
-	velocity = input_direction * speed
+	# Only set horizontal velocity — preserve velocity.y for gravity and jumping
+	velocity.x = input_direction.x * speed
+	velocity.z = input_direction.z * speed
 
 func _process_remote_movement(delta: float) -> void:
 	# Interpolate position smoothly
