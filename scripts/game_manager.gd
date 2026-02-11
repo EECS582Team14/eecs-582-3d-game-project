@@ -102,6 +102,29 @@ func _spawn_all_players():
 	# Start always-on voice recording after all players are spawned
 	VoiceManager.start()
 
+	# Host assigns roles — one random impostor
+	if LobbyManager.is_host():
+		_assign_roles()
+
+func _assign_roles():
+	# Pick one random player as the impostor
+	var impostor_index = randi() % LobbyManager.lobby_members.size()
+	var my_steam_id = Steam.getSteamID()
+
+	for i in range(LobbyManager.lobby_members.size()):
+		var member_steam_id = LobbyManager.lobby_members[i].steam_id
+		var is_impostor = (i == impostor_index)
+
+		if member_steam_id == my_steam_id:
+			# Host assigns own role directly
+			NetworkManager.role_assigned.emit(is_impostor)
+		else:
+			# Send role to remote player privately
+			NetworkManager.send_role_assignment(member_steam_id, is_impostor)
+
+	var impostor_name = LobbyManager.lobby_members[impostor_index].name
+	print("Impostor assigned: ", impostor_name)
+
 func _on_player_left(steam_id: int):
 	VoiceManager.remove_player_voice(steam_id)
 	var player = NetworkManager.get_player(steam_id)

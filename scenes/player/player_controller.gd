@@ -39,6 +39,14 @@ var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 const NETWORK_UPDATE_RATE: float = 1.0 / 30.0  # 30 updates per second
 var _network_update_timer: float = 0.0
 
+# Role assignment
+var is_impostor: bool = false
+var _role_received: bool = false
+var _role_timer: float = 0.0
+const ROLE_REVEAL_DELAY: float = 30.0
+var _role_label: Label = null
+var _timer_label: Label = null
+
 # Signals
 signal health_changed(new_health)
 
@@ -57,9 +65,35 @@ func _ready() -> void:
 		# Connect to receive remote player states
 		NetworkManager.player_state_received.connect(_on_player_state_received)
 		NetworkManager.health_update_received.connect(_on_health_update_received)
+		NetworkManager.role_assigned.connect(_on_role_assigned)
 
 		health_bar.max_value = max_health
 		health_bar.value = current_health
+
+		# Create timer label (top center)
+		_timer_label = Label.new()
+		_timer_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_timer_label.anchors_preset = Control.PRESET_CENTER_TOP
+		_timer_label.offset_top = 20
+		_timer_label.offset_left = -150
+		_timer_label.offset_right = 150
+		_timer_label.add_theme_font_size_override("font_size", 28)
+		_timer_label.text = ""
+		$HUD.add_child(_timer_label)
+
+		# Create role label (center of screen, hidden until reveal)
+		_role_label = Label.new()
+		_role_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_role_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		_role_label.anchors_preset = Control.PRESET_CENTER
+		_role_label.offset_left = -200
+		_role_label.offset_right = 200
+		_role_label.offset_top = -30
+		_role_label.offset_bottom = 30
+		_role_label.add_theme_font_size_override("font_size", 48)
+		_role_label.text = ""
+		_role_label.visible = false
+		$HUD.add_child(_role_label)
 		
 	else:
 		# Remote player - disable camera, input, and HUD
@@ -102,6 +136,17 @@ func _input(event: InputEvent) -> void:
 			if not _is_mouse_captured:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 				_is_mouse_captured = true
+
+func _process(delta: float) -> void:
+	if not is_local_player or not _role_received:
+		return
+
+	if _role_timer > 0.0:
+		_role_timer -= delta
+		_timer_label.text = "Role reveal in: %d" % ceili(_role_timer)
+		if _role_timer <= 0.0:
+			_timer_label.text = ""
+			_reveal_role()
 
 func _physics_process(delta: float) -> void:
 	if is_local_player:
@@ -170,6 +215,24 @@ func _on_player_state_received(sender_steam_id: int, state: Dictionary) -> void:
 		player._target_position = state.position
 		player._target_rotation_y = state.rotation_y
 		player._target_camera_rotation_x = state.camera_rotation_x
+
+func _on_role_assigned(impostor: bool) -> void:
+	is_impostor = impostor
+	_role_received = true
+	_role_timer = ROLE_REVEAL_DELAY
+
+func _reveal_role() -> void:
+	if is_impostor:
+		_role_label.text = "IMPOSTOR"
+		_role_label.add_theme_color_override("font_color", Color.RED)
+	else:
+		_role_label.text = "CREWMATE"
+		_role_label.add_theme_color_override("font_color", Color.CYAN)
+	_role_label.visible = true
+
+	# Hide the role text after 5 seconds
+	await get_tree().create_timer(5.0).timeout
+	_role_label.visible = false
 
 func _on_health_update_received(sender_steam_id: int, health: int) -> void:
 	var player = NetworkManager.get_player(sender_steam_id)
