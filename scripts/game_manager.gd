@@ -80,9 +80,17 @@ func _spawn_all_players():
 		# Register with NetworkManager
 		NetworkManager.register_player(player_steam_id, player)
 
+		# Set up voice playback for remote players (proximity audio)
+		if not is_local:
+			VoiceManager.setup_player_voice(player_steam_id, player)
+
 		print("Spawned player: ", member.name, " (local: ", is_local, ")")
 
+	# Start always-on voice recording after all players are spawned
+	VoiceManager.start()
+
 func _on_player_left(steam_id: int):
+	VoiceManager.remove_player_voice(steam_id)
 	var player = NetworkManager.get_player(steam_id)
 	if player:
 		NetworkManager.unregister_player(steam_id)
@@ -90,6 +98,7 @@ func _on_player_left(steam_id: int):
 		print("Removed player: ", steam_id)
 
 func despawn_all_players():
+	VoiceManager.stop()
 	if players_container:
 		for player in players_container.get_children():
 			player.queue_free()

@@ -7,6 +7,7 @@ extends Node
 
 signal player_state_received(steam_id: int, state: Dictionary)
 signal game_started()
+signal voice_data_received(steam_id: int, audio_data: PackedByteArray)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -14,7 +15,8 @@ const PACKET_READ_LIMIT: int = 32
 enum PacketType {
 	PLAYER_STATE,
 	GAME_START,
-	HANDSHAKE
+	HANDSHAKE,
+	VOICE_DATA
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -84,6 +86,9 @@ func send_player_state(position: Vector3, rotation_y: float, camera_rotation_x: 
 	}
 	send_p2p_packet(0, data, Steam.P2P_SEND_UNRELIABLE, 0)
 
+func send_voice_data(compressed_audio: PackedByteArray):
+	send_p2p_packet(0, {"type": PacketType.VOICE_DATA, "audio": compressed_audio}, Steam.P2P_SEND_UNRELIABLE, 0)
+
 func send_game_start():
 	send_p2p_packet(0, {"type": PacketType.GAME_START}, Steam.P2P_SEND_RELIABLE, 0)
 	game_started.emit()
@@ -129,6 +134,9 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 		PacketType.GAME_START:
 			print("Received GAME_START from host!")
 			game_started.emit()
+
+		PacketType.VOICE_DATA:
+			voice_data_received.emit(sender_steam_id, data.get("audio", PackedByteArray()))
 
 		_:
 			print("Unknown packet type: %s" % packet_type)
