@@ -102,13 +102,12 @@ func _on_lobby_chat_update(changed_lobby_id: int, changed_user_id: int, _making_
 		return
 
 	if chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_ENTERED:
-		player_joined.emit(changed_user_id)
-		# Establish P2P with the new player
 		_refresh_lobby_members()
 		NetworkManager.establish_p2p_with_lobby()
+		player_joined.emit(changed_user_id)
 	elif chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_LEFT or chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_DISCONNECTED:
-		player_left.emit(changed_user_id)
 		_refresh_lobby_members()
+		player_left.emit(changed_user_id)
 	else:
 		_refresh_lobby_members()
 
