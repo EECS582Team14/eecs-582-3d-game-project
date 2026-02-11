@@ -116,7 +116,9 @@ func _assign_roles():
 		var is_impostor = (i == impostor_index)
 
 		if member_steam_id == my_steam_id:
-			# Host assigns own role directly
+			# Host assigns own role directly (also buffer it)
+			NetworkManager.pending_role_received = true
+			NetworkManager.pending_role_impostor = is_impostor
 			NetworkManager.role_assigned.emit(is_impostor)
 		else:
 			# Send role to remote player privately

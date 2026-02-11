@@ -25,6 +25,10 @@ enum PacketType {
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
 
+# Buffered role assignment (in case packet arrives before player scene loads)
+var pending_role_received: bool = false
+var pending_role_impostor: bool = false
+
 func _ready():
 	Steam.p2p_session_request.connect(_on_p2p_session_request)
 	Steam.p2p_session_connect_fail.connect(_on_p2p_session_connect_fail)
@@ -152,7 +156,10 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 			health_update_received.emit(sender_steam_id, data.get("hp", 0))
 
 		PacketType.ROLE_ASSIGNMENT:
-			role_assigned.emit(data.get("impostor", false))
+			var is_imp = data.get("impostor", false)
+			pending_role_received = true
+			pending_role_impostor = is_imp
+			role_assigned.emit(is_imp)
 
 		_:
 			print("Unknown packet type: %s" % packet_type)
@@ -175,3 +182,5 @@ func close_all_sessions():
 		if member['steam_id'] != Steam.getSteamID():
 			Steam.closeP2PSessionWithUser(member['steam_id'])
 	players_in_game.clear()
+	pending_role_received = false
+	pending_role_impostor = false

@@ -73,10 +73,14 @@ func _ready() -> void:
 		# Create timer label (top center)
 		_timer_label = Label.new()
 		_timer_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		_timer_label.anchors_preset = Control.PRESET_CENTER_TOP
-		_timer_label.offset_top = 20
+		_timer_label.anchor_left = 0.5
+		_timer_label.anchor_right = 0.5
+		_timer_label.anchor_top = 0.0
+		_timer_label.anchor_bottom = 0.0
 		_timer_label.offset_left = -150
 		_timer_label.offset_right = 150
+		_timer_label.offset_top = 20
+		_timer_label.offset_bottom = 60
 		_timer_label.add_theme_font_size_override("font_size", 28)
 		_timer_label.text = ""
 		$HUD.add_child(_timer_label)
@@ -85,7 +89,10 @@ func _ready() -> void:
 		_role_label = Label.new()
 		_role_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_role_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		_role_label.anchors_preset = Control.PRESET_CENTER
+		_role_label.anchor_left = 0.5
+		_role_label.anchor_right = 0.5
+		_role_label.anchor_top = 0.5
+		_role_label.anchor_bottom = 0.5
 		_role_label.offset_left = -200
 		_role_label.offset_right = 200
 		_role_label.offset_top = -30
@@ -94,6 +101,10 @@ func _ready() -> void:
 		_role_label.text = ""
 		_role_label.visible = false
 		$HUD.add_child(_role_label)
+
+		# Check if role was already assigned before we loaded
+		if NetworkManager.pending_role_received:
+			_on_role_assigned(NetworkManager.pending_role_impostor)
 		
 	else:
 		# Remote player - disable camera, input, and HUD
