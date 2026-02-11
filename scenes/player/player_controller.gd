@@ -169,9 +169,9 @@ func _on_player_state_received(sender_steam_id: int, state: Dictionary) -> void:
 		player._target_camera_rotation_x = state.camera_rotation_x
 
 # Apply gravity for local player
-func _apply_gravity(_delta: float) -> void:
+func _apply_gravity(delta: float) -> void:
 	if not is_on_floor():
-		velocity.y -= gravity
+		velocity.y -= gravity * delta
 	else:
 		velocity.y = 0
 
