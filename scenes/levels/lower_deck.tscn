@@ -31,7 +31,6 @@ data = PackedVector3Array(-25, 0.049999997, 40, 25, 0.049999997, 40, -25, -0.049
 
 [node name="PlaneMesh" type="MeshInstance3D" parent="Ceiling" unique_id=2110469671]
 transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 2.4, 10)
-visible = false
 mesh = SubResource("PlaneMesh_mgbrt")
 
 [node name="PlaneCollision" type="CollisionShape3D" parent="Ceiling" unique_id=649150358]
@@ -42,7 +41,6 @@ shape = SubResource("ConcavePolygonShape3D_vucmy")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 10)
 
 [node name="FloorMesh" type="MeshInstance3D" parent="Floor" unique_id=2133020581]
-visible = false
 material_override = SubResource("StandardMaterial3D_0llye")
 mesh = SubResource("BoxMesh_0ip28")
 
