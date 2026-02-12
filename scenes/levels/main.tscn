@@ -1,10 +1,12 @@
 [gd_scene format=3 uid="uid://ddsbl570mlpfl"]
 
 [ext_resource type="PackedScene" uid="uid://bxtun6wfrtimw" path="res://scenes/levels/upper_deck.tscn" id="1_72ix8"]
+[ext_resource type="PackedScene" uid="uid://l7a6ls4tdms7" path="res://scenes/levels/lower_deck.tscn" id="2_2vj2h"]
 
 [sub_resource type="Environment" id="Environment_y0acb"]
 background_mode = 1
 ambient_light_source = 2
+ambient_light_color = Color(0.98039216, 0.96862745, 0.98039216, 1)
 
 [node name="MainTestScene" type="Node3D" unique_id=321426474]
 
@@ -15,3 +17,6 @@ environment = SubResource("Environment_y0acb")
 transform = Transform3D(-0.57666874, 0.79389215, -0.19284254, 0.38048655, 0.46986175, 0.7965299, 0.7229682, 0.38595992, -0.5730199, 0, 5.635, 0)
 
 [node name="UpperDeck" parent="." unique_id=1269834158 instance=ExtResource("1_72ix8")]
+
+[node name="LowerDeck" parent="." unique_id=199586682 instance=ExtResource("2_2vj2h")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.5325365, 0)
