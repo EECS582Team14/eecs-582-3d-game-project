@@ -1,0 +1,130 @@
+[gd_scene format=3 uid="uid://l7a6ls4tdms7"]
+
+[ext_resource type="PackedScene" uid="uid://d4l70qktpab24" path="res://scenes/levels/walls/large_wall.tscn" id="1_mdr4r"]
+[ext_resource type="PackedScene" uid="uid://slrafd7wesfx" path="res://scenes/levels/walls/medium_door.tscn" id="2_0q5s7"]
+[ext_resource type="PackedScene" uid="uid://bkggral86i4ul" path="res://scenes/levels/walls/medium_wall.tscn" id="4_iijbf"]
+[ext_resource type="PackedScene" uid="uid://chdj8l5glva0" path="res://scenes/levels/walls/small_door.tscn" id="5_myntk"]
+[ext_resource type="PackedScene" uid="uid://dmapmbx6ymccv" path="res://elevatorShell.tscn" id="6_ksacp"]
+[ext_resource type="PackedScene" uid="uid://bfqp2tl7ks4nx" path="res://scenes/levels/walls/small_wall.tscn" id="6_mdr4r"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]
+size = Vector2(50, 80)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_vucmy"]
+data = PackedVector3Array(25, 0, 40, -25, 0, 40, 25, 0, -40, -25, 0, 40, -25, 0, -40, 25, 0, -40)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_mgbrt"]
+load_path = "res://.godot/imported/texture_08.png-9f039f47cba295ef5881d7b94c369b5d.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0llye"]
+albedo_texture = SubResource("CompressedTexture2D_mgbrt")
+
+[sub_resource type="BoxMesh" id="BoxMesh_0ip28"]
+size = Vector3(50, 0.1, 80)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_fjw4p"]
+data = PackedVector3Array(-25, 0.049999997, 40, 25, 0.049999997, 40, -25, -0.049999997, 40, 25, 0.049999997, 40, 25, -0.049999997, 40, -25, -0.049999997, 40, 25, 0.049999997, -40, -25, 0.049999997, -40, 25, -0.049999997, -40, -25, 0.049999997, -40, -25, -0.049999997, -40, 25, -0.049999997, -40, 25, 0.049999997, 40, 25, 0.049999997, -40, 25, -0.049999997, 40, 25, 0.049999997, -40, 25, -0.049999997, -40, 25, -0.049999997, 40, -25, 0.049999997, -40, -25, 0.049999997, 40, -25, -0.049999997, -40, -25, 0.049999997, 40, -25, -0.049999997, 40, -25, -0.049999997, -40, 25, 0.049999997, 40, -25, 0.049999997, 40, 25, 0.049999997, -40, -25, 0.049999997, 40, -25, 0.049999997, -40, 25, 0.049999997, -40, -25, -0.049999997, 40, 25, -0.049999997, 40, -25, -0.049999997, -40, 25, -0.049999997, 40, 25, -0.049999997, -40, -25, -0.049999997, -40)
+
+[node name="LowerDeck" type="Node3D" unique_id=1269834158]
+
+[node name="Ceiling" type="StaticBody3D" parent="." unique_id=1243012629]
+
+[node name="PlaneMesh" type="MeshInstance3D" parent="Ceiling" unique_id=2110469671]
+transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 2.4, 10)
+visible = false
+mesh = SubResource("PlaneMesh_mgbrt")
+
+[node name="PlaneCollision" type="CollisionShape3D" parent="Ceiling" unique_id=649150358]
+transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 2.4, 10)
+shape = SubResource("ConcavePolygonShape3D_vucmy")
+
+[node name="Floor" type="StaticBody3D" parent="." unique_id=1001920379]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 10)
+
+[node name="FloorMesh" type="MeshInstance3D" parent="Floor" unique_id=2133020581]
+visible = false
+material_override = SubResource("StandardMaterial3D_0llye")
+mesh = SubResource("BoxMesh_0ip28")
+
+[node name="FloorCollision" type="CollisionShape3D" parent="Floor" unique_id=775385888]
+shape = SubResource("ConcavePolygonShape3D_fjw4p")
+
+[node name="Elevator" type="Node3D" parent="." unique_id=228239539]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+
+[node name="ElevatorShell" parent="Elevator" unique_id=1267073090 instance=ExtResource("6_ksacp")]
+transform = Transform3D(-0.6, 0, -9.059749e-08, 0, 0.3, 0, 9.059749e-08, 0, -0.6, 0, 0, 0)
+
+[node name="IntercomLight" type="OmniLight3D" parent="Elevator" unique_id=977861543]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
+omni_range = 3.0
+omni_attenuation = 0.75
+
+[node name="Reactor" type="Node3D" parent="." unique_id=1732257113]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
+
+[node name="NorthReactorDoor" parent="Reactor" unique_id=1714346761 instance=ExtResource("2_0q5s7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.55)
+
+[node name="SouthReactorWall" parent="Reactor" unique_id=426182538 instance=ExtResource("4_iijbf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.55)
+
+[node name="WestReactorWall" parent="Reactor" unique_id=2140834363 instance=ExtResource("4_iijbf")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.55, 0, 0)
+
+[node name="EastReactorWall" parent="Reactor" unique_id=728987913 instance=ExtResource("4_iijbf")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.55, 0, 0)
+
+[node name="ReactorLight" type="OmniLight3D" parent="Reactor" unique_id=2035618320]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+omni_range = 15.0
+
+[node name="ReactorHallway" type="Node3D" parent="." unique_id=1431244199]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40.006)
+
+[node name="NorthReactorHallwayWall" parent="ReactorHallway" unique_id=180754865 instance=ExtResource("1_mdr4r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -11)
+
+[node name="EastReactorHallwayWall" parent="ReactorHallway" unique_id=2142856834 instance=ExtResource("4_iijbf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.988, 0, -7.5)
+
+[node name="WestReactorHallwayWall" parent="ReactorHallway" unique_id=1569553236 instance=ExtResource("4_iijbf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.9, 0, -7.5)
+
+[node name="Electrical" type="Node3D" parent="." unique_id=156958614]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.711052, 0, 24.94423)
+
+[node name="WestElectricalWall" parent="Electrical" unique_id=183395886 instance=ExtResource("4_iijbf")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.234876, 0, 0)
+
+[node name="EastElectricalWall" parent="Electrical" unique_id=901769142 instance=ExtResource("4_iijbf")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.2, 0, 0)
+
+[node name="NorthElectricalDoor" parent="Electrical" unique_id=1087523963 instance=ExtResource("5_myntk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.5)
+
+[node name="SouthElectricalWall" parent="Electrical" unique_id=78084738 instance=ExtResource("6_mdr4r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.5)
+
+[node name="ElectricalLight" type="OmniLight3D" parent="Electrical" unique_id=1295447439]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+omni_range = 15.0
+
+[node name="Trash" type="Node3D" parent="." unique_id=651322574]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.711052, 0, -7.8117266)
+
+[node name="WestTrashWall" parent="Trash" unique_id=1067945118 instance=ExtResource("4_iijbf")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.234876, 0, 0)
+
+[node name="EastTrashWall" parent="Trash" unique_id=1596453683 instance=ExtResource("4_iijbf")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.2, 0, 0)
+
+[node name="SouthTrashDoor" parent="Trash" unique_id=951735916 instance=ExtResource("5_myntk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.5)
+
+[node name="NorthTrashWall" parent="Trash" unique_id=655894279 instance=ExtResource("6_mdr4r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.5)
+
+[node name="TrashLight" type="OmniLight3D" parent="Trash" unique_id=2143518444]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+omni_range = 15.0
