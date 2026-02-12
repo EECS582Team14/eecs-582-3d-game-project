@@ -22,16 +22,17 @@ script = ExtResource("1_2pq4l")
 [node name="HostButton" type="Button" parent="." unique_id=1503356061]
 z_index = 1
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.12900001
-anchor_right = 0.5
-anchor_bottom = 0.12900001
-offset_left = 330.0
-offset_top = 124.408
-offset_right = 441.0
-offset_bottom = 155.40799
-grow_horizontal = 2
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -244.0
+offset_top = -128.0
+offset_right = -150.0
+offset_bottom = -97.0
+grow_horizontal = 0
+grow_vertical = 2
 text = "Host Game"
 
 [node name="StatusLabel" type="Label" parent="." unique_id=1588222291]
@@ -86,49 +87,101 @@ offset_top = 335.0
 offset_right = 393.0
 offset_bottom = 581.0
 
-[node name="SpaceBackground" type="TextureRect" parent="." unique_id=1902989949]
-z_index = -10
-layout_mode = 0
-offset_left = -205.0
-offset_top = -182.0
-offset_right = 1331.0
-offset_bottom = 842.0
-mouse_filter = 2
-texture = ExtResource("2_ssae1")
-
-[node name="Planet1" type="Sprite2D" parent="SpaceBackground" unique_id=1437993694]
-position = Vector2(434.00003, 429)
-scale = Vector2(0.2418919, 0.2527027)
-texture = ExtResource("3_e5djm")
-
-[node name="planet2" type="Sprite2D" parent="SpaceBackground" unique_id=1044014782]
-position = Vector2(1167, 696.99994)
-scale = Vector2(0.17625, 0.17125)
-texture = ExtResource("4_n7qqb")
-
-[node name="planet3" type="Sprite2D" parent="SpaceBackground" unique_id=926820726]
-position = Vector2(1165.9999, 389.99997)
-scale = Vector2(0.31249997, 0.29443365)
-texture = ExtResource("5_7hq2d")
-
-[node name="RichTextLabel" type="RichTextLabel" parent="SpaceBackground" unique_id=351046177]
+[node name="Planet3" type="TextureRect" parent="." unique_id=1487232047]
+z_index = -1
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.013
-offset_left = 600.0
-offset_top = 356.0
-offset_right = 980.032
-offset_bottom = 491.0
+anchor_left = 0.77900004
+anchor_top = 0.71300006
+anchor_right = 0.897
+anchor_bottom = 0.91
+offset_left = -0.40808105
+offset_top = -0.024047852
+offset_right = -0.34399414
+offset_bottom = 0.32000732
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_n7qqb")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Planet1" type="TextureRect" parent="." unique_id=2009857529]
+z_index = -1
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 140.0
+offset_top = -142.0
+offset_right = 302.0
+offset_bottom = -6.0
+grow_vertical = 2
+texture = ExtResource("3_e5djm")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Planet2" type="TextureRect" parent="." unique_id=1980514147]
+z_index = -1
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.70500004
+anchor_top = 0.128
+anchor_right = 0.94200003
+anchor_bottom = 0.53900003
+offset_left = -0.16003418
+offset_top = 0.055999756
+offset_right = -0.18408203
+offset_bottom = -0.2720337
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_7hq2d")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=351046177]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.344
+anchor_top = 0.28100002
+anchor_right = 0.69200003
+anchor_bottom = 0.492
+offset_left = -0.2880249
+offset_top = -0.088012695
+offset_right = -0.184021
+offset_bottom = 0.18399048
+grow_horizontal = 2
+grow_vertical = 2
 bbcode_enabled = true
 text = "[center][font_size=96]Out[color=#aa0000]LIAR[/color][/font_size][/center]
 "
 
-[node name="RichTextLabel2" type="RichTextLabel" parent="SpaceBackground" unique_id=881090405]
-layout_mode = 0
-offset_left = 636.0
-offset_top = 485.0
-offset_right = 985.0
-offset_bottom = 525.0
+[node name="RichTextLabel2" type="RichTextLabel" parent="." unique_id=881090405]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.374
+anchor_top = 0.46500003
+anchor_right = 0.67600006
+anchor_bottom = 0.532
+offset_left = 0.15197754
+offset_top = -0.32000732
+offset_right = -0.16003418
+offset_bottom = 0.24002075
+grow_horizontal = 2
+grow_vertical = 2
 bbcode_enabled = true
 text = "[center][font_size=28][color=#dddddd]Who is telling the truth?[/color][/font_size][/center]
 "
+
+[node name="SpaceBackground" type="TextureRect" parent="." unique_id=1902989949]
+z_index = -10
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_ssae1")
+stretch_mode = 6

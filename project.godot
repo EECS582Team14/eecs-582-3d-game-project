@@ -22,6 +22,10 @@ NetworkManager="*res://scripts/network_manager.gd"
 GameManager="*res://scripts/game_manager.gd"
 VoiceManager="*res://scripts/voice_manager.gd"
 
+[display]
+
+window/stretch/mode="canvas_items"
+
 [input]
 
 move_left={
