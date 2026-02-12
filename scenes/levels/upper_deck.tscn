@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://bfgguye5eh16" path="res://scenes/physics_objects/physics_box.tscn" id="4_mgbrt"]
 [ext_resource type="PackedScene" uid="uid://chdj8l5glva0" path="res://scenes/levels/walls/small_door.tscn" id="5_fjw4p"]
 [ext_resource type="PackedScene" uid="uid://bkggral86i4ul" path="res://scenes/levels/walls/medium_wall.tscn" id="5_vucmy"]
-[ext_resource type="PackedScene" uid="uid://dmapmbx6ymccv" path="res://elevatorShell.tscn" id="6_fjw4p"]
+[ext_resource type="PackedScene" uid="uid://dmapmbx6ymccv" path="res://scenes/levels/main_assets/elevatorShell.tscn" id="6_fjw4p"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]
 size = Vector2(50, 80)
@@ -134,21 +134,21 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
 omni_range = 3.0
 omni_attenuation = 0.75
 
-[node name="Reactor" type="Node3D" parent="."]
+[node name="Reactor" type="Node3D" parent="." unique_id=121906036]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
 
-[node name="NorthReactorDoor" parent="Reactor" instance=ExtResource("3_1pv2h")]
+[node name="NorthReactorDoor" parent="Reactor" unique_id=1405684944 instance=ExtResource("3_1pv2h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.55)
 
-[node name="SouthReactorWall" parent="Reactor" instance=ExtResource("5_vucmy")]
+[node name="SouthReactorWall" parent="Reactor" unique_id=1212621299 instance=ExtResource("5_vucmy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.55)
 
-[node name="WestReactorWall" parent="Reactor" instance=ExtResource("5_vucmy")]
+[node name="WestReactorWall" parent="Reactor" unique_id=1307638957 instance=ExtResource("5_vucmy")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.55, 0, 0)
 
-[node name="EastReactorWall" parent="Reactor" instance=ExtResource("5_vucmy")]
+[node name="EastReactorWall" parent="Reactor" unique_id=685337763 instance=ExtResource("5_vucmy")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.55, 0, 0)
 
-[node name="ReactorLight" type="OmniLight3D" parent="Reactor"]
+[node name="ReactorLight" type="OmniLight3D" parent="Reactor" unique_id=408307674]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 omni_range = 15.0

@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://slrafd7wesfx" path="res://scenes/levels/walls/medium_door.tscn" id="2_0q5s7"]
 [ext_resource type="PackedScene" uid="uid://bkggral86i4ul" path="res://scenes/levels/walls/medium_wall.tscn" id="4_iijbf"]
 [ext_resource type="PackedScene" uid="uid://chdj8l5glva0" path="res://scenes/levels/walls/small_door.tscn" id="5_myntk"]
-[ext_resource type="PackedScene" uid="uid://dmapmbx6ymccv" path="res://elevatorShell.tscn" id="6_ksacp"]
+[ext_resource type="PackedScene" uid="uid://dmapmbx6ymccv" path="res://scenes/levels/main_assets/elevatorShell.tscn" id="6_ksacp"]
 [ext_resource type="PackedScene" uid="uid://bfqp2tl7ks4nx" path="res://scenes/levels/walls/small_wall.tscn" id="6_mdr4r"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]

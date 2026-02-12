@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ddsbl570mlpfl"]
 
 [ext_resource type="PackedScene" uid="uid://bxtun6wfrtimw" path="res://scenes/levels/upper_deck.tscn" id="1_72ix8"]
+[ext_resource type="Script" uid="uid://clr7dkm6ukvg5" path="res://scenes/levels/main.gd" id="1_y0acb"]
 [ext_resource type="PackedScene" uid="uid://l7a6ls4tdms7" path="res://scenes/levels/lower_deck.tscn" id="2_2vj2h"]
 
 [sub_resource type="Environment" id="Environment_y0acb"]
@@ -9,6 +10,7 @@ ambient_light_source = 2
 ambient_light_color = Color(0.98039216, 0.96862745, 0.98039216, 1)
 
 [node name="MainTestScene" type="Node3D" unique_id=321426474]
+script = ExtResource("1_y0acb")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=494983248]
 environment = SubResource("Environment_y0acb")
