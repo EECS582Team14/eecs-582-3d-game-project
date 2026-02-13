@@ -134,21 +134,30 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
 omni_range = 3.0
 omni_attenuation = 0.75
 
-[node name="Reactor" type="Node3D" parent="." unique_id=121906036]
+[node name="Reactor" type="Node3D" parent="." unique_id=2091125207]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
 
-[node name="NorthReactorDoor" parent="Reactor" unique_id=1405684944 instance=ExtResource("3_1pv2h")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.55)
+[node name="NorthwestReactorDoor" parent="Reactor" unique_id=2051606702 instance=ExtResource("3_1pv2h")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.55, 0, -7.5)
 
-[node name="SouthReactorWall" parent="Reactor" unique_id=1212621299 instance=ExtResource("5_vucmy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.55)
+[node name="NortheastReactorDoor" parent="Reactor" unique_id=27832786 instance=ExtResource("3_1pv2h")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.55, 0, -7.55)
 
-[node name="WestReactorWall" parent="Reactor" unique_id=1307638957 instance=ExtResource("5_vucmy")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.55, 0, 0)
+[node name="NorthReactorWall" parent="Reactor" unique_id=806318401 instance=ExtResource("5_vucmy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.5)
 
-[node name="EastReactorWall" parent="Reactor" unique_id=685337763 instance=ExtResource("5_vucmy")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.55, 0, 0)
+[node name="WestReactorWall" parent="Reactor" unique_id=1280773409 instance=ExtResource("5_vucmy")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -20, 0, 0)
 
-[node name="ReactorLight" type="OmniLight3D" parent="Reactor" unique_id=408307674]
+[node name="EastReactorWall" parent="Reactor" unique_id=2121062372 instance=ExtResource("5_vucmy")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 20, 0, 0)
+
+[node name="SoutheastReactorWall" parent="Reactor" unique_id=36531693 instance=ExtResource("2_0llye")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 7.55)
+
+[node name="SouthwestReactorWall" parent="Reactor" unique_id=1422650762 instance=ExtResource("2_0llye")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 7.55)
+
+[node name="ReactorLight" type="OmniLight3D" parent="Reactor" unique_id=2069581870]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 omni_range = 15.0
