@@ -117,7 +117,7 @@ transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0.3, 0, 5)
 [node name="NorthIntercomWall" parent="Intercom" unique_id=1672430869 instance=ExtResource("5_vucmy")]
 transform = Transform3D(0.7431448, 0, 0.6691306, 0, 1, 0, -0.6691306, 0, 0.7431448, -3.143, 0, 0)
 
-[node name="WestCamWall" parent="Intercom" unique_id=843526226 instance=ExtResource("5_vucmy")]
+[node name="WestIntercomWall" parent="Intercom" unique_id=843526226 instance=ExtResource("5_vucmy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.45, 0, 5)
 
 [node name="IntercomLight" type="OmniLight3D" parent="Intercom" unique_id=424525013]
@@ -130,7 +130,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
 [node name="ElevatorShell" parent="Elevator" unique_id=1267073090 instance=ExtResource("6_fjw4p")]
 transform = Transform3D(-0.6, 0, -9.059749e-08, 0, 0.3, 0, 9.059749e-08, 0, -0.6, 0, 0, 0)
 
-[node name="IntercomLight" type="OmniLight3D" parent="Elevator" unique_id=977861543]
+[node name="ElevatorLight" type="OmniLight3D" parent="Elevator" unique_id=977861543]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
 omni_range = 3.0
 omni_attenuation = 0.75
@@ -166,11 +166,36 @@ omni_range = 15.0
 [node name="LifeSupport" type="Node3D" parent="." unique_id=1989672344]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, -12.72)
 
-[node name="WesternEntrance" parent="LifeSupport" unique_id=503105574 instance=ExtResource("5_fjw4p")]
+[node name="WesternLifeEntrance" parent="LifeSupport" unique_id=503105574 instance=ExtResource("5_fjw4p")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0, 0)
 
-[node name="EasternWall" parent="LifeSupport" unique_id=374430160 instance=ExtResource("7_86pjy")]
+[node name="EasternLifeWall" parent="LifeSupport" unique_id=374430160 instance=ExtResource("7_86pjy")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 0, 0)
 
-[node name="MediumWall" parent="LifeSupport" unique_id=466337753 instance=ExtResource("5_vucmy")]
+[node name="SouthLifeWall" parent="LifeSupport" unique_id=466337753 instance=ExtResource("5_vucmy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.445, 0, 2.25)
+
+[node name="HumanResources" type="Node3D" parent="." unique_id=645411416]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 0)
+
+[node name="NorthEasternHREntrance" parent="HumanResources" unique_id=480437199 instance=ExtResource("5_fjw4p")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0, -5)
+
+[node name="WesternHRWall" parent="HumanResources" unique_id=1344048828 instance=ExtResource("2_0llye")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 0, 0)
+
+[node name="LifeSupportConnectingWall" parent="HumanResources" unique_id=1957851992 instance=ExtResource("7_86pjy")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0, -8.48)
+
+[node name="NorthernHRWall" parent="HumanResources" unique_id=1721600752 instance=ExtResource("5_vucmy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.49, 0, -7.23)
+
+[node name="SouthernHRWall" parent="HumanResources" unique_id=1524085616 instance=ExtResource("5_vucmy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.49, 0, 9.985)
+
+[node name="EasternHRWall" parent="HumanResources" unique_id=441032082 instance=ExtResource("5_vucmy")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0, 4.74)
+
+[node name="HRLight" type="OmniLight3D" parent="HumanResources" unique_id=1695436889]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+omni_range = 15.0
