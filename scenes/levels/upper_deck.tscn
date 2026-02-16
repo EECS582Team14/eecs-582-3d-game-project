@@ -26,6 +26,15 @@ size = Vector3(51.615, 0.1, 81.36)
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_fjw4p"]
 data = PackedVector3Array(-25, 0.049999997, 40, 25, 0.049999997, 40, -25, -0.049999997, 40, 25, 0.049999997, 40, 25, -0.049999997, 40, -25, -0.049999997, 40, 25, 0.049999997, -40, -25, 0.049999997, -40, 25, -0.049999997, -40, -25, 0.049999997, -40, -25, -0.049999997, -40, 25, -0.049999997, -40, 25, 0.049999997, 40, 25, 0.049999997, -40, 25, -0.049999997, 40, 25, 0.049999997, -40, 25, -0.049999997, -40, 25, -0.049999997, 40, -25, 0.049999997, -40, -25, 0.049999997, 40, -25, -0.049999997, -40, -25, 0.049999997, 40, -25, -0.049999997, 40, -25, -0.049999997, -40, 25, 0.049999997, 40, -25, 0.049999997, 40, 25, 0.049999997, -40, -25, 0.049999997, 40, -25, 0.049999997, -40, 25, 0.049999997, -40, -25, -0.049999997, 40, 25, -0.049999997, 40, -25, -0.049999997, -40, 25, -0.049999997, 40, 25, -0.049999997, -40, -25, -0.049999997, -40)
 
+[sub_resource type="BoxMesh" id="BoxMesh_86pjy"]
+size = Vector3(51.61, 0.1, 81.36)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_rmbde"]
+load_path = "res://.godot/imported/texture_08.png-9f039f47cba295ef5881d7b94c369b5d.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ews0w"]
+albedo_texture = SubResource("CompressedTexture2D_rmbde")
+
 [node name="UpperDeck" type="Node3D" unique_id=1269834158]
 
 [node name="Ceiling" type="StaticBody3D" parent="." unique_id=1243012629]
@@ -39,7 +48,7 @@ transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 2
 shape = SubResource("ConcavePolygonShape3D_vucmy")
 
 [node name="Floor" type="StaticBody3D" parent="." unique_id=1001920379]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, -0.1, 10)
 
 [node name="FloorMesh" type="MeshInstance3D" parent="Floor" unique_id=2133020581]
 material_override = SubResource("StandardMaterial3D_0llye")
@@ -47,6 +56,19 @@ mesh = SubResource("BoxMesh_0ip28")
 
 [node name="FloorCollision" type="CollisionShape3D" parent="Floor" unique_id=775385888]
 shape = SubResource("ConcavePolygonShape3D_fjw4p")
+
+[node name="FloorWithHole" type="CSGCombiner3D" parent="." unique_id=1724333825]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 10)
+use_collision = true
+
+[node name="FloorMesh" type="CSGMesh3D" parent="FloorWithHole" unique_id=1922912761]
+mesh = SubResource("BoxMesh_86pjy")
+material = SubResource("StandardMaterial3D_ews0w")
+
+[node name="ElevatorBox" type="CSGBox3D" parent="FloorWithHole" unique_id=1022759736]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+operation = 2
+size = Vector3(4, 1, 4)
 
 [node name="Nexus" type="Node3D" parent="." unique_id=1800847303]
 
@@ -125,7 +147,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 2.3, 2)
 omni_range = 6.0
 
 [node name="Elevator" type="Node3D" parent="." unique_id=228239539]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 20)
 
 [node name="ElevatorShell" parent="Elevator" unique_id=1267073090 instance=ExtResource("6_fjw4p")]
 transform = Transform3D(-0.6, 0, -9.059749e-08, 0, 0.3, 0, 9.059749e-08, 0, -0.6, 0, 0, 0)

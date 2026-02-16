@@ -48,7 +48,7 @@ mesh = SubResource("BoxMesh_0ip28")
 shape = SubResource("ConcavePolygonShape3D_fjw4p")
 
 [node name="Elevator" type="Node3D" parent="." unique_id=228239539]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 20)
 
 [node name="ElevatorShell" parent="Elevator" unique_id=1267073090 instance=ExtResource("6_ksacp")]
 transform = Transform3D(-0.6, 0, -9.059749e-08, 0, 0.3, 0, 9.059749e-08, 0, -0.6, 0, 0, 0)
