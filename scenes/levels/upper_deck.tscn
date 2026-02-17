@@ -230,10 +230,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 18)
 omni_range = 15.0
 
 [node name="EastDoor" parent="Armory" unique_id=1229734003 instance=ExtResource("3_1pv2h")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0, 19.5)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0, 19.7)
 
 [node name="SouthernHRWall" parent="Armory" unique_id=1457420098 instance=ExtResource("5_vucmy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.49, 0, 27)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.49, 0, 27.2)
 
 [node name="WesternHRWall" parent="Armory" unique_id=217376195 instance=ExtResource("2_0llye")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 0, 20)
