@@ -5,7 +5,6 @@
 [ext_resource type="PackedScene" uid="uid://bkggral86i4ul" path="res://scenes/levels/walls/medium_wall.tscn" id="4_iijbf"]
 [ext_resource type="PackedScene" uid="uid://chdj8l5glva0" path="res://scenes/levels/walls/small_door.tscn" id="5_myntk"]
 [ext_resource type="PackedScene" uid="uid://dmapmbx6ymccv" path="res://scenes/levels/main_assets/elevatorShell.tscn" id="6_ksacp"]
-[ext_resource type="PackedScene" uid="uid://bfqp2tl7ks4nx" path="res://scenes/levels/walls/small_wall.tscn" id="6_mdr4r"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]
 size = Vector2(50, 80)
@@ -28,6 +27,7 @@ data = PackedVector3Array(-25, 0.049999997, 40, 25, 0.049999997, 40, -25, -0.049
 [node name="LowerDeck" type="Node3D" unique_id=1269834158]
 
 [node name="Ceiling" type="StaticBody3D" parent="." unique_id=1243012629]
+visible = false
 
 [node name="PlaneMesh" type="MeshInstance3D" parent="Ceiling" unique_id=2110469671]
 transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 2.4, 10)
@@ -86,46 +86,122 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 7.55)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 omni_range = 15.0
 
-[node name="ReactorHallway" type="Node3D" parent="." unique_id=1431244199]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40.006)
-
-[node name="NorthReactorHallwayWall" parent="ReactorHallway" unique_id=584274763 instance=ExtResource("1_mdr4r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -11)
-
 [node name="Electrical" type="Node3D" parent="." unique_id=156958614]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.800863, 0, 24.94423)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.801, 0, 22)
 
 [node name="WestElectricalWall" parent="Electrical" unique_id=183395886 instance=ExtResource("4_iijbf")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.234876, 0, 0)
 
 [node name="EastElectricalWall" parent="Electrical" unique_id=901769142 instance=ExtResource("4_iijbf")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.2, 0, 0)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7, 0, 0)
 
-[node name="NorthElectricalDoor" parent="Electrical" unique_id=1087523963 instance=ExtResource("5_myntk")]
+[node name="NorthwestElectricalDoor" parent="Electrical" unique_id=1087523963 instance=ExtResource("5_myntk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.5)
 
-[node name="SouthElectricalWall" parent="Electrical" unique_id=78084738 instance=ExtResource("6_mdr4r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.5)
+[node name="SouthElectricalWall" parent="Electrical" unique_id=593281246 instance=ExtResource("4_iijbf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.22, 0, 7.5)
+
+[node name="NorthElectricalWall" parent="Electrical" unique_id=810153533 instance=ExtResource("4_iijbf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 0, -7.5)
 
 [node name="ElectricalLight" type="OmniLight3D" parent="Electrical" unique_id=1295447439]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3999996, 2.2, 0)
 omni_range = 15.0
 
 [node name="Trash" type="Node3D" parent="." unique_id=651322574]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.800863, 0, -7.8117266)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.801, 0, -22)
 
 [node name="WestTrashWall" parent="Trash" unique_id=1067945118 instance=ExtResource("4_iijbf")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.234876, 0, 0)
 
 [node name="EastTrashWall" parent="Trash" unique_id=1596453683 instance=ExtResource("4_iijbf")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.2, 0, 0)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7, 0, 0)
 
-[node name="SouthTrashDoor" parent="Trash" unique_id=951735916 instance=ExtResource("5_myntk")]
+[node name="SouthwestTrashDoor" parent="Trash" unique_id=951735916 instance=ExtResource("5_myntk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.5)
 
-[node name="NorthTrashWall" parent="Trash" unique_id=655894279 instance=ExtResource("6_mdr4r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.5)
+[node name="NorthTrashWall" parent="Trash" unique_id=1865856697 instance=ExtResource("4_iijbf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.219925, 0, -7.5)
+
+[node name="SouthTrashWall" parent="Trash" unique_id=1359609783 instance=ExtResource("4_iijbf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 0, 7.5)
 
 [node name="TrashLight" type="OmniLight3D" parent="Trash" unique_id=2143518444]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3999996, 2.2, 0)
+omni_range = 15.0
+
+[node name="ColonialSupplies" type="Node3D" parent="." unique_id=934844965]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.419, 0, 22)
+
+[node name="NorthCSWall" parent="ColonialSupplies" unique_id=1229477122 instance=ExtResource("4_iijbf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.5)
+
+[node name="SouthCSWall" parent="ColonialSupplies" unique_id=924044174 instance=ExtResource("4_iijbf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.5)
+
+[node name="WestCSWall" parent="ColonialSupplies" unique_id=1484444328 instance=ExtResource("4_iijbf")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.5, 0, 0)
+
+[node name="EastCSDoor" parent="ColonialSupplies" unique_id=430507440 instance=ExtResource("2_0q5s7")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.5, 0, 0)
+
+[node name="CSLight" type="OmniLight3D" parent="ColonialSupplies" unique_id=290404060]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+omni_range = 15.0
+
+[node name="ShipSupplies" type="Node3D" parent="." unique_id=1185466814]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.419, 0, 0)
+
+[node name="NorthSSWall" parent="ShipSupplies" unique_id=1724604776 instance=ExtResource("4_iijbf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.5)
+
+[node name="SouthSSWall" parent="ShipSupplies" unique_id=1853047388 instance=ExtResource("4_iijbf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.5)
+
+[node name="WestSSWall" parent="ShipSupplies" unique_id=1505644049 instance=ExtResource("4_iijbf")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.5, 0, 0)
+
+[node name="EastSSDoor" parent="ShipSupplies" unique_id=1329758587 instance=ExtResource("2_0q5s7")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.5, 0, 0)
+
+[node name="SSLight" type="OmniLight3D" parent="ShipSupplies" unique_id=642206079]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+omni_range = 15.0
+
+[node name="PersonalItems" type="Node3D" parent="." unique_id=1044334352]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.419, 0, -22)
+
+[node name="NorthPIWall" parent="PersonalItems" unique_id=1972325925 instance=ExtResource("4_iijbf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.5)
+
+[node name="SouthPIWall" parent="PersonalItems" unique_id=1070768877 instance=ExtResource("4_iijbf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.5)
+
+[node name="WestPIWall" parent="PersonalItems" unique_id=1922738717 instance=ExtResource("4_iijbf")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.5, 0, 0)
+
+[node name="EastPIDoor" parent="PersonalItems" unique_id=434780216 instance=ExtResource("2_0q5s7")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.5, 0, 0)
+
+[node name="PILight" type="OmniLight3D" parent="PersonalItems" unique_id=1038630370]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+omni_range = 15.0
+
+[node name="FabManufacturing" type="Node3D" parent="." unique_id=1065997204]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -19.476221)
+
+[node name="NorthFabWall" parent="FabManufacturing" unique_id=672010240 instance=ExtResource("4_iijbf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
+
+[node name="SouthFabDoor" parent="FabManufacturing" unique_id=2115391635 instance=ExtResource("2_0q5s7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+
+[node name="EastFabWall" parent="FabManufacturing" unique_id=1646351265 instance=ExtResource("1_mdr4r")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.5, 0, 0)
+
+[node name="WestFabWall" parent="FabManufacturing" unique_id=1868997769 instance=ExtResource("1_mdr4r")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.5, 0, 0)
+
+[node name="FabLight" type="OmniLight3D" parent="FabManufacturing" unique_id=269803892]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 omni_range = 15.0
