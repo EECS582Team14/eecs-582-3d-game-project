@@ -228,26 +228,26 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.49, 0, 27.2)
 [node name="WesternArmWall" parent="Armory" unique_id=217376195 instance=ExtResource("2_0llye")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 0, 20)
 
-[node name="Shilding" type="Node3D" parent="." unique_id=1596150144]
+[node name="Shielding" type="Node3D" parent="." unique_id=1596150144]
 
-[node name="ShildingLight" type="OmniLight3D" parent="Shilding" unique_id=639666854]
+[node name="ShieldingLight" type="OmniLight3D" parent="Shielding" unique_id=639666854]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 2.2, -5)
 omni_range = 15.0
 
-[node name="ShildingConnectingWall2" parent="Shilding" unique_id=296027351 instance=ExtResource("7_86pjy")]
+[node name="ShieldingConnectingWall2" parent="Shielding" unique_id=296027351 instance=ExtResource("7_86pjy")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15, 0, -9.5)
 
-[node name="ShildingConnectingWall" parent="Shilding" unique_id=345006618 instance=ExtResource("7_86pjy")]
+[node name="ShieldingConnectingWall" parent="Shielding" unique_id=345006618 instance=ExtResource("7_86pjy")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15, 0, -0.5)
 
-[node name="NorthShildingWall" parent="Shilding" unique_id=911850064 instance=ExtResource("5_vucmy")]
+[node name="NorthShieldingWall" parent="Shielding" unique_id=911850064 instance=ExtResource("5_vucmy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0, -11.7)
 
-[node name="SouthShildingWall" parent="Shilding" unique_id=1671320553 instance=ExtResource("5_vucmy")]
+[node name="SouthShieldingWall" parent="Shielding" unique_id=1671320553 instance=ExtResource("5_vucmy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0, 0)
 
-[node name="ShildingDoor" parent="Shilding" unique_id=1574516295 instance=ExtResource("5_fjw4p")]
+[node name="ShieldingDoor" parent="Shielding" unique_id=1574516295 instance=ExtResource("5_fjw4p")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15, 0, -5)
 
-[node name="BackArmWall" parent="Shilding" unique_id=1846056442 instance=ExtResource("2_0llye")]
+[node name="BackArmWall" parent="Shielding" unique_id=1846056442 instance=ExtResource("2_0llye")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 25.5, 0, -5)
