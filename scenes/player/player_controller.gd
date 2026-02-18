@@ -273,6 +273,9 @@ func _try_interact() -> void:
 	query.exclude = [self]
 	var result = space_state.intersect_ray(query)
 	if result and result.collider.is_in_group("elevator_button"):
-		var elevator = result.collider.get_parent()
-		if elevator.has_method("activate"):
-			elevator.activate()
+		var node = result.collider
+		while node != null:
+			if node.has_method("activate"):
+				node.activate()
+				break
+			node = node.get_parent()
