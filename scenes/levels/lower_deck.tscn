@@ -4,14 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://slrafd7wesfx" path="res://scenes/levels/walls/medium_door.tscn" id="2_0q5s7"]
 [ext_resource type="PackedScene" uid="uid://bkggral86i4ul" path="res://scenes/levels/walls/medium_wall.tscn" id="4_iijbf"]
 [ext_resource type="PackedScene" uid="uid://chdj8l5glva0" path="res://scenes/levels/walls/small_door.tscn" id="5_myntk"]
-[ext_resource type="PackedScene" uid="uid://dmapmbx6ymccv" path="res://scenes/levels/main_assets/elevatorShell.tscn" id="6_ksacp"]
 [ext_resource type="PackedScene" uid="uid://bfqp2tl7ks4nx" path="res://scenes/levels/walls/small_wall.tscn" id="6_mdr4r"]
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]
-size = Vector2(50, 80)
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_vucmy"]
-data = PackedVector3Array(25, 0, 40, -25, 0, 40, 25, 0, -40, -25, 0, 40, -25, 0, -40, 25, 0, -40)
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_mgbrt"]
 load_path = "res://.godot/imported/texture_08.png-9f039f47cba295ef5881d7b94c369b5d.s3tc.ctex"
@@ -27,16 +20,6 @@ data = PackedVector3Array(-25, 0.049999997, 40, 25, 0.049999997, 40, -25, -0.049
 
 [node name="LowerDeck" type="Node3D" unique_id=1269834158]
 
-[node name="Ceiling" type="StaticBody3D" parent="." unique_id=1243012629]
-
-[node name="PlaneMesh" type="MeshInstance3D" parent="Ceiling" unique_id=2110469671]
-transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 2.4, 10)
-mesh = SubResource("PlaneMesh_mgbrt")
-
-[node name="PlaneCollision" type="CollisionShape3D" parent="Ceiling" unique_id=649150358]
-transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 2.4, 10)
-shape = SubResource("ConcavePolygonShape3D_vucmy")
-
 [node name="Floor" type="StaticBody3D" parent="." unique_id=1001920379]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 10)
 
@@ -46,17 +29,6 @@ mesh = SubResource("BoxMesh_0ip28")
 
 [node name="FloorCollision" type="CollisionShape3D" parent="Floor" unique_id=775385888]
 shape = SubResource("ConcavePolygonShape3D_fjw4p")
-
-[node name="Elevator" type="Node3D" parent="." unique_id=228239539]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 20)
-
-[node name="ElevatorShell" parent="Elevator" unique_id=1267073090 instance=ExtResource("6_ksacp")]
-transform = Transform3D(-0.6, 0, -9.059749e-08, 0, 0.3, 0, 9.059749e-08, 0, -0.6, 0, 0, 0)
-
-[node name="IntercomLight" type="OmniLight3D" parent="Elevator" unique_id=977861543]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
-omni_range = 3.0
-omni_attenuation = 0.75
 
 [node name="Reactor" type="Node3D" parent="." unique_id=1732257113]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
