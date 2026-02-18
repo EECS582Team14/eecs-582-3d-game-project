@@ -20,10 +20,10 @@ environment = SubResource("Environment_y0acb")
 transform = Transform3D(-0.57666874, 0.79389215, -0.19284254, 0.38048655, 0.46986175, 0.7965299, 0.7229682, 0.38595992, -0.5730199, 0, 5.635, 0)
 
 [node name="UpperDeck" parent="." unique_id=1269834158 instance=ExtResource("1_72ix8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.061081886, 0.008000374, -0.026069641)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.059841156, 0.008317471, -0.025287628)
 
 [node name="LowerDeck" parent="." unique_id=199586682 instance=ExtResource("2_2vj2h")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.53, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.5, 0)
 
 [node name="AnimatedBody3D" parent="." unique_id=1904553526 instance=ExtResource("4_j4d2a")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 25.773985, 1.6900454, 20.56863)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.11706418, 1.4587048, 19.629688)
