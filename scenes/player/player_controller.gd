@@ -147,6 +147,8 @@ func _input(event: InputEvent) -> void:
 			if not _is_mouse_captured:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 				_is_mouse_captured = true
+			else:
+				_try_interact()
 
 func _process(delta: float) -> void:
 	if not is_local_player or not _role_received:
@@ -262,3 +264,15 @@ func setup(player_steam_id: int, local: bool) -> void:
 	steam_id = player_steam_id
 	is_local_player = local
 	name = "Player_" + str(steam_id)
+
+func _try_interact() -> void:
+	var space_state = get_world_3d().direct_space_state
+	var from = camera.global_position
+	var to = from + (-camera.global_transform.basis.z * 3.0)
+	var query = PhysicsRayQueryParameters3D.create(from, to)
+	query.exclude = [self]
+	var result = space_state.intersect_ray(query)
+	if result and result.collider.is_in_group("elevator_button"):
+		var elevator = result.collider.get_parent()
+		if elevator.has_method("activate"):
+			elevator.activate()

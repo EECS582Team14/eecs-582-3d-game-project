@@ -5,7 +5,6 @@
 [ext_resource type="PackedScene" uid="uid://bfgguye5eh16" path="res://scenes/physics_objects/physics_box.tscn" id="4_mgbrt"]
 [ext_resource type="PackedScene" uid="uid://chdj8l5glva0" path="res://scenes/levels/walls/small_door.tscn" id="5_fjw4p"]
 [ext_resource type="PackedScene" uid="uid://bkggral86i4ul" path="res://scenes/levels/walls/medium_wall.tscn" id="5_vucmy"]
-[ext_resource type="PackedScene" uid="uid://dmapmbx6ymccv" path="res://scenes/levels/main_assets/elevatorShell.tscn" id="6_fjw4p"]
 [ext_resource type="PackedScene" uid="uid://bfqp2tl7ks4nx" path="res://scenes/levels/walls/small_wall.tscn" id="7_86pjy"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]
@@ -40,7 +39,7 @@ albedo_texture = SubResource("CompressedTexture2D_rmbde")
 [node name="Ceiling" type="StaticBody3D" parent="." unique_id=1243012629]
 
 [node name="PlaneMesh" type="MeshInstance3D" parent="Ceiling" unique_id=2110469671]
-transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 2.4, 10)
+transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, -0.068395704, 2.4389405, 10.014011)
 mesh = SubResource("PlaneMesh_mgbrt")
 
 [node name="PlaneCollision" type="CollisionShape3D" parent="Ceiling" unique_id=649150358]
@@ -65,10 +64,12 @@ use_collision = true
 mesh = SubResource("BoxMesh_86pjy")
 material = SubResource("StandardMaterial3D_ews0w")
 
-[node name="ElevatorBox" type="CSGBox3D" parent="FloorWithHole" unique_id=1022759736]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="FloorWithHole" unique_id=1099793677]
+transform = Transform3D(6.6317153, 0, 0, 0, 0.48769352, 0, 0, 0, 6.4539685, -0.16764808, 0, 9.371025)
 operation = 2
-size = Vector3(4, 1, 4)
+radius = 0.35
+height = 1.0
+sides = 27
 
 [node name="Nexus" type="Node3D" parent="." unique_id=1800847303]
 
@@ -145,17 +146,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.45, 0, 5)
 [node name="IntercomLight" type="OmniLight3D" parent="Intercom" unique_id=424525013]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 2.3, 2)
 omni_range = 6.0
-
-[node name="Elevator" type="Node3D" parent="." unique_id=228239539]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 20)
-
-[node name="ElevatorShell" parent="Elevator" unique_id=1267073090 instance=ExtResource("6_fjw4p")]
-transform = Transform3D(-0.6, 0, -9.059749e-08, 0, 0.3, 0, 9.059749e-08, 0, -0.6, 0, 0, 0)
-
-[node name="ElevatorLight" type="OmniLight3D" parent="Elevator" unique_id=977861543]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
-omni_range = 3.0
-omni_attenuation = 0.75
 
 [node name="Reactor" type="Node3D" parent="." unique_id=2091125207]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)

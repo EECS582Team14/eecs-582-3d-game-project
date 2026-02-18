@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://bxtun6wfrtimw" path="res://scenes/levels/upper_deck.tscn" id="1_72ix8"]
 [ext_resource type="Script" uid="uid://clr7dkm6ukvg5" path="res://scenes/levels/main.gd" id="1_y0acb"]
 [ext_resource type="PackedScene" uid="uid://l7a6ls4tdms7" path="res://scenes/levels/lower_deck.tscn" id="2_2vj2h"]
+[ext_resource type="PackedScene" uid="uid://dmapmbx6ymccv" path="res://scenes/levels/main_assets/elevatorShell.tscn" id="4_j4d2a"]
 
 [sub_resource type="Environment" id="Environment_y0acb"]
 background_mode = 1
@@ -22,3 +23,14 @@ transform = Transform3D(-0.57666874, 0.79389215, -0.19284254, 0.38048655, 0.4698
 
 [node name="LowerDeck" parent="." unique_id=199586682 instance=ExtResource("2_2vj2h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.5325365, 0)
+
+[node name="Elevator" type="Node3D" parent="." unique_id=694857782]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 20)
+
+[node name="ElevatorShell" parent="Elevator" unique_id=1786563567 instance=ExtResource("4_j4d2a")]
+transform = Transform3D(-0.6, 0, -9.059749e-08, 0, 0.3, 0, 9.059749e-08, 0, -0.6, -100.07878, 0.015977025, -0.510128)
+
+[node name="ElevatorLight" type="OmniLight3D" parent="Elevator" unique_id=1510597099]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
+omni_range = 3.0
+omni_attenuation = 0.75
