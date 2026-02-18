@@ -8,9 +8,10 @@
 [ext_resource type="PackedScene" uid="uid://bfqp2tl7ks4nx" path="res://scenes/levels/walls/small_wall.tscn" id="7_86pjy"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]
-size = Vector2(50, 80)
+size = Vector2(60, 80)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_vucmy"]
+margin = 0.4
 data = PackedVector3Array(25, 0, 40, -25, 0, 40, 25, 0, -40, -25, 0, 40, -25, 0, -40, 25, 0, -40)
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_mgbrt"]
