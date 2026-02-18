@@ -23,7 +23,7 @@ transform = Transform3D(-0.57666874, 0.79389215, -0.19284254, 0.38048655, 0.4698
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.061081886, 0.008000374, -0.026069641)
 
 [node name="LowerDeck" parent="." unique_id=199586682 instance=ExtResource("2_2vj2h")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.5325365, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.53, 0)
 
 [node name="AnimatedBody3D" parent="." unique_id=1904553526 instance=ExtResource("4_j4d2a")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 25.773985, 1.6900454, 20.56863)

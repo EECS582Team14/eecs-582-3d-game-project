@@ -64,13 +64,6 @@ use_collision = true
 mesh = SubResource("BoxMesh_86pjy")
 material = SubResource("StandardMaterial3D_ews0w")
 
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="FloorWithHole" unique_id=1099793677]
-transform = Transform3D(6.6317153, 0, 0, 0, 0.48769352, 0, 0, 0, 6.4539685, -0.16764808, 0, 9.371025)
-operation = 2
-radius = 0.35
-height = 1.0
-sides = 27
-
 [node name="Nexus" type="Node3D" parent="." unique_id=1800847303]
 
 [node name="WestNexusWall" parent="Nexus" unique_id=180754865 instance=ExtResource("2_0llye")]
