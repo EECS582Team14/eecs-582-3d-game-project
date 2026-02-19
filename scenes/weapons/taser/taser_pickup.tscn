@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/weapons/taser/taser_pickup.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://cxo05w5r66b30" path="res://scenes/weapons/taser/heavy_assault_rifle.glb" id="2_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pickup"]
+size = Vector3(0.5, 0.3, 1.0)
+
+[node name="TaserPickup" type="StaticBody3D" groups=["pickup"]]
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_pickup")
+
+[node name="Model" parent="." instance=ExtResource("2_model")]

@@ -47,6 +47,14 @@ const ROLE_REVEAL_DELAY: float = 30.0
 var _role_label: Label = null
 var _timer_label: Label = null
 
+# Inventory
+var has_taser: bool = false
+
+# Interaction
+var _looking_at_interactable: Node = null
+var _interact_label: Label = null
+var _notification_label: Label = null
+
 # Signals
 signal health_changed(new_health)
 
@@ -102,6 +110,39 @@ func _ready() -> void:
 		_role_label.visible = false
 		$HUD.add_child(_role_label)
 
+		# Create interaction prompt label (bottom center)
+		_interact_label = Label.new()
+		_interact_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_interact_label.anchor_left = 0.5
+		_interact_label.anchor_right = 0.5
+		_interact_label.anchor_top = 1.0
+		_interact_label.anchor_bottom = 1.0
+		_interact_label.offset_left = -200
+		_interact_label.offset_right = 200
+		_interact_label.offset_top = -80
+		_interact_label.offset_bottom = -40
+		_interact_label.add_theme_font_size_override("font_size", 24)
+		_interact_label.text = ""
+		_interact_label.visible = false
+		$HUD.add_child(_interact_label)
+
+		# Create notification label (upper center, below timer)
+		_notification_label = Label.new()
+		_notification_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_notification_label.anchor_left = 0.5
+		_notification_label.anchor_right = 0.5
+		_notification_label.anchor_top = 0.0
+		_notification_label.anchor_bottom = 0.0
+		_notification_label.offset_left = -200
+		_notification_label.offset_right = 200
+		_notification_label.offset_top = 70
+		_notification_label.offset_bottom = 110
+		_notification_label.add_theme_font_size_override("font_size", 32)
+		_notification_label.add_theme_color_override("font_color", Color.YELLOW)
+		_notification_label.text = ""
+		_notification_label.visible = false
+		$HUD.add_child(_notification_label)
+
 		# Check if role was already assigned before we loaded
 		if NetworkManager.pending_role_received:
 			_on_role_assigned(NetworkManager.pending_role_impostor)
@@ -141,14 +182,11 @@ func _input(event: InputEvent) -> void:
 		
 	# If the input is a mouse button event
 	if event is InputEventMouseButton:
-		# If the left mouse button is clicked,
+		# If the left mouse button is clicked, capture the mouse
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			# Capture the mouse if it isn't already captured
 			if not _is_mouse_captured:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 				_is_mouse_captured = true
-			else:
-				_try_interact()
 
 func _process(delta: float) -> void:
 	if not is_local_player or not _role_received:
@@ -169,6 +207,9 @@ func _physics_process(delta: float) -> void:
 			velocity.y = jump_velocity
 		move_and_slide()
 		_send_network_update(delta)
+		_update_interaction_look()
+		if Input.is_action_just_pressed("interact") and _looking_at_interactable:
+			_try_interact()
 	else:
 		_process_remote_movement(delta)
 
@@ -265,17 +306,50 @@ func setup(player_steam_id: int, local: bool) -> void:
 	is_local_player = local
 	name = "Player_" + str(steam_id)
 
-func _try_interact() -> void:
+func _update_interaction_look() -> void:
 	var space_state = get_world_3d().direct_space_state
 	var from = camera.global_position
 	var to = from + (-camera.global_transform.basis.z * 3.0)
 	var query = PhysicsRayQueryParameters3D.create(from, to)
 	query.exclude = [self]
 	var result = space_state.intersect_ray(query)
-	if result and result.collider.is_in_group("elevator_button"):
-		var node = result.collider
-		while node != null:
-			if node.has_method("activate"):
-				node.activate()
-				break
-			node = node.get_parent()
+
+	_looking_at_interactable = null
+	if result:
+		var collider = result.collider
+		if collider.is_in_group("pickup"):
+			_looking_at_interactable = _find_activatable(collider)
+			if _looking_at_interactable:
+				_interact_label.text = "Press E to pick up"
+				_interact_label.visible = true
+				return
+		elif collider.is_in_group("elevator_button"):
+			_looking_at_interactable = _find_activatable(collider)
+			if _looking_at_interactable:
+				_interact_label.text = "Press E to interact"
+				_interact_label.visible = true
+				return
+
+	_interact_label.visible = false
+
+func _find_activatable(node: Node) -> Node:
+	while node != null:
+		if node.has_method("activate"):
+			return node
+		node = node.get_parent()
+	return null
+
+func _try_interact() -> void:
+	if not _looking_at_interactable:
+		return
+	if _looking_at_interactable.is_in_group("pickup"):
+		_looking_at_interactable.activate(steam_id)
+	else:
+		_looking_at_interactable.activate()
+
+func give_taser() -> void:
+	has_taser = true
+	_notification_label.text = "Taser Acquired!"
+	_notification_label.visible = true
+	await get_tree().create_timer(3.0).timeout
+	_notification_label.visible = false

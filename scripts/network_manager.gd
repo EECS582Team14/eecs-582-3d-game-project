@@ -10,6 +10,7 @@ signal game_started()
 signal voice_data_received(steam_id: int, audio_data: PackedByteArray)
 signal health_update_received(steam_id: int, health: int)
 signal role_assigned(is_impostor: bool)
+signal item_picked_up(steam_id: int, item_id: String)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -20,7 +21,8 @@ enum PacketType {
 	HANDSHAKE,
 	VOICE_DATA,
 	HEALTH_UPDATE,
-	ROLE_ASSIGNMENT
+	ROLE_ASSIGNMENT,
+	ITEM_PICKUP
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -103,6 +105,10 @@ func send_health_update(health: int):
 func send_voice_data(compressed_audio: PackedByteArray):
 	send_p2p_packet(0, {"type": PacketType.VOICE_DATA, "audio": compressed_audio}, Steam.P2P_SEND_UNRELIABLE, 0)
 
+func send_item_pickup(item_id: String):
+	send_p2p_packet(0, {"type": PacketType.ITEM_PICKUP, "item_id": item_id, "picker": Steam.getSteamID()}, Steam.P2P_SEND_RELIABLE, 0)
+	item_picked_up.emit(Steam.getSteamID(), item_id)
+
 func send_game_start():
 	send_p2p_packet(0, {"type": PacketType.GAME_START}, Steam.P2P_SEND_RELIABLE, 0)
 	game_started.emit()
@@ -160,6 +166,11 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 			pending_role_received = true
 			pending_role_impostor = is_imp
 			role_assigned.emit(is_imp)
+
+		PacketType.ITEM_PICKUP:
+			var picker_id = data.get("picker", 0)
+			var item_id = data.get("item_id", "")
+			item_picked_up.emit(picker_id, item_id)
 
 		_:
 			print("Unknown packet type: %s" % packet_type)
