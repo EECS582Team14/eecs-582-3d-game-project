@@ -2,11 +2,14 @@
 
 [ext_resource type="PackedScene" uid="uid://d4l70qktpab24" path="res://scenes/levels/walls/large_wall.tscn" id="2_0llye"]
 [ext_resource type="PackedScene" uid="uid://slrafd7wesfx" path="res://scenes/levels/walls/medium_door.tscn" id="3_1pv2h"]
-[ext_resource type="PackedScene" uid="uid://bfgguye5eh16" path="res://scenes/physics_objects/physics_box.tscn" id="4_mgbrt"]
 [ext_resource type="PackedScene" uid="uid://chdj8l5glva0" path="res://scenes/levels/walls/small_door.tscn" id="5_fjw4p"]
 [ext_resource type="PackedScene" uid="uid://bkggral86i4ul" path="res://scenes/levels/walls/medium_wall.tscn" id="5_vucmy"]
 [ext_resource type="PackedScene" uid="uid://bfqp2tl7ks4nx" path="res://scenes/levels/walls/small_wall.tscn" id="7_86pjy"]
 [ext_resource type="PackedScene" path="res://scenes/weapons/taser/taser_pickup.tscn" id="7_rmbde"]
+[ext_resource type="Texture2D" uid="uid://bxo160j4ybh3u" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_Color.png" id="8_floor_color"]
+[ext_resource type="Texture2D" uid="uid://ddfrmlgf2is0b" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_NormalGL.png" id="9_floor_normal"]
+[ext_resource type="Texture2D" uid="uid://b85nfpxgd1lh" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_Roughness.png" id="10_floor_rough"]
+[ext_resource type="Texture2D" uid="uid://c3e451lm0ue8r" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_Metalness.png" id="11_floor_metal"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]
 size = Vector2(60, 80)
@@ -18,11 +21,14 @@ data = PackedVector3Array(25, 0, 40, -25, 0, 40, 25, 0, -40, -25, 0, 40, -25, 0,
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_86pjy"]
 data = PackedVector3Array(-25.805, -0.05, -40.68, -1.5, -0.05, 12.795843, -1.5, -0.05, 9.795843, -25.805, -0.05, -40.68, -1.5, -0.05, 9.795843, 1.5, -0.05, 9.795843, -25.805, -0.05, -40.68, 25.805, -0.05, -40.68, -25.805, 0.05, -40.68, -25.805, -0.05, -40.68, -25.805, -0.05, 40.68, -1.5, -0.05, 12.795843, -25.805, -0.05, -40.68, -25.805, 0.05, 40.68, -25.805, -0.05, 40.68, -25.805, -0.05, 40.68, 1.5, -0.05, 12.795843, -1.5, -0.05, 12.795843, -25.805, -0.05, -40.68, -25.805, 0.05, -40.68, -25.805, 0.05, 40.68, -25.805, 0.05, -40.68, 25.805, 0.05, -40.68, -25.805, 0.05, 40.68, -25.805, -0.05, 40.68, -25.805, 0.05, 40.68, 25.805, 0.05, 40.68, -25.805, 0.05, 40.68, 25.805, 0.05, -40.68, -1.5, 0.05, 9.795843, -25.805, 0.05, 40.68, -1.5, 0.05, 9.795843, -1.5, 0.05, 12.795843, -25.805, 0.05, 40.68, -1.5, 0.05, 12.795843, 1.5, 0.05, 12.795843, -25.805, -0.05, -40.68, 25.805, -0.05, 40.68, 25.805, -0.05, -40.68, 25.805, -0.05, -40.68, 25.805, -0.05, 40.68, 25.805, 0.05, -40.68, -25.805, -0.05, -40.68, 1.5, -0.05, 9.795843, 25.805, -0.05, 40.68, -25.805, -0.05, 40.68, 25.805, -0.05, 40.68, 1.5, -0.05, 12.795843, 25.805, -0.05, 40.68, 1.5, -0.05, 9.795843, 1.5, -0.05, 12.795843, -25.805, -0.05, 40.68, 25.805, 0.05, 40.68, 25.805, -0.05, 40.68, -25.805, 0.05, -40.68, 25.805, -0.05, -40.68, 25.805, 0.05, -40.68, 25.805, 0.05, -40.68, 1.5, 0.05, 9.795843, -1.5, 0.05, 9.795843, 25.805, 0.05, -40.68, 1.5, 0.05, 12.795843, 1.5, 0.05, 9.795843, -25.805, 0.05, 40.68, 1.5, 0.05, 12.795843, 25.805, 0.05, 40.68, 25.805, -0.05, 40.68, 25.805, 0.05, 40.68, 25.805, 0.05, -40.68, 25.805, 0.05, -40.68, 25.805, 0.05, 40.68, 1.5, 0.05, 12.795843, -1.5, -0.05, 12.795843, -1.5, 0.05, 9.795843, -1.5, -0.05, 9.795843, -1.5, -0.05, 12.795843, 1.5, -0.05, 12.795843, -1.5, 0.05, 12.795843, 1.5, 0.05, 9.795843, -1.5, -0.05, 9.795843, -1.5, 0.05, 9.795843, -1.5, -0.05, 12.795843, -1.5, 0.05, 12.795843, -1.5, 0.05, 9.795843, -1.5, -0.05, 9.795843, 1.5, 0.05, 9.795843, 1.5, -0.05, 9.795843, 1.5, -0.05, 12.795843, 1.5, -0.05, 9.795843, 1.5, 0.05, 12.795843, 1.5, -0.05, 9.795843, 1.5, 0.05, 9.795843, 1.5, 0.05, 12.795843, -1.5, 0.05, 12.795843, 1.5, -0.05, 12.795843, 1.5, 0.05, 12.795843)
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_rmbde"]
-load_path = "res://.godot/imported/texture_08.png-9f039f47cba295ef5881d7b94c369b5d.s3tc.ctex"
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ews0w"]
-albedo_texture = SubResource("CompressedTexture2D_rmbde")
+albedo_texture = ExtResource("8_floor_color")
+metallic = 1.0
+metallic_texture = ExtResource("11_floor_metal")
+roughness_texture = ExtResource("10_floor_rough")
+normal_enabled = true
+normal_texture = ExtResource("9_floor_normal")
+uv1_scale = Vector3(24, 32, 1)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_rmbde"]
 _surfaces = [{
@@ -86,9 +92,6 @@ omni_range = 15.0
 [node name="SouthNexusLight" type="OmniLight3D" parent="Nexus" unique_id=1385001034]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 5)
 omni_range = 15.0
-
-[node name="PhysicsBox" parent="Nexus" unique_id=983159765 instance=ExtResource("4_mgbrt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.051030636, 0.44999993, 6.200299)
 
 [node name="NavBridge" type="Node3D" parent="." unique_id=1363310021]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -22.5)

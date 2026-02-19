@@ -1,9 +1,18 @@
 [gd_scene format=3 uid="uid://bkggral86i4ul"]
 
-[ext_resource type="Texture2D" uid="uid://ix02t0avys0" path="res://addons/kenney_prototype_textures/red/texture_02.png" id="1_65on8"]
+[ext_resource type="Texture2D" path="res://scenes/levels/walls/Chip001_1K-PNG/Chip001_1K-PNG_Color.png" id="1_color"]
+[ext_resource type="Texture2D" path="res://scenes/levels/walls/Chip001_1K-PNG/Chip001_1K-PNG_NormalGL.png" id="2_normal"]
+[ext_resource type="Texture2D" path="res://scenes/levels/walls/Chip001_1K-PNG/Chip001_1K-PNG_Roughness.png" id="3_rough"]
+[ext_resource type="Texture2D" path="res://scenes/levels/walls/Chip001_1K-PNG/Chip001_1K-PNG_Metalness.png" id="4_metal"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_01n6d"]
-albedo_texture = ExtResource("1_65on8")
+albedo_texture = ExtResource("1_color")
+normal_enabled = true
+normal_texture = ExtResource("2_normal")
+roughness_texture = ExtResource("3_rough")
+metallic = 1.0
+metallic_texture = ExtResource("4_metal")
+uv1_scale = Vector3(6, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_7s30g"]
 size = Vector3(15, 2.4, 0.1)

@@ -26,6 +26,10 @@ VoiceManager="*res://scripts/voice_manager.gd"
 
 window/stretch/mode="canvas_items"
 
+[filesystem]
+
+import/blender/enabled=false
+
 [input]
 
 move_left={

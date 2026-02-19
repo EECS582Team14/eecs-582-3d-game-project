@@ -5,12 +5,19 @@
 [ext_resource type="PackedScene" uid="uid://bkggral86i4ul" path="res://scenes/levels/walls/medium_wall.tscn" id="4_iijbf"]
 [ext_resource type="PackedScene" uid="uid://chdj8l5glva0" path="res://scenes/levels/walls/small_door.tscn" id="5_myntk"]
 [ext_resource type="PackedScene" path="res://scenes/tasks/reactor_temp_console.tscn" id="6_console"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_mgbrt"]
-load_path = "res://.godot/imported/texture_08.png-9f039f47cba295ef5881d7b94c369b5d.s3tc.ctex"
+[ext_resource type="Texture2D" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_Color.png" id="7_floor_color"]
+[ext_resource type="Texture2D" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_NormalGL.png" id="8_floor_normal"]
+[ext_resource type="Texture2D" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_Roughness.png" id="9_floor_rough"]
+[ext_resource type="Texture2D" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_Metalness.png" id="10_floor_metal"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0llye"]
-albedo_texture = SubResource("CompressedTexture2D_mgbrt")
+albedo_texture = ExtResource("7_floor_color")
+normal_enabled = true
+normal_texture = ExtResource("8_floor_normal")
+roughness_texture = ExtResource("9_floor_rough")
+metallic = 1.0
+metallic_texture = ExtResource("10_floor_metal")
+uv1_scale = Vector3(20, 30, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_0ip28"]
 size = Vector3(50, 0.1, 80)
