@@ -24,6 +24,25 @@ func activate() -> void:
 		else:
 			state = State.MOVING_UP
 
+# Called by a CallButton to bring the elevator to a specific floor.
+# floor_name should be "upper" or "lower".
+func call_to_floor(floor_name: String) -> void:
+	if state != State.IDLE:
+		return
+	if floor_name == "upper" and global_position.y < upper_y - 0.05:
+		_set_button_color(Color.GREEN)
+		state = State.MOVING_UP
+	elif floor_name == "lower" and global_position.y > lower_y + 0.05:
+		_set_button_color(Color.GREEN)
+		state = State.MOVING_DOWN
+
+func is_at_floor(floor_name: String) -> bool:
+	if floor_name == "upper":
+		return global_position.y >= upper_y - 0.05
+	elif floor_name == "lower":
+		return global_position.y <= lower_y + 0.05
+	return false
+
 func _set_button_color(color: Color) -> void:
 	if button_mesh == null:
 		return
