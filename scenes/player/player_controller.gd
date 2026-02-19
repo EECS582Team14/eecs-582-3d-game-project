@@ -86,6 +86,7 @@ func _ready() -> void:
 		NetworkManager.role_assigned.connect(_on_role_assigned)
 		NetworkManager.item_picked_up.connect(_on_item_picked_up)
 		NetworkManager.taser_shot_received.connect(_on_taser_shot_received)
+		NetworkManager.taser_hit_received.connect(_on_taser_hit_received)
 
 		health_bar.max_value = max_health
 		health_bar.value = current_health
@@ -405,3 +406,11 @@ func _on_taser_shot_received(sender_steam_id: int, origin: Vector3, direction: V
 	if sender_steam_id == steam_id:
 		return
 	_spawn_projectile(origin, direction, sender_steam_id)
+
+func _on_taser_hit_received(dmg: int) -> void:
+	current_health -= dmg
+	if current_health < 0:
+		current_health = 0
+	health_bar.value = current_health
+	health_changed.emit(current_health)
+	NetworkManager.send_health_update(current_health)

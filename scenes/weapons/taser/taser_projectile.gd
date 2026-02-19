@@ -60,15 +60,6 @@ func _on_body_entered(body: Node3D) -> void:
 		# It's a player — check it's not the shooter
 		if body.steam_id == shooter_steam_id:
 			return
-		# Deal damage
-		if "current_health" in body:
-			body.current_health -= damage
-			if body.current_health < 0:
-				body.current_health = 0
-			# Update health bar if the hit player is local
-			if body.is_local_player:
-				if body.health_bar:
-					body.health_bar.value = body.current_health
-				body.health_changed.emit(body.current_health)
-				NetworkManager.send_health_update(body.current_health)
+		# Send damage to the victim via network
+		NetworkManager.send_taser_hit(body.steam_id, damage)
 		queue_free()

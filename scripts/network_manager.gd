@@ -12,6 +12,7 @@ signal health_update_received(steam_id: int, health: int)
 signal role_assigned(is_impostor: bool)
 signal item_picked_up(steam_id: int, item_id: String)
 signal taser_shot_received(steam_id: int, origin: Vector3, direction: Vector3)
+signal taser_hit_received(damage: int)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -24,7 +25,8 @@ enum PacketType {
 	HEALTH_UPDATE,
 	ROLE_ASSIGNMENT,
 	ITEM_PICKUP,
-	TASER_SHOT
+	TASER_SHOT,
+	TASER_HIT
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -107,6 +109,9 @@ func send_health_update(health: int):
 func send_voice_data(compressed_audio: PackedByteArray):
 	send_p2p_packet(0, {"type": PacketType.VOICE_DATA, "audio": compressed_audio}, Steam.P2P_SEND_UNRELIABLE, 0)
 
+func send_taser_hit(target_steam_id: int, damage: int):
+	send_p2p_packet(target_steam_id, {"type": PacketType.TASER_HIT, "dmg": damage}, Steam.P2P_SEND_RELIABLE, 0)
+
 func send_taser_shot(origin: Vector3, direction: Vector3):
 	var data = {
 		"type": PacketType.TASER_SHOT,
@@ -187,6 +192,9 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 			var origin = Vector3(data.get("ox", 0), data.get("oy", 0), data.get("oz", 0))
 			var direction = Vector3(data.get("dx", 0), data.get("dy", 0), data.get("dz", 0))
 			taser_shot_received.emit(sender_steam_id, origin, direction)
+
+		PacketType.TASER_HIT:
+			taser_hit_received.emit(data.get("dmg", 0))
 
 		_:
 			print("Unknown packet type: %s" % packet_type)
