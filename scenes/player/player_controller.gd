@@ -12,7 +12,7 @@ extends CharacterBody3D
 ## How fast remote players interpolate to their target position
 @export var interpolation_speed: float = 15.0
 ## Initial Player health
-@export var max_health: int = 200
+@export var max_health: int = 100
 @export var jump_velocity: float = 5.0
 
 @onready var current_health: int = max_health
