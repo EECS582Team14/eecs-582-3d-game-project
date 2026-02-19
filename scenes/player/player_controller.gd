@@ -60,6 +60,9 @@ var _timer_label: Label = null
 # Inventory
 var has_taser: bool = false
 
+# Dead state (ghost mode)
+var is_dead: bool = false
+
 # Interaction
 var _looking_at_interactable: Node = null
 var _interact_label: Label = null
@@ -188,10 +191,14 @@ func _input(event: InputEvent) -> void:
 			if _is_mouse_captured:
 				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 				_is_mouse_captured = false
-		elif event.key_label == KEY_H and event.pressed:
+		elif event.key_label == KEY_H and event.pressed and not is_dead:
 			current_health -= 10
+			if current_health < 0:
+				current_health = 0
 			health_bar.value = current_health
 			NetworkManager.send_health_update(current_health)
+			if current_health <= 0:
+				_enter_dead_state()
 		
 	# If the input is a mouse button event
 	if event is InputEventMouseButton:
@@ -199,7 +206,7 @@ func _input(event: InputEvent) -> void:
 			if not _is_mouse_captured:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 				_is_mouse_captured = true
-			elif has_taser:
+			elif has_taser and not is_dead:
 				_shoot_taser()
 
 func _process(delta: float) -> void:
@@ -215,17 +222,22 @@ func _process(delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	if is_local_player:
-		_process_local_movement(delta)
-		_apply_gravity(delta)
-		if is_on_floor() and Input.is_action_just_pressed("jump"):
-			velocity.y = jump_velocity
-		move_and_slide()
-		_send_network_update(delta)
-		_update_interaction_look()
-		if _taser_cooldown_timer > 0.0:
-			_taser_cooldown_timer -= delta
-		if Input.is_action_just_pressed("interact") and _looking_at_interactable:
-			_try_interact()
+		if is_dead:
+			_process_ghost_movement(delta)
+			move_and_slide()
+			_send_network_update(delta)
+		else:
+			_process_local_movement(delta)
+			_apply_gravity(delta)
+			if is_on_floor() and Input.is_action_just_pressed("jump"):
+				velocity.y = jump_velocity
+			move_and_slide()
+			_send_network_update(delta)
+			_update_interaction_look()
+			if _taser_cooldown_timer > 0.0:
+				_taser_cooldown_timer -= delta
+			if Input.is_action_just_pressed("interact") and _looking_at_interactable:
+				_try_interact()
 	else:
 		_process_remote_movement(delta)
 
@@ -255,6 +267,33 @@ func _process_local_movement(_delta: float) -> void:
 	# Only set horizontal velocity — preserve velocity.y for gravity and jumping
 	velocity.x = input_direction.x * speed
 	velocity.z = input_direction.z * speed
+
+func _process_ghost_movement(_delta: float) -> void:
+	var direction: Vector3 = Vector3.ZERO
+	var forward: Vector3 = -transform.basis.z
+	var backward: Vector3 = transform.basis.z
+	var left: Vector3 = -transform.basis.x
+	var right: Vector3 = transform.basis.x
+
+	if Input.is_action_pressed("move_forward"):
+		direction += forward
+	if Input.is_action_pressed("move_backward"):
+		direction += backward
+	if Input.is_action_pressed("move_left"):
+		direction += left
+	if Input.is_action_pressed("move_right"):
+		direction += right
+
+	var input_direction = direction.normalized()
+	velocity.x = input_direction.x * speed
+	velocity.z = input_direction.z * speed
+
+	# Vertical ghost movement: Space to fly up, Shift to fly down
+	velocity.y = 0.0
+	if Input.is_action_pressed("jump"):
+		velocity.y = speed
+	if Input.is_key_pressed(KEY_SHIFT):
+		velocity.y = -speed
 
 func _process_remote_movement(delta: float) -> void:
 	# Interpolate position smoothly
@@ -308,6 +347,11 @@ func _on_health_update_received(sender_steam_id: int, health: int) -> void:
 	var player = NetworkManager.get_player(sender_steam_id)
 	if player and player != self:
 		player.current_health = health
+		if health <= 0 and not player.is_dead:
+			player.is_dead = true
+			player.get_node("CapsuleMesh").visible = false
+			if player._held_taser:
+				player._held_taser.visible = false
 
 # Apply gravity for local player
 func _apply_gravity(delta: float) -> void:
@@ -407,10 +451,22 @@ func _on_taser_shot_received(sender_steam_id: int, origin: Vector3, direction: V
 		return
 	_spawn_projectile(origin, direction, sender_steam_id)
 
+func _enter_dead_state() -> void:
+	is_dead = true
+	$CapsuleMesh.visible = false
+	if _held_taser:
+		_held_taser.visible = false
+	$PhysicsCollider.disabled = true
+	_interact_label.visible = false
+
 func _on_taser_hit_received(dmg: int) -> void:
+	if is_dead:
+		return
 	current_health -= dmg
 	if current_health < 0:
 		current_health = 0
 	health_bar.value = current_health
 	health_changed.emit(current_health)
 	NetworkManager.send_health_update(current_health)
+	if current_health <= 0:
+		_enter_dead_state()
