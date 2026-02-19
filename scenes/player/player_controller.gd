@@ -26,6 +26,11 @@ extends CharacterBody3D
 # Weapon scenes
 var _taser_scene: PackedScene = preload("res://scenes/weapons/taser/heavy_assault_rifle.glb")
 var _held_taser: Node3D = null
+var _projectile_script = preload("res://scenes/weapons/taser/taser_projectile.gd")
+
+# Taser shooting
+const TASER_COOLDOWN: float = 0.5
+var _taser_cooldown_timer: float = 0.0
 
 # Multiplayer variables
 var steam_id: int = 0
@@ -80,6 +85,7 @@ func _ready() -> void:
 		NetworkManager.health_update_received.connect(_on_health_update_received)
 		NetworkManager.role_assigned.connect(_on_role_assigned)
 		NetworkManager.item_picked_up.connect(_on_item_picked_up)
+		NetworkManager.taser_shot_received.connect(_on_taser_shot_received)
 
 		health_bar.max_value = max_health
 		health_bar.value = current_health
@@ -188,11 +194,12 @@ func _input(event: InputEvent) -> void:
 		
 	# If the input is a mouse button event
 	if event is InputEventMouseButton:
-		# If the left mouse button is clicked, capture the mouse
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			if not _is_mouse_captured:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 				_is_mouse_captured = true
+			elif has_taser:
+				_shoot_taser()
 
 func _process(delta: float) -> void:
 	if not is_local_player or not _role_received:
@@ -214,6 +221,8 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		_send_network_update(delta)
 		_update_interaction_look()
+		if _taser_cooldown_timer > 0.0:
+			_taser_cooldown_timer -= delta
 		if Input.is_action_just_pressed("interact") and _looking_at_interactable:
 			_try_interact()
 	else:
@@ -376,3 +385,23 @@ func _on_item_picked_up(picker_steam_id: int, _item_id: String) -> void:
 	var player = NetworkManager.get_player(picker_steam_id)
 	if player and player != self and player.has_method("give_taser"):
 		player.give_taser()
+
+func _shoot_taser() -> void:
+	if _taser_cooldown_timer > 0.0:
+		return
+	_taser_cooldown_timer = TASER_COOLDOWN
+	var origin = camera.global_position
+	var direction = -camera.global_transform.basis.z
+	_spawn_projectile(origin, direction, steam_id)
+	NetworkManager.send_taser_shot(origin, direction)
+
+func _spawn_projectile(origin: Vector3, direction: Vector3, shooter_id: int) -> void:
+	var projectile = Area3D.new()
+	projectile.set_script(_projectile_script)
+	projectile.setup(origin, direction, shooter_id)
+	get_tree().root.add_child(projectile)
+
+func _on_taser_shot_received(sender_steam_id: int, origin: Vector3, direction: Vector3) -> void:
+	if sender_steam_id == steam_id:
+		return
+	_spawn_projectile(origin, direction, sender_steam_id)
