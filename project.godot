@@ -21,6 +21,7 @@ LobbyManager="*res://scripts/lobby_manager.gd"
 NetworkManager="*res://scripts/network_manager.gd"
 GameManager="*res://scripts/game_manager.gd"
 VoiceManager="*res://scripts/voice_manager.gd"
+UIState="*uid://cki7nqxlanwyh"
 
 [display]
 

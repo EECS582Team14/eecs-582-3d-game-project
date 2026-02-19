@@ -17,7 +17,6 @@ extends CharacterBody3D
 
 @onready var current_health: int = max_health
 
-@onready var health_bar = $HUD/ProgressBar
 
 # Load child nodes
 @onready var camera: Camera3D = $PlayerCamera
@@ -102,8 +101,6 @@ func _ready() -> void:
 		NetworkManager.taser_shot_received.connect(_on_taser_shot_received)
 		NetworkManager.taser_hit_received.connect(_on_taser_hit_received)
 
-		health_bar.max_value = max_health
-		health_bar.value = current_health
 
 		# Create timer label (top center)
 		_timer_label = Label.new()
@@ -287,7 +284,7 @@ func _input(event: InputEvent) -> void:
 			current_health -= 10
 			if current_health < 0:
 				current_health = 0
-			health_bar.value = current_health
+			UIState.health_changed.emit(current_health)
 			NetworkManager.send_health_update(current_health)
 			if current_health <= 0:
 				_enter_dead_state()
@@ -578,7 +575,7 @@ func _on_taser_hit_received(dmg: int) -> void:
 	current_health -= dmg
 	if current_health < 0:
 		current_health = 0
-	health_bar.value = current_health
+	UIState.health_changed.emit(current_health)
 	health_changed.emit(current_health)
 	NetworkManager.send_health_update(current_health)
 	if current_health <= 0:

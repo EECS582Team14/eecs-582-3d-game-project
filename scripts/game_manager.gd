@@ -23,13 +23,18 @@ const PLAYER_COLORS: Array[Color] = [
 ]
 
 var players_container: Node3D = null
-
+var hud_instance: Control = null  # hold reference to local HUD
 # Destination progress
 var destination_progress: float = 0.0
 var base_progress_speed: float = 1.0
 var progress_speed_modifier: float = 1.0
 const PROGRESS_SYNC_RATE: float = 1.0
 var _progress_sync_timer: float = 0.0
+
+# Arrival countdown
+var arrival_time: float = 0.0  # absolute Unix timestamp
+var timer_active: bool = false
+var timer_base_duration: float = 120.0  # default 2-minute countdown
 
 func _ready():
 	NetworkManager.game_started.connect(_on_game_started)
@@ -70,6 +75,7 @@ func _on_game_started():
 	_progress_sync_timer = 0.0
 	_load_game_level()
 
+
 func _load_game_level():
 	# Change to the game level scene
 	get_tree().change_scene_to_file(GAME_LEVEL)
@@ -77,7 +83,14 @@ func _load_game_level():
 	await get_tree().process_frame
 	await get_tree().process_frame
 	_spawn_all_players()
-
+	_spawn_local_hud()
+	if LobbyManager.is_host():
+		# emit initial timer now that HUD exists
+		var now = Time.get_unix_time_from_system()
+		arrival_time = now + timer_base_duration
+		timer_active = true
+		UIState.timer_synced.emit(arrival_time, progress_speed_modifier)
+		
 func _spawn_all_players():
 	var current_scene = get_tree().current_scene
 
@@ -135,6 +148,21 @@ func _spawn_all_players():
 	# Host assigns roles — one random impostor
 	if LobbyManager.is_host():
 		_assign_roles()
+
+func _spawn_local_hud():
+	if hud_instance != null:
+		hud_instance.queue_free()  # remove old HUD if it exists
+
+	# Load HUD scene
+	var hud_scene = preload("res://scenes/HUD/HUD.tscn")
+	hud_instance = hud_scene.instantiate()
+
+	# Add it to the root of the scene tree
+	get_tree().current_scene.add_child(hud_instance)
+
+	# Make sure it’s visible and top-level
+	hud_instance.owner = get_tree().current_scene
+
 
 func _assign_roles():
 	# Pick one random player as the impostor

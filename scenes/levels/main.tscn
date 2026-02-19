@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://clr7dkm6ukvg5" path="res://scenes/levels/main.gd" id="1_y0acb"]
 [ext_resource type="PackedScene" uid="uid://l7a6ls4tdms7" path="res://scenes/levels/lower_deck.tscn" id="2_2vj2h"]
 [ext_resource type="PackedScene" uid="uid://dmapmbx6ymccv" path="res://scenes/levels/main_assets/elevatorShell.tscn" id="4_j4d2a"]
-[ext_resource type="Script" uid="uid://jhrb64rmtkho" path="res://scenes/levels/main_assets/call_button.gd" id="5_u81e1"]
+[ext_resource type="Script" path="res://scenes/levels/main_assets/call_button.gd" id="5_u81e1"]
 
 [sub_resource type="Environment" id="Environment_y0acb"]
 background_mode = 1

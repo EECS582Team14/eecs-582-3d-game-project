@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://c2v8oxnxa2po3"]
+
+[ext_resource type="PackedScene" uid="uid://d2fdnn0yhm2tv" path="res://scenes/HUD/directives/directive_Text.tscn" id="1_43lqu"]
+[ext_resource type="PackedScene" uid="uid://b6kugkx6l57d1" path="res://scenes/HUD/system/intro_Text.tscn" id="2_c2x1a"]
+[ext_resource type="PackedScene" uid="uid://dga5ufu4ejff0" path="res://scenes/HUD/health/healthbar.tscn" id="3_wqij7"]
+[ext_resource type="PackedScene" uid="uid://b3lxy3h7o8d3j" path="res://scenes/HUD/time_to_arrive/match_timer.tscn" id="4_c2x1a"]
+
+[node name="Hud" type="Control" unique_id=1028152456]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Directives" parent="." unique_id=2096926436 instance=ExtResource("1_43lqu")]
+
+[node name="SystemAlerts" parent="." unique_id=2076813861 instance=ExtResource("2_c2x1a")]
+
+[node name="Healthbar" parent="." unique_id=2055868022 instance=ExtResource("3_wqij7")]
+layout_mode = 1
+
+[node name="MatchTimer" parent="." unique_id=198063753 instance=ExtResource("4_c2x1a")]
+layout_mode = 1

@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://dga5ufu4ejff0"]
+
+[ext_resource type="Script" uid="uid://bcc0h8dxiv0cx" path="res://scenes/HUD/health/healthbar.gd" id="1_87ag5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x0byi"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_87ag5"]
+bg_color = Color(1, 0, 0, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="Healthbar" type="Control" unique_id=2055868022]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_87ag5")
+
+[node name="ProgressBar" type="ProgressBar" parent="." unique_id=2068176874]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 7.0
+offset_top = -7.0
+offset_right = 57.0
+offset_bottom = 193.0
+grow_vertical = 0
+rotation = 4.712389
+theme_override_styles/background = SubResource("StyleBoxFlat_x0byi")
+theme_override_styles/fill = SubResource("StyleBoxFlat_87ag5")
+value = 50.0
+fill_mode = 2
+show_percentage = false
