@@ -2,8 +2,10 @@
 
 [ext_resource type="PackedScene" uid="uid://d4l70qktpab24" path="res://scenes/levels/walls/large_wall.tscn" id="2_0llye"]
 [ext_resource type="PackedScene" uid="uid://slrafd7wesfx" path="res://scenes/levels/walls/medium_door.tscn" id="3_1pv2h"]
+[ext_resource type="Texture2D" uid="uid://r6yha370ra0w" path="res://assets/room_symbols/nexus_icon.png" id="4_rmbde"]
 [ext_resource type="PackedScene" uid="uid://chdj8l5glva0" path="res://scenes/levels/walls/small_door.tscn" id="5_fjw4p"]
 [ext_resource type="PackedScene" uid="uid://bkggral86i4ul" path="res://scenes/levels/walls/medium_wall.tscn" id="5_vucmy"]
+[ext_resource type="Texture2D" uid="uid://c6mk0vnfi60hq" path="res://assets/room_symbols/nav_icon.png" id="6_ews0w"]
 [ext_resource type="PackedScene" uid="uid://bfqp2tl7ks4nx" path="res://scenes/levels/walls/small_wall.tscn" id="7_86pjy"]
 [ext_resource type="PackedScene" path="res://scenes/weapons/taser/taser_pickup.tscn" id="7_rmbde"]
 [ext_resource type="Texture2D" uid="uid://dkk3fp8xgkqxs" path="res://scenes/levels/main_assets/space_floor.jpg" id="8_floor_color"]
@@ -87,6 +89,22 @@ omni_range = 15.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 5)
 omni_range = 15.0
 
+[node name="SouthNexusIcon" type="Decal" parent="Nexus" unique_id=15177332]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.6, 1.5, 10.025)
+size = Vector3(2, 0.34, 2)
+texture_albedo = ExtResource("4_rmbde")
+lower_fade = 0.00077314815
+distance_fade_begin = 0.0
+distance_fade_length = 5.0
+
+[node name="NorthNexusIcon" type="Decal" parent="Nexus" unique_id=523233282]
+transform = Transform3D(-1, 8.742278e-08, 0, 3.821371e-15, 4.371139e-08, -1, -8.742278e-08, -1, -4.371139e-08, -1.6, 1.5, -10.14)
+size = Vector3(2, 0.34, 2)
+texture_albedo = ExtResource("4_rmbde")
+lower_fade = 0.00077314815
+distance_fade_begin = 0.0
+distance_fade_length = 5.0
+
 [node name="NavBridge" type="Node3D" parent="." unique_id=1363310021]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -22.5)
 
@@ -105,6 +123,14 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.55
 [node name="NavLight" type="OmniLight3D" parent="NavBridge" unique_id=395456338]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
 omni_range = 15.0
+
+[node name="NavIcon" type="Decal" parent="NavBridge" unique_id=1569706013]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.795, 1.5, 7.685)
+size = Vector3(2, 0.3, 2)
+texture_albedo = ExtResource("6_ews0w")
+lower_fade = 8.126735e-05
+distance_fade_begin = 0.0
+distance_fade_length = 5.0
 
 [node name="Cams" type="Node3D" parent="." unique_id=682191193]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -20)
