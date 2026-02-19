@@ -6,22 +6,30 @@ extends StaticBody3D
 # Check this box if this button is on the UPPER floor. Leave unchecked for the lower floor.
 @export var is_upper_floor: bool = false
 
+var _waiting: bool = false
+
 func activate() -> void:
 	print("CallButton activate() called!")
-	_set_color(Color.GREEN)
 
 	if elevator == null:
 		push_warning("CallButton: elevator reference not set!")
 		return
 
 	var floor_name = "upper" if is_upper_floor else "lower"
-	print("CallButton floor: ", floor_name, " | elevator at y: ", elevator.global_position.y)
-	print("is_at_floor: ", elevator.is_at_floor(floor_name))
 
 	if elevator.is_at_floor(floor_name):
-		_set_color(Color.RED)
 		return
+	_set_color(Color.GREEN)
+	_waiting = true
 	elevator.call_to_floor(floor_name)
+
+func _process(_delta: float) -> void:
+	if not _waiting or elevator == null:
+		return
+	var floor_name = "upper" if is_upper_floor else "lower"
+	if elevator.is_at_floor(floor_name):
+		_set_color(Color.RED)
+		_waiting = false
 
 func _set_color(color: Color) -> void:
 	if button_mesh == null:
