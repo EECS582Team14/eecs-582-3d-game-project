@@ -13,6 +13,7 @@ signal role_assigned(is_impostor: bool)
 signal item_picked_up(steam_id: int, item_id: String)
 signal taser_shot_received(steam_id: int, origin: Vector3, direction: Vector3)
 signal taser_hit_received(damage: int)
+signal progress_update_received(progress: float, speed: float)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -26,7 +27,8 @@ enum PacketType {
 	ROLE_ASSIGNMENT,
 	ITEM_PICKUP,
 	TASER_SHOT,
-	TASER_HIT
+	TASER_HIT,
+	PROGRESS_UPDATE
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -125,6 +127,9 @@ func send_item_pickup(item_id: String):
 	send_p2p_packet(0, {"type": PacketType.ITEM_PICKUP, "item_id": item_id, "picker": Steam.getSteamID()}, Steam.P2P_SEND_RELIABLE, 0)
 	item_picked_up.emit(Steam.getSteamID(), item_id)
 
+func send_progress_update(progress: float, speed: float):
+	send_p2p_packet(0, {"type": PacketType.PROGRESS_UPDATE, "prog": progress, "spd": speed}, Steam.P2P_SEND_RELIABLE, 0)
+
 func send_game_start():
 	send_p2p_packet(0, {"type": PacketType.GAME_START}, Steam.P2P_SEND_RELIABLE, 0)
 	game_started.emit()
@@ -195,6 +200,9 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 
 		PacketType.TASER_HIT:
 			taser_hit_received.emit(data.get("dmg", 0))
+
+		PacketType.PROGRESS_UPDATE:
+			progress_update_received.emit(data.get("prog", 0.0), data.get("spd", 1.0))
 
 		_:
 			print("Unknown packet type: %s" % packet_type)

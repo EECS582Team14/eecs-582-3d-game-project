@@ -24,9 +24,36 @@ const PLAYER_COLORS: Array[Color] = [
 
 var players_container: Node3D = null
 
+# Destination progress
+var destination_progress: float = 0.0
+var base_progress_speed: float = 1.0
+var progress_speed_modifier: float = 1.0
+const PROGRESS_SYNC_RATE: float = 1.0
+var _progress_sync_timer: float = 0.0
+
 func _ready():
 	NetworkManager.game_started.connect(_on_game_started)
 	LobbyManager.player_left.connect(_on_player_left)
+
+func _process(delta):
+	if not LobbyManager.is_host():
+		return
+	if players_container == null:
+		return
+	if destination_progress >= 100.0:
+		return
+
+	destination_progress += base_progress_speed * progress_speed_modifier * delta
+	destination_progress = clampf(destination_progress, 0.0, 100.0)
+
+	_progress_sync_timer += delta
+	if _progress_sync_timer >= PROGRESS_SYNC_RATE:
+		_progress_sync_timer = 0.0
+		NetworkManager.send_progress_update(destination_progress, progress_speed_modifier)
+		NetworkManager.progress_update_received.emit(destination_progress, progress_speed_modifier)
+
+func adjust_progress_speed(amount: float):
+	progress_speed_modifier += amount
 
 # Call this when ready to start the game (e.g., from a "Start Game" button)
 func start_game():
@@ -38,6 +65,9 @@ func start_game():
 		print("Only the host can start the game")
 
 func _on_game_started():
+	destination_progress = 0.0
+	progress_speed_modifier = 1.0
+	_progress_sync_timer = 0.0
 	_load_game_level()
 
 func _load_game_level():

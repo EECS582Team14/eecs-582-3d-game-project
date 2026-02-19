@@ -68,6 +68,10 @@ var _looking_at_interactable: Node = null
 var _interact_label: Label = null
 var _notification_label: Label = null
 
+# Destination progress HUD
+var _destination_bar: ProgressBar = null
+var _destination_label: Label = null
+
 # Signals
 signal health_changed(new_health)
 
@@ -158,6 +162,56 @@ func _ready() -> void:
 		_notification_label.text = ""
 		_notification_label.visible = false
 		$HUD.add_child(_notification_label)
+
+		# Create destination progress label (top-right)
+		_destination_label = Label.new()
+		_destination_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		_destination_label.anchor_left = 1.0
+		_destination_label.anchor_right = 1.0
+		_destination_label.anchor_top = 0.0
+		_destination_label.anchor_bottom = 0.0
+		_destination_label.offset_left = -320
+		_destination_label.offset_right = -20
+		_destination_label.offset_top = 20
+		_destination_label.offset_bottom = 50
+		_destination_label.add_theme_font_size_override("font_size", 20)
+		_destination_label.text = "Destination: 0%"
+		$HUD.add_child(_destination_label)
+
+		# Create destination progress bar (top-right, below label)
+		_destination_bar = ProgressBar.new()
+		_destination_bar.min_value = 0
+		_destination_bar.max_value = 100
+		_destination_bar.value = 0
+		_destination_bar.show_percentage = false
+		_destination_bar.anchor_left = 1.0
+		_destination_bar.anchor_right = 1.0
+		_destination_bar.anchor_top = 0.0
+		_destination_bar.anchor_bottom = 0.0
+		_destination_bar.offset_left = -320
+		_destination_bar.offset_right = -20
+		_destination_bar.offset_top = 52
+		_destination_bar.offset_bottom = 76
+		# Style the fill with a cyan color
+		var fill_style = StyleBoxFlat.new()
+		fill_style.bg_color = Color.CYAN
+		fill_style.corner_radius_top_left = 3
+		fill_style.corner_radius_top_right = 3
+		fill_style.corner_radius_bottom_left = 3
+		fill_style.corner_radius_bottom_right = 3
+		_destination_bar.add_theme_stylebox_override("fill", fill_style)
+		# Style the background
+		var bg_style = StyleBoxFlat.new()
+		bg_style.bg_color = Color(0.15, 0.15, 0.15, 0.8)
+		bg_style.corner_radius_top_left = 3
+		bg_style.corner_radius_top_right = 3
+		bg_style.corner_radius_bottom_left = 3
+		bg_style.corner_radius_bottom_right = 3
+		_destination_bar.add_theme_stylebox_override("background", bg_style)
+		$HUD.add_child(_destination_bar)
+
+		# Connect destination progress updates
+		NetworkManager.progress_update_received.connect(_on_progress_update_received)
 
 		# Check if role was already assigned before we loaded
 		if NetworkManager.pending_role_received:
@@ -470,3 +524,9 @@ func _on_taser_hit_received(dmg: int) -> void:
 	NetworkManager.send_health_update(current_health)
 	if current_health <= 0:
 		_enter_dead_state()
+
+func _on_progress_update_received(progress: float, _speed: float) -> void:
+	if _destination_bar:
+		_destination_bar.value = progress
+	if _destination_label:
+		_destination_label.text = "Destination: %d%%" % int(progress)
