@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://b3lxy3h7o8d3j"]
+
+[ext_resource type="Script" uid="uid://pxbldl2em4vk" path="res://scenes/HUD/time_to_arrive/match_timer.gd" id="1_pysg1"]
+
+[node name="MatchTimer" type="Control" unique_id=198063753]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pysg1")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=2090511022]
+layout_mode = 1
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="PanelContainer" unique_id=1882300023]
+layout_mode = 2

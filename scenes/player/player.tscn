@@ -13,26 +13,6 @@ albedo_texture = ExtResource("1_8afob")
 radius = 0.3
 height = 1.2
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dovo2"]
-bg_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gmlin"]
-bg_color = Color(1, 0, 0, 1)
-border_width_left = 5
-border_width_top = 5
-border_width_right = 5
-border_width_bottom = 5
-border_color = Color(0, 0, 0, 1)
-border_blend = true
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
 [node name="Player" type="CharacterBody3D" unique_id=119440718]
 floor_snap_length = 0.4
 script = ExtResource("1_dovo2")
@@ -49,7 +29,7 @@ mesh = SubResource("CapsuleMesh_8afob")
 [node name="PlayerCamera" type="Camera3D" parent="." unique_id=1895173917]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
-[node name="WeaponHolder" type="Node3D" parent="PlayerCamera"]
+[node name="WeaponHolder" type="Node3D" parent="PlayerCamera" unique_id=879075673]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.25, -0.5)
 
 [node name="HUD" type="Control" parent="." unique_id=145645730]
@@ -59,22 +39,3 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="ProgressBar" type="ProgressBar" parent="HUD" unique_id=1319594526]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 7.0
-offset_top = -7.0
-offset_right = 57.0
-offset_bottom = 193.0
-grow_vertical = 0
-rotation = 4.712389
-theme_override_styles/background = SubResource("StyleBoxFlat_dovo2")
-theme_override_styles/fill = SubResource("StyleBoxFlat_gmlin")
-value = 50.0
-fill_mode = 2
-show_percentage = false
-
-[connection signal="health_changed" from="." to="HUD/ProgressBar" method="_on_player_health_changed"]
