@@ -49,6 +49,9 @@ mesh = SubResource("CapsuleMesh_8afob")
 [node name="PlayerCamera" type="Camera3D" parent="." unique_id=1895173917]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
+[node name="WeaponHolder" type="Node3D" parent="PlayerCamera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.25, -0.5)
+
 [node name="HUD" type="Control" parent="." unique_id=145645730]
 layout_mode = 3
 anchors_preset = 15

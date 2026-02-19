@@ -21,6 +21,11 @@ extends CharacterBody3D
 
 # Load child nodes
 @onready var camera: Camera3D = $PlayerCamera
+@onready var weapon_holder: Node3D = $PlayerCamera/WeaponHolder
+
+# Weapon scenes
+var _taser_scene: PackedScene = preload("res://scenes/weapons/taser/heavy_assault_rifle.glb")
+var _held_taser: Node3D = null
 
 # Multiplayer variables
 var steam_id: int = 0
@@ -74,6 +79,7 @@ func _ready() -> void:
 		NetworkManager.player_state_received.connect(_on_player_state_received)
 		NetworkManager.health_update_received.connect(_on_health_update_received)
 		NetworkManager.role_assigned.connect(_on_role_assigned)
+		NetworkManager.item_picked_up.connect(_on_item_picked_up)
 
 		health_bar.max_value = max_health
 		health_bar.value = current_health
@@ -348,8 +354,25 @@ func _try_interact() -> void:
 		_looking_at_interactable.activate()
 
 func give_taser() -> void:
+	if has_taser:
+		return
 	has_taser = true
-	_notification_label.text = "Taser Acquired!"
-	_notification_label.visible = true
-	await get_tree().create_timer(3.0).timeout
-	_notification_label.visible = false
+	_attach_taser_model()
+	if is_local_player:
+		_notification_label.text = "Taser Acquired!"
+		_notification_label.visible = true
+		await get_tree().create_timer(3.0).timeout
+		_notification_label.visible = false
+
+func _attach_taser_model() -> void:
+	if _held_taser:
+		return
+	_held_taser = _taser_scene.instantiate()
+	_held_taser.scale = Vector3(0.5, 0.5, 0.5)
+	_held_taser.rotation_degrees.y = 90.0
+	weapon_holder.add_child(_held_taser)
+
+func _on_item_picked_up(picker_steam_id: int, _item_id: String) -> void:
+	var player = NetworkManager.get_player(picker_steam_id)
+	if player and player != self and player.has_method("give_taser"):
+		player.give_taser()
