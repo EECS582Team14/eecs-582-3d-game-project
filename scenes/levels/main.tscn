@@ -38,7 +38,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.061081886, 0.008000374, -0.
 [node name="LowerDeck" parent="." unique_id=199586682 instance=ExtResource("2_2vj2h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.53, 0)
 
-[node name="AnimatedBody3D" parent="." unique_id=1904553526 instance=ExtResource("4_j4d2a")]
+[node name="Elevator" parent="." unique_id=1904553526 instance=ExtResource("4_j4d2a")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.041490912, 1.4496634, 19.94995)
 
 [node name="ElevatorShaft" type="StaticBody3D" parent="." unique_id=1368455669]
@@ -46,7 +46,7 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.04
 [node name="LowerFloorCallButton" type="StaticBody3D" parent="ElevatorShaft" unique_id=1428529895 node_paths=PackedStringArray("elevator", "button_mesh") groups=["elevator_button"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6362401, -2.3954341, 19.376263)
 script = ExtResource("5_u81e1")
-elevator = NodePath("../../AnimatedBody3D")
+elevator = NodePath("../../Elevator")
 button_mesh = NodePath("CallButton")
 
 [node name="CallButton" type="MeshInstance3D" parent="ElevatorShaft/LowerFloorCallButton" unique_id=134574002]
@@ -69,7 +69,7 @@ size = Vector3(2.8, 4.8, 2.8)
 [node name="UpperFloorCallButton" type="StaticBody3D" parent="ElevatorShaft" unique_id=1217978986 node_paths=PackedStringArray("elevator", "button_mesh") groups=["elevator_button"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6362401, -2.3954341, 19.376263)
 script = ExtResource("5_u81e1")
-elevator = NodePath("../../AnimatedBody3D")
+elevator = NodePath("../../Elevator")
 button_mesh = NodePath("CallButton2")
 is_upper_floor = true
 
