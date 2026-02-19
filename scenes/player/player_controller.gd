@@ -68,6 +68,13 @@ var _looking_at_interactable: Node = null
 var _interact_label: Label = null
 var _notification_label: Label = null
 
+# Hold-E task system
+var _task_hold_timer: float = 0.0
+const TASK_HOLD_DURATION: float = 5.0
+var _is_holding_task: bool = false
+var _task_progress_bar: ProgressBar = null
+var _completed_tasks: Array[String] = []
+
 # Destination progress HUD
 var _destination_bar: ProgressBar = null
 var _destination_label: Label = null
@@ -210,6 +217,37 @@ func _ready() -> void:
 		_destination_bar.add_theme_stylebox_override("background", bg_style)
 		$HUD.add_child(_destination_bar)
 
+		# Create task hold progress bar (center screen)
+		_task_progress_bar = ProgressBar.new()
+		_task_progress_bar.min_value = 0
+		_task_progress_bar.max_value = TASK_HOLD_DURATION
+		_task_progress_bar.value = 0
+		_task_progress_bar.show_percentage = false
+		_task_progress_bar.anchor_left = 0.5
+		_task_progress_bar.anchor_right = 0.5
+		_task_progress_bar.anchor_top = 0.5
+		_task_progress_bar.anchor_bottom = 0.5
+		_task_progress_bar.offset_left = -100
+		_task_progress_bar.offset_right = 100
+		_task_progress_bar.offset_top = 40
+		_task_progress_bar.offset_bottom = 56
+		var task_fill = StyleBoxFlat.new()
+		task_fill.bg_color = Color.GREEN
+		task_fill.corner_radius_top_left = 3
+		task_fill.corner_radius_top_right = 3
+		task_fill.corner_radius_bottom_left = 3
+		task_fill.corner_radius_bottom_right = 3
+		_task_progress_bar.add_theme_stylebox_override("fill", task_fill)
+		var task_bg = StyleBoxFlat.new()
+		task_bg.bg_color = Color(0.15, 0.15, 0.15, 0.8)
+		task_bg.corner_radius_top_left = 3
+		task_bg.corner_radius_top_right = 3
+		task_bg.corner_radius_bottom_left = 3
+		task_bg.corner_radius_bottom_right = 3
+		_task_progress_bar.add_theme_stylebox_override("background", task_bg)
+		_task_progress_bar.visible = false
+		$HUD.add_child(_task_progress_bar)
+
 		# Connect destination progress updates
 		NetworkManager.progress_update_received.connect(_on_progress_update_received)
 
@@ -292,6 +330,7 @@ func _physics_process(delta: float) -> void:
 				_taser_cooldown_timer -= delta
 			if Input.is_action_just_pressed("interact") and _looking_at_interactable:
 				_try_interact()
+			_update_task_hold(delta)
 	else:
 		_process_remote_movement(delta)
 
@@ -443,7 +482,20 @@ func _update_interaction_look() -> void:
 				_interact_label.text = "Press E to interact"
 				_interact_label.visible = true
 				return
+		elif collider.is_in_group("task_console"):
+			_looking_at_interactable = _find_activatable(collider)
+			if _looking_at_interactable:
+				var tid = _looking_at_interactable.task_id if _looking_at_interactable.has_method("activate") else ""
+				if tid in _completed_tasks:
+					_interact_label.text = "Already completed"
+					_interact_label.visible = true
+				else:
+					_interact_label.text = "Hold E to calibrate"
+					_interact_label.visible = true
+				return
 
+	if _is_holding_task and not _is_looking_at_task_console():
+		_cancel_task_hold()
 	_interact_label.visible = false
 
 func _find_activatable(node: Node) -> Node:
@@ -458,6 +510,13 @@ func _try_interact() -> void:
 		return
 	if _looking_at_interactable.is_in_group("pickup"):
 		_looking_at_interactable.activate(steam_id)
+	elif _looking_at_interactable.is_in_group("task_console"):
+		var tid = _looking_at_interactable.task_id if _looking_at_interactable.has_method("activate") else ""
+		if tid not in _completed_tasks:
+			_is_holding_task = true
+			_task_hold_timer = 0.0
+			_task_progress_bar.value = 0
+			_task_progress_bar.visible = true
 	else:
 		_looking_at_interactable.activate()
 
@@ -530,3 +589,34 @@ func _on_progress_update_received(progress: float, _speed: float) -> void:
 		_destination_bar.value = progress
 	if _destination_label:
 		_destination_label.text = "Destination: %d%%" % int(progress)
+
+func _is_looking_at_task_console() -> bool:
+	return _looking_at_interactable != null and _looking_at_interactable.is_in_group("task_console")
+
+func _update_task_hold(delta: float) -> void:
+	if not _is_holding_task:
+		return
+	if not Input.is_action_pressed("interact") or not _is_looking_at_task_console():
+		_cancel_task_hold()
+		return
+	_task_hold_timer += delta
+	_task_progress_bar.value = _task_hold_timer
+	if _task_hold_timer >= TASK_HOLD_DURATION:
+		var tid = _looking_at_interactable.task_id
+		_complete_task(tid)
+
+func _cancel_task_hold() -> void:
+	_is_holding_task = false
+	_task_hold_timer = 0.0
+	_task_progress_bar.value = 0
+	_task_progress_bar.visible = false
+
+func _complete_task(task_id: String) -> void:
+	_completed_tasks.append(task_id)
+	_cancel_task_hold()
+	GameManager.adjust_progress_speed(0.5)
+	# Update directives panel
+	var panels = get_tree().get_nodes_in_group("directives_panel")
+	for panel in panels:
+		if panel.has_method("mark_task_completed"):
+			panel.mark_task_completed("Calibrate reactor temperature. (Lower Deck - Reactor)")

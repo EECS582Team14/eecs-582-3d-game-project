@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://slrafd7wesfx" path="res://scenes/levels/walls/medium_door.tscn" id="2_0q5s7"]
 [ext_resource type="PackedScene" uid="uid://bkggral86i4ul" path="res://scenes/levels/walls/medium_wall.tscn" id="4_iijbf"]
 [ext_resource type="PackedScene" uid="uid://chdj8l5glva0" path="res://scenes/levels/walls/small_door.tscn" id="5_myntk"]
+[ext_resource type="PackedScene" path="res://scenes/tasks/reactor_temp_console.tscn" id="6_console"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_mgbrt"]
 load_path = "res://.godot/imported/texture_08.png-9f039f47cba295ef5881d7b94c369b5d.s3tc.ctex"
@@ -56,6 +57,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 7.55)
 [node name="ReactorLight" type="OmniLight3D" parent="Reactor" unique_id=2035618320]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 omni_range = 15.0
+
+[node name="ReactorTempConsole" parent="Reactor" instance=ExtResource("6_console")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 6)
 
 [node name="Electrical" type="Node3D" parent="." unique_id=156958614]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.801, 0, 22)
