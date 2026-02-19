@@ -2,7 +2,7 @@ extends AnimatableBody3D
 
 enum State { IDLE, MOVING_DOWN, MOVING_UP }
 
-const MOVE_AMOUNT: float = 2.5
+const MOVE_AMOUNT: float = 2.6
 const MOVE_SPEED: float = 2.0
 
 @export var button_mesh: MeshInstance3D
