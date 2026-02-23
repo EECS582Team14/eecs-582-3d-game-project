@@ -274,6 +274,7 @@ func _input(event: InputEvent) -> void:
 		camera.rotation_degrees = camera_rotation
 
 	# If the input is a key event
+	var now = Time.get_unix_time_from_system()
 	if event is InputEventKey:
 		# If the Escape key is pressed, toggle mouse capture
 		if event.key_label == KEY_ESCAPE and event.pressed:
@@ -288,6 +289,10 @@ func _input(event: InputEvent) -> void:
 			NetworkManager.send_health_update(current_health)
 			if current_health <= 0:
 				_enter_dead_state()
+		elif event.key_label == KEY_F and event.pressed:
+			UIState.system_alert.emit("An emergency has been reported. All maintenance units are to report to the Nexus immediately.")
+			
+		
 		
 	# If the input is a mouse button event
 	if event is InputEventMouseButton:
