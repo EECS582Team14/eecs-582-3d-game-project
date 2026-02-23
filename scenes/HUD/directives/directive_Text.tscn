@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d2fdnn0yhm2tv"]
 
-[ext_resource type="Script" uid="uid://smkw0cxqabef" path="res://scenes/control_directives.gd" id="1_73bi0"]
+[ext_resource type="Script" uid="uid://smkw0cxqabef" path="res://scenes/HUD/directives/control_directives.gd" id="1_73bi0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t3ssb"]
 bg_color = Color(0, 0.84313726, 0.84313726, 0.5058824)

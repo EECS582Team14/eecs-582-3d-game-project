@@ -8,12 +8,10 @@ var active := false
 func _ready():
 	label.text = "--:--"
 	UIState.timer_synced.connect(_on_timer_synced)
-	print("here")
 
 func _on_timer_synced(server_arrival_time: float, _scale: float):
 	arrival_time = server_arrival_time
 	active = true
-	print("active")
 
 func _process(_delta):
 	if not active:

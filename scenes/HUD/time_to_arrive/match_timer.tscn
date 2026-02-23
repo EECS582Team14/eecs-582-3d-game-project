@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" uid="uid://pxbldl2em4vk" path="res://scenes/HUD/time_to_arrive/match_timer.gd" id="1_pysg1"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pysg1"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
 [node name="MatchTimer" type="Control" unique_id=198063753]
 layout_mode = 3
 anchors_preset = 15
@@ -13,8 +16,11 @@ script = ExtResource("1_pysg1")
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=2090511022]
 layout_mode = 1
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 128.0
+offset_bottom = 56.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_pysg1")
 
 [node name="Label" type="Label" parent="PanelContainer" unique_id=1882300023]
 layout_mode = 2
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1

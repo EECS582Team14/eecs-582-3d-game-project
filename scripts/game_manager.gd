@@ -34,7 +34,10 @@ var _progress_sync_timer: float = 0.0
 # Arrival countdown
 var arrival_time: float = 0.0  # absolute Unix timestamp
 var timer_active: bool = false
-var timer_base_duration: float = 120.0  # default 2-minute countdown
+var timer_phase_one: float = 30.0  # default 5-minute countdown
+var timer_phase_two: float = 60.0
+#Game State (0: Start, 1: Phase 1, 2: Phase 2)
+var game_state: int = 1
 
 func _ready():
 	NetworkManager.game_started.connect(_on_game_started)
@@ -45,17 +48,24 @@ func _process(delta):
 		return
 	if players_container == null:
 		return
-	if destination_progress >= 100.0:
+	var now = Time.get_unix_time_from_system()
+	if now > arrival_time and game_state == 1:
+		game_state = 2
+		arrival_time = now + timer_phase_two
+		timer_active = true
+		UIState.timer_synced.emit(arrival_time, progress_speed_modifier)
+		
+	if destination_progress > 100.0 and game_state == 2:
 		return
-
-	destination_progress += base_progress_speed * progress_speed_modifier * delta
-	destination_progress = clampf(destination_progress, 0.0, 100.0)
-
-	_progress_sync_timer += delta
-	if _progress_sync_timer >= PROGRESS_SYNC_RATE:
-		_progress_sync_timer = 0.0
-		NetworkManager.send_progress_update(destination_progress, progress_speed_modifier)
-		NetworkManager.progress_update_received.emit(destination_progress, progress_speed_modifier)
+	if game_state == 2:
+		destination_progress += base_progress_speed * progress_speed_modifier * delta
+		destination_progress = clampf(destination_progress, 0.0, 100.0)
+		
+		_progress_sync_timer += delta
+		if _progress_sync_timer >= PROGRESS_SYNC_RATE:
+			_progress_sync_timer = 0.0
+			NetworkManager.send_progress_update(destination_progress, progress_speed_modifier)
+			NetworkManager.progress_update_received.emit(destination_progress, progress_speed_modifier)
 
 func adjust_progress_speed(amount: float):
 	progress_speed_modifier += amount
@@ -87,10 +97,10 @@ func _load_game_level():
 	if LobbyManager.is_host():
 		# emit initial timer now that HUD exists
 		var now = Time.get_unix_time_from_system()
-		arrival_time = now + timer_base_duration
+		arrival_time = now + timer_phase_one
 		timer_active = true
 		UIState.timer_synced.emit(arrival_time, progress_speed_modifier)
-		
+
 func _spawn_all_players():
 	var current_scene = get_tree().current_scene
 
