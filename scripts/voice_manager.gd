@@ -106,12 +106,6 @@ func setup_player_voice(steam_id: int, player_node: Node):
 	voice_players[steam_id] = voice_player
 	print("Voice setup for player: %s" % Steam.getFriendPersonaName(steam_id))
 
-func disable_proximity():
-	for steam_id in voice_players:
-		var vp: AudioStreamPlayer3D = voice_players[steam_id]
-		if is_instance_valid(vp):
-			vp.attenuation_model = AudioStreamPlayer3D.ATTENUATION_DISABLED
-
 func remove_player_voice(steam_id: int):
 	if voice_players.has(steam_id):
 		voice_players[steam_id].queue_free()

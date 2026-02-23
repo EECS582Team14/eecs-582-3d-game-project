@@ -14,8 +14,6 @@ signal item_picked_up(steam_id: int, item_id: String)
 signal taser_shot_received(steam_id: int, origin: Vector3, direction: Vector3)
 signal taser_hit_received(damage: int)
 signal progress_update_received(progress: float, speed: float)
-signal game_over_received(impostor_won: bool)
-signal play_again_received()
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -30,9 +28,7 @@ enum PacketType {
 	ITEM_PICKUP,
 	TASER_SHOT,
 	TASER_HIT,
-	PROGRESS_UPDATE,
-	GAME_OVER,
-	PLAY_AGAIN
+	PROGRESS_UPDATE
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -138,14 +134,6 @@ func send_game_start():
 	send_p2p_packet(0, {"type": PacketType.GAME_START}, Steam.P2P_SEND_RELIABLE, 0)
 	game_started.emit()
 
-func send_game_over(impostor_won: bool):
-	send_p2p_packet(0, {"type": PacketType.GAME_OVER, "impostor_won": impostor_won}, Steam.P2P_SEND_RELIABLE, 0)
-	game_over_received.emit(impostor_won)
-
-func send_play_again():
-	send_p2p_packet(0, {"type": PacketType.PLAY_AGAIN}, Steam.P2P_SEND_RELIABLE, 0)
-	play_again_received.emit()
-
 # ============ READ PACKETS ============
 
 func _read_all_p2p_packets(read_count: int = 0):
@@ -215,12 +203,6 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 
 		PacketType.PROGRESS_UPDATE:
 			progress_update_received.emit(data.get("prog", 0.0), data.get("spd", 1.0))
-
-		PacketType.GAME_OVER:
-			game_over_received.emit(data.get("impostor_won", false))
-
-		PacketType.PLAY_AGAIN:
-			play_again_received.emit()
 
 		_:
 			print("Unknown packet type: %s" % packet_type)

@@ -36,19 +36,11 @@ var arrival_time: float = 0.0  # absolute Unix timestamp
 var timer_active: bool = false
 var timer_phase_one: float = 30.0  # default 5-minute countdown
 var timer_phase_two: float = 60.0
-# Game State (0: Start, 1: Phase 1, 2: Phase 2, 3: GameOver)
+#Game State (0: Start, 1: Phase 1, 2: Phase 2)
 var game_state: int = 1
-const GAME_STATE_GAME_OVER: int = 3
-
-# End screen
-var _end_screen_layer: CanvasLayer = null
-var _end_screen: Control = null
-var _local_player_is_impostor: bool = false
 
 func _ready():
 	NetworkManager.game_started.connect(_on_game_started)
-	NetworkManager.game_over_received.connect(_on_game_over)
-	NetworkManager.play_again_received.connect(_on_play_again)
 	LobbyManager.player_left.connect(_on_player_left)
 
 func _process(delta):
@@ -56,12 +48,6 @@ func _process(delta):
 		return
 	if players_container == null:
 		return
-	if game_state == GAME_STATE_GAME_OVER:
-		return
-
-	# Check win conditions every frame (host only)
-	_check_win_conditions()
-
 	var now = Time.get_unix_time_from_system()
 	if now > arrival_time and game_state == 1:
 		game_state = 2
@@ -69,10 +55,12 @@ func _process(delta):
 		timer_active = true
 		UIState.timer_synced.emit(arrival_time, progress_speed_modifier)
 		UIState.system_alert.emit("Successful hyperjump achieved, all systems nominal. Avoid contact with the the warp. Risk of data corruption: Low")
+	if destination_progress > 100.0 and game_state == 2:
+		return
 	if game_state == 2:
 		destination_progress += base_progress_speed * progress_speed_modifier * delta
 		destination_progress = clampf(destination_progress, 0.0, 100.0)
-
+		
 		_progress_sync_timer += delta
 		if _progress_sync_timer >= PROGRESS_SYNC_RATE:
 			_progress_sync_timer = 0.0
@@ -81,221 +69,6 @@ func _process(delta):
 
 func adjust_progress_speed(amount: float):
 	progress_speed_modifier += amount
-
-# ============ WIN CONDITIONS (host only) ============
-
-func _check_win_conditions():
-	var all_crewmates_dead := true
-	var impostor_dead := false
-	var has_any_player := false
-	var crewmate_count := 0
-
-	for player in players_container.get_children():
-		if not ("is_impostor" in player and "is_dead" in player):
-			continue
-		has_any_player = true
-		if player.is_impostor:
-			if player.is_dead:
-				impostor_dead = true
-		else:
-			crewmate_count += 1
-			if not player.is_dead:
-				all_crewmates_dead = false
-
-	if not has_any_player:
-		return
-
-	# Condition 1: All crewmates dead -> Impostor wins (skip in solo games with no crewmates)
-	if crewmate_count > 0 and all_crewmates_dead:
-		_trigger_game_over(true)
-		return
-
-	# Condition 2: Impostor dead -> Crewmates win
-	if impostor_dead:
-		_trigger_game_over(false)
-		return
-
-	# Condition 3: Destination progress reaches 100% -> Crewmates win
-	if destination_progress >= 100.0:
-		_trigger_game_over(false)
-		return
-
-	# Condition 4: Ship integrity hits 0 -> Impostor wins
-	# TODO: Implement ship integrity system.
-	# When ship_integrity variable is added, check:
-	# if ship_integrity <= 0.0:
-	#     _trigger_game_over(true)
-	#     return
-
-func _trigger_game_over(impostor_won: bool):
-	game_state = GAME_STATE_GAME_OVER
-	NetworkManager.send_game_over(impostor_won)
-
-# ============ GAME OVER HANDLING ============
-
-func _on_game_over(impostor_won: bool):
-	game_state = GAME_STATE_GAME_OVER
-	_local_player_is_impostor = NetworkManager.pending_role_impostor
-
-	# Switch voice chat to non-proximity (everyone hears everyone)
-	VoiceManager.disable_proximity()
-
-	# Show mouse cursor
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-
-	_show_end_screen(impostor_won)
-
-func _show_end_screen(impostor_won: bool):
-	if _end_screen_layer != null:
-		_end_screen_layer.queue_free()
-
-	_end_screen_layer = CanvasLayer.new()
-	_end_screen_layer.layer = 100  # Render above all other UI
-	get_tree().current_scene.add_child(_end_screen_layer)
-
-	_end_screen = Control.new()
-	_end_screen.name = "EndScreen"
-	_end_screen.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_end_screen.mouse_filter = Control.MOUSE_FILTER_PASS
-
-	# Semi-transparent dark background
-	var bg = ColorRect.new()
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.color = Color(0, 0, 0, 0.75)
-	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_end_screen.add_child(bg)
-
-	# Determine if local player's side won
-	var local_side_won: bool
-	if _local_player_is_impostor:
-		local_side_won = impostor_won
-	else:
-		local_side_won = not impostor_won
-
-	# Result title
-	var title_label = Label.new()
-	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title_label.anchor_left = 0.5
-	title_label.anchor_right = 0.5
-	title_label.anchor_top = 0.0
-	title_label.anchor_bottom = 0.0
-	title_label.offset_left = -300
-	title_label.offset_right = 300
-	title_label.offset_top = 120
-	title_label.offset_bottom = 200
-	title_label.add_theme_font_size_override("font_size", 72)
-	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-	if local_side_won:
-		title_label.text = "VICTORY"
-		title_label.add_theme_color_override("font_color", Color.GREEN)
-	else:
-		title_label.text = "GAME OVER"
-		title_label.add_theme_color_override("font_color", Color.RED)
-	_end_screen.add_child(title_label)
-
-	# Subtitle: which side won
-	var subtitle = Label.new()
-	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.anchor_left = 0.5
-	subtitle.anchor_right = 0.5
-	subtitle.anchor_top = 0.0
-	subtitle.anchor_bottom = 0.0
-	subtitle.offset_left = -300
-	subtitle.offset_right = 300
-	subtitle.offset_top = 200
-	subtitle.offset_bottom = 250
-	subtitle.add_theme_font_size_override("font_size", 28)
-	subtitle.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if impostor_won:
-		subtitle.text = "The Impostor has won."
-		subtitle.add_theme_color_override("font_color", Color.ORANGE_RED)
-	else:
-		subtitle.text = "The Crewmates have won."
-		subtitle.add_theme_color_override("font_color", Color.CYAN)
-	_end_screen.add_child(subtitle)
-
-	# Host: Play Again button. Non-host: Waiting label.
-	if LobbyManager.is_host():
-		var play_again_btn = Button.new()
-		play_again_btn.text = "Play Again"
-		play_again_btn.anchor_left = 0.5
-		play_again_btn.anchor_right = 0.5
-		play_again_btn.anchor_top = 0.5
-		play_again_btn.anchor_bottom = 0.5
-		play_again_btn.offset_left = -100
-		play_again_btn.offset_right = 100
-		play_again_btn.offset_top = 20
-		play_again_btn.offset_bottom = 60
-		play_again_btn.add_theme_font_size_override("font_size", 24)
-		play_again_btn.pressed.connect(_on_play_again_pressed)
-		_end_screen.add_child(play_again_btn)
-	else:
-		var waiting_label = Label.new()
-		waiting_label.text = "Waiting for Host..."
-		waiting_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		waiting_label.anchor_left = 0.5
-		waiting_label.anchor_right = 0.5
-		waiting_label.anchor_top = 0.5
-		waiting_label.anchor_bottom = 0.5
-		waiting_label.offset_left = -200
-		waiting_label.offset_right = 200
-		waiting_label.offset_top = 20
-		waiting_label.offset_bottom = 60
-		waiting_label.add_theme_font_size_override("font_size", 24)
-		waiting_label.add_theme_color_override("font_color", Color.GRAY)
-		_end_screen.add_child(waiting_label)
-
-	_end_screen_layer.add_child(_end_screen)
-
-# ============ PLAY AGAIN ============
-
-func _on_play_again_pressed():
-	NetworkManager.send_play_again()
-
-func _on_play_again():
-	# Remove end screen
-	if _end_screen_layer != null:
-		_end_screen_layer.queue_free()
-		_end_screen_layer = null
-		_end_screen = null
-
-	# Remove existing HUD
-	if hud_instance != null:
-		hud_instance.queue_free()
-		hud_instance = null
-
-	# Despawn all players
-	despawn_all_players()
-
-	# Reset game state
-	game_state = 1
-	destination_progress = 0.0
-	progress_speed_modifier = 1.0
-	_progress_sync_timer = 0.0
-	timer_active = false
-
-	# Clear buffered role
-	NetworkManager.pending_role_received = false
-	NetworkManager.pending_role_impostor = false
-
-	# Re-capture mouse
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
-	# Re-spawn players and HUD in the same level
-	await get_tree().process_frame
-	_spawn_all_players()
-	_spawn_local_hud()
-
-	# Host starts the timer
-	if LobbyManager.is_host():
-		var now = Time.get_unix_time_from_system()
-		arrival_time = now + timer_phase_one
-		timer_active = true
-		UIState.timer_synced.emit(arrival_time, progress_speed_modifier)
-
-# ============ GAME START ============
 
 # Call this when ready to start the game (e.g., from a "Start Game" button)
 func start_game():
@@ -397,7 +170,7 @@ func _spawn_local_hud():
 	# Add it to the root of the scene tree
 	get_tree().current_scene.add_child(hud_instance)
 
-	# Make sure it's visible and top-level
+	# Make sure it’s visible and top-level
 	hud_instance.owner = get_tree().current_scene
 
 
@@ -435,6 +208,4 @@ func despawn_all_players():
 	if players_container:
 		for player in players_container.get_children():
 			player.queue_free()
-		players_container.queue_free()
-		players_container = null
 		NetworkManager.players_in_game.clear()
