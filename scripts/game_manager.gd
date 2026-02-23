@@ -34,7 +34,7 @@ var _progress_sync_timer: float = 0.0
 # Arrival countdown
 var arrival_time: float = 0.0  # absolute Unix timestamp
 var timer_active: bool = false
-var timer_phase_one: float = 30.0  # default 5-minute countdown
+var timer_phase_one: float = 5.0  # default 5-minute countdown
 var timer_phase_two: float = 60.0
 #Game State (0: Start, 1: Phase 1, 2: Phase 2)
 var game_state: int = 1
@@ -54,7 +54,7 @@ func _process(delta):
 		arrival_time = now + timer_phase_two
 		timer_active = true
 		UIState.timer_synced.emit(arrival_time, progress_speed_modifier)
-		
+		UIState.system_alert.emit("Successful hyperjump achieved, all systems nominal. Avoid contact with the the warp. Risk of data corruption: Low")
 	if destination_progress > 100.0 and game_state == 2:
 		return
 	if game_state == 2:
