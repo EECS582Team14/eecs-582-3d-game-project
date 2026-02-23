@@ -536,7 +536,9 @@ func _attach_taser_model() -> void:
 	_held_taser.rotation_degrees.y = 90.0
 	weapon_holder.add_child(_held_taser)
 
-func _on_item_picked_up(picker_steam_id: int, _item_id: String) -> void:
+func _on_item_picked_up(picker_steam_id: int, item_id: String) -> void:
+	if not item_id.begins_with("taser"):
+		return
 	var player = NetworkManager.get_player(picker_steam_id)
 	if player and player != self and player.has_method("give_taser"):
 		player.give_taser()

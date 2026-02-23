@@ -39,7 +39,7 @@ func _on_item_picked_up(picker_id: int, id: String) -> void:
 	await get_tree().create_timer(respawn_time).timeout
 	_respawn()
 
-func activate(picker_steam_id: int) -> void:
+func activate(_picker_steam_id: int) -> void:
 	if _picked_up:
 		return
 	# Send the pickup to all peers; the local signal handler will do the rest
