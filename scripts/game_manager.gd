@@ -34,7 +34,7 @@ var _progress_sync_timer: float = 0.0
 # Arrival countdown
 var arrival_time: float = 0.0  # absolute Unix timestamp
 var timer_active: bool = false
-var timer_phase_one: float = 5.0  # default 5-minute countdown
+var timer_phase_one: float = 30.0  # default 5-minute countdown
 var timer_phase_two: float = 60.0
 #Game State (0: Start, 1: Phase 1, 2: Phase 2)
 var game_state: int = 1

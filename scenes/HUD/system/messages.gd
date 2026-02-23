@@ -2,7 +2,7 @@ extends Control
 
 @onready var text_label = $Panel/MarginContainer/MainText
 @onready var panel = $Panel
-var full_text = "You are an autonomous maintenance unit. Prepare the ship for hyperjump. \nCurrent directive displayed above."
+var full_text = "You are an autonomous maintenance unit. Prepare the ship for hyperjump. Press 'Z' to view current directives."
 var typing_speed = 0.02
 var current_index = 0
 var typing = true

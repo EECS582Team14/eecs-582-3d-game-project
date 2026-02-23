@@ -26,16 +26,16 @@ script = ExtResource("1_k5n2x")
 
 [node name="Panel" type="Panel" parent="Control" unique_id=2052840778]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = -1
+anchor_top = 0.776
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 35.0
-offset_top = -328.0
-offset_right = -817.0
-offset_bottom = -128.0
+offset_left = 276.0
+offset_top = -42.848022
+offset_right = -276.0
+offset_bottom = -68.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_5lcvd")
 
 [node name="MarginContainer" type="MarginContainer" parent="Control/Panel" unique_id=1060119093]
@@ -65,16 +65,17 @@ offset_top = 1.0
 offset_right = 166.0
 offset_bottom = 24.0
 theme = SubResource("Theme_ooa57")
+theme_override_font_sizes/font_size = 22
 text = "SYSTEM:"
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Control/Panel" unique_id=1335008777]
 custom_minimum_size = Vector2(1, 10)
 layout_mode = 0
-offset_left = 228.0
-offset_top = 1.0
-offset_right = 308.0
-offset_bottom = 41.0
-theme_override_font_sizes/italics_font_size = 10
+offset_left = 494.0
+offset_top = 4.0
+offset_right = 598.0
+offset_bottom = 44.0
+theme_override_font_sizes/italics_font_size = 14
 bbcode_enabled = true
 text = "[i]<click to skip>[/i]"
 fit_content = true

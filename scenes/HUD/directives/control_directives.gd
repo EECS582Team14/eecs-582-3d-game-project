@@ -1,9 +1,9 @@
 extends Control
 
 @onready var task_text = $DirectivesPanel/MarginContainer/MainText
+@onready var panel = $DirectivesPanel
 
 const REAL_TASK: String = "Calibrate reactor temperature. (Lower Deck - Reactor)"
-
 var flavor_tasks = [
 	"Calibrate navigation array.",
 	"Prime the hyperjump reactor.",
@@ -18,6 +18,7 @@ var full_text = ""
 var chosen_tasks: Array[String] = []
 
 func _ready():
+	panel.visible = false
 	randomize()
 	# Always include the real task first, pick one random flavor task for second slot
 	var shuffled_flavor = flavor_tasks.duplicate()
@@ -61,6 +62,6 @@ func _input(event):
 	if event is InputEventMouseButton and event.pressed:
 		if typing:
 			typing = false
-		else:
-			# Already typed → maybe do nothing or hide panel if needed
-			pass
+	if event is InputEventKey:
+		if event.keycode == KEY_Z and event.pressed:
+			panel.visible = !panel.visible
