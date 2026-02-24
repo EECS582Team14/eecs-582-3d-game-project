@@ -8,6 +8,9 @@ var active := false
 func _ready():
 	label.text = "--:--"
 	UIState.timer_synced.connect(_on_timer_synced)
+	# Pick up timer if it was already set before HUD loaded
+	if GameManager.arrival_time > 0.0:
+		_on_timer_synced(GameManager.arrival_time, GameManager.progress_speed_modifier)
 
 func _on_timer_synced(server_arrival_time: float, _scale: float):
 	arrival_time = server_arrival_time
