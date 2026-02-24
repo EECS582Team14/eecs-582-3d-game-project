@@ -35,15 +35,22 @@ func _ready():
 
 	# Check if role was already assigned
 	if NetworkManager.pending_role_received:
-		_apply_role(NetworkManager.pending_role_impostor)
-	NetworkManager.role_assigned.connect(_apply_role)
+		_on_role_assigned(NetworkManager.pending_role_impostor)
+	NetworkManager.role_assigned.connect(_on_role_assigned)
 
 	type_text()
 
-func _apply_role(impostor: bool) -> void:
+func _on_role_assigned(impostor: bool) -> void:
 	is_impostor = impostor
 	if is_impostor:
-		task_text.add_theme_color_override("default_color", Color.RED)
+		# Wait for the role reveal delay before changing the panel color
+		var local_player = NetworkManager.get_player(Steam.getSteamID())
+		var delay = local_player.ROLE_REVEAL_DELAY if local_player else 30.0
+		await get_tree().create_timer(delay).timeout
+		var style = panel.get_theme_stylebox("panel").duplicate()
+		style.bg_color = Color(0.84, 0, 0, 0.5)
+		style.border_color = Color(0.78, 0.3, 0.3, 1)
+		panel.add_theme_stylebox_override("panel", style)
 
 func type_text() -> void:
 	typing = true
