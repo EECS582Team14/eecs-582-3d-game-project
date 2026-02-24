@@ -21,7 +21,11 @@ func activate() -> void:
 		return
 	_set_color(Color.GREEN)
 	_waiting = true
+	# call_to_floor handles the network broadcast
 	elevator.call_to_floor(floor_name)
+
+func _ready() -> void:
+	NetworkManager.elevator_used.connect(_on_elevator_used)
 
 func _process(_delta: float) -> void:
 	if not _waiting or elevator == null:
@@ -37,3 +41,10 @@ func _set_color(color: Color) -> void:
 	var mat = button_mesh.get_active_material(0)
 	if mat:
 		mat.albedo_color = color
+
+func _on_elevator_used(_action: String, floor_name: String):
+	# Update call button color when elevator is called remotely
+	var my_floor = "upper" if is_upper_floor else "lower"
+	if floor_name == my_floor:
+		_set_color(Color.GREEN)
+		_waiting = true

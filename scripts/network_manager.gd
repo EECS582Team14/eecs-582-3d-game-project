@@ -16,6 +16,7 @@ signal taser_hit_received(damage: int)
 signal progress_update_received(progress: float, speed: float)
 signal game_over_received(impostor_won: bool)
 signal play_again_received()
+signal elevator_used(action: String, floor_name: String)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -32,7 +33,8 @@ enum PacketType {
 	TASER_HIT,
 	PROGRESS_UPDATE,
 	GAME_OVER,
-	PLAY_AGAIN
+	PLAY_AGAIN,
+	ELEVATOR_USE
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -146,6 +148,9 @@ func send_play_again():
 	send_p2p_packet(0, {"type": PacketType.PLAY_AGAIN}, Steam.P2P_SEND_RELIABLE, 0)
 	play_again_received.emit()
 
+func send_elevator_use(action: String, floor_name: String):
+	send_p2p_packet(0, {"type": PacketType.ELEVATOR_USE, "action": action, "floor": floor_name}, Steam.P2P_SEND_RELIABLE, 0)
+
 # ============ READ PACKETS ============
 
 func _read_all_p2p_packets(read_count: int = 0):
@@ -221,6 +226,9 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 
 		PacketType.PLAY_AGAIN:
 			play_again_received.emit()
+
+		PacketType.ELEVATOR_USE:
+			elevator_used.emit(data.get("action", ""), data.get("floor", ""))
 
 		_:
 			print("Unknown packet type: %s" % packet_type)

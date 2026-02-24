@@ -6,7 +6,9 @@ extends Node
 ## Add this as an autoload singleton.
 
 const PlayerScene = preload("res://scenes/player/player.tscn")
+const TaserPickupScene = preload("res://scenes/weapons/taser/taser_pickup.tscn")
 const GAME_LEVEL = "res://scenes/levels/main.tscn"
+const TASER_SPAWN_POS = Vector3(-19.66497, 0.45656508, 16.686378)
 
 @export var spawn_points: Array[Vector3] = [
 	Vector3(0, 1, 0),
@@ -283,10 +285,11 @@ func _on_play_again():
 	# Re-capture mouse
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-	# Re-spawn players and HUD in the same level
+	# Re-spawn players, HUD, and pickups in the same level
 	await get_tree().process_frame
 	_spawn_all_players()
 	_spawn_local_hud()
+	_respawn_taser_pickup()
 
 	# Host starts the timer
 	if LobbyManager.is_host():
@@ -294,6 +297,15 @@ func _on_play_again():
 		arrival_time = now + timer_phase_one
 		timer_active = true
 		UIState.timer_synced.emit(arrival_time, progress_speed_modifier)
+
+func _respawn_taser_pickup():
+	# The taser pickup calls queue_free() when picked up, so re-instantiate it on play again
+	var parent = get_tree().current_scene.get_node_or_null("UpperDeck")
+	if parent == null:
+		parent = get_tree().current_scene
+	var taser = TaserPickupScene.instantiate()
+	taser.position = TASER_SPAWN_POS
+	parent.add_child(taser)
 
 # ============ GAME START ============
 
