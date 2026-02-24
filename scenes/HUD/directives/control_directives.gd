@@ -17,6 +17,8 @@ var typing = true
 var full_text = ""
 var chosen_tasks: Array[String] = []
 
+var is_impostor: bool = false
+
 func _ready():
 	panel.visible = false
 	randomize()
@@ -31,7 +33,17 @@ func _ready():
 	task_text.bbcode_enabled = true
 	task_text.text = ""
 
+	# Check if role was already assigned
+	if NetworkManager.pending_role_received:
+		_apply_role(NetworkManager.pending_role_impostor)
+	NetworkManager.role_assigned.connect(_apply_role)
+
 	type_text()
+
+func _apply_role(impostor: bool) -> void:
+	is_impostor = impostor
+	if is_impostor:
+		task_text.add_theme_color_override("default_color", Color.RED)
 
 func type_text() -> void:
 	typing = true
