@@ -17,6 +17,7 @@ signal progress_update_received(progress: float, speed: float)
 signal game_over_received(impostor_won: bool)
 signal play_again_received()
 signal elevator_used(action: String, floor_name: String)
+signal emergency_meeting_called()
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -34,7 +35,8 @@ enum PacketType {
 	PROGRESS_UPDATE,
 	GAME_OVER,
 	PLAY_AGAIN,
-	ELEVATOR_USE
+	ELEVATOR_USE,
+	EMERGENCY_MEETING
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -151,6 +153,10 @@ func send_play_again():
 func send_elevator_use(action: String, floor_name: String):
 	send_p2p_packet(0, {"type": PacketType.ELEVATOR_USE, "action": action, "floor": floor_name}, Steam.P2P_SEND_RELIABLE, 0)
 
+func send_emergency_meeting():
+	send_p2p_packet(0, {"type": PacketType.EMERGENCY_MEETING}, Steam.P2P_SEND_RELIABLE, 0)
+	emergency_meeting_called.emit()
+
 # ============ READ PACKETS ============
 
 func _read_all_p2p_packets(read_count: int = 0):
@@ -229,6 +235,9 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 
 		PacketType.ELEVATOR_USE:
 			elevator_used.emit(data.get("action", ""), data.get("floor", ""))
+
+		PacketType.EMERGENCY_MEETING:
+			emergency_meeting_called.emit()
 
 		_:
 			print("Unknown packet type: %s" % packet_type)

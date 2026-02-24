@@ -11,6 +11,10 @@ func _ready():
 	text_label.text = ""
 	type_text()
 	UIState.system_alert.connect(_new_message)
+	NetworkManager.emergency_meeting_called.connect(_on_emergency_meeting)
+
+func _on_emergency_meeting():
+	_new_message("An emergency has been reported. All maintenance units are to report to the Nexus immediately.")
 
 func reset(text):
 	text_label.text = ""

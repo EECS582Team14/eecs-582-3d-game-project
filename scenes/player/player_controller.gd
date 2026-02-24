@@ -292,7 +292,7 @@ func _input(event: InputEvent) -> void:
 			if current_health <= 0:
 				_enter_dead_state()
 		elif event.key_label == KEY_F and event.pressed:
-			UIState.system_alert.emit("An emergency has been reported. All maintenance units are to report to the Nexus immediately.")
+			NetworkManager.send_emergency_meeting()
 			
 		
 		
