@@ -624,7 +624,10 @@ func _cancel_task_hold() -> void:
 func _complete_task(task_id: String) -> void:
 	_completed_tasks.append(task_id)
 	_cancel_task_hold()
-	GameManager.adjust_progress_speed(0.5)
+	if is_impostor:
+		GameManager.adjust_progress_speed(-0.5)
+	else:
+		GameManager.adjust_progress_speed(0.5)
 	# Update directives panel
 	var panels = get_tree().get_nodes_in_group("directives_panel")
 	for panel in panels:
