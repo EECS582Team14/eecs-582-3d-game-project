@@ -263,6 +263,8 @@ func _input(event: InputEvent) -> void:
 	# Only process input for local player
 	if not is_local_player:
 		return
+	if GameManager.game_state == GameManager.GAME_STATE_GAME_OVER:
+		return
 
 	# Handle mouse motion events for looking around
 	if event is InputEventMouseMotion and _is_mouse_captured:
@@ -306,6 +308,8 @@ func _input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	if not is_local_player or not _role_received:
 		return
+	if GameManager.game_state == GameManager.GAME_STATE_GAME_OVER:
+		return
 
 	if _role_timer > 0.0:
 		_role_timer -= delta
@@ -315,6 +319,8 @@ func _process(delta: float) -> void:
 			_reveal_role()
 
 func _physics_process(delta: float) -> void:
+	if is_local_player and GameManager.game_state == GameManager.GAME_STATE_GAME_OVER:
+		return
 	if is_local_player:
 		if is_dead:
 			_process_ghost_movement(delta)
