@@ -107,10 +107,30 @@ func setup_player_voice(steam_id: int, player_node: Node):
 	print("Voice setup for player: %s" % Steam.getFriendPersonaName(steam_id))
 
 func disable_proximity():
-	for steam_id in voice_players:
-		var vp: AudioStreamPlayer3D = voice_players[steam_id]
-		if is_instance_valid(vp):
-			vp.attenuation_model = AudioStreamPlayer3D.ATTENUATION_DISABLED
+	# Replace each 3D voice player with a non-positional AudioStreamPlayer
+	# so audio plays at full volume regardless of distance
+	for steam_id in voice_players.keys():
+		var old_vp = voice_players[steam_id]
+		if not is_instance_valid(old_vp):
+			continue
+
+		var new_vp = AudioStreamPlayer.new()
+		new_vp.name = "VoicePlayerGlobal"
+		var stream = AudioStreamGenerator.new()
+		stream.mix_rate = float(sample_rate)
+		stream.buffer_length = 0.5
+		new_vp.stream = stream
+
+		# Add to scene root so it's not tied to any player node
+		old_vp.get_tree().root.add_child(new_vp)
+		new_vp.play()
+
+		# Swap references
+		voice_playbacks[steam_id] = new_vp.get_stream_playback()
+		voice_players[steam_id] = new_vp
+
+		# Remove old 3D player
+		old_vp.queue_free()
 
 func remove_player_voice(steam_id: int):
 	if voice_players.has(steam_id):
