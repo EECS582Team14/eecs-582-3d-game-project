@@ -422,6 +422,11 @@ func _assign_roles():
 		var member_steam_id = LobbyManager.lobby_members[i].steam_id
 		var is_impostor = (i == impostor_index)
 
+		# Set is_impostor on the player node so the host can check win conditions
+		var player_node = NetworkManager.get_player(member_steam_id)
+		if player_node:
+			player_node.is_impostor = is_impostor
+
 		if member_steam_id == my_steam_id:
 			# Host assigns own role directly (also buffer it)
 			NetworkManager.pending_role_received = true
