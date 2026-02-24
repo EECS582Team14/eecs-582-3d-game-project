@@ -18,6 +18,7 @@ signal game_over_received(impostor_won: bool)
 signal play_again_received()
 signal elevator_used(action: String, floor_name: String)
 signal emergency_meeting_called()
+signal timer_sync_received(arrival_time: float, speed: float)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -36,7 +37,8 @@ enum PacketType {
 	GAME_OVER,
 	PLAY_AGAIN,
 	ELEVATOR_USE,
-	EMERGENCY_MEETING
+	EMERGENCY_MEETING,
+	TIMER_SYNC
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -157,6 +159,9 @@ func send_emergency_meeting():
 	send_p2p_packet(0, {"type": PacketType.EMERGENCY_MEETING}, Steam.P2P_SEND_RELIABLE, 0)
 	emergency_meeting_called.emit()
 
+func send_timer_sync(arrival: float, speed: float):
+	send_p2p_packet(0, {"type": PacketType.TIMER_SYNC, "arrival": arrival, "spd": speed}, Steam.P2P_SEND_RELIABLE, 0)
+
 # ============ READ PACKETS ============
 
 func _read_all_p2p_packets(read_count: int = 0):
@@ -238,6 +243,9 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 
 		PacketType.EMERGENCY_MEETING:
 			emergency_meeting_called.emit()
+
+		PacketType.TIMER_SYNC:
+			timer_sync_received.emit(data.get("arrival", 0.0), data.get("spd", 1.0))
 
 		_:
 			print("Unknown packet type: %s" % packet_type)

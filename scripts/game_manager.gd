@@ -51,6 +51,7 @@ func _ready():
 	NetworkManager.game_started.connect(_on_game_started)
 	NetworkManager.game_over_received.connect(_on_game_over)
 	NetworkManager.play_again_received.connect(_on_play_again)
+	NetworkManager.timer_sync_received.connect(_on_timer_sync_received)
 	LobbyManager.player_left.connect(_on_player_left)
 
 func _process(delta):
@@ -69,7 +70,7 @@ func _process(delta):
 		game_state = 2
 		arrival_time = now + timer_phase_two
 		timer_active = true
-		UIState.timer_synced.emit(arrival_time, progress_speed_modifier)
+		_broadcast_timer_sync()
 		UIState.system_alert.emit("Successful hyperjump achieved, all systems nominal. Avoid contact with the the warp. Risk of data corruption: Low")
 	if game_state == 2:
 		destination_progress += base_progress_speed * progress_speed_modifier * delta
@@ -83,6 +84,15 @@ func _process(delta):
 
 func adjust_progress_speed(amount: float):
 	progress_speed_modifier += amount
+
+func _broadcast_timer_sync():
+	NetworkManager.send_timer_sync(arrival_time, progress_speed_modifier)
+	UIState.timer_synced.emit(arrival_time, progress_speed_modifier)
+
+func _on_timer_sync_received(server_arrival_time: float, speed: float):
+	arrival_time = server_arrival_time
+	progress_speed_modifier = speed
+	UIState.timer_synced.emit(server_arrival_time, speed)
 
 # ============ WIN CONDITIONS (host only) ============
 
@@ -296,7 +306,7 @@ func _on_play_again():
 		var now = Time.get_unix_time_from_system()
 		arrival_time = now + timer_phase_one
 		timer_active = true
-		UIState.timer_synced.emit(arrival_time, progress_speed_modifier)
+		_broadcast_timer_sync()
 
 func _respawn_taser_pickup():
 	# The taser pickup calls queue_free() when picked up, so re-instantiate it on play again
@@ -338,7 +348,7 @@ func _load_game_level():
 		var now = Time.get_unix_time_from_system()
 		arrival_time = now + timer_phase_one
 		timer_active = true
-		UIState.timer_synced.emit(arrival_time, progress_speed_modifier)
+		_broadcast_timer_sync()
 
 func _spawn_all_players():
 	var current_scene = get_tree().current_scene
