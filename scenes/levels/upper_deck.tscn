@@ -186,7 +186,7 @@ distance_fade_begin = 0.0
 distance_fade_length = 5.0
 
 [node name="Reactor" type="Node3D" parent="." unique_id=2091125207]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 41.526)
 
 [node name="NorthwestReactorDoor" parent="Reactor" unique_id=2051606702 instance=ExtResource("3_1pv2h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.55, 0, -7.5)
@@ -209,8 +209,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 7.55)
 [node name="SouthwestReactorWall" parent="Reactor" unique_id=1422650762 instance=ExtResource("2_0llye")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 7.55)
 
-[node name="ReactorLight" type="OmniLight3D" parent="Reactor" unique_id=2069581870]
+[node name="CenterReactorLight" type="OmniLight3D" parent="Reactor" unique_id=2069581870]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+omni_range = 15.0
+
+[node name="EastReactorLight" type="OmniLight3D" parent="Reactor" unique_id=184673557]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.2, 0)
+omni_range = 15.0
+
+[node name="WestReactorLight" type="OmniLight3D" parent="Reactor" unique_id=1730973680]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.2, 0)
 omni_range = 15.0
 
 [node name="LifeSupport" type="Node3D" parent="." unique_id=1989672344]
