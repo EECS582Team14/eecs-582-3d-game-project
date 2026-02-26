@@ -41,7 +41,7 @@ var timer_phase_two: float = 60.0
 
 # Ship integrity
 var max_ship_integrity: float = 100.0
-var ship_integrity: float = 100.0
+var ship_integrity: float = 50.0
 
 # Game State (0: Start, 1: Phase 1, 2: Phase 2, 3: GameOver)
 var game_state: int = 1

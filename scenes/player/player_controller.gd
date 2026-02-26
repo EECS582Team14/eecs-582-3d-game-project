@@ -67,6 +67,9 @@ var _looking_at_interactable: Node = null
 var _interact_label: Label = null
 var _notification_label: Label = null
 
+#Task Designations
+var integrity_tasks = ["Armory_task", "Cam_task", "Crew_task", "Fab_task", "Life_task", "Sheilding_task", "Trash_task"]
+
 # Hold-E task system
 var _task_hold_timer: float = 0.0
 const TASK_HOLD_DURATION: float = 5.0
@@ -276,7 +279,6 @@ func _input(event: InputEvent) -> void:
 		camera.rotation_degrees = camera_rotation
 
 	# If the input is a key event
-	var now = Time.get_unix_time_from_system()
 	if event is InputEventKey:
 		# If the Escape key is pressed, toggle mouse capture
 		if event.key_label == KEY_ESCAPE and event.pressed:
@@ -626,8 +628,13 @@ func _cancel_task_hold() -> void:
 	_task_progress_bar.visible = false
 
 func _complete_task(task_id: String) -> void:
+	print(task_id)
 	_completed_tasks.append(task_id)
 	_cancel_task_hold()
+	if task_id in integrity_tasks and is_impostor:
+		NetworkManager.send_ship_integrity_update(GameManager.ship_integrity - 5)
+	elif task_id in integrity_tasks and !is_impostor:
+		NetworkManager.send_ship_integrity_update(GameManager.ship_integrity + 5)
 	if is_impostor:
 		GameManager.adjust_progress_speed(-0.5)
 	else:
