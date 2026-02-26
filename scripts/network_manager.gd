@@ -19,6 +19,7 @@ signal play_again_received()
 signal elevator_used(action: String, floor_name: String)
 signal emergency_meeting_called()
 signal timer_sync_received(arrival_time: float, speed: float)
+signal ship_integrity_update_received(sender_steam_id: int, integrity: float)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -38,7 +39,8 @@ enum PacketType {
 	PLAY_AGAIN,
 	ELEVATOR_USE,
 	EMERGENCY_MEETING,
-	TIMER_SYNC
+	TIMER_SYNC,
+	SHIP_INTEGRITY
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -162,6 +164,10 @@ func send_emergency_meeting():
 func send_timer_sync(arrival: float, speed: float):
 	send_p2p_packet(0, {"type": PacketType.TIMER_SYNC, "arrival": arrival, "spd": speed}, Steam.P2P_SEND_RELIABLE, 0)
 
+func send_ship_integrity_update(integrity: float):
+	send_p2p_packet(0, {"type": PacketType.SHIP_INTEGRITY, "integrity": integrity}, Steam.P2P_SEND_RELIABLE, 0)
+	ship_integrity_update_received.emit(Steam.getSteamID(), integrity)
+
 # ============ READ PACKETS ============
 
 func _read_all_p2p_packets(read_count: int = 0):
@@ -247,6 +253,9 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 		PacketType.TIMER_SYNC:
 			timer_sync_received.emit(data.get("arrival", 0.0), data.get("spd", 1.0))
 
+		PacketType.SHIP_INTEGRITY:
+			ship_integrity_update_received.emit(sender_steam_id, data.get("integrity", 100.0))
+	
 		_:
 			print("Unknown packet type: %s" % packet_type)
 

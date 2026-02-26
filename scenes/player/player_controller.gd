@@ -293,6 +293,10 @@ func _input(event: InputEvent) -> void:
 				_enter_dead_state()
 		elif event.key_label == KEY_F and event.pressed:
 			NetworkManager.send_emergency_meeting()
+		elif event.key_label == KEY_K and event.pressed:
+			GameManager.adjust_ship_integrity(-10.0)
+		elif event.key_label == KEY_L and event.pressed:
+			GameManager.adjust_ship_integrity(10.0)
 			
 		
 		

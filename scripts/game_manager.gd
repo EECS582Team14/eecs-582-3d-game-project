@@ -38,6 +38,11 @@ var arrival_time: float = 0.0  # absolute Unix timestamp
 var timer_active: bool = false
 var timer_phase_one: float = 30.0  # default 5-minute countdown
 var timer_phase_two: float = 60.0
+
+# Ship integrity
+var max_ship_integrity: float = 100.0
+var ship_integrity: float = 100.0
+
 # Game State (0: Start, 1: Phase 1, 2: Phase 2, 3: GameOver)
 var game_state: int = 1
 const GAME_STATE_GAME_OVER: int = 3
@@ -53,6 +58,8 @@ func _ready():
 	NetworkManager.play_again_received.connect(_on_play_again)
 	NetworkManager.timer_sync_received.connect(_on_timer_sync_received)
 	LobbyManager.player_left.connect(_on_player_left)
+	NetworkManager.ship_integrity_update_received.connect(_on_ship_integrity_update_received)
+	UIState.ship_durability_changed.emit(ship_integrity)
 
 func _process(delta):
 	if not LobbyManager.is_host():
@@ -93,6 +100,22 @@ func _on_timer_sync_received(server_arrival_time: float, speed: float):
 	arrival_time = server_arrival_time
 	progress_speed_modifier = speed
 	UIState.timer_synced.emit(server_arrival_time, speed)
+	
+func adjust_ship_integrity(amount: float) -> void:
+	ship_integrity = clampf(ship_integrity + amount, 0.0, max_ship_integrity)
+	UIState.ship_durability_changed.emit(ship_integrity)
+	if LobbyManager.is_host():
+		NetworkManager.send_ship_integrity_update(ship_integrity)
+		
+func _on_ship_integrity_update_received(sender_steam_id: int, integrity: float) -> void:
+	ship_integrity = clampf(integrity, 0.0, max_ship_integrity)
+	UIState.ship_durability_changed.emit(ship_integrity)
+	
+func _reset_ship_integrity() -> void:
+	ship_integrity = max_ship_integrity
+	UIState.ship_durability_changed.emit(ship_integrity)
+	if LobbyManager.is_host():
+		NetworkManager.send_ship_integrity_update(ship_integrity)
 
 # ============ WIN CONDITIONS (host only) ============
 
@@ -133,11 +156,9 @@ func _check_win_conditions():
 		return
 
 	# Condition 4: Ship integrity hits 0 -> Impostor wins
-	# TODO: Implement ship integrity system.
-	# When ship_integrity variable is added, check:
-	# if ship_integrity <= 0.0:
-	#     _trigger_game_over(true)
-	#     return
+	if ship_integrity <= 0.0:
+		_trigger_game_over(true)
+		return
 
 func _trigger_game_over(impostor_won: bool):
 	game_state = GAME_STATE_GAME_OVER
@@ -295,11 +316,12 @@ func _on_play_again():
 	# Re-capture mouse
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-	# Re-spawn players, HUD, and pickups in the same level
+	# Re-spawn players, HUD, and pickups, and reset ship integrity in the same level
 	await get_tree().process_frame
 	_spawn_all_players()
 	_spawn_local_hud()
 	_respawn_taser_pickup()
+	_reset_ship_integrity()
 
 	# Host starts the timer
 	if LobbyManager.is_host():
