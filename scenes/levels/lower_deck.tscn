@@ -4,12 +4,18 @@
 [ext_resource type="PackedScene" uid="uid://slrafd7wesfx" path="res://scenes/levels/walls/medium_door.tscn" id="2_0q5s7"]
 [ext_resource type="PackedScene" uid="uid://bkggral86i4ul" path="res://scenes/levels/walls/medium_wall.tscn" id="4_iijbf"]
 [ext_resource type="PackedScene" uid="uid://chdj8l5glva0" path="res://scenes/levels/walls/small_door.tscn" id="5_myntk"]
-[ext_resource type="PackedScene" path="res://scenes/tasks/reactor_temp_console.tscn" id="6_console"]
+[ext_resource type="PackedScene" uid="uid://45lx6lll2d0l" path="res://scenes/tasks/reactor_temp_console.tscn" id="6_console"]
 [ext_resource type="Texture2D" uid="uid://bxo160j4ybh3u" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_Color.png" id="7_floor_color"]
 [ext_resource type="Texture2D" uid="uid://ddfrmlgf2is0b" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_NormalGL.png" id="8_floor_normal"]
 [ext_resource type="Texture2D" uid="uid://b85nfpxgd1lh" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_Roughness.png" id="9_floor_rough"]
+[ext_resource type="Script" uid="uid://coxlejt6jx227" path="res://scenes/tasks/Electrical_task_script.gd" id="10_d2gx7"]
 [ext_resource type="Texture2D" uid="uid://c3e451lm0ue8r" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_Metalness.png" id="10_floor_metal"]
 [ext_resource type="PackedScene" uid="uid://bfqp2tl7ks4nx" path="res://scenes/levels/walls/small_wall.tscn" id="10_myntk"]
+[ext_resource type="Script" uid="uid://bf5mvc3noeqqg" path="res://scenes/tasks/Trash_task_script.gd" id="11_hneab"]
+[ext_resource type="Script" uid="uid://dmlso17bxp0pt" path="res://scenes/tasks/Colonial_task_script.gd" id="12_r5xfg"]
+[ext_resource type="Script" uid="uid://d15ca5ap7kjyq" path="res://scenes/tasks/Supply_task_script.gd" id="13_bjwnh"]
+[ext_resource type="Script" uid="uid://djo2fr1vj2i2c" path="res://scenes/tasks/Personal_task_script.gd" id="14_3tbkn"]
+[ext_resource type="Script" uid="uid://om2cgiipkf6h" path="res://scenes/tasks/Fab_task_script.gd" id="15_m25je"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0llye"]
 albedo_texture = ExtResource("7_floor_color")
@@ -74,7 +80,7 @@ omni_range = 15.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.2, 0)
 omni_range = 15.0
 
-[node name="ReactorTempConsole" parent="Reactor" unique_id=539148425 instance=ExtResource("6_console")]
+[node name="LowerReactorTask" parent="Reactor" unique_id=539148425 instance=ExtResource("6_console")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 6)
 
 [node name="Electrical" type="Node3D" parent="." unique_id=156958614]
@@ -99,6 +105,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 0, -7.5)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3999996, 2.2, 0)
 omni_range = 15.0
 
+[node name="ElectricalTask" parent="Electrical" unique_id=476002525 instance=ExtResource("6_console")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 5)
+script = ExtResource("10_d2gx7")
+task_id = "Electrical_task"
+
 [node name="Trash" type="Node3D" parent="." unique_id=651322574]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.259, 0, -22)
 
@@ -121,6 +132,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 0, 7.5)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3999996, 2.2, 0)
 omni_range = 15.0
 
+[node name="TrashTask" parent="Trash" unique_id=1992102627 instance=ExtResource("6_console")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, -5)
+script = ExtResource("11_hneab")
+task_id = "Trash_task"
+
 [node name="ColonialSupplies" type="Node3D" parent="." unique_id=934844965]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.419, 0, 22)
 
@@ -139,6 +155,11 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.5,
 [node name="CSLight" type="OmniLight3D" parent="ColonialSupplies" unique_id=290404060]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 omni_range = 15.0
+
+[node name="ColonialTask" parent="ColonialSupplies" unique_id=856892539 instance=ExtResource("6_console")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 0.5, 0)
+script = ExtResource("12_r5xfg")
+task_id = "Colonial_task"
 
 [node name="ShipSupplies" type="Node3D" parent="." unique_id=1185466814]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.419, 0, 0)
@@ -159,6 +180,11 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.5,
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 omni_range = 15.0
 
+[node name="SupplyTask" parent="ShipSupplies" unique_id=231569298 instance=ExtResource("6_console")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 0.5, 0)
+script = ExtResource("13_bjwnh")
+task_id = "Supply_task"
+
 [node name="PersonalItems" type="Node3D" parent="." unique_id=1044334352]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.419, 0, -22)
 
@@ -178,6 +204,11 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.5,
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 omni_range = 15.0
 
+[node name="PersonalTask" parent="PersonalItems" unique_id=132174402 instance=ExtResource("6_console")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 0.5, 0)
+script = ExtResource("14_3tbkn")
+task_id = "Personal_task"
+
 [node name="FabManufacturing" type="Node3D" parent="." unique_id=1065997204]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -19.476221)
 
@@ -196,6 +227,11 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.5
 [node name="FabLight" type="OmniLight3D" parent="FabManufacturing" unique_id=269803892]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 omni_range = 15.0
+
+[node name="FabTask" parent="FabManufacturing" unique_id=429898341 instance=ExtResource("6_console")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -7)
+script = ExtResource("15_m25je")
+task_id = "Fab_task"
 
 [node name="ClosingOffWalls" type="Node3D" parent="." unique_id=1931912096]
 
