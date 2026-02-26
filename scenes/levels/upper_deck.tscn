@@ -4,17 +4,29 @@
 [ext_resource type="PackedScene" uid="uid://slrafd7wesfx" path="res://scenes/levels/walls/medium_door.tscn" id="3_1pv2h"]
 [ext_resource type="Texture2D" uid="uid://r6yha370ra0w" path="res://assets/room_symbols/nexus_icon.png" id="4_rmbde"]
 [ext_resource type="PackedScene" uid="uid://chdj8l5glva0" path="res://scenes/levels/walls/small_door.tscn" id="5_fjw4p"]
+[ext_resource type="PackedScene" uid="uid://45lx6lll2d0l" path="res://scenes/tasks/reactor_temp_console.tscn" id="5_iah82"]
 [ext_resource type="PackedScene" uid="uid://bkggral86i4ul" path="res://scenes/levels/walls/medium_wall.tscn" id="5_vucmy"]
+[ext_resource type="Script" uid="uid://dstw877g1im1g" path="res://scenes/tasks/Nexus_task_script.gd" id="6_4ertf"]
 [ext_resource type="Texture2D" uid="uid://c6mk0vnfi60hq" path="res://assets/room_symbols/nav_icon.png" id="6_ews0w"]
 [ext_resource type="PackedScene" uid="uid://bfqp2tl7ks4nx" path="res://scenes/levels/walls/small_wall.tscn" id="7_86pjy"]
 [ext_resource type="PackedScene" uid="uid://ci17faevvkdnc" path="res://scenes/weapons/taser/taser_pickup.tscn" id="7_rmbde"]
 [ext_resource type="Texture2D" uid="uid://p7qokbuyia0v" path="res://assets/room_symbols/cams_icon.png" id="8_0ffry"]
 [ext_resource type="Texture2D" uid="uid://dbu3lcyk5a8sq" path="res://assets/room_symbols/intercom_icon.png" id="8_185qh"]
 [ext_resource type="Texture2D" uid="uid://dkk3fp8xgkqxs" path="res://scenes/levels/main_assets/space_floor.jpg" id="8_floor_color"]
+[ext_resource type="Script" uid="uid://bp3euv8oddh2m" path="res://scenes/tasks/Nav_task_script.gd" id="9_r35sg"]
 [ext_resource type="Texture2D" uid="uid://b1g55j3i0dfxx" path="res://assets/room_symbols/life_support_icon.png" id="11_uuep5"]
 [ext_resource type="Texture2D" uid="uid://ch68nhpym2hx8" path="res://assets/room_symbols/shielding_icon.png" id="12_1eu2h"]
+[ext_resource type="Script" uid="uid://0cjb2mkn4btt" path="res://scenes/tasks/Cam_task_script.gd" id="12_4h7sq"]
 [ext_resource type="Texture2D" uid="uid://dqddsetl17cxi" path="res://assets/room_symbols/armory_icon.png" id="12_u5hsw"]
+[ext_resource type="Script" uid="uid://2l0nq7krbtry" path="res://scenes/tasks/Intercom_task_script.gd" id="14_eofsf"]
+[ext_resource type="Script" uid="uid://bxuav8ycs6u1b" path="res://scenes/tasks/Upper_Reactor_task_script.gd" id="15_4clrc"]
 [ext_resource type="PackedScene" uid="uid://bhnihej24hlrx" path="res://scenes/items/healthpack.tscn" id="15_bj8xs"]
+[ext_resource type="Script" uid="uid://djtnepb2xxgnx" path="res://scenes/tasks/Life_task_script.gd" id="18_sco87"]
+[ext_resource type="Script" uid="uid://xrgl7inoxsg" path="res://scenes/tasks/Human_Resources_task_script.gd" id="19_a5xa1"]
+[ext_resource type="Script" uid="uid://c7wwnb8gt4fds" path="res://scenes/tasks/Armory_task_script.gd" id="21_ydp2g"]
+[ext_resource type="Script" uid="uid://dxiyilrrregsc" path="res://scenes/tasks/Shielding_task_script.gd" id="23_57p4a"]
+[ext_resource type="Script" uid="uid://dy8t20vmm7jdp" path="res://scenes/tasks/Supply_Closet_task_script.gd" id="24_0m6m5"]
+[ext_resource type="Script" uid="uid://cvsghl2twbfdu" path="res://scenes/tasks/Crew_task_script.gd" id="25_efilq"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]
 size = Vector2(60, 80)
@@ -110,6 +122,11 @@ lower_fade = 0.00077314815
 distance_fade_begin = 0.0
 distance_fade_length = 5.0
 
+[node name="NexusTask" parent="Nexus" unique_id=803413272 instance=ExtResource("5_iah82")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0.5, 0)
+script = ExtResource("6_4ertf")
+task_id = "Nexus_task"
+
 [node name="NavBridge" type="Node3D" parent="." unique_id=1363310021]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -22.5)
 
@@ -137,6 +154,11 @@ lower_fade = 8.126735e-05
 distance_fade_begin = 0.0
 distance_fade_length = 5.0
 
+[node name="NavTask" parent="NavBridge" unique_id=1840045951 instance=ExtResource("5_iah82")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -4)
+script = ExtResource("9_r35sg")
+task_id = "Nav_task"
+
 [node name="Cams" type="Node3D" parent="." unique_id=682191193]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -20)
 
@@ -161,6 +183,11 @@ lower_fade = 8.126735e-05
 distance_fade_begin = 0.0
 distance_fade_length = 5.0
 
+[node name="CamTask" parent="Cams" unique_id=1161086875 instance=ExtResource("5_iah82")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+script = ExtResource("12_4h7sq")
+task_id = "Cam_task"
+
 [node name="Intercom" type="Node3D" parent="." unique_id=235793160]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -20)
 
@@ -184,6 +211,11 @@ texture_albedo = ExtResource("8_185qh")
 lower_fade = 8.126735e-05
 distance_fade_begin = 0.0
 distance_fade_length = 5.0
+
+[node name="IntercomTask" parent="Intercom" unique_id=117220095 instance=ExtResource("5_iah82")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+script = ExtResource("14_eofsf")
+task_id = "Intercom_task"
 
 [node name="Reactor" type="Node3D" parent="." unique_id=2091125207]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 41.526)
@@ -221,6 +253,11 @@ omni_range = 15.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.2, 0)
 omni_range = 15.0
 
+[node name="UpperReactorTask" parent="Reactor" unique_id=2102772599 instance=ExtResource("5_iah82")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+script = ExtResource("15_4clrc")
+task_id = "Upper_Reactor_task"
+
 [node name="LifeSupport" type="Node3D" parent="." unique_id=1989672344]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, -12.72)
 
@@ -240,6 +277,11 @@ texture_albedo = ExtResource("11_uuep5")
 lower_fade = 8.126735e-05
 distance_fade_begin = 0.0
 distance_fade_length = 5.0
+
+[node name="LifeTask" parent="LifeSupport" unique_id=367489626 instance=ExtResource("5_iah82")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 0, 0)
+script = ExtResource("18_sco87")
+task_id = "Life_task"
 
 [node name="HumanResources" type="Node3D" parent="." unique_id=645411416]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 0)
@@ -266,6 +308,11 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 omni_range = 15.0
 
+[node name="HumanResourcesTask" parent="HumanResources" unique_id=891591943 instance=ExtResource("5_iah82")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 0, 0)
+script = ExtResource("19_a5xa1")
+task_id = "Human_Resources_task"
+
 [node name="Armory" type="Node3D" parent="." unique_id=1952892335]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 0)
 
@@ -289,6 +336,11 @@ texture_albedo = ExtResource("12_u5hsw")
 lower_fade = 8.126735e-05
 distance_fade_begin = 0.0
 distance_fade_length = 5.0
+
+[node name="ArmoryTask" parent="Armory" unique_id=1873807883 instance=ExtResource("5_iah82")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 0, 20)
+script = ExtResource("21_ydp2g")
+task_id = "Armory_task"
 
 [node name="Shielding" type="Node3D" parent="." unique_id=1596150144]
 
@@ -322,6 +374,11 @@ lower_fade = 8.126735e-05
 distance_fade_begin = 0.0
 distance_fade_length = 5.0
 
+[node name="ShieldingTask" parent="Shielding" unique_id=38533965 instance=ExtResource("5_iah82")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 22, 0, -5)
+script = ExtResource("23_57p4a")
+task_id = "Shielding_task"
+
 [node name="SupplyCloset" type="Node3D" parent="." unique_id=1232075518]
 
 [node name="SupplyLight" type="OmniLight3D" parent="SupplyCloset" unique_id=141139108]
@@ -333,6 +390,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0, 6)
 
 [node name="SupplyDoor" parent="SupplyCloset" unique_id=2029628978 instance=ExtResource("5_fjw4p")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15, 0, 4)
+
+[node name="SupplyClosetTask" parent="SupplyCloset" unique_id=1693878617 instance=ExtResource("5_iah82")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 22, 0, 3)
+script = ExtResource("24_0m6m5")
+task_id = "Supply_Closet_task"
 
 [node name="Crew Quarters" type="Node3D" parent="." unique_id=1733845478]
 
@@ -351,6 +413,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0, 25)
 
 [node name="CrewBackWall" parent="Crew Quarters" unique_id=2135401629 instance=ExtResource("2_0llye")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 25.5, 0, 15)
+
+[node name="CrewTask" parent="Crew Quarters" unique_id=995424861 instance=ExtResource("5_iah82")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 22, 0, 15)
+script = ExtResource("25_efilq")
+task_id = "Crew_task"
 
 [node name="TaserPickup" parent="." unique_id=811668839 instance=ExtResource("7_rmbde")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.66497, 0.45656508, 16.686378)
