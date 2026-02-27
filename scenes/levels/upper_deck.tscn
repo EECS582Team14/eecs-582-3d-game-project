@@ -164,6 +164,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -20)
 
 [node name="CamsDoor" parent="Cams" unique_id=1087523963 instance=ExtResource("5_fjw4p")]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, -0.3000002, 0, 5)
+is_locked = true
 
 [node name="NorthCamWall" parent="Cams" unique_id=1747157587 instance=ExtResource("5_vucmy")]
 transform = Transform3D(0.7431331, 0, -0.66914356, 0, 1, 0, 0.66914356, 0, 0.7431331, 3.1434593, -4.7683716e-07, 0)
@@ -193,6 +194,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -20)
 
 [node name="IntercomDoor" parent="Intercom" unique_id=561552896 instance=ExtResource("5_fjw4p")]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0.3, 0, 5)
+is_locked = true
 
 [node name="NorthIntercomWall" parent="Intercom" unique_id=1672430869 instance=ExtResource("5_vucmy")]
 transform = Transform3D(0.7431448, 0, 0.6691306, 0, 1, 0, -0.6691306, 0, 0.7431448, -3.143, 0, 0)
@@ -323,6 +325,7 @@ omni_range = 15.0
 
 [node name="EastDoor" parent="Armory" unique_id=1229734003 instance=ExtResource("3_1pv2h")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0, 19.7)
+is_locked = true
 
 [node name="SouthernArmWall" parent="Armory" unique_id=1457420098 instance=ExtResource("5_vucmy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.49, 0, 27.2)

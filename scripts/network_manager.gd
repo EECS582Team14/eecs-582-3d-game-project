@@ -19,6 +19,8 @@ signal play_again_received()
 signal elevator_used(action: String, floor_name: String)
 signal emergency_meeting_called()
 signal timer_sync_received(arrival_time: float, speed: float)
+signal door_opened(door_id: String)
+signal door_closed(door_id: String)
 signal ship_integrity_update_received(sender_steam_id: int, integrity: float)
 
 const PACKET_READ_LIMIT: int = 32
@@ -40,6 +42,7 @@ enum PacketType {
 	ELEVATOR_USE,
 	EMERGENCY_MEETING,
 	TIMER_SYNC,
+	DOOR_STATE_CHANGE,
 	SHIP_INTEGRITY
 }
 
@@ -168,6 +171,8 @@ func send_ship_integrity_update(integrity: float):
 	send_p2p_packet(0, {"type": PacketType.SHIP_INTEGRITY, "integrity": integrity}, Steam.P2P_SEND_RELIABLE, 0)
 	ship_integrity_update_received.emit(Steam.getSteamID(), integrity)
 
+func send_door_state_change(door_id: String, action: String):
+	send_p2p_packet(0, {"type": PacketType.DOOR_STATE_CHANGE, "door_id": door_id, "action": action}, Steam.P2P_SEND_RELIABLE, 0)
 # ============ READ PACKETS ============
 
 func _read_all_p2p_packets(read_count: int = 0):
@@ -256,6 +261,12 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 		PacketType.SHIP_INTEGRITY:
 			ship_integrity_update_received.emit(sender_steam_id, data.get("integrity", 100.0))
 	
+		PacketType.DOOR_STATE_CHANGE:
+			if data.get("action", "") == "open":
+				door_opened.emit(data.get("door_id", ""))
+			elif data.get("action", "") == "close":
+				door_closed.emit(data.get("door_id", ""))
+
 		_:
 			print("Unknown packet type: %s" % packet_type)
 

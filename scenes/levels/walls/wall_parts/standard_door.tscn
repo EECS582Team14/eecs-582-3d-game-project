@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://bmljf38vjouki"]
+
+[ext_resource type="Script" uid="uid://c78tlccltqjwd" path="res://scenes/levels/walls/wall_parts/door_script.gd" id="1_xd7ro"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xd7ro"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_48v5c"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_ef3ms"]
+size = Vector3(1.5, 2.2, 0.01)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_o8quh"]
+data = PackedVector3Array(-0.75, 1.1, 0.005, 0.75, 1.1, 0.005, -0.75, -1.1, 0.005, 0.75, 1.1, 0.005, 0.75, -1.1, 0.005, -0.75, -1.1, 0.005, 0.75, 1.1, -0.005, -0.75, 1.1, -0.005, 0.75, -1.1, -0.005, -0.75, 1.1, -0.005, -0.75, -1.1, -0.005, 0.75, -1.1, -0.005, 0.75, 1.1, 0.005, 0.75, 1.1, -0.005, 0.75, -1.1, 0.005, 0.75, 1.1, -0.005, 0.75, -1.1, -0.005, 0.75, -1.1, 0.005, -0.75, 1.1, -0.005, -0.75, 1.1, 0.005, -0.75, -1.1, -0.005, -0.75, 1.1, 0.005, -0.75, -1.1, 0.005, -0.75, -1.1, -0.005, 0.75, 1.1, 0.005, -0.75, 1.1, 0.005, 0.75, 1.1, -0.005, -0.75, 1.1, 0.005, -0.75, 1.1, -0.005, 0.75, 1.1, -0.005, -0.75, -1.1, 0.005, 0.75, -1.1, 0.005, -0.75, -1.1, -0.005, 0.75, -1.1, 0.005, 0.75, -1.1, -0.005, -0.75, -1.1, -0.005)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xd7ro"]
+size = Vector3(4, 2.2, 4)
+
+[node name="Door" type="StaticBody3D" unique_id=532613511]
+script = ExtResource("1_xd7ro")
+locked_mesh = SubResource("StandardMaterial3D_xd7ro")
+unlocked_mesh = SubResource("StandardMaterial3D_48v5c")
+
+[node name="DoorMesh" type="MeshInstance3D" parent="." unique_id=1254084229]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+mesh = SubResource("BoxMesh_ef3ms")
+
+[node name="DoorCollision" type="CollisionShape3D" parent="." unique_id=1926158530]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+shape = SubResource("ConcavePolygonShape3D_o8quh")
+
+[node name="DoorDetectionRange" type="Area3D" parent="." unique_id=1520436003]
+collision_mask = 2
+
+[node name="RangeCollisionShape" type="CollisionShape3D" parent="DoorDetectionRange" unique_id=394874340]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+shape = SubResource("BoxShape3D_xd7ro")
+
+[connection signal="body_entered" from="DoorDetectionRange" to="." method="_on_door_detection_range_body_entered"]
+[connection signal="body_exited" from="DoorDetectionRange" to="." method="_on_door_detection_range_body_exited"]

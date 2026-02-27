@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://chdj8l5glva0"]
 
+[ext_resource type="Script" uid="uid://c0yuooqqbenpa" path="res://scenes/levels/walls/door_controller.gd" id="1_1phkd"]
 [ext_resource type="Texture2D" uid="uid://bg7owu4icm2pp" path="res://scenes/levels/main_assets/space_wall.jpg" id="1_color"]
+[ext_resource type="PackedScene" uid="uid://bmljf38vjouki" path="res://scenes/levels/walls/wall_parts/standard_door.tscn" id="2_nt50k"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nt50k"]
 albedo_texture = ExtResource("1_color")
@@ -28,6 +30,7 @@ size = Vector3(1.5, 0.2, 0.1)
 data = PackedVector3Array(-0.75, 0.099999994, 0.049999997, 0.75, 0.099999994, 0.049999997, -0.75, -0.099999994, 0.049999997, 0.75, 0.099999994, 0.049999997, 0.75, -0.099999994, 0.049999997, -0.75, -0.099999994, 0.049999997, 0.75, 0.099999994, -0.049999997, -0.75, 0.099999994, -0.049999997, 0.75, -0.099999994, -0.049999997, -0.75, 0.099999994, -0.049999997, -0.75, -0.099999994, -0.049999997, 0.75, -0.099999994, -0.049999997, 0.75, 0.099999994, 0.049999997, 0.75, 0.099999994, -0.049999997, 0.75, -0.099999994, 0.049999997, 0.75, 0.099999994, -0.049999997, 0.75, -0.099999994, -0.049999997, 0.75, -0.099999994, 0.049999997, -0.75, 0.099999994, -0.049999997, -0.75, 0.099999994, 0.049999997, -0.75, -0.099999994, -0.049999997, -0.75, 0.099999994, 0.049999997, -0.75, -0.099999994, 0.049999997, -0.75, -0.099999994, -0.049999997, 0.75, 0.099999994, 0.049999997, -0.75, 0.099999994, 0.049999997, 0.75, 0.099999994, -0.049999997, -0.75, 0.099999994, 0.049999997, -0.75, 0.099999994, -0.049999997, 0.75, 0.099999994, -0.049999997, -0.75, -0.099999994, 0.049999997, 0.75, -0.099999994, 0.049999997, -0.75, -0.099999994, -0.049999997, 0.75, -0.099999994, 0.049999997, 0.75, -0.099999994, -0.049999997, -0.75, -0.099999994, -0.049999997)
 
 [node name="SmallDoor" type="StaticBody3D" unique_id=1087523963]
+script = ExtResource("1_1phkd")
 
 [node name="LeftWallMesh" type="MeshInstance3D" parent="." unique_id=105002263]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 1.2, 0)
@@ -54,3 +57,5 @@ mesh = SubResource("BoxMesh_4cw3w")
 [node name="UpperWallCollision" type="CollisionShape3D" parent="." unique_id=515106562]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
 shape = SubResource("ConcavePolygonShape3D_1phkd")
+
+[node name="Door" parent="." unique_id=532613511 instance=ExtResource("2_nt50k")]
