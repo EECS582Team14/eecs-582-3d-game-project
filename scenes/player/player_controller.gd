@@ -69,6 +69,26 @@ var _notification_label: Label = null
 
 #Task Designations
 var integrity_tasks = ["Armory_task", "Cam_task", "Crew_task", "Fab_task", "Life_task", "Sheilding_task", "Trash_task"]
+var TASK_DESCRIPTIONS := {
+	"Armory_task": "Secure weapon lockers and verify ammunition counts. (Upper - Armory)",
+	"Cam_task": "Realign and calibrate surveillance camera feeds. (Upper - Cams)",
+	"Colonial_task": "Inspect colonial artifacts and log preservation status. (Lower - Colonial)",
+	"Crew_task": "Update crew manifest and verify ID badge scans. (Upper - Crew Quarters)",
+	"Electrical_task": "Reset overloaded breakers and reroute power flow. (Lower - Electrical)",
+	"Fab_task": "Fabricate replacement components using the nano‑printer. (Lower - Fabrication Lab)",
+	"Human_Resources_task": "File crew performance reports and update duty assignments. (Upper - Human Resources)",
+	"Intercom_task": "Test shipwide intercom channels and repair faulty speakers. (Upper - Intercoms)",
+	"Life_task": "Check life support filters and balance oxygen levels. (Upper - Life Support)",
+	"Lower_Reactor_task": "Calibrate reactor temperature. (Lower - Reactor)",
+	"Nav_task": "Align navigation array. (Upper - Nav)",
+	"Nexus_task": "Stabilize data uplinks and clear corrupted routing nodes. (Upper - Nexus)",
+	"Personal_task": "Sort personal storage items and verify locker security. (Lower - Personal Items)",
+	"Shielding_task": "Reinforce hull shielding and patch micro‑fractures. (Upper - Shielding)",
+	"Supply_Closet_task": "Restock essential supplies and inventory materials. (Upper - Supply Closet)",
+	"Trash_task": "Empty waste bins and compact refuse for disposal. (Lower - Trash)",
+	"Upper_Reactor_task": "Balance plasma conduits and tune reactor output. (Upper - Reactor)",
+}
+
 
 # Hold-E task system
 var _task_hold_timer: float = 0.0
@@ -639,8 +659,10 @@ func _complete_task(task_id: String) -> void:
 		GameManager.adjust_progress_speed(-0.5)
 	else:
 		GameManager.adjust_progress_speed(0.5)
-	# Update directives panel
+	# Update directives panel and task description
 	var panels = get_tree().get_nodes_in_group("directives_panel")
+	var description = TASK_DESCRIPTIONS.get(task_id, task_id) # fallback to task_id if missing
+
 	for panel in panels:
 		if panel.has_method("mark_task_completed"):
-			panel.mark_task_completed("Calibrate reactor temperature. (Lower Deck - Reactor)")
+			panel.mark_task_completed(description)

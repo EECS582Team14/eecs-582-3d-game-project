@@ -254,7 +254,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.2, 0)
 omni_range = 15.0
 
 [node name="UpperReactorTask" parent="Reactor" unique_id=2102772599 instance=ExtResource("5_iah82")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 5)
 script = ExtResource("15_4clrc")
 task_id = "Upper_Reactor_task"
 
@@ -279,7 +279,7 @@ distance_fade_begin = 0.0
 distance_fade_length = 5.0
 
 [node name="LifeTask" parent="LifeSupport" unique_id=367489626 instance=ExtResource("5_iah82")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 0, 0)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3, 0.5, 0)
 script = ExtResource("18_sco87")
 task_id = "Life_task"
 
@@ -309,7 +309,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 omni_range = 15.0
 
 [node name="HumanResourcesTask" parent="HumanResources" unique_id=891591943 instance=ExtResource("5_iah82")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 0, 0)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3, 0.5, 0)
+constant_linear_velocity = Vector3(0, 0.5, 0)
 script = ExtResource("19_a5xa1")
 task_id = "Human_Resources_task"
 
@@ -338,7 +339,7 @@ distance_fade_begin = 0.0
 distance_fade_length = 5.0
 
 [node name="ArmoryTask" parent="Armory" unique_id=1873807883 instance=ExtResource("5_iah82")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 0, 20)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3, 0.5, 20)
 script = ExtResource("21_ydp2g")
 task_id = "Armory_task"
 
@@ -375,7 +376,8 @@ distance_fade_begin = 0.0
 distance_fade_length = 5.0
 
 [node name="ShieldingTask" parent="Shielding" unique_id=38533965 instance=ExtResource("5_iah82")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 22, 0, -5)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 22, 0.5, -5)
+constant_linear_velocity = Vector3(0, 0.5, 0)
 script = ExtResource("23_57p4a")
 task_id = "Shielding_task"
 
@@ -392,7 +394,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0, 6)
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15, 0, 4)
 
 [node name="SupplyClosetTask" parent="SupplyCloset" unique_id=1693878617 instance=ExtResource("5_iah82")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 22, 0, 3)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 22, 0.5, 3)
+constant_linear_velocity = Vector3(0, 0.5, 0)
 script = ExtResource("24_0m6m5")
 task_id = "Supply_Closet_task"
 
@@ -415,7 +418,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0, 25)
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 25.5, 0, 15)
 
 [node name="CrewTask" parent="Crew Quarters" unique_id=995424861 instance=ExtResource("5_iah82")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 22, 0, 15)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 22, 0.5, 15)
+constant_linear_velocity = Vector3(0, 0.5, 0)
 script = ExtResource("25_efilq")
 task_id = "Crew_task"
 
