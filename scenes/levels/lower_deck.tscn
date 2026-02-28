@@ -81,18 +81,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 7.55)
 [node name="SouthwestReactorWall" parent="Reactor" unique_id=1523538651 instance=ExtResource("1_mdr4r")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 7.55)
 
-[node name="CenterReactorLight" type="OmniLight3D" parent="Reactor" unique_id=2035618320]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
-omni_range = 15.0
-
-[node name="EastReactorLight" type="OmniLight3D" parent="Reactor" unique_id=441861348]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.2, 0)
-omni_range = 15.0
-
-[node name="WestReactorLight" type="OmniLight3D" parent="Reactor" unique_id=513254212]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.2, 0)
-omni_range = 15.0
-
 [node name="LowerReactorTask" parent="Reactor" unique_id=539148425 instance=ExtResource("6_console")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 6)
 
