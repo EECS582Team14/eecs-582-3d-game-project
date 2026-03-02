@@ -24,6 +24,7 @@ func _ready():
 
 	status_label.text = "Not in lobby"
 	start_btn.visible = false
+	player_list.visible = false
 
 	# Auto-search for lobbies on startup
 	_on_refresh_pressed()
@@ -32,6 +33,10 @@ func _ready():
 
 func _on_host_pressed():
 	status_label.text = "Creating lobby..."
+	
+	player_list.visible = true
+	lobby_list.visible = false
+	
 	LobbyManager.create_lobby(4)
 
 func _on_lobby_created(_lobby_id: int):
@@ -74,6 +79,7 @@ func _on_lobby_joined(_lobby_id: int):
 	lobby_list.visible = false
 	refresh_btn.visible = false
 	host_btn.visible = false
+	player_list.visible = true
 	# Show start button if we're the host
 	start_btn.visible = LobbyManager.is_host()
 	_refresh_players()

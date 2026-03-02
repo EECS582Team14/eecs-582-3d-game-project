@@ -1,10 +1,12 @@
 [gd_scene format=3 uid="uid://u7q38862f2cl"]
 
 [ext_resource type="Script" uid="uid://kip0ibucftcd" path="res://scenes/lobby/lobby_ui.tscn.gd" id="1_2pq4l"]
-[ext_resource type="Texture2D" uid="uid://d2do1pp0hm421" path="res://scenes/lobby/lobby_assets/Space.png" id="2_ssae1"]
-[ext_resource type="Texture2D" uid="uid://dv0t51bn3uxfy" path="res://scenes/lobby/lobby_assets/planet_clean_3.png" id="3_e5djm"]
-[ext_resource type="Texture2D" uid="uid://hswakn5bp3iq" path="res://scenes/lobby/lobby_assets/planet_clean_1.png" id="4_n7qqb"]
-[ext_resource type="Texture2D" uid="uid://cyj2w3ktv8342" path="res://scenes/lobby/lobby_assets/planet4.png" id="5_7hq2d"]
+[ext_resource type="Texture2D" uid="uid://cbq2vomgm3n6u" path="res://scenes/lobby/lobby_assets/Starry_night_over_a_dark_sky.png" id="2_n7qqb"]
+[ext_resource type="Texture2D" uid="uid://vwc5ul46nefv" path="res://scenes/lobby/lobby_assets/HostButton.png" id="3_7hq2d"]
+[ext_resource type="Texture2D" uid="uid://cgw7n0537q17t" path="res://scenes/lobby/lobby_assets/StartGameButton.png" id="4_7sou2"]
+[ext_resource type="Texture2D" uid="uid://bsj66kmguclbi" path="res://scenes/lobby/lobby_assets/HowToPlayButton.png" id="5_wkgk0"]
+[ext_resource type="Texture2D" uid="uid://bqjaw43kq7mxr" path="res://scenes/lobby/lobby_assets/SettingsButton.png" id="6_7hq2d"]
+[ext_resource type="Texture2D" uid="uid://btkgw7lugu7le" path="res://scenes/lobby/lobby_assets/RefreshButton.png" id="6_ykcmf"]
 
 [node name="LobbyUI" type="Control" unique_id=474558022]
 layout_mode = 3
@@ -18,22 +20,6 @@ offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_2pq4l")
-
-[node name="HostButton" type="Button" parent="." unique_id=1503356061]
-z_index = 1
-layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -244.0
-offset_top = -128.0
-offset_right = -150.0
-offset_bottom = -97.0
-grow_horizontal = 0
-grow_vertical = 2
-text = "Host Game"
 
 [node name="StatusLabel" type="Label" parent="." unique_id=1588222291]
 layout_mode = 0
@@ -50,129 +36,52 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -336.0
-offset_top = -277.0
-offset_right = -52.0
-offset_bottom = -166.0
+offset_left = -1092.0
+offset_top = 11.0
+offset_right = -758.0
+offset_bottom = 257.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="StartButton" type="Button" parent="." unique_id=430246099]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 345.0
-offset_top = 184.0
-offset_right = 441.0
-offset_bottom = 215.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Start Game"
-
-[node name="RefreshButton" type="Button" parent="." unique_id=1491967666]
-layout_mode = 0
-offset_left = 189.0
-offset_top = 235.0
-offset_right = 257.0
-offset_bottom = 266.0
-text = "Refresh"
-
 [node name="LobbyList" type="ItemList" parent="." unique_id=1923475287]
 layout_mode = 0
-offset_left = 59.0
+offset_left = 60.0
 offset_top = 335.0
-offset_right = 393.0
+offset_right = 394.0
 offset_bottom = 581.0
 
-[node name="Planet3" type="TextureRect" parent="." unique_id=1487232047]
-z_index = -1
+[node name="OutliarLabel" type="RichTextLabel" parent="." unique_id=351046177]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.77900004
-anchor_top = 0.71300006
-anchor_right = 0.897
-anchor_bottom = 0.91
-offset_left = -0.40808105
-offset_top = -0.024047852
-offset_right = -0.34399414
-offset_bottom = 0.32000732
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -206.0
+offset_top = -33.0
+offset_right = 211.0
+offset_bottom = 124.0
 grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("4_n7qqb")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Planet1" type="TextureRect" parent="." unique_id=2009857529]
-z_index = -1
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 140.0
-offset_top = -142.0
-offset_right = 302.0
-offset_bottom = -6.0
-grow_vertical = 2
-texture = ExtResource("3_e5djm")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Planet2" type="TextureRect" parent="." unique_id=1980514147]
-z_index = -1
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.70500004
-anchor_top = 0.128
-anchor_right = 0.94200003
-anchor_bottom = 0.53900003
-offset_left = -0.16003418
-offset_top = 0.055999756
-offset_right = -0.18408203
-offset_bottom = -0.2720337
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("5_7hq2d")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=351046177]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.344
-anchor_top = 0.28100002
-anchor_right = 0.69200003
-anchor_bottom = 0.492
-offset_left = -0.2880249
-offset_top = -0.088012695
-offset_right = -0.184021
-offset_bottom = 0.18399048
-grow_horizontal = 2
-grow_vertical = 2
 bbcode_enabled = true
-text = "[center][font_size=96]Out[color=#aa0000]LIAR[/color][/font_size][/center]
-"
+text = "[center]
+[font_size=90
+][color=#FFFFFF]Out[/color][color=#FF3B3B]LIAR[/color][/font_size]
+[/center]"
 
-[node name="RichTextLabel2" type="RichTextLabel" parent="." unique_id=881090405]
+[node name="SubtextLabel" type="RichTextLabel" parent="." unique_id=881090405]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.374
-anchor_top = 0.46500003
-anchor_right = 0.67600006
-anchor_bottom = 0.532
-offset_left = 0.15197754
-offset_top = -0.32000732
-offset_right = -0.16003418
-offset_bottom = 0.24002075
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -192.0
+offset_top = 45.0
+offset_right = 205.0
+offset_bottom = 173.0
 grow_horizontal = 2
-grow_vertical = 2
 bbcode_enabled = true
-text = "[center][font_size=28][color=#dddddd]Who is telling the truth?[/color][/font_size][/center]
-"
+text = "[center]
+[font_size=28][color=#9FB3C8]
+Who is Telling the   [color=#FF3B3B]Truth?[/color]
+[/color][/font_size]
+[/center]"
 
 [node name="SpaceBackground" type="TextureRect" parent="." unique_id=1902989949]
 z_index = -10
@@ -180,8 +89,62 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -192.0
+offset_top = -188.0
+offset_right = 192.0
+offset_bottom = 188.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("2_ssae1")
+texture = ExtResource("2_n7qqb")
 stretch_mode = 6
+
+[node name="HostButton" type="TextureButton" parent="." unique_id=123094437]
+layout_mode = 0
+offset_left = 420.0
+offset_top = 161.0
+offset_right = 722.0
+offset_bottom = 240.0
+texture_normal = ExtResource("3_7hq2d")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="StartButton" type="TextureButton" parent="." unique_id=70984848]
+layout_mode = 0
+offset_left = 419.0
+offset_top = 388.0
+offset_right = 721.0
+offset_bottom = 457.0
+texture_normal = ExtResource("4_7sou2")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="HowToPlayButton" type="TextureButton" parent="." unique_id=1084292714]
+layout_mode = 0
+offset_left = 420.0
+offset_top = 237.0
+offset_right = 722.0
+offset_bottom = 316.0
+texture_normal = ExtResource("5_wkgk0")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="SettingsButton" type="TextureButton" parent="." unique_id=790090182]
+layout_mode = 0
+offset_left = 420.0
+offset_top = 319.0
+offset_right = 724.0
+offset_bottom = 384.0
+texture_normal = ExtResource("6_7hq2d")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="RefreshButton" type="TextureButton" parent="." unique_id=752661425]
+layout_mode = 0
+offset_left = 282.0
+offset_top = 581.0
+offset_right = 396.0
+offset_bottom = 621.0
+texture_normal = ExtResource("6_ykcmf")
+ignore_texture_size = true
+stretch_mode = 5

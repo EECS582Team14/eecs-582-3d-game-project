@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://mfwyjpfvaixa"
-path="res://.godot/imported/planet_clean_2.png-37c6a86b906074941b6a981dd08120d3.ctex"
+uid="uid://vwc5ul46nefv"
+path="res://.godot/imported/HostButton.png-6e478524b8d72dfad0e753a7d2f1ca26.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://scenes/lobby/lobby_assets/planet_clean_2.png"
-dest_files=["res://.godot/imported/planet_clean_2.png-37c6a86b906074941b6a981dd08120d3.ctex"]
+source_file="res://scenes/lobby/lobby_assets/HostButton.png"
+dest_files=["res://.godot/imported/HostButton.png-6e478524b8d72dfad0e753a7d2f1ca26.ctex"]
 
 [params]
 
