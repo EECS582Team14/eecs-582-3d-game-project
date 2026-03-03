@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://u7q38862f2cl"]
 
 [ext_resource type="Script" uid="uid://kip0ibucftcd" path="res://scenes/lobby/lobby_ui.tscn.gd" id="1_2pq4l"]
+[ext_resource type="FontFile" uid="uid://bgb7dmtwax5mq" path="res://scenes/lobby/lobby_assets/Dune_Rise.otf" id="2_7sou2"]
 [ext_resource type="Texture2D" uid="uid://cbq2vomgm3n6u" path="res://scenes/lobby/lobby_assets/Starry_night_over_a_dark_sky.png" id="2_n7qqb"]
 [ext_resource type="Texture2D" uid="uid://vwc5ul46nefv" path="res://scenes/lobby/lobby_assets/HostButton.png" id="3_7hq2d"]
+[ext_resource type="FontFile" uid="uid://da1buffs4fgf6" path="res://scenes/lobby/lobby_assets/Nasalization Rg.otf" id="3_wkgk0"]
 [ext_resource type="Texture2D" uid="uid://cgw7n0537q17t" path="res://scenes/lobby/lobby_assets/StartGameButton.png" id="4_7sou2"]
 [ext_resource type="Texture2D" uid="uid://bsj66kmguclbi" path="res://scenes/lobby/lobby_assets/HowToPlayButton.png" id="5_wkgk0"]
 [ext_resource type="Texture2D" uid="uid://bqjaw43kq7mxr" path="res://scenes/lobby/lobby_assets/SettingsButton.png" id="6_7hq2d"]
@@ -42,6 +44,7 @@ offset_right = -758.0
 offset_bottom = 257.0
 grow_horizontal = 0
 grow_vertical = 2
+fixed_icon_size = Vector2i(15, 15)
 
 [node name="LobbyList" type="ItemList" parent="." unique_id=1923475287]
 layout_mode = 0
@@ -49,17 +52,19 @@ offset_left = 60.0
 offset_top = 335.0
 offset_right = 394.0
 offset_bottom = 581.0
+fixed_icon_size = Vector2i(15, 15)
 
 [node name="OutliarLabel" type="RichTextLabel" parent="." unique_id=351046177]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -206.0
-offset_top = -33.0
-offset_right = 211.0
-offset_bottom = 124.0
+offset_left = -314.0
+offset_top = 15.0
+offset_right = 326.0
+offset_bottom = 133.0
 grow_horizontal = 2
+theme_override_fonts/normal_font = ExtResource("2_7sou2")
 bbcode_enabled = true
 text = "[center]
 [font_size=90
@@ -71,11 +76,12 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -192.0
-offset_top = 45.0
-offset_right = 205.0
-offset_bottom = 173.0
+offset_left = -194.0
+offset_top = 64.0
+offset_right = 203.0
+offset_bottom = 177.0
 grow_horizontal = 2
+theme_override_fonts/normal_font = ExtResource("3_wkgk0")
 bbcode_enabled = true
 text = "[center]
 [font_size=28][color=#9FB3C8]
@@ -89,10 +95,6 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -192.0
-offset_top = -188.0
-offset_right = 192.0
-offset_bottom = 188.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2

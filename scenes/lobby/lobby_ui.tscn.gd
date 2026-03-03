@@ -8,6 +8,10 @@ extends Control
 @onready var lobby_list = $LobbyList
 
 var available_lobbies: Array = []
+var dot_blue = preload("res://scenes/lobby/lobby_assets/BlueIcon.png")
+var dot_red = preload("res://scenes/lobby/lobby_assets/RedIcon.png")
+var dot_purple = preload("res://scenes/lobby/lobby_assets/PurpleIcon.png")
+var dot_host = preload("res://scenes/lobby/lobby_assets/HostIcon.png")
 
 func _ready():
 	host_btn.pressed.connect(_on_host_pressed)
@@ -37,7 +41,7 @@ func _on_host_pressed():
 	player_list.visible = true
 	lobby_list.visible = false
 	
-	LobbyManager.create_lobby(4)
+	LobbyManager.create_lobby(8)
 
 func _on_lobby_created(_lobby_id: int):
 	start_btn.visible = true
@@ -61,7 +65,15 @@ func _on_lobby_list_received(lobbies: Array):
 
 	for lobby in lobbies:
 		var text = "%s  (%d/%d)" % [lobby.name, lobby.player_count, lobby.max_players]
-		lobby_list.add_item(text)
+		#lobby_list.add_item(text)
+		var icon = dot_purple
+		# Example logic: change color depending on fullness
+		var ratio = float(lobby.player_count) / lobby.max_players
+		if ratio >= 0.75:
+			icon = dot_blue   # almost full
+		else:
+			icon = dot_red  # available
+		lobby_list.add_item(text, icon)
 
 	status_label.text = "Found %d lobby(s). Double-click to join." % lobbies.size()
 
@@ -91,7 +103,11 @@ func _refresh_players():
 	player_list.clear()
 	for member in LobbyManager.lobby_members:
 		var prefix = "[HOST] " if member.steam_id == LobbyManager.get_host_steam_id() else ""
-		player_list.add_item(prefix + member.name)
+		#player_list.add_item(prefix + member.name)
+		var icon = dot_purple
+		if member.steam_id == LobbyManager.get_host_steam_id():
+			icon = dot_host
+		player_list.add_item(member.name, icon)
 
 # ============ GAME START ============
 
