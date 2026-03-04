@@ -27,7 +27,10 @@ const PLAYER_COLORS: Array[Color] = [
 var players_container: Node3D = null
 var hud_instance: Control = null  # hold reference to local HUD
 # Destination progress
+const time_to_dest: float = 60
+
 var destination_progress: float = 0.0
+var destination_distance: float = time_to_dest
 var base_progress_speed: float = 1.0
 var progress_speed_modifier: float = 1.0
 const PROGRESS_SYNC_RATE: float = 1.0
@@ -36,8 +39,8 @@ var _progress_sync_timer: float = 0.0
 # Arrival countdown
 var arrival_time: float = 0.0  # absolute Unix timestamp
 var timer_active: bool = false
-var timer_phase_one: float = 30.0  # default 5-minute countdown
-var timer_phase_two: float = 60.0
+var timer_phase_one: float = 5.0  # default 5-minute countdown
+var timer_phase_two: float = time_to_dest
 
 # Ship integrity
 var max_ship_integrity: float = 100.0
@@ -81,13 +84,14 @@ func _process(delta):
 		UIState.system_alert.emit("Successful hyperjump achieved, all systems nominal. Avoid contact with the the warp. Risk of data corruption: Low")
 	if game_state == 2:
 		destination_progress += base_progress_speed * progress_speed_modifier * delta
-		destination_progress = clampf(destination_progress, 0.0, 100.0)
+		var true_destination_progress: float = destination_progress / destination_distance 
+		true_destination_progress = clampf(true_destination_progress * 100, 0.0, 100.0)
 
 		_progress_sync_timer += delta
 		if _progress_sync_timer >= PROGRESS_SYNC_RATE:
 			_progress_sync_timer = 0.0
-			NetworkManager.send_progress_update(destination_progress, progress_speed_modifier)
-			NetworkManager.progress_update_received.emit(destination_progress, progress_speed_modifier)
+			NetworkManager.send_progress_update(true_destination_progress, progress_speed_modifier)
+			NetworkManager.progress_update_received.emit(true_destination_progress, progress_speed_modifier)
 
 func adjust_progress_speed(amount: float):
 	progress_speed_modifier += amount
