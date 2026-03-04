@@ -98,7 +98,7 @@ func _on_lobby_joined(joined_lobby_id: int, _permissions: int, _locked: bool, re
 		lobby_join_failed.emit(result)
 
 # ============ MEMBERS ============
-
+"""
 func _on_lobby_chat_update(changed_lobby_id: int, changed_user_id: int, _making_change_id: int, chat_state: int):
 	if changed_lobby_id != lobby_id:
 		return
@@ -111,7 +111,37 @@ func _on_lobby_chat_update(changed_lobby_id: int, changed_user_id: int, _making_
 		_refresh_lobby_members()
 		player_left.emit(changed_user_id)
 	else:
-		_refresh_lobby_members()
+		_refresh_lobby_members()"""
+		
+func _on_lobby_chat_update(changed_lobby_id: int, changed_user_id: int, _making_change_id: int, chat_state: int):
+	if changed_lobby_id != lobby_id:
+		return
+
+	_refresh_lobby_members()
+
+	if chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_ENTERED:
+		player_joined.emit(changed_user_id)
+
+		_check_original_host_returned(changed_user_id)
+
+	elif chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_LEFT \
+	or chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_DISCONNECTED:
+		player_left.emit(changed_user_id)
+		
+func _check_original_host_returned(joined_id: int):
+	var original_host = get_original_host_id()
+
+	# Only the current host can transfer ownership
+	if not is_host():
+		return
+
+	if joined_id == original_host:
+		print("Original host returned — transferring ownership back")
+		Steam.setLobbyOwner(lobby_id, original_host)
+		# Update our stored host immediately
+		current_host_id = original_host
+		# Emit signal so UI updates instantly
+		host_changed.emit(original_host)
 
 func _refresh_lobby_members():
 	lobby_members.clear()
@@ -148,7 +178,10 @@ func _notification(what):
 		leave_lobby()
 
 # ============ HELPERS ============
-
+func get_original_host_id() -> int:
+	var id_str = Steam.getLobbyData(lobby_id, "original_host")
+	return int(id_str) if id_str != "" else 0
+	
 func is_host() -> bool:
 	return Steam.getLobbyOwner(lobby_id) == Steam.getSteamID()
 
