@@ -9,12 +9,27 @@ extends StaticBody3D
 
 # Internal state variables
 var is_locked: bool = false
+var _is_open: bool = false
+var _is_animating: bool = false
+var _bodies_in_range: int = 0
+
+# Door slide distance (slides sideways into the wall frame)
+const SLIDE_DISTANCE: float = 1.5
+const SLIDE_DURATION: float = 0.6
+
+# Closed position (set in _ready based on initial transform)
+var _closed_position: Vector3
+var _open_position: Vector3
+var _lock_closed_position: Vector3
 
 # Materials to swap for locked and unlocked states
 @export var locked_mesh: Material
 @export var unlocked_mesh: Material
 
 func _ready() -> void:
+	_closed_position = door_mesh.position
+	_open_position = _closed_position + Vector3(SLIDE_DISTANCE, 0, 0)
+	_lock_closed_position = lock_icon.position
 	NetworkManager.door_opened.connect(_on_door_opened)
 	NetworkManager.door_closed.connect(_on_door_closed)
 
@@ -29,24 +44,45 @@ func _process(_delta: float) -> void:
 
 ## FUNCTION TO OPEN THE DOOR
 func _open_door() -> void:
-	#Set the collider to be disabled and make the door invisible to simulate opening
+	if _is_open or _is_animating:
+		return
+	_is_open = true
+	_is_animating = true
 	collider.disabled = true
-	self.visible = false
+
+	var tween = create_tween()
+	tween.tween_property(door_mesh, "position", _open_position, SLIDE_DURATION).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_QUAD)
+	tween.parallel().tween_property(lock_icon, "position:x", _lock_closed_position.x + SLIDE_DISTANCE, SLIDE_DURATION).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_QUAD)
+	tween.tween_callback(func(): _is_animating = false)
 
 ## FUNCTION TO CLOSE THE DOOR
 func _close_door() -> void:
-	#Set the collider to be enabled and make the door visible to simulate closing
-	collider.disabled = false
-	self.visible = true
+	if not _is_open or _is_animating:
+		return
+	_is_open = false
+	_is_animating = true
+
+	var tween = create_tween()
+	tween.tween_property(door_mesh, "position", _closed_position, SLIDE_DURATION).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_QUAD)
+	tween.parallel().tween_property(lock_icon, "position:x", _lock_closed_position.x, SLIDE_DURATION).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_QUAD)
+	tween.tween_callback(func():
+		_is_animating = false
+		collider.disabled = false
+	)
 
 ## SIGNAL CALLBACK FOR WHEN A BODY ENTERS THE DOOR'S DETECTION RANGE
 func _on_door_detection_range_body_entered(_body: Node3D) -> void:
-	if not is_locked:
+	_bodies_in_range += 1
+	if not is_locked and _bodies_in_range == 1:
 		_open_door()
+		NetworkManager.send_door_state_change(self.name, "open")
 
 ## SIGNAL CALLBACK FOR WHEN A BODY EXITS THE DOOR'S DETECTION RANGE
 func _on_door_detection_range_body_exited(_body: Node3D) -> void:
-	_close_door()
+	_bodies_in_range = max(_bodies_in_range - 1, 0)
+	if _bodies_in_range == 0:
+		_close_door()
+		NetworkManager.send_door_state_change(self.name, "close")
 
 func _on_door_opened(door_id: String) -> void:
 	if door_id == self.name:
