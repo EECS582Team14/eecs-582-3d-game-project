@@ -58,6 +58,7 @@ var _timer_label: Label = null
 
 # Inventory
 var has_taser: bool = false
+var _taser_hidden: bool = false
 
 # Dead state (ghost mode)
 var is_dead: bool = false
@@ -123,6 +124,7 @@ func _ready() -> void:
 		NetworkManager.item_picked_up.connect(_on_item_picked_up)
 		NetworkManager.taser_shot_received.connect(_on_taser_shot_received)
 		NetworkManager.taser_hit_received.connect(_on_taser_hit_received)
+		NetworkManager.taser_hide_received.connect(_on_taser_hide_received)
 
 
 		# Create timer label (top center)
@@ -306,13 +308,10 @@ func _input(event: InputEvent) -> void:
 				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 				_is_mouse_captured = false
 		elif event.key_label == KEY_H and event.pressed and not is_dead:
-			current_health -= 10
-			if current_health < 0:
-				current_health = 0
-			UIState.health_changed.emit(current_health)
-			NetworkManager.send_health_update(current_health)
-			if current_health <= 0:
-				_enter_dead_state()
+			if has_taser and _held_taser:
+				_taser_hidden = not _taser_hidden
+				_held_taser.visible = not _taser_hidden
+				NetworkManager.send_taser_hide(_taser_hidden)
 		elif event.key_label == KEY_F and event.pressed:
 			NetworkManager.send_emergency_meeting()
 		elif event.key_label == KEY_K and event.pressed:
@@ -328,7 +327,7 @@ func _input(event: InputEvent) -> void:
 			if not _is_mouse_captured:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 				_is_mouse_captured = true
-			elif has_taser and not is_dead:
+			elif has_taser and not is_dead and not _taser_hidden:
 				_shoot_taser()
 
 func _process(delta: float) -> void:
@@ -572,6 +571,11 @@ func _attach_taser_model() -> void:
 	_held_taser.scale = Vector3(0.5, 0.5, 0.5)
 	_held_taser.rotation_degrees.y = 90.0
 	weapon_holder.add_child(_held_taser)
+
+func _on_taser_hide_received(sender_steam_id: int, hidden: bool) -> void:
+	var player = NetworkManager.get_player(sender_steam_id)
+	if player and player != self and player._held_taser:
+		player._held_taser.visible = not hidden
 
 func _on_item_picked_up(picker_steam_id: int, item_id: String) -> void:
 	if not item_id.begins_with("taser"):

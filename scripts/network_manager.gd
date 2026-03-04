@@ -22,6 +22,7 @@ signal timer_sync_received(arrival_time: float, speed: float)
 signal door_opened(door_id: String)
 signal door_closed(door_id: String)
 signal ship_integrity_update_received(sender_steam_id: int, integrity: float)
+signal taser_hide_received(steam_id: int, hidden: bool)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -43,7 +44,8 @@ enum PacketType {
 	EMERGENCY_MEETING,
 	TIMER_SYNC,
 	DOOR_STATE_CHANGE,
-	SHIP_INTEGRITY
+	SHIP_INTEGRITY,
+	TASER_HIDE
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -141,6 +143,9 @@ func send_taser_shot(origin: Vector3, direction: Vector3):
 func send_item_pickup(item_id: String):
 	send_p2p_packet(0, {"type": PacketType.ITEM_PICKUP, "item_id": item_id, "picker": Steam.getSteamID()}, Steam.P2P_SEND_RELIABLE, 0)
 	item_picked_up.emit(Steam.getSteamID(), item_id)
+
+func send_taser_hide(hidden: bool):
+	send_p2p_packet(0, {"type": PacketType.TASER_HIDE, "hidden": hidden}, Steam.P2P_SEND_RELIABLE, 0)
 
 func send_progress_update(progress: float, speed: float):
 	send_p2p_packet(0, {"type": PacketType.PROGRESS_UPDATE, "prog": progress, "spd": speed}, Steam.P2P_SEND_RELIABLE, 0)
@@ -266,6 +271,9 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 				door_opened.emit(data.get("door_id", ""))
 			elif data.get("action", "") == "close":
 				door_closed.emit(data.get("door_id", ""))
+
+		PacketType.TASER_HIDE:
+			taser_hide_received.emit(sender_steam_id, data.get("hidden", false))
 
 		_:
 			print("Unknown packet type: %s" % packet_type)

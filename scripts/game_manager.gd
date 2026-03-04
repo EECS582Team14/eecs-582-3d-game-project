@@ -453,6 +453,7 @@ func _assign_roles():
 	# Pick one random player as the impostor
 	var impostor_index = randi() % LobbyManager.lobby_members.size()
 	var my_steam_id = Steam.getSteamID()
+	var impostor_steam_id: int = LobbyManager.lobby_members[impostor_index].steam_id
 
 	for i in range(LobbyManager.lobby_members.size()):
 		var member_steam_id = LobbyManager.lobby_members[i].steam_id
@@ -472,8 +473,19 @@ func _assign_roles():
 			# Send role to remote player privately
 			NetworkManager.send_role_assignment(member_steam_id, is_impostor)
 
+	# Give the impostor the taser after the role reveal delay
+	_give_impostor_taser_after_reveal(impostor_steam_id)
+
 	var impostor_name = LobbyManager.lobby_members[impostor_index].name
 	print("Impostor assigned: ", impostor_name)
+
+func _give_impostor_taser_after_reveal(impostor_steam_id: int):
+	await get_tree().create_timer(30.0).timeout
+	var impostor_player = NetworkManager.get_player(impostor_steam_id)
+	if impostor_player:
+		impostor_player.give_taser()
+	# Broadcast to all clients so they show the taser on the impostor
+	NetworkManager.send_p2p_packet(0, {"type": NetworkManager.PacketType.ITEM_PICKUP, "item_id": "taser_impostor", "picker": impostor_steam_id}, Steam.P2P_SEND_RELIABLE, 0)
 
 func _on_player_left(steam_id: int):
 	VoiceManager.remove_player_voice(steam_id)
