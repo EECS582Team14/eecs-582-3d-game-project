@@ -5,6 +5,7 @@ extends StaticBody3D
 # Initialize child nodes
 @onready var collider: CollisionShape3D = $DoorCollision
 @onready var door_mesh: MeshInstance3D = $DoorMesh
+@onready var lock_icon: MeshInstance3D = $LockIcon
 
 # Internal state variables
 var is_locked: bool = false
@@ -21,8 +22,10 @@ func _process(_delta: float) -> void:
 	# Update the door's mesh based on its locked state
 	if is_locked:
 		door_mesh.material_override = locked_mesh
+		lock_icon.visible = true
 	else:
 		door_mesh.material_override = unlocked_mesh
+		lock_icon.visible = false
 
 ## FUNCTION TO OPEN THE DOOR
 func _open_door() -> void:
