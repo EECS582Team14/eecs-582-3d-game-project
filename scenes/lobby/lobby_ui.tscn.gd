@@ -25,6 +25,7 @@ func _ready():
 	LobbyManager.player_left.connect(_on_player_update)
 	LobbyManager.lobby_list_received.connect(_on_lobby_list_received)
 	NetworkManager.game_started.connect(_on_game_started)
+	LobbyManager.host_changed.connect(_on_host_changed)
 
 	status_label.text = "Not in lobby"
 	start_btn.visible = false
@@ -34,7 +35,14 @@ func _ready():
 	_on_refresh_pressed()
 
 # ============ HOST ============
+func _on_host_changed(_new_host_id):
+	start_btn.visible = LobbyManager.is_host()
 
+	if LobbyManager.is_host():
+		status_label.text = "You are now the host."
+	else:
+		status_label.text = "Host changed."
+		
 func _on_host_pressed():
 	status_label.text = "Creating lobby..."
 	
@@ -98,6 +106,7 @@ func _on_lobby_joined(_lobby_id: int):
 
 func _on_player_update(_steam_id: int):
 	_refresh_players()
+	start_btn.visible = LobbyManager.is_host()
 
 func _refresh_players():
 	player_list.clear()

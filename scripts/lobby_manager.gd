@@ -11,6 +11,8 @@ const GAME_TAG: String = "outliar"
 
 var lobby_id: int = 0
 var lobby_members: Array = []
+var current_host_id: int = 0
+signal host_changed(new_host_id)
 
 func _ready():
 	print("LobbyManager starting...")
@@ -121,6 +123,14 @@ func _refresh_lobby_members():
 			"name": Steam.getFriendPersonaName(member_id)
 		})
 	print("Members: ", lobby_members)
+	var new_host = Steam.getLobbyOwner(lobby_id)
+
+	# Detect host migration
+	if current_host_id != 0 and new_host != current_host_id:
+		print("Host migrated to: ", new_host)
+		host_changed.emit(new_host)
+
+	current_host_id = new_host
 
 # ============ LEAVE ============
 
