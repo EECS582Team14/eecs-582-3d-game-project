@@ -115,7 +115,7 @@ func _refresh_players():
 		var icon = dot_purple
 		if member["steam_id"] == LobbyManager.get_host_steam_id():
 			icon = dot_host
-		player_list.add_item(member.name, icon)
+		player_list.add_item(member["name"], icon)
 
 # ============ GAME START ============
 

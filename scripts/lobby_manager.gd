@@ -99,20 +99,6 @@ func _on_lobby_joined(joined_lobby_id: int, _permissions: int, _locked: bool, re
 		lobby_join_failed.emit(result)
 
 # ============ MEMBERS ============
-"""
-func _on_lobby_chat_update(changed_lobby_id: int, changed_user_id: int, _making_change_id: int, chat_state: int):
-	if changed_lobby_id != lobby_id:
-		return
-
-	if chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_ENTERED:
-		_refresh_lobby_members()
-		NetworkManager.establish_p2p_with_lobby()
-		player_joined.emit(changed_user_id)
-	elif chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_LEFT or chat_state == Steam.CHAT_MEMBER_STATE_CHANGE_DISCONNECTED:
-		_refresh_lobby_members()
-		player_left.emit(changed_user_id)
-	else:
-		_refresh_lobby_members()"""
 		
 func _on_lobby_chat_update(changed_lobby_id: int, changed_user_id: int, _making_change_id: int, chat_state: int):
 	if changed_lobby_id != lobby_id:
@@ -157,7 +143,7 @@ func _refresh_lobby_members():
 	var new_host = Steam.getLobbyOwner(lobby_id)
 
 	# Detect host migration
-	if current_host_id != 0 and new_host != current_host_id:
+	if new_host != current_host_id:
 		print("Host migrated to: ", new_host)
 		host_changed.emit(new_host)
 
