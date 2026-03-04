@@ -37,6 +37,7 @@ func _ready():
 # ============ HOST ============
 func _on_host_changed(_new_host_id):
 	start_btn.visible = LobbyManager.is_host()
+	_refresh_players()
 
 	if LobbyManager.is_host():
 		status_label.text = "You are now the host."
