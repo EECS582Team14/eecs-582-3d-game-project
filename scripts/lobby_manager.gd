@@ -31,6 +31,18 @@ func _ready():
 
 func _process(_delta):
 	Steam.run_callbacks()
+	_check_host_change()
+	
+func _check_host_change():
+	if lobby_id == 0:
+		return
+
+	var new_host = Steam.getLobbyOwner(lobby_id)
+
+	if new_host != current_host_id:
+		print("Host migrated to:", new_host)
+		current_host_id = new_host
+		host_changed.emit(new_host)
 
 # ============ CREATE ============
 
@@ -140,14 +152,6 @@ func _refresh_lobby_members():
 			"name": Steam.getFriendPersonaName(member_id)
 		})
 	print("Members: ", lobby_members)
-	var new_host = Steam.getLobbyOwner(lobby_id)
-
-	# Detect host migration
-	if new_host != current_host_id:
-		print("Host migrated to: ", new_host)
-		host_changed.emit(new_host)
-
-	current_host_id = new_host
 
 # ============ LEAVE ============
 
