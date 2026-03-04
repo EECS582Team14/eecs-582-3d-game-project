@@ -102,10 +102,8 @@ func _on_player_update(_steam_id: int):
 func _refresh_players():
 	player_list.clear()
 	for member in LobbyManager.lobby_members:
-		var prefix = "[HOST] " if member.steam_id == LobbyManager.get_host_steam_id() else ""
-		#player_list.add_item(prefix + member.name)
 		var icon = dot_purple
-		if member.steam_id == LobbyManager.get_host_steam_id():
+		if member["steam_id"] == LobbyManager.get_host_steam_id():
 			icon = dot_host
 		player_list.add_item(member.name, icon)
 
