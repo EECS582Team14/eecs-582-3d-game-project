@@ -52,7 +52,6 @@ func _on_host_pressed():
 	LobbyManager.create_lobby(8)
 
 func _on_lobby_created(_lobby_id: int):
-	Steam.setLobbyData(_lobby_id, "original_host", str(Steam.getSteamID()))
 	start_btn.visible = true
 	status_label.text = "Lobby created! Waiting for players..."
 	_refresh_players()

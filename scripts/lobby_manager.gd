@@ -45,6 +45,7 @@ func _on_lobby_created(result: int, new_lobby_id: int):
 		Steam.setLobbyJoinable(lobby_id, true)
 		Steam.setLobbyData(lobby_id, "name", Steam.getPersonaName() + "'s Game")
 		Steam.setLobbyData(lobby_id, "game_tag", GAME_TAG)
+		Steam.setLobbyData(lobby_id, "original_host", str(Steam.getSteamID()))
 		# Allow Steam relay as fallback for P2P
 		Steam.allowP2PPacketRelay(true)
 		_refresh_lobby_members()
