@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://dkmlnl6gy54df"]
+
+[ext_resource type="PackedScene" uid="uid://d3obdk8y6yurc" path="res://scenes/items/Healthpack Table/sci_fi_table_model_sr1.glb" id="1_fai20"]
+[ext_resource type="PackedScene" uid="uid://bhnihej24hlrx" path="res://scenes/items/healthpack.tscn" id="2_swdjj"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0frko"]
+size = Vector3(1.6074219, 1.036499, 1.0999756)
+
+[node name="HealthpackTable" type="StaticBody3D" unique_id=1078645518]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="Table" parent="." unique_id=162479449 instance=ExtResource("1_fai20")]
+
+[node name="Healthpack" parent="." unique_id=82828419 instance=ExtResource("2_swdjj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2297869, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=572749653]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0078125, 0.4776001, -0.0051879883)
+shape = SubResource("BoxShape3D_0frko")

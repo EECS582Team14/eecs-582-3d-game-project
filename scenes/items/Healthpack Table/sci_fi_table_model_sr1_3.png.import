@@ -2,17 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bolgtv2b8euy8"
-path.s3tc="res://.godot/imported/space_door.jpg-ff88386018fdd81318419cc9c2e34e87.s3tc.ctex"
+uid="uid://dlw30gb1ogrue"
+path.s3tc="res://.godot/imported/sci_fi_table_model_sr1_3.png-51e5cc1bc56b7fb831d68f25cf18c69f.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
+generator_parameters={
+"md5": "f4036b4c1343621b42259476dd88f30f"
+}
 
 [deps]
 
-source_file="res://scenes/levels/walls/wall_parts/space_door.jpg"
-dest_files=["res://.godot/imported/space_door.jpg-ff88386018fdd81318419cc9c2e34e87.s3tc.ctex"]
+source_file="res://scenes/items/Healthpack Table/sci_fi_table_model_sr1_3.png"
+dest_files=["res://.godot/imported/sci_fi_table_model_sr1_3.png-51e5cc1bc56b7fb831d68f25cf18c69f.s3tc.ctex"]
 
 [params]
 

@@ -17,6 +17,7 @@
 [ext_resource type="Script" uid="uid://djo2fr1vj2i2c" path="res://scenes/tasks/Personal_task_script.gd" id="14_3tbkn"]
 [ext_resource type="Script" uid="uid://om2cgiipkf6h" path="res://scenes/tasks/Fab_task_script.gd" id="15_m25je"]
 [ext_resource type="Texture2D" uid="uid://bg7owu4icm2pp" path="res://scenes/levels/main_assets/space_wall.jpg" id="17_hneab"]
+[ext_resource type="PackedScene" uid="uid://dkmlnl6gy54df" path="res://scenes/items/Healthpack Table/Healthpack1 Table.tscn" id="18_r5xfg"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0llye"]
 albedo_texture = ExtResource("7_floor_color")
@@ -419,3 +420,12 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.5
 
 [node name="CenterWall6" parent="Maze" unique_id=1465264831 instance=ExtResource("10_myntk")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.585, 0, 6.971)
+
+[node name="HealthpackTable" parent="." unique_id=1078645518 instance=ExtResource("18_r5xfg")]
+transform = Transform3D(-2.1855694e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.1855694e-08, 19.700966, 0, 42)
+
+[node name="HealthpackTable2" parent="." unique_id=105755596 instance=ExtResource("18_r5xfg")]
+transform = Transform3D(-2.1855694e-08, 0, -0.5, 0, 0.5, 0, 0.5, 0, -2.1855694e-08, -19.701, 0, 42)
+
+[node name="HealthpackTable3" parent="." unique_id=546272465 instance=ExtResource("18_r5xfg")]
+transform = Transform3D(-0.5, 0, -4.371139e-08, 0, 0.5, 0, 4.371139e-08, 0, -0.5, -18.008553, 0, -24.208368)
