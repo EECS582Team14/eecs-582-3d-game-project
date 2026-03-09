@@ -44,6 +44,14 @@ var _target_camera_rotation_x: float
 var _is_mouse_captured: bool
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+# Animation
+var _anim_player: AnimationPlayer = null
+
+# Third-person camera
+var _third_person: bool = false
+const THIRD_PERSON_DISTANCE: float = 4.0
+const THIRD_PERSON_HEIGHT: float = 1.5
+
 # Network update rate
 const NETWORK_UPDATE_RATE: float = 1.0 / 30.0  # 30 updates per second
 var _network_update_timer: float = 0.0
@@ -111,12 +119,21 @@ func _ready() -> void:
 	_target_rotation_y = rotation.y
 	_target_camera_rotation_x = 0.0
 
+	# Find AnimationPlayer inside the FBX model
+	var model = $PlayerModel
+	for child in model.get_children():
+		if child is AnimationPlayer:
+			_anim_player = child
+			break
+
 	if is_local_player:
 		# Capture the mouse cursor for looking around
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		_is_mouse_captured = true
 		# Make this the active camera
 		camera.current = true
+		# Hide own model in first-person view
+		$PlayerModel.visible = false
 		# Connect to receive remote player states
 		NetworkManager.player_state_received.connect(_on_player_state_received)
 		NetworkManager.health_update_received.connect(_on_health_update_received)
@@ -318,8 +335,9 @@ func _input(event: InputEvent) -> void:
 			GameManager.adjust_ship_integrity(-10.0)
 		elif event.key_label == KEY_L and event.pressed:
 			GameManager.adjust_ship_integrity(10.0)
-			
-		
+		elif event.key_label == KEY_F5 and event.pressed:
+			_toggle_third_person()
+
 		
 	# If the input is a mouse button event
 	if event is InputEventMouseButton:
@@ -357,6 +375,7 @@ func _physics_process(delta: float) -> void:
 			if is_on_floor() and Input.is_action_just_pressed("jump"):
 				velocity.y = jump_velocity
 			move_and_slide()
+			_update_walk_animation()
 			_send_network_update(delta)
 			_update_interaction_look()
 			if _taser_cooldown_timer > 0.0:
@@ -366,6 +385,17 @@ func _physics_process(delta: float) -> void:
 			_update_task_hold(delta)
 	else:
 		_process_remote_movement(delta)
+
+func _update_walk_animation() -> void:
+	if not _anim_player:
+		return
+	var dominated_moving = Vector2(velocity.x, velocity.z).length() > 0.1
+	if dominated_moving and not _anim_player.is_playing():
+		var anims = _anim_player.get_animation_list()
+		if anims.size() > 0:
+			_anim_player.play(anims[0])
+	elif not dominated_moving and _anim_player.is_playing():
+		_anim_player.stop()
 
 func _process_local_movement(_delta: float) -> void:
 	# Initialize the direction vector
@@ -475,7 +505,7 @@ func _on_health_update_received(sender_steam_id: int, health: int) -> void:
 		player.current_health = health
 		if health <= 0 and not player.is_dead:
 			player.is_dead = true
-			player.get_node("CapsuleMesh").visible = false
+			player.get_node("PlayerModel").visible = false
 			if player._held_taser:
 				player._held_taser.visible = false
 
@@ -604,9 +634,18 @@ func _on_taser_shot_received(sender_steam_id: int, origin: Vector3, direction: V
 		return
 	_spawn_projectile(origin, direction, sender_steam_id)
 
+func _toggle_third_person() -> void:
+	_third_person = not _third_person
+	if _third_person:
+		camera.position = Vector3(0, THIRD_PERSON_HEIGHT, THIRD_PERSON_DISTANCE)
+		$PlayerModel.visible = true
+	else:
+		camera.position = Vector3(0, 0, 0)
+		$PlayerModel.visible = not is_dead
+
 func _enter_dead_state() -> void:
 	is_dead = true
-	$CapsuleMesh.visible = false
+	$PlayerModel.visible = false
 	if _held_taser:
 		_held_taser.visible = false
 	$PhysicsCollider.disabled = true

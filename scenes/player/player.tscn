@@ -1,17 +1,10 @@
 [gd_scene format=3 uid="uid://b2qkvvwsis1my"]
 
-[ext_resource type="Texture2D" uid="uid://brmykabvkdtnv" path="res://addons/kenney_prototype_textures/green/texture_02.png" id="1_8afob"]
 [ext_resource type="Script" uid="uid://c6n04dpp1btgn" path="res://scenes/player/player_controller.gd" id="1_dovo2"]
+[ext_resource type="PackedScene" uid="uid://ckqknkquj1prp" path="res://scenes/player/Walking.fbx" id="2_walking"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_x7p2l"]
 size = Vector3(0.4, 1.2, 0.4)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dovo2"]
-albedo_texture = ExtResource("1_8afob")
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_8afob"]
-radius = 0.3
-height = 1.2
 
 [node name="Player" type="CharacterBody3D" unique_id=119440718]
 collision_layer = 3
@@ -22,10 +15,8 @@ script = ExtResource("1_dovo2")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 shape = SubResource("BoxShape3D_x7p2l")
 
-[node name="CapsuleMesh" type="MeshInstance3D" parent="." unique_id=1994401627]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
-material_override = SubResource("StandardMaterial3D_dovo2")
-mesh = SubResource("CapsuleMesh_8afob")
+[node name="PlayerModel" parent="." unique_id=740099854 instance=ExtResource("2_walking")]
+transform = Transform3D(-55, 0, 0, 0, 55, 0, 0, 0, -55, 0, 0, 0)
 
 [node name="PlayerCamera" type="Camera3D" parent="." unique_id=1895173917]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
