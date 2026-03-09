@@ -416,7 +416,11 @@ func _spawn_all_players():
 		var color = PLAYER_COLORS[(spawn_index - 1) % PLAYER_COLORS.size()]
 		var mat = StandardMaterial3D.new()
 		mat.albedo_color = color
-		player.get_node("CapsuleMesh").material_override = mat
+		var model = player.get_node("PlayerModel")
+		for child in model.get_children():
+			if child is MeshInstance3D:
+				child.material_override = mat
+				break
 
 		# Register with NetworkManager
 		NetworkManager.register_player(player_steam_id, player)
