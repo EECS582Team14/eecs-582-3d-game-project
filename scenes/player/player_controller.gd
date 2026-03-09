@@ -60,6 +60,8 @@ var _timer_label: Label = null
 var has_taser: bool = false
 var _taser_hidden: bool = false
 
+
+
 # Dead state (ghost mode)
 var is_dead: bool = false
 
@@ -67,6 +69,8 @@ var is_dead: bool = false
 var _looking_at_interactable: Node = null
 var _interact_label: Label = null
 var _notification_label: Label = null
+var _holding_button: bool = false
+
 
 #Task Designations
 var integrity_tasks = ["Armory_task", "Cam_task", "Crew_task", "Fab_task", "Life_task", "Sheilding_task", "Trash_task"]
@@ -364,6 +368,7 @@ func _physics_process(delta: float) -> void:
 			if Input.is_action_just_pressed("interact") and _looking_at_interactable:
 				_try_interact()
 			_update_task_hold(delta)
+			_update_button_hold()
 	else:
 		_process_remote_movement(delta)
 
@@ -526,7 +531,13 @@ func _update_interaction_look() -> void:
 					_interact_label.text = "Hold E to calibrate"
 					_interact_label.visible = true
 				return
-
+		elif collider.is_in_group("button"):
+			_looking_at_interactable = _find_activatable(collider)
+			if _looking_at_interactable:
+				var button_id = _looking_at_interactable.button_id if _looking_at_interactable.has_method("activate") else ""
+				_interact_label.text = "Hold E to press down"
+				_interact_label.visible = true
+				return
 	if _is_holding_task and not _is_looking_at_task_console():
 		_cancel_task_hold()
 	_interact_label.visible = false
@@ -550,6 +561,11 @@ func _try_interact() -> void:
 			_task_hold_timer = 0.0
 			_task_progress_bar.value = 0
 			_task_progress_bar.visible = true
+	elif _looking_at_interactable.is_in_group("button"):
+		var button_id = _looking_at_interactable.button_id if _looking_at_interactable.has_method("activate") else ""
+		print(button_id)
+		_holding_button = true
+		print(_holding_button)
 	else:
 		_looking_at_interactable.activate()
 
@@ -650,6 +666,19 @@ func _cancel_task_hold() -> void:
 	_task_hold_timer = 0.0
 	_task_progress_bar.value = 0
 	_task_progress_bar.visible = false
+
+func _looking_at_button() -> bool:
+	return _looking_at_interactable != null and _looking_at_interactable.is_in_group("button")
+
+func _update_button_hold() -> void:
+	if not _holding_button:
+		return
+	if not Input.is_action_pressed("interact") or not _looking_at_button():
+		cancel_button_hold()
+
+func cancel_button_hold() -> void:
+	_holding_button = false
+	print(false)
 
 func _complete_task(task_id: String) -> void:
 	print(task_id)

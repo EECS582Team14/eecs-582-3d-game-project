@@ -24,8 +24,11 @@
 [ext_resource type="Script" uid="uid://djtnepb2xxgnx" path="res://scenes/tasks/Life_task_script.gd" id="18_sco87"]
 [ext_resource type="Script" uid="uid://xrgl7inoxsg" path="res://scenes/tasks/Human_Resources_task_script.gd" id="19_a5xa1"]
 [ext_resource type="Script" uid="uid://c7wwnb8gt4fds" path="res://scenes/tasks/Armory_task_script.gd" id="21_ydp2g"]
+[ext_resource type="PackedScene" uid="uid://db1mrpytrj148" path="res://scenes/buttons/button.tscn" id="22_r35sg"]
 [ext_resource type="Script" uid="uid://dxiyilrrregsc" path="res://scenes/tasks/Shielding_task_script.gd" id="23_57p4a"]
+[ext_resource type="Script" uid="uid://6tr2eiwi5bfw" path="res://scenes/buttons/Button_right.gd" id="23_eofsf"]
 [ext_resource type="Script" uid="uid://dy8t20vmm7jdp" path="res://scenes/tasks/Supply_Closet_task_script.gd" id="24_0m6m5"]
+[ext_resource type="Script" uid="uid://cg87m34jjco5u" path="res://scenes/buttons/Button_left.gd" id="24_4clrc"]
 [ext_resource type="Script" uid="uid://cvsghl2twbfdu" path="res://scenes/tasks/Crew_task_script.gd" id="25_efilq"]
 [ext_resource type="PackedScene" uid="uid://dkmlnl6gy54df" path="res://scenes/items/Healthpack Table/Healthpack1 Table.tscn" id="28_4ertf"]
 
@@ -347,6 +350,16 @@ distance_fade_length = 5.0
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3, 0.5, 20)
 script = ExtResource("21_ydp2g")
 task_id = "Armory_task"
+
+[node name="button" parent="Armory" unique_id=1622295773 instance=ExtResource("22_r35sg")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.050001, 1.2, 22.5)
+script = ExtResource("23_eofsf")
+button_id = "button_left"
+
+[node name="button2" parent="Armory" unique_id=1105991383 instance=ExtResource("22_r35sg")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 5.050001, 1.2, 21)
+script = ExtResource("24_4clrc")
+button_id = "button_right"
 
 [node name="Shielding" type="Node3D" parent="." unique_id=1596150144]
 
