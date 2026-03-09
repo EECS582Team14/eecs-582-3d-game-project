@@ -394,12 +394,22 @@ func _physics_process(delta: float) -> void:
 func _update_walk_animation() -> void:
 	if not _anim_player:
 		return
-	var dominated_moving = Vector2(velocity.x, velocity.z).length() > 0.1
-	if dominated_moving and not _anim_player.is_playing():
+	var is_moving = Vector2(velocity.x, velocity.z).length() > 0.1
+	if is_moving and not _anim_player.is_playing():
 		var anims = _anim_player.get_animation_list()
 		if anims.size() > 0:
 			_anim_player.play(anims[0])
-	elif not dominated_moving and _anim_player.is_playing():
+	elif not is_moving and _anim_player.is_playing():
+		_anim_player.stop()
+
+func _set_remote_moving(moving: bool) -> void:
+	if not _anim_player:
+		return
+	if moving and not _anim_player.is_playing():
+		var anims = _anim_player.get_animation_list()
+		if anims.size() > 0:
+			_anim_player.play(anims[0])
+	elif not moving and _anim_player.is_playing():
 		_anim_player.stop()
 
 func _process_local_movement(_delta: float) -> void:
@@ -472,10 +482,12 @@ func _send_network_update(delta: float) -> void:
 	_network_update_timer += delta
 	if _network_update_timer >= NETWORK_UPDATE_RATE:
 		_network_update_timer = 0.0
+		var moving = Vector2(velocity.x, velocity.z).length() > 0.1
 		NetworkManager.send_player_state(
 			global_position,
 			rotation.y,
-			camera.rotation_degrees.x
+			camera.rotation_degrees.x,
+			moving
 		)
 
 func _on_player_state_received(sender_steam_id: int, state: Dictionary) -> void:
@@ -485,6 +497,7 @@ func _on_player_state_received(sender_steam_id: int, state: Dictionary) -> void:
 		player._target_position = state.position
 		player._target_rotation_y = state.rotation_y
 		player._target_camera_rotation_x = state.camera_rotation_x
+		player._set_remote_moving(state.get("is_moving", false))
 
 func _on_role_assigned(impostor: bool) -> void:
 	is_impostor = impostor
