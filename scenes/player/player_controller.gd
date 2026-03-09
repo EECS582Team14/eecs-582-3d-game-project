@@ -6,7 +6,7 @@ extends CharacterBody3D
 
 # Export variables
 ## Controls the movement speed of the player
-@export var speed: float = 7.0
+@export var speed: float = 4.5
 ## Controls the mouse sensitivity for looking around
 @export var mouse_sensitivity: float = 0.3
 ## How fast remote players interpolate to their target position
@@ -399,6 +399,7 @@ func _update_walk_animation() -> void:
 		var anims = _anim_player.get_animation_list()
 		if anims.size() > 0:
 			_anim_player.play(anims[0])
+			_anim_player.speed_scale = 2.0
 	elif not is_moving and _anim_player.is_playing():
 		_anim_player.stop()
 
@@ -409,6 +410,7 @@ func _set_remote_moving(moving: bool) -> void:
 		var anims = _anim_player.get_animation_list()
 		if anims.size() > 0:
 			_anim_player.play(anims[0])
+			_anim_player.speed_scale = 2.0
 	elif not moving and _anim_player.is_playing():
 		_anim_player.stop()
 
