@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://ckods7tupa2e8"]
+
+[ext_resource type="PackedScene" uid="uid://mhehj8w5hteq" path="res://assets/stair-ladder_3m.glb" id="1_3kod3"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6yvqe"]
+size = Vector3(0.69091797, 2.8811922, 0.13476563)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3kod3"]
+size = Vector3(0.032470703, 2.6246338, 0.55303955)
+
+[node name="Ladder" type="StaticBody3D" unique_id=1563259296]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=82141471]
+transform = Transform3D(1, 0, 0, 0, 0.8338858, -0.551937, 0, 0.551937, 0.8338858, -0.0021972654, 1.1567043, -0.91176414)
+shape = SubResource("BoxShape3D_6yvqe")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=1520637433]
+transform = Transform3D(1, 0, 0, 0, 0.8338858, -0.551937, 0, 0.551937, 0.8338858, 0.31774905, 1.7616363, -0.9022682)
+shape = SubResource("BoxShape3D_3kod3")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="." unique_id=766145559]
+transform = Transform3D(1, 0, 0, 0, 0.8338858, -0.551937, 0, 0.551937, 0.8338858, -0.318, 1.762, -0.902)
+shape = SubResource("BoxShape3D_3kod3")
+
+[node name="Model" parent="." unique_id=802396653 instance=ExtResource("1_3kod3")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)

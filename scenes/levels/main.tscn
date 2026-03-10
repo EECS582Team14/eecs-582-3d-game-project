@@ -4,7 +4,8 @@
 [ext_resource type="Script" uid="uid://clr7dkm6ukvg5" path="res://scenes/levels/main.gd" id="1_y0acb"]
 [ext_resource type="PackedScene" uid="uid://l7a6ls4tdms7" path="res://scenes/levels/lower_deck.tscn" id="2_2vj2h"]
 [ext_resource type="PackedScene" uid="uid://dmapmbx6ymccv" path="res://scenes/levels/main_assets/elevatorShell.tscn" id="4_j4d2a"]
-[ext_resource type="Script" path="res://scenes/levels/main_assets/call_button.gd" id="5_u81e1"]
+[ext_resource type="Script" uid="uid://jhrb64rmtkho" path="res://scenes/levels/main_assets/call_button.gd" id="5_u81e1"]
+[ext_resource type="PackedScene" uid="uid://ckods7tupa2e8" path="res://scenes/levels/main_assets/ladder.tscn" id="6_b6bv0"]
 
 [sub_resource type="Environment" id="Environment_y0acb"]
 background_mode = 1
@@ -81,3 +82,9 @@ shape = SubResource("CylinderShape3D_u81e1")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5525913, 0)
 mesh = SubResource("CylinderMesh_b6bv0")
 surface_material_override/0 = SubResource("StandardMaterial3D_ubwgw")
+
+[node name="EastLadder" parent="." unique_id=1563259296 instance=ExtResource("6_b6bv0")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 10, -2.444, 36)
+
+[node name="WestLadder" parent="." unique_id=1997380291 instance=ExtResource("6_b6bv0")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -10, -2.444, 36)
