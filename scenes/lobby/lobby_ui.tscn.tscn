@@ -9,6 +9,9 @@
 [ext_resource type="Texture2D" uid="uid://bsj66kmguclbi" path="res://scenes/lobby/lobby_assets/HowToPlayButton.png" id="5_wkgk0"]
 [ext_resource type="Texture2D" uid="uid://bqjaw43kq7mxr" path="res://scenes/lobby/lobby_assets/SettingsButton.png" id="6_7hq2d"]
 [ext_resource type="Texture2D" uid="uid://btkgw7lugu7le" path="res://scenes/lobby/lobby_assets/RefreshButton.png" id="6_ykcmf"]
+[ext_resource type="Texture2D" uid="uid://d4mebvdghs2yf" path="res://scenes/lobby/lobby_assets/LeaveLobbyButton.png" id="9_2gg2j"]
+[ext_resource type="Texture2D" uid="uid://bwpqfqjmxuc3k" path="res://scenes/lobby/lobby_assets/CloseLobbyButton.png" id="10_riw86"]
+[ext_resource type="Texture2D" uid="uid://bxt1e0ykxl5qx" path="res://scenes/lobby/lobby_assets/CreditsButton.png" id="12_riw86"]
 
 [node name="LobbyUI" type="Control" unique_id=474558022]
 layout_mode = 3
@@ -113,10 +116,10 @@ stretch_mode = 5
 
 [node name="StartButton" type="TextureButton" parent="." unique_id=70984848]
 layout_mode = 0
-offset_left = 419.0
-offset_top = 388.0
-offset_right = 721.0
-offset_bottom = 457.0
+offset_left = 421.0
+offset_top = 165.0
+offset_right = 723.0
+offset_bottom = 234.0
 texture_normal = ExtResource("4_7sou2")
 ignore_texture_size = true
 stretch_mode = 5
@@ -141,6 +144,26 @@ texture_normal = ExtResource("6_7hq2d")
 ignore_texture_size = true
 stretch_mode = 5
 
+[node name="LeaveLobbyButton" type="TextureButton" parent="." unique_id=123748908]
+layout_mode = 0
+offset_left = 420.0
+offset_top = 401.0
+offset_right = 733.0
+offset_bottom = 468.0
+texture_normal = ExtResource("9_2gg2j")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="CloseLobbyButton" type="TextureButton" parent="." unique_id=394143398]
+layout_mode = 0
+offset_left = 420.0
+offset_top = 401.0
+offset_right = 735.0
+offset_bottom = 468.0
+texture_normal = ExtResource("10_riw86")
+ignore_texture_size = true
+stretch_mode = 5
+
 [node name="RefreshButton" type="TextureButton" parent="." unique_id=752661425]
 layout_mode = 0
 offset_left = 282.0
@@ -148,5 +171,15 @@ offset_top = 581.0
 offset_right = 396.0
 offset_bottom = 621.0
 texture_normal = ExtResource("6_ykcmf")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="CreditsButton" type="TextureButton" parent="." unique_id=1409424640]
+layout_mode = 0
+offset_left = 1046.0
+offset_top = 11.0
+offset_right = 1132.0
+offset_bottom = 72.0
+texture_normal = ExtResource("12_riw86")
 ignore_texture_size = true
 stretch_mode = 5

@@ -6,6 +6,8 @@ extends Control
 @onready var start_btn = $StartButton
 @onready var refresh_btn = $RefreshButton
 @onready var lobby_list = $LobbyList
+@onready var leave_lobby = $LeaveLobbyButton
+@onready var close_lobby = $CloseLobbyButton
 
 var available_lobbies: Array = []
 var dot_blue = preload("res://scenes/lobby/lobby_assets/BlueIcon.png")
@@ -17,6 +19,8 @@ func _ready():
 	host_btn.pressed.connect(_on_host_pressed)
 	refresh_btn.pressed.connect(_on_refresh_pressed)
 	start_btn.pressed.connect(_on_start_pressed)
+	leave_lobby.pressed.connect(_on_leave_lobby_pressed)
+	close_lobby.pressed.connect(_on_close_lobby_pressed)
 	lobby_list.item_activated.connect(_on_lobby_selected)
 
 	LobbyManager.lobby_created.connect(_on_lobby_created)
@@ -30,13 +34,15 @@ func _ready():
 	status_label.text = "Not in lobby"
 	start_btn.visible = false
 	player_list.visible = false
+	leave_lobby.visible = false
+	close_lobby.visible = false
 
 	# Auto-search for lobbies on startup
 	_on_refresh_pressed()
 
 # ============ HOST ============
 func _on_host_changed(_new_host_id):
-	start_btn.visible = LobbyManager.is_host()
+	_update_lobby_buttons()
 	_refresh_players()
 
 	if LobbyManager.is_host():
@@ -54,8 +60,18 @@ func _on_host_pressed():
 
 func _on_lobby_created(_lobby_id: int):
 	start_btn.visible = true
+	close_lobby.visible = true
 	status_label.text = "Lobby created! Waiting for players..."
 	_refresh_players()
+	
+func _update_lobby_buttons():
+	if LobbyManager.is_host():
+		close_lobby.visible = true
+		leave_lobby.visible = false
+		start_btn.visible = true
+	else:
+		close_lobby.visible = false
+		leave_lobby.visible = true
 
 # ============ BROWSE / JOIN ============
 
@@ -102,12 +118,12 @@ func _on_lobby_joined(_lobby_id: int):
 	host_btn.visible = false
 	player_list.visible = true
 	# Show start button if we're the host
-	start_btn.visible = LobbyManager.is_host()
+	_update_lobby_buttons()
 	_refresh_players()
 
 func _on_player_update(_steam_id: int):
 	_refresh_players()
-	start_btn.visible = LobbyManager.is_host()
+	_update_lobby_buttons()
 
 func _refresh_players():
 	player_list.clear()
@@ -117,6 +133,50 @@ func _refresh_players():
 			icon = dot_host
 		player_list.add_item(member["name"], icon)
 
+# ============ LEAVING ============
+func _on_leave_lobby_pressed():
+	status_label.text = "Leaving lobby..."
+
+	LobbyManager.leave_lobby()
+
+	# Reset UI
+	player_list.clear()
+	player_list.visible = false
+	lobby_list.visible = true
+	refresh_btn.visible = true
+	host_btn.visible = true
+	start_btn.visible = false
+	close_lobby.visible = false
+	leave_lobby.visible = false
+
+	_on_refresh_pressed()
+	
+func _on_close_lobby_pressed():
+	if !LobbyManager.is_host():
+		return
+
+	status_label.text = "Closing lobby..."
+
+	LobbyManager.close_lobby()
+
+	_return_to_start_screen()
+	
+func _return_to_start_screen():
+	player_list.clear()
+
+	player_list.visible = false
+	lobby_list.visible = true
+	refresh_btn.visible = true
+	host_btn.visible = true
+
+	start_btn.visible = false
+	close_lobby.visible = false
+	leave_lobby.visible = false
+
+	status_label.text = "Lobby closed."
+
+	_on_refresh_pressed()
+	
 # ============ GAME START ============
 
 func _on_start_pressed():

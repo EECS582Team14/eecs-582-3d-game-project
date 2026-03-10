@@ -6,6 +6,7 @@ signal lobby_join_failed(reason)
 signal player_joined(steam_id)
 signal player_left(steam_id)
 signal lobby_list_received(lobbies)
+signal lobby_closed
 
 const GAME_TAG: String = "outliar"
 
@@ -32,6 +33,7 @@ func _ready():
 func _process(_delta):
 	Steam.run_callbacks()
 	_check_host_change()
+	_check_lobby_closing()
 	
 func _check_host_change():
 	if lobby_id == 0:
@@ -167,6 +169,31 @@ func _notification(what):
 	# Auto-cleanup when the game is closing
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		leave_lobby()
+		
+func close_lobby():
+	if !is_host():
+		return
+
+	print("Host closing lobby")
+
+	# Tell everyone the lobby is closing
+	Steam.setLobbyData(lobby_id, "lobby_closing", "1")
+
+	# Host leaves
+	leave_lobby()
+
+	lobby_closed.emit()
+	
+func _check_lobby_closing():
+	if lobby_id == 0:
+		return
+
+	var closing = Steam.getLobbyData(lobby_id, "lobby_closing")
+
+	if closing == "1" and !is_host():
+		print("Lobby closed by host")
+		leave_lobby()
+		lobby_closed.emit()
 
 # ============ HELPERS ============
 func get_original_host_id() -> int:
