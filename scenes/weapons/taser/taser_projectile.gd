@@ -21,26 +21,59 @@ func setup(origin: Vector3, direction: Vector3, shooter_id: int) -> void:
 
 func _ready() -> void:
 	global_position = _start_origin
-	# Collision shape
+	# Orient the node to face the travel direction
+	look_at(global_position + _direction, Vector3.UP)
+	# Collision shape (capsule aligned to travel direction)
 	var col_shape = CollisionShape3D.new()
-	var sphere_shape = SphereShape3D.new()
-	sphere_shape.radius = 0.05
-	col_shape.shape = sphere_shape
+	var capsule_shape = CapsuleShape3D.new()
+	capsule_shape.radius = 0.04
+	capsule_shape.height = 0.35
+	col_shape.shape = capsule_shape
+	col_shape.rotation_degrees.x = 90.0
 	add_child(col_shape)
 
-	# Mesh
-	var mesh_inst = MeshInstance3D.new()
-	var sphere_mesh = SphereMesh.new()
-	sphere_mesh.radius = 0.05
-	sphere_mesh.height = 0.1
-	var mat = StandardMaterial3D.new()
-	mat.emission_enabled = true
-	mat.emission = Color(0.2, 0.9, 1.0)  # bright cyan
-	mat.emission_energy_multiplier = 3.0
-	mat.albedo_color = Color(0.2, 0.9, 1.0)
-	sphere_mesh.material = mat
-	mesh_inst.mesh = sphere_mesh
-	add_child(mesh_inst)
+	# --- Star Wars-style laser bolt ---
+	# Bright inner core (narrow elongated capsule)
+	var core = MeshInstance3D.new()
+	var core_mesh = CapsuleMesh.new()
+	core_mesh.radius = 0.02
+	core_mesh.height = 0.35
+	var core_mat = StandardMaterial3D.new()
+	core_mat.emission_enabled = true
+	core_mat.emission = Color(0.7, 0.95, 1.0)  # white-cyan hot core
+	core_mat.emission_energy_multiplier = 6.0
+	core_mat.albedo_color = Color(0.9, 1.0, 1.0)
+	core_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	core_mat.albedo_color.a = 0.95
+	core_mesh.material = core_mat
+	core.mesh = core_mesh
+	core.rotation_degrees.x = 90.0  # align along forward axis
+	add_child(core)
+
+	# Outer glow (larger, semi-transparent capsule)
+	var glow = MeshInstance3D.new()
+	var glow_mesh = CapsuleMesh.new()
+	glow_mesh.radius = 0.045
+	glow_mesh.height = 0.4
+	var glow_mat = StandardMaterial3D.new()
+	glow_mat.emission_enabled = true
+	glow_mat.emission = Color(0.1, 0.6, 1.0)  # blue glow
+	glow_mat.emission_energy_multiplier = 4.0
+	glow_mat.albedo_color = Color(0.1, 0.6, 1.0, 0.35)
+	glow_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	glow_mat.no_depth_test = true
+	glow_mesh.material = glow_mat
+	glow.mesh = glow_mesh
+	glow.rotation_degrees.x = 90.0
+	add_child(glow)
+
+	# Point light for dynamic illumination on surroundings
+	var light = OmniLight3D.new()
+	light.light_color = Color(0.2, 0.7, 1.0)
+	light.light_energy = 2.0
+	light.omni_range = 3.0
+	light.omni_attenuation = 2.0
+	add_child(light)
 
 	# Collision settings — layer 2 (projectile), detect layer 1 (players)
 	collision_layer = 2
