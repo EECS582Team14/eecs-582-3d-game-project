@@ -649,8 +649,13 @@ func _shoot_taser() -> void:
 	if _taser_cooldown_timer > 0.0:
 		return
 	_taser_cooldown_timer = TASER_COOLDOWN
-	var origin = camera.global_position
-	var direction = -camera.global_transform.basis.z
+	var direction = -global_transform.basis.z
+	var origin: Vector3
+	if _third_person:
+		origin = global_position + Vector3(0, _first_person_camera_pos.y, 0) + direction * 0.5
+	else:
+		origin = camera.global_position
+		direction = -camera.global_transform.basis.z
 	_spawn_projectile(origin, direction, steam_id)
 	NetworkManager.send_taser_shot(origin, direction)
 
@@ -670,10 +675,12 @@ func _toggle_third_person() -> void:
 	if _third_person:
 		camera.position = Vector3(0, THIRD_PERSON_HEIGHT, THIRD_PERSON_DISTANCE)
 		$PlayerModel.visible = true
+		weapon_holder.visible = false
 	else:
 		camera.position = _first_person_camera_pos
 		camera.rotation_degrees.x = 0.0
 		$PlayerModel.visible = false
+		weapon_holder.visible = true
 
 func _enter_dead_state() -> void:
 	is_dead = true
