@@ -49,6 +49,7 @@ var _anim_player: AnimationPlayer = null
 
 # Third-person camera
 var _third_person: bool = false
+var _first_person_camera_pos: Vector3
 const THIRD_PERSON_DISTANCE: float = 4.0
 const THIRD_PERSON_HEIGHT: float = 1.5
 
@@ -122,6 +123,7 @@ func _ready() -> void:
 	_target_position = global_position
 	_target_rotation_y = rotation.y
 	_target_camera_rotation_x = 0.0
+	_first_person_camera_pos = camera.position
 
 	# Find AnimationPlayer inside the FBX model
 	var model = $PlayerModel
@@ -669,8 +671,9 @@ func _toggle_third_person() -> void:
 		camera.position = Vector3(0, THIRD_PERSON_HEIGHT, THIRD_PERSON_DISTANCE)
 		$PlayerModel.visible = true
 	else:
-		camera.position = Vector3(0, 0, 0)
-		$PlayerModel.visible = not is_dead
+		camera.position = _first_person_camera_pos
+		camera.rotation_degrees.x = 0.0
+		$PlayerModel.visible = false
 
 func _enter_dead_state() -> void:
 	is_dead = true
