@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://jhrb64rmtkho" path="res://scenes/levels/main_assets/call_button.gd" id="5_u81e1"]
 [ext_resource type="PackedScene" uid="uid://ckods7tupa2e8" path="res://scenes/levels/main_assets/ladder.tscn" id="6_b6bv0"]
 [ext_resource type="Texture2D" path="res://scenes/levels/main_assets/space_floor.jpg" id="7_space_wall"]
+[ext_resource type="PackedScene" path="res://scenes/levels/scifi_button.glb" id="8_scifi_btn"]
 
 [sub_resource type="Environment" id="Environment_y0acb"]
 background_mode = 1
@@ -83,9 +84,8 @@ script = ExtResource("5_u81e1")
 elevator = NodePath("../../Elevator")
 button_mesh = NodePath("CallButton")
 
-[node name="CallButton" type="MeshInstance3D" parent="ElevatorShaft/LowerFloorCallButton" unique_id=134574002]
-mesh = SubResource("CylinderMesh_b6bv0")
-surface_material_override/0 = SubResource("StandardMaterial3D_ubwgw")
+[node name="CallButton" parent="ElevatorShaft/LowerFloorCallButton" unique_id=134574002 instance=ExtResource("8_scifi_btn")]
+transform = Transform3D(-0.4, 0, 0, 0, 0.4, 0, 0, 0, -0.4, 0, -0.5, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ElevatorShaft/LowerFloorCallButton" unique_id=1738090470]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.017210245, 0)
@@ -113,10 +113,8 @@ is_upper_floor = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5620863, 0)
 shape = SubResource("CylinderShape3D_u81e1")
 
-[node name="CallButton2" type="MeshInstance3D" parent="ElevatorShaft/UpperFloorCallButton" unique_id=505492471 groups=["elevator_button"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5525913, 0)
-mesh = SubResource("CylinderMesh_b6bv0")
-surface_material_override/0 = SubResource("StandardMaterial3D_ubwgw")
+[node name="CallButton2" parent="ElevatorShaft/UpperFloorCallButton" unique_id=505492471 groups=["elevator_button"] instance=ExtResource("8_scifi_btn")]
+transform = Transform3D(-0.4, 0, 0, 0, 0.4, 0, 0, 0, -0.4, 0, 2.0525913, 0)
 
 [node name="EastLadder" parent="." unique_id=1563259296 instance=ExtResource("6_b6bv0")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 10, -2.444, 36)
