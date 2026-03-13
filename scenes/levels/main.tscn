@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dmapmbx6ymccv" path="res://scenes/levels/main_assets/elevatorShell.tscn" id="4_j4d2a"]
 [ext_resource type="Script" uid="uid://jhrb64rmtkho" path="res://scenes/levels/main_assets/call_button.gd" id="5_u81e1"]
 [ext_resource type="PackedScene" uid="uid://ckods7tupa2e8" path="res://scenes/levels/main_assets/ladder.tscn" id="6_b6bv0"]
+[ext_resource type="Texture2D" path="res://scenes/levels/main_assets/space_floor.jpg" id="7_space_wall"]
 
 [sub_resource type="Environment" id="Environment_y0acb"]
 background_mode = 1
@@ -37,8 +38,20 @@ top_radius = 0.2
 bottom_radius = 0.2
 height = 0.4
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shaft"]
+albedo_texture = ExtResource("7_space_wall")
+metallic = 0.4
+roughness = 0.5
+uv1_scale = Vector3(1, 1, 1)
+uv1_scale = Vector3(1, 1, 1)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ubwgw"]
-albedo_color = Color(1, 0, 0, 1)
+albedo_color = Color(0.1, 0.8, 0.1, 1)
+metallic = 0.6
+roughness = 0.3
+emission_enabled = true
+emission = Color(0.05, 0.4, 0.05, 1)
+emission_energy_multiplier = 0.5
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_u81e1"]
 height = 0.39328957
@@ -81,11 +94,13 @@ shape = SubResource("CylinderShape3D_u81e1")
 [node name="CSGBox3D" type="CSGBox3D" parent="ElevatorShaft" unique_id=1872470269]
 transform = Transform3D(0.99984723, -0.010246351, 0.01416132, 0.009971125, 0.99976265, 0.019370848, -0.01435644, -0.019226683, 0.99971205, 0, -0.55237114, 21.241695)
 size = Vector3(3, 5, 3)
+material = SubResource("StandardMaterial3D_shaft")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="ElevatorShaft/CSGBox3D" unique_id=970429745]
 transform = Transform3D(1, 4.947651e-10, -1.8626451e-09, 4.656613e-10, 1.0000002, 0, -1.8626451e-09, -3.7252903e-09, 1.0000002, 0.002509147, 0.0033603907, -0.17472458)
 operation = 2
 size = Vector3(2.8, 4.8, 2.8)
+material = SubResource("StandardMaterial3D_shaft")
 
 [node name="UpperFloorCallButton" type="StaticBody3D" parent="ElevatorShaft" unique_id=1217978986 node_paths=PackedStringArray("elevator", "button_mesh") groups=["elevator_button"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6362401, -2.3954341, 19.376263)
