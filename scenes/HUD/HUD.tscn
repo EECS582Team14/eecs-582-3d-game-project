@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dga5ufu4ejff0" path="res://scenes/HUD/health/healthbar.tscn" id="3_wqij7"]
 [ext_resource type="PackedScene" uid="uid://b3lxy3h7o8d3j" path="res://scenes/HUD/time_to_arrive/match_timer.tscn" id="4_c2x1a"]
 [ext_resource type="PackedScene" uid="uid://corga6eqq3ly3" path="res://scenes/HUD/ship_integrity/ship_integrity.tscn" id="5_wqij7"]
-[ext_resource type="Texture2D" uid="uid://3775ymodw3mi" path="res://scenes/HUD/system/crosshair.png" id="6_rufx2"]
+[ext_resource type="Script" path="res://scenes/HUD/system/crosshair.gd" id="6_rufx2"]
 
 [node name="Hud" type="Control" unique_id=1028152456]
 layout_mode = 3
@@ -39,18 +39,13 @@ offset_bottom = 631.0
 grow_horizontal = 1
 grow_vertical = 1
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=1501759805]
+[node name="Crosshair" type="Control" parent="." unique_id=1501759805]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -61.5
-offset_top = -62.0
-offset_right = 61.5
-offset_bottom = 62.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("6_rufx2")
-expand_mode = 1
+script = ExtResource("6_rufx2")
