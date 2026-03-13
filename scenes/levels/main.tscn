@@ -9,8 +9,28 @@
 
 [sub_resource type="Environment" id="Environment_y0acb"]
 background_mode = 1
+background_color = Color(0.05, 0.05, 0.07, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.98039216, 0.96862745, 0.98039216, 1)
+ambient_light_color = Color(0.9, 0.89, 0.9, 1)
+ambient_light_energy = 0.85
+tonemap_mode = 3
+tonemap_white = 6.0
+ssao_enabled = true
+ssao_radius = 2.0
+ssao_intensity = 3.0
+ssil_enabled = true
+ssil_radius = 5.0
+ssil_intensity = 1.0
+glow_enabled = true
+glow_intensity = 0.8
+glow_strength = 1.2
+glow_bloom = 0.1
+glow_blend_mode = 1
+ssr_enabled = true
+ssr_max_steps = 64
+ssr_fade_in = 0.15
+ssr_fade_out = 2.0
+ssr_depth_tolerance = 0.2
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_b6bv0"]
 top_radius = 0.2
