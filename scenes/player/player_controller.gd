@@ -397,22 +397,38 @@ func _update_walk_animation() -> void:
 	if not _anim_player:
 		return
 	var is_moving = Vector2(velocity.x, velocity.z).length() > 0.1
-	if is_moving and not _anim_player.is_playing():
+	if is_moving:
+		var forward = -transform.basis.z
+		var move_dir = Vector3(velocity.x, 0, velocity.z).normalized()
+		var dot = forward.dot(move_dir)
+		var going_backward = dot < -0.1
 		var anims = _anim_player.get_animation_list()
 		if anims.size() > 0:
-			_anim_player.play(anims[0])
-			_anim_player.speed_scale = 2.0
+			if going_backward:
+				if not _anim_player.is_playing() or _anim_player.speed_scale > 0:
+					_anim_player.play_backwards(anims[0])
+					_anim_player.speed_scale = 2.0
+			else:
+				if not _anim_player.is_playing() or _anim_player.speed_scale < 0:
+					_anim_player.play(anims[0])
+					_anim_player.speed_scale = 2.0
 	elif not is_moving and _anim_player.is_playing():
 		_anim_player.stop()
 
-func _set_remote_moving(moving: bool) -> void:
+func _set_remote_moving(moving: bool, moving_backward: bool = false) -> void:
 	if not _anim_player:
 		return
-	if moving and not _anim_player.is_playing():
+	if moving:
 		var anims = _anim_player.get_animation_list()
 		if anims.size() > 0:
-			_anim_player.play(anims[0])
-			_anim_player.speed_scale = 2.0
+			if moving_backward:
+				if not _anim_player.is_playing() or _anim_player.speed_scale > 0:
+					_anim_player.play_backwards(anims[0])
+					_anim_player.speed_scale = 2.0
+			else:
+				if not _anim_player.is_playing() or _anim_player.speed_scale < 0:
+					_anim_player.play(anims[0])
+					_anim_player.speed_scale = 2.0
 	elif not moving and _anim_player.is_playing():
 		_anim_player.stop()
 
@@ -487,11 +503,15 @@ func _send_network_update(delta: float) -> void:
 	if _network_update_timer >= NETWORK_UPDATE_RATE:
 		_network_update_timer = 0.0
 		var moving = Vector2(velocity.x, velocity.z).length() > 0.1
+		var forward = -transform.basis.z
+		var move_dir = Vector3(velocity.x, 0, velocity.z).normalized()
+		var moving_backward = moving and forward.dot(move_dir) < -0.1
 		NetworkManager.send_player_state(
 			global_position,
 			rotation.y,
 			camera.rotation_degrees.x,
-			moving
+			moving,
+			moving_backward
 		)
 
 func _on_player_state_received(sender_steam_id: int, state: Dictionary) -> void:
@@ -501,7 +521,7 @@ func _on_player_state_received(sender_steam_id: int, state: Dictionary) -> void:
 		player._target_position = state.position
 		player._target_rotation_y = state.rotation_y
 		player._target_camera_rotation_x = state.camera_rotation_x
-		player._set_remote_moving(state.get("is_moving", false))
+		player._set_remote_moving(state.get("is_moving", false), state.get("is_moving_backward", false))
 
 func _on_role_assigned(impostor: bool) -> void:
 	is_impostor = impostor

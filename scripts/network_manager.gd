@@ -110,7 +110,7 @@ func send_p2p_packet(target: int, packet_data: Dictionary, send_type: int = Stea
 	else:
 		Steam.sendP2PPacket(target, this_data, send_type, channel)
 
-func send_player_state(position: Vector3, rotation_y: float, camera_rotation_x: float, is_moving: bool = false):
+func send_player_state(position: Vector3, rotation_y: float, camera_rotation_x: float, is_moving: bool = false, is_moving_backward: bool = false):
 	var data = {
 		"type": PacketType.PLAYER_STATE,
 		"px": position.x,
@@ -118,7 +118,8 @@ func send_player_state(position: Vector3, rotation_y: float, camera_rotation_x: 
 		"pz": position.z,
 		"ry": rotation_y,
 		"cx": camera_rotation_x,
-		"mv": is_moving
+		"mv": is_moving,
+		"mb": is_moving_backward
 	}
 	send_p2p_packet(0, data, Steam.P2P_SEND_UNRELIABLE, 0)
 
@@ -220,7 +221,8 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 				"position": Vector3(data.px, data.py, data.pz),
 				"rotation_y": data.ry,
 				"camera_rotation_x": data.cx,
-				"is_moving": data.get("mv", false)
+				"is_moving": data.get("mv", false),
+				"is_moving_backward": data.get("mb", false)
 			}
 			player_state_received.emit(sender_steam_id, state)
 
