@@ -607,10 +607,8 @@ func _try_interact() -> void:
 			_task_progress_bar.value = 0
 			_task_progress_bar.visible = true
 	elif _looking_at_interactable.is_in_group("button"):
-		var button_id = _looking_at_interactable.button_id if _looking_at_interactable.has_method("activate") else ""
-		print(button_id)
 		_holding_button = true
-		print(_holding_button)
+		_looking_at_interactable.activate()
 	else:
 		_looking_at_interactable.activate()
 
@@ -731,8 +729,9 @@ func _update_button_hold() -> void:
 		cancel_button_hold()
 
 func cancel_button_hold() -> void:
+	if _looking_at_interactable and _looking_at_interactable.has_method("deactivate"):
+		_looking_at_interactable.deactivate()
 	_holding_button = false
-	print(false)
 
 func _complete_task(task_id: String) -> void:
 	print(task_id)
