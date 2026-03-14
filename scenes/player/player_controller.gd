@@ -42,6 +42,9 @@ var _target_camera_rotation_x: float
 
 # Internal variables
 var _is_mouse_captured: bool
+var _pause_menu: Control = null
+var _pause_layer: CanvasLayer = null
+var _is_paused: bool = false
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 # Animation
@@ -149,6 +152,19 @@ func _ready() -> void:
 		NetworkManager.taser_hit_received.connect(_on_taser_hit_received)
 		NetworkManager.taser_hide_received.connect(_on_taser_hide_received)
 
+		# Create pause menu on a CanvasLayer so it renders on top and receives input
+		_pause_layer = CanvasLayer.new()
+		_pause_layer.layer = 100
+		add_child(_pause_layer)
+		var pause_menu_scene = preload("res://scenes/HUD/pause_menu/pause_menu.tscn")
+		_pause_menu = pause_menu_scene.instantiate()
+		_pause_layer.add_child(_pause_menu)
+		_pause_menu.resume_game.connect(_on_resume_game)
+		_pause_menu.quit_game.connect(_on_quit_game)
+		if GameManager.hud_instance:
+			var crosshair = GameManager.hud_instance.get_node_or_null("Crosshair")
+			if crosshair:
+				_pause_menu.set_crosshair(crosshair)
 
 		# Create timer label (top center)
 		_timer_label = Label.new()
@@ -314,6 +330,20 @@ func _input(event: InputEvent) -> void:
 	if GameManager.game_state == GameManager.GAME_STATE_GAME_OVER:
 		return
 
+	# Handle Escape key for pause menu toggle (always check, even when paused)
+	if event is InputEventKey and event.key_label == KEY_ESCAPE and event.pressed:
+		if _is_paused:
+			_on_resume_game()
+		elif _is_mouse_captured:
+			_is_paused = true
+			_is_mouse_captured = false
+			_pause_menu.show_menu()
+		return
+
+	# When paused, don't process any other input so UI buttons can receive clicks
+	if _is_paused:
+		return
+
 	# Handle mouse motion events for looking around
 	if event is InputEventMouseMotion and _is_mouse_captured:
 		# Rotate the player horizontally based on mouse movement
@@ -325,12 +355,7 @@ func _input(event: InputEvent) -> void:
 
 	# If the input is a key event
 	if event is InputEventKey:
-		# If the Escape key is pressed, toggle mouse capture
-		if event.key_label == KEY_ESCAPE and event.pressed:
-			if _is_mouse_captured:
-				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-				_is_mouse_captured = false
-		elif event.key_label == KEY_H and event.pressed and not is_dead:
+		if event.key_label == KEY_H and event.pressed and not is_dead:
 			if has_taser and _held_taser:
 				_taser_hidden = not _taser_hidden
 				_held_taser.visible = not _taser_hidden
@@ -344,7 +369,7 @@ func _input(event: InputEvent) -> void:
 		elif event.key_label == KEY_F5 and event.pressed:
 			_toggle_third_person()
 
-		
+
 	# If the input is a mouse button event
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
@@ -353,6 +378,16 @@ func _input(event: InputEvent) -> void:
 				_is_mouse_captured = true
 			elif has_taser and not is_dead and not _taser_hidden:
 				_shoot_taser()
+
+func _on_resume_game() -> void:
+	_is_paused = false
+	_is_mouse_captured = true
+	_pause_menu.hide_menu()
+
+func _on_quit_game() -> void:
+	# Leave the lobby and return to main menu
+	LobbyManager.leave_lobby()
+	get_tree().change_scene_to_file("res://scenes/lobby/lobby_ui.tscn.tscn")
 
 func _process(delta: float) -> void:
 	if not is_local_player or not _role_received:
@@ -369,6 +404,8 @@ func _process(delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	if is_local_player and GameManager.game_state == GameManager.GAME_STATE_GAME_OVER:
+		return
+	if is_local_player and _is_paused:
 		return
 	if is_local_player:
 		if is_dead:
