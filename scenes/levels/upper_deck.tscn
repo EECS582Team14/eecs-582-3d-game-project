@@ -445,6 +445,7 @@ task_id = "Crew_task"
 
 [node name="TaserPickup" parent="." unique_id=811668839 instance=ExtResource("7_rmbde")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.66497, 0.45656508, 16.686378)
+item_id = "taser_01"
 
 [node name="ClosingOffWalls" type="Node3D" parent="." unique_id=368400362]
 
@@ -531,3 +532,8 @@ transform = Transform3D(-0.5, -4.371139e-08, 1.9106855e-15, 0, -2.1855694e-08, -
 
 [node name="baton_pickup" parent="." unique_id=2003324940 instance=ExtResource("32_4clrc")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -19.932487, 0, 21.234604)
+item_id = "baton_01"
+
+[node name="baton_pickup2" parent="." unique_id=1850898923 instance=ExtResource("32_4clrc")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -19.932487, 0, 23.176758)
+item_id = "baton_02"

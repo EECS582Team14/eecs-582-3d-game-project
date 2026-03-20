@@ -44,6 +44,9 @@ var _jumping_scene: PackedScene = preload("res://scenes/player/jumping.fbx")
 const TASER_COOLDOWN: float = 0.5
 var _taser_cooldown_timer: float = 0.0
 
+# Weapon id
+var player_weapon_id: String = ""
+
 # Multiplayer variables
 var steam_id: int = 0
 var is_local_player: bool = true
@@ -925,7 +928,7 @@ func _attach_baton_model() -> void:
 	if _held_baton:
 		return
 	_held_baton = _baton_scene.instantiate()
-	_held_baton.scale = Vector3(1, 1, 1)
+	_held_baton.scale = Vector3(0.5, 0.5, 0.5)
 	_held_baton.rotation_degrees.y = 90.0
 	weapon_holder.add_child(_held_baton)
 	
@@ -955,32 +958,38 @@ func drop_current_weapon() -> void:
 			
 	if pickup_to_spawn:
 		var pickup = pickup_to_spawn.instantiate()
+		pickup.scale = Vector3(0.5, 0.5, 0.5)
 		get_tree().root.add_child(pickup)
 		pickup.global_position = global_position + (-global_transform.basis.z * 1.5) + Vector3(0, 0.5, 0)
 		NetworkManager.send_item_dropped(dropped_id, pickup.global_position)
 
 func _on_item_dropped_received(item_id: String, pos: Vector3) -> void:
 	var scene_to_spawn: PackedScene = null
-	if item_id == "taser_01":
+	if item_id.begins_with("taser"):
 		scene_to_spawn = _taser_pickup_scene
-	elif item_id == "baton_01":
+	elif item_id.begins_with("baton"):
 		scene_to_spawn = _baton_pickup_scene
 	if scene_to_spawn:
 		_spawn_pickup_in_world(item_id, scene_to_spawn, pos)
 		
 func _spawn_pickup_in_world(id: String, scene: PackedScene, pos: Vector3) -> void:
 	var pickup = scene.instantiate()
+	pickup.add_to_group("pickup")
 	get_tree().root.add_child(pickup)
 	pickup.global_position = pos
 	if "item_id" in pickup:
 		pickup.item_id = id
 
 func _on_item_picked_up(picker_steam_id: int, item_id: String) -> void:
-	if not item_id.begins_with("taser"):
-		return
+	#if not item_id.begins_with("taser"):
+	#	return
 	var player = NetworkManager.get_player(picker_steam_id)
-	if player and player != self and player.has_method("give_taser"):
-		player.give_taser()
+	if player and player != self:
+		if item_id.begins_with("taser") and player.has_method("give_taser"):
+			player.give_taser()
+		elif item_id.begins_with("baton") and player.has_method("give_baton"):
+			player.give_baton()
+	player_weapon_id = item_id
 
 func _shoot_taser() -> void:
 	if _taser_cooldown_timer > 0.0:
@@ -1032,6 +1041,20 @@ func _baton_hit_check() -> void:
 		var to_player = player.global_position - global_position
 		if to_player.length() < BATON_RANGE and swing_dir.dot(to_player.normalized()) > 0.5:
 			NetworkManager.send_taser_hit(player.steam_id, BATON_DAMAGE)
+
+func reset_inventory():
+	has_taser = false
+	has_baton = false
+	
+	if _held_taser:
+		_held_taser.queue_free()
+		_held_taser = null
+	if _held_baton:
+		_held_baton.queue_free()
+		_held_baton = null
+		
+	_taser_hidden = false
+	_baton_hidden = false
 
 func _toggle_third_person() -> void:
 	_third_person = not _third_person

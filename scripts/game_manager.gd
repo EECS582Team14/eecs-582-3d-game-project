@@ -7,8 +7,11 @@ extends Node
 
 const PlayerScene = preload("res://scenes/player/player.tscn")
 const TaserPickupScene = preload("res://scenes/weapons/taser/taser_pickup.tscn")
+const BatonPickupScene = preload("res://scenes/weapons/baton/baton.tscn")
 const GAME_LEVEL = "res://scenes/levels/main.tscn"
 const TASER_SPAWN_POS = Vector3(-19.66497, 0.45656508, 16.686378)
+const BATON01_SPAWN_POS = Vector3(-19.932, 0.0, 21.235)
+const BATON02_SPAWN_POS = Vector3(-19.932, 0.0, 23.177)
 
 @export var spawn_points: Array[Vector3] = [
 	Vector3(0, 1, 0),
@@ -302,6 +305,16 @@ func _on_play_again():
 	if hud_instance != null:
 		hud_instance.queue_free()
 		hud_instance = null
+		
+	# Clear existing weapons
+	var existing_pickups = get_tree().get_nodes_in_group("pickup")
+	var weapons = []
+	for p in existing_pickups:
+		if p.item_id.contains("Healthpack") or p.item_id == "":
+			continue
+		else:
+			weapons.append([p.item_id, p.position])
+			p.queue_free()
 
 	# Despawn all players
 	despawn_all_players()
@@ -324,7 +337,8 @@ func _on_play_again():
 	await get_tree().process_frame
 	_spawn_all_players()
 	_spawn_local_hud()
-	_respawn_taser_pickup()
+	#_respawn_taser_pickup()
+	_respawn_weapon_pickups(weapons)
 	_reset_ship_integrity()
 
 	# Host starts the timer
@@ -342,6 +356,28 @@ func _respawn_taser_pickup():
 	var taser = TaserPickupScene.instantiate()
 	taser.position = TASER_SPAWN_POS
 	parent.add_child(taser)
+
+func _respawn_weapon_pickups(weapons):
+	var parent = get_tree().current_scene.get_node_or_null("UpperDeck")
+	if parent == null:
+		parent = get_tree().current_scene
+	var taser = TaserPickupScene.instantiate()
+	var baton = BatonPickupScene.instantiate()
+	
+	for weapon in weapons:
+		print(weapon)
+		var new_weapon = null
+		var weapon_id = weapon[0]
+		var weapon_position = weapon[1]
+		if weapon_id.begins_with("taser"):
+			new_weapon = TaserPickupScene.instantiate()
+		elif weapon_id.begins_with("baton"):
+			new_weapon = BatonPickupScene.instantiate()
+		new_weapon.item_id = weapon_id
+		new_weapon.position = weapon_position
+		print(new_weapon)
+		parent.add_child(new_weapon)
+	
 
 # ============ GAME START ============
 
@@ -409,7 +445,7 @@ func _spawn_all_players():
 		var spawn_pos = spawn_points[spawn_index % spawn_points.size()]
 		player.position = spawn_pos
 		spawn_index += 1
-
+		#player.reset_inventory()
 		players_container.add_child(player)
 
 		# Assign a unique color to each player

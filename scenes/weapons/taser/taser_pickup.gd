@@ -1,6 +1,6 @@
 extends StaticBody3D
 
-@export var item_id: String = "taser_01"
+@export var item_id: String = self.name
 
 func _ready() -> void:
 	NetworkManager.item_picked_up.connect(_on_item_picked_up)

@@ -1,6 +1,6 @@
 extends StaticBody3D
 
-@export var item_id: String = "baton_01"
+@export var item_id: String = self.name
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
