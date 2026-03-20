@@ -30,6 +30,7 @@ var _projectile_script = preload("res://scenes/weapons/taser/taser_projectile.gd
 # Extra animation scenes
 var _dying_scene: PackedScene = preload("res://scenes/player/Dying.fbx")
 var _strafe_left_scene: PackedScene = preload("res://scenes/player/left_strafe_walk.fbx")
+var _idle_scene: PackedScene = preload("res://scenes/player/Idle.fbx")
 
 # Taser shooting
 const TASER_COOLDOWN: float = 0.5
@@ -160,9 +161,11 @@ func _ready() -> void:
 				break
 		_import_animation(_dying_scene, "dying")
 		_import_animation(_strafe_left_scene, "strafe_left")
-		# Set walk and strafe to loop (dying should not loop)
+		_import_animation(_idle_scene, "idle")
+		# Set walk, strafe, and idle to loop (dying should not loop)
 		_set_anim_looping("walk", true)
 		_set_anim_looping("strafe_left", true)
+		_set_anim_looping("idle", true)
 
 	if is_local_player:
 		# Capture the mouse cursor for looking around
@@ -552,8 +555,10 @@ func _update_walk_animation() -> void:
 	elif not is_moving:
 		if _current_anim_state != "idle":
 			_current_anim_state = "idle"
-			_anim_player.stop()
+			_reset_model_mirror()
 			_set_model_diagonal_rotation(0.0)
+			_anim_player.play(_anim("idle"))
+			_anim_player.speed_scale = 1.0
 
 func _set_remote_moving(moving: bool, moving_backward: bool = false) -> void:
 	if not _anim_player:
@@ -572,7 +577,8 @@ func _set_remote_moving(moving: bool, moving_backward: bool = false) -> void:
 	elif not moving:
 		if _current_anim_state != "idle":
 			_current_anim_state = "idle"
-			_anim_player.stop()
+			_anim_player.play(_anim("idle"))
+			_anim_player.speed_scale = 1.0
 
 func _process_local_movement(_delta: float) -> void:
 	# Initialize the direction vector
