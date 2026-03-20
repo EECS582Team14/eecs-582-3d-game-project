@@ -31,6 +31,7 @@ var _projectile_script = preload("res://scenes/weapons/taser/taser_projectile.gd
 var _dying_scene: PackedScene = preload("res://scenes/player/Dying.fbx")
 var _strafe_left_scene: PackedScene = preload("res://scenes/player/left_strafe_walk.fbx")
 var _idle_scene: PackedScene = preload("res://scenes/player/Idle.fbx")
+var _punch_scene: PackedScene = preload("res://scenes/player/hook_punch.fbx")
 
 # Taser shooting
 const TASER_COOLDOWN: float = 0.5
@@ -56,6 +57,7 @@ var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var _anim_player: AnimationPlayer = null
 var _anim_lib_prefix: String = ""
 var _current_anim_state: String = ""
+var _is_punching: bool = false
 
 # Third-person camera
 var _third_person: bool = false
@@ -162,7 +164,8 @@ func _ready() -> void:
 		_import_animation(_dying_scene, "dying")
 		_import_animation(_strafe_left_scene, "strafe_left")
 		_import_animation(_idle_scene, "idle")
-		# Set walk, strafe, and idle to loop (dying should not loop)
+		_import_animation(_punch_scene, "punch")
+		# Set walk, strafe, and idle to loop (dying and punch should not loop)
 		_set_anim_looping("walk", true)
 		_set_anim_looping("strafe_left", true)
 		_set_anim_looping("idle", true)
@@ -412,6 +415,17 @@ func _input(event: InputEvent) -> void:
 				_is_mouse_captured = true
 			elif has_taser and not is_dead and not _taser_hidden:
 				_shoot_taser()
+			elif not is_dead and not _is_punching:
+				_play_punch()
+
+func _play_punch() -> void:
+	_is_punching = true
+	_current_anim_state = "punch"
+	_anim_player.play(_anim("punch"))
+	_anim_player.speed_scale = 2.0
+	await _anim_player.animation_finished
+	_is_punching = false
+	_current_anim_state = ""  # Reset so the next frame picks the correct animation
 
 func _on_resume_game() -> void:
 	_is_paused = false
@@ -509,7 +523,7 @@ func _set_model_diagonal_rotation(angle_deg: float) -> void:
 	$PlayerModel.transform.basis.z = Vector3(65 * s, 0, -65 * c)
 
 func _update_walk_animation() -> void:
-	if not _anim_player:
+	if not _anim_player or _is_punching:
 		return
 	var is_moving = Vector2(velocity.x, velocity.z).length() > 0.1
 	if is_moving:
