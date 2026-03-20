@@ -94,10 +94,11 @@ var _interact_label: Label = null
 var _notification_label: Label = null
 var _holding_button: bool = false
 
-# Simon Says minigame
-var _simon_says_active: bool = false
-var _simon_says_instance: Control = null
+# Minigame system
+var _minigame_active: bool = false
+var _minigame_instance: Control = null
 var _simon_says_scene: PackedScene = preload("res://scenes/tasks/simon_says_minigame.tscn")
+var _wiring_scene: PackedScene = preload("res://scenes/tasks/wiring_minigame.tscn")
 
 
 #Task Designations
@@ -386,8 +387,8 @@ func _input(event: InputEvent) -> void:
 
 	# Handle Escape key — minigame cancel takes priority, then pause menu
 	if event is InputEventKey and event.key_label == KEY_ESCAPE and event.pressed:
-		if _simon_says_active:
-			_on_simon_says_cancelled()
+		if _minigame_active:
+			_on_minigame_cancelled()
 			return
 		if _is_paused:
 			_on_resume_game()
@@ -398,7 +399,7 @@ func _input(event: InputEvent) -> void:
 		return
 
 	# When paused or in minigame, don't process game input so UI buttons can receive clicks
-	if _is_paused or _simon_says_active:
+	if _is_paused or _minigame_active:
 		return
 
 	# Handle mouse motion events for looking around
@@ -431,7 +432,7 @@ func _input(event: InputEvent) -> void:
 
 	# If the input is a mouse button event
 	if event is InputEventMouseButton:
-		if _simon_says_active:
+		if _minigame_active:
 			return
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			if not _is_mouse_captured:
@@ -513,7 +514,7 @@ func _physics_process(delta: float) -> void:
 		return
 	if is_local_player and _is_paused:
 		return
-	if is_local_player and _simon_says_active:
+	if is_local_player and _minigame_active:
 		return
 	if is_local_player:
 		if is_dead:
@@ -854,7 +855,8 @@ func _try_interact() -> void:
 		var tid = _looking_at_interactable.task_id if _looking_at_interactable.has_method("activate") else ""
 		if tid not in _completed_tasks:
 			if _looking_at_interactable.get("is_minigame_task"):
-				_open_simon_says(tid)
+				var mg_type = _looking_at_interactable.get("minigame_type")
+				_open_minigame(tid, mg_type if mg_type else "simon_says")
 			else:
 				_is_holding_task = true
 				_task_hold_timer = 0.0
@@ -1020,12 +1022,12 @@ func _complete_task(task_id: String) -> void:
 		if panel.has_method("mark_task_completed"):
 			panel.mark_task_completed(description)
 
-# --- Simon Says Minigame ---
+# --- Task Minigames ---
 
-func _open_simon_says(task_id: String) -> void:
-	if _simon_says_active:
+func _open_minigame(task_id: String, minigame_type: String) -> void:
+	if _minigame_active:
 		return
-	_simon_says_active = true
+	_minigame_active = true
 
 	# Show cursor for clicking buttons
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
@@ -1034,30 +1036,36 @@ func _open_simon_says(task_id: String) -> void:
 	# Create a CanvasLayer so the UI renders above the game
 	var layer = CanvasLayer.new()
 	layer.layer = 50
-	layer.name = "SimonSaysLayer"
+	layer.name = "MinigameLayer"
 	add_child(layer)
 
-	_simon_says_instance = _simon_says_scene.instantiate()
-	layer.add_child(_simon_says_instance)
+	# Pick the right scene based on type
+	match minigame_type:
+		"wiring":
+			_minigame_instance = _wiring_scene.instantiate()
+		_:
+			_minigame_instance = _simon_says_scene.instantiate()
 
-	_simon_says_instance.minigame_completed.connect(_on_simon_says_completed.bind(task_id))
-	_simon_says_instance.minigame_cancelled.connect(_on_simon_says_cancelled)
+	layer.add_child(_minigame_instance)
 
-	_simon_says_instance.start_game()
+	_minigame_instance.minigame_completed.connect(_on_minigame_completed.bind(task_id))
+	_minigame_instance.minigame_cancelled.connect(_on_minigame_cancelled)
 
-func _on_simon_says_completed(task_id: String) -> void:
-	_close_simon_says()
+	_minigame_instance.start_game()
+
+func _on_minigame_completed(task_id: String) -> void:
+	_close_minigame()
 	_complete_task(task_id)
 
-func _on_simon_says_cancelled() -> void:
-	_close_simon_says()
+func _on_minigame_cancelled() -> void:
+	_close_minigame()
 
-func _close_simon_says() -> void:
-	_simon_says_active = false
-	if _simon_says_instance:
-		var layer = _simon_says_instance.get_parent()
+func _close_minigame() -> void:
+	_minigame_active = false
+	if _minigame_instance:
+		var layer = _minigame_instance.get_parent()
 		layer.queue_free()
-		_simon_says_instance = null
+		_minigame_instance = null
 	# Re-capture mouse
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	_is_mouse_captured = true
