@@ -100,6 +100,7 @@ var _minigame_instance: Control = null
 var _simon_says_scene: PackedScene = preload("res://scenes/tasks/simon_says_minigame.tscn")
 var _wiring_scene: PackedScene = preload("res://scenes/tasks/wiring_minigame.tscn")
 var _reactor_temp_scene: PackedScene = preload("res://scenes/tasks/reactor_temp_minigame.tscn")
+var _breaker_scene: PackedScene = preload("res://scenes/tasks/breaker_minigame.tscn")
 
 
 #Task Designations
@@ -1046,6 +1047,8 @@ func _open_minigame(task_id: String, minigame_type: String) -> void:
 			_minigame_instance = _wiring_scene.instantiate()
 		"reactor_temp":
 			_minigame_instance = _reactor_temp_scene.instantiate()
+		"breaker":
+			_minigame_instance = _breaker_scene.instantiate()
 		_:
 			_minigame_instance = _simon_says_scene.instantiate()
 
