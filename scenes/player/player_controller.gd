@@ -94,6 +94,11 @@ var _interact_label: Label = null
 var _notification_label: Label = null
 var _holding_button: bool = false
 
+# Simon Says minigame
+var _simon_says_active: bool = false
+var _simon_says_instance: Control = null
+var _simon_says_scene: PackedScene = preload("res://scenes/tasks/simon_says_minigame.tscn")
+
 
 #Task Designations
 var integrity_tasks = ["Armory_task", "Cam_task", "Crew_task", "Fab_task", "Life_task", "Sheilding_task", "Trash_task"]
@@ -146,28 +151,39 @@ func _ready() -> void:
 			_anim_player = child
 			break
 
-	# Rename the original walk animation and import extras
+	# Setup animations: clear the default library and rebuild with named animations
 	if _anim_player:
 		# Find the library prefix (e.g. "mixamo_com/")
 		var lib_names = _anim_player.get_animation_library_list()
-		if lib_names.size() > 0 and lib_names[0] != "":
-			_anim_lib_prefix = lib_names[0] + "/"
-		# Rename the existing animation from the Walking.fbx to "walk"
-		for lib_name in lib_names:
-			var lib = _anim_player.get_animation_library(lib_name)
-			if lib:
-				for anim_name in lib.get_animation_list():
-					if anim_name != "walk":
-						var anim = lib.get_animation(anim_name)
-						lib.add_animation("walk", anim)
-						lib.remove_animation(anim_name)
-						break
-				break
+		var main_lib_name = ""
+		if lib_names.size() > 0:
+			main_lib_name = lib_names[0]
+			if main_lib_name != "":
+				_anim_lib_prefix = main_lib_name + "/"
+
+		# Get the main library and rename the original animation to "walk"
+		var main_lib = _anim_player.get_animation_library(main_lib_name)
+		if main_lib:
+			# Remove all existing animations and re-add the first one as "walk"
+			var existing_anims = main_lib.get_animation_list()
+			if existing_anims.size() > 0:
+				var walk_anim = main_lib.get_animation(existing_anims[0])
+				# Clear everything
+				for a in existing_anims:
+					main_lib.remove_animation(a)
+				# Add back as "walk"
+				main_lib.add_animation("walk", walk_anim)
+
 		_import_animation(_dying_scene, "dying")
 		_import_animation(_strafe_left_scene, "strafe_left")
 		_import_animation(_idle_scene, "idle")
 		_import_animation(_punch_scene, "punch")
 		_import_animation(_jumping_scene, "jumping")
+
+		# Debug: print all animations in the library
+		if main_lib:
+			print("Animations loaded: ", main_lib.get_animation_list())
+
 		# Set walk, strafe, and idle to loop (dying, punch, jumping should not loop)
 		_set_anim_looping("walk", true)
 		_set_anim_looping("strafe_left", true)
@@ -368,8 +384,11 @@ func _input(event: InputEvent) -> void:
 	if GameManager.game_state == GameManager.GAME_STATE_GAME_OVER:
 		return
 
-	# Handle Escape key for pause menu toggle (always check, even when paused)
+	# Handle Escape key — minigame cancel takes priority, then pause menu
 	if event is InputEventKey and event.key_label == KEY_ESCAPE and event.pressed:
+		if _simon_says_active:
+			_on_simon_says_cancelled()
+			return
 		if _is_paused:
 			_on_resume_game()
 		elif _is_mouse_captured:
@@ -378,8 +397,8 @@ func _input(event: InputEvent) -> void:
 			_pause_menu.show_menu()
 		return
 
-	# When paused, don't process any other input so UI buttons can receive clicks
-	if _is_paused:
+	# When paused or in minigame, don't process game input so UI buttons can receive clicks
+	if _is_paused or _simon_says_active:
 		return
 
 	# Handle mouse motion events for looking around
@@ -412,6 +431,8 @@ func _input(event: InputEvent) -> void:
 
 	# If the input is a mouse button event
 	if event is InputEventMouseButton:
+		if _simon_says_active:
+			return
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			if not _is_mouse_captured:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -491,6 +512,8 @@ func _physics_process(delta: float) -> void:
 	if is_local_player and GameManager.game_state == GameManager.GAME_STATE_GAME_OVER:
 		return
 	if is_local_player and _is_paused:
+		return
+	if is_local_player and _simon_says_active:
 		return
 	if is_local_player:
 		if is_dead:
@@ -797,6 +820,9 @@ func _update_interaction_look() -> void:
 				if tid in _completed_tasks:
 					_interact_label.text = "Already completed"
 					_interact_label.visible = true
+				elif _looking_at_interactable.get("is_minigame_task"):
+					_interact_label.text = "Press E to calibrate"
+					_interact_label.visible = true
 				else:
 					_interact_label.text = "Hold E to calibrate"
 					_interact_label.visible = true
@@ -827,10 +853,13 @@ func _try_interact() -> void:
 	elif _looking_at_interactable.is_in_group("task_console"):
 		var tid = _looking_at_interactable.task_id if _looking_at_interactable.has_method("activate") else ""
 		if tid not in _completed_tasks:
-			_is_holding_task = true
-			_task_hold_timer = 0.0
-			_task_progress_bar.value = 0
-			_task_progress_bar.visible = true
+			if _looking_at_interactable.get("is_minigame_task"):
+				_open_simon_says(tid)
+			else:
+				_is_holding_task = true
+				_task_hold_timer = 0.0
+				_task_progress_bar.value = 0
+				_task_progress_bar.visible = true
 	elif _looking_at_interactable.is_in_group("button"):
 		_holding_button = true
 		_looking_at_interactable.activate()
@@ -990,3 +1019,45 @@ func _complete_task(task_id: String) -> void:
 	for panel in panels:
 		if panel.has_method("mark_task_completed"):
 			panel.mark_task_completed(description)
+
+# --- Simon Says Minigame ---
+
+func _open_simon_says(task_id: String) -> void:
+	if _simon_says_active:
+		return
+	_simon_says_active = true
+
+	# Show cursor for clicking buttons
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	_is_mouse_captured = false
+
+	# Create a CanvasLayer so the UI renders above the game
+	var layer = CanvasLayer.new()
+	layer.layer = 50
+	layer.name = "SimonSaysLayer"
+	add_child(layer)
+
+	_simon_says_instance = _simon_says_scene.instantiate()
+	layer.add_child(_simon_says_instance)
+
+	_simon_says_instance.minigame_completed.connect(_on_simon_says_completed.bind(task_id))
+	_simon_says_instance.minigame_cancelled.connect(_on_simon_says_cancelled)
+
+	_simon_says_instance.start_game()
+
+func _on_simon_says_completed(task_id: String) -> void:
+	_close_simon_says()
+	_complete_task(task_id)
+
+func _on_simon_says_cancelled() -> void:
+	_close_simon_says()
+
+func _close_simon_says() -> void:
+	_simon_says_active = false
+	if _simon_says_instance:
+		var layer = _simon_says_instance.get_parent()
+		layer.queue_free()
+		_simon_says_instance = null
+	# Re-capture mouse
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	_is_mouse_captured = true
