@@ -32,6 +32,7 @@ var _dying_scene: PackedScene = preload("res://scenes/player/Dying.fbx")
 var _strafe_left_scene: PackedScene = preload("res://scenes/player/left_strafe_walk.fbx")
 var _idle_scene: PackedScene = preload("res://scenes/player/Idle.fbx")
 var _punch_scene: PackedScene = preload("res://scenes/player/hook_punch.fbx")
+var _jumping_scene: PackedScene = preload("res://scenes/player/jumping.fbx")
 
 # Taser shooting
 const TASER_COOLDOWN: float = 0.5
@@ -58,6 +59,7 @@ var _anim_player: AnimationPlayer = null
 var _anim_lib_prefix: String = ""
 var _current_anim_state: String = ""
 var _is_punching: bool = false
+var _is_jumping: bool = false
 
 # Third-person camera
 var _third_person: bool = false
@@ -165,7 +167,8 @@ func _ready() -> void:
 		_import_animation(_strafe_left_scene, "strafe_left")
 		_import_animation(_idle_scene, "idle")
 		_import_animation(_punch_scene, "punch")
-		# Set walk, strafe, and idle to loop (dying and punch should not loop)
+		_import_animation(_jumping_scene, "jumping")
+		# Set walk, strafe, and idle to loop (dying, punch, jumping should not loop)
 		_set_anim_looping("walk", true)
 		_set_anim_looping("strafe_left", true)
 		_set_anim_looping("idle", true)
@@ -418,6 +421,12 @@ func _input(event: InputEvent) -> void:
 			elif not is_dead and not _is_punching:
 				_play_punch()
 
+func _play_jump() -> void:
+	_is_jumping = true
+	_current_anim_state = "jumping"
+	_anim_player.play(_anim("jumping"))
+	_anim_player.speed_scale = 1.0
+
 const PUNCH_DAMAGE: int = 10
 const PUNCH_RANGE: float = 2.0
 const PUNCH_ANGLE: float = 0.5  # dot product threshold (~60 degree cone)
@@ -493,6 +502,10 @@ func _physics_process(delta: float) -> void:
 			_apply_gravity(delta)
 			if is_on_floor() and Input.is_action_just_pressed("jump"):
 				velocity.y = jump_velocity
+				_play_jump()
+			if _is_jumping and is_on_floor() and velocity.y <= 0:
+				_is_jumping = false
+				_current_anim_state = ""  # Reset so next frame picks correct animation
 			move_and_slide()
 			_update_walk_animation()
 			_send_network_update(delta)
@@ -547,7 +560,7 @@ func _set_model_diagonal_rotation(angle_deg: float) -> void:
 	$PlayerModel.transform.basis.z = Vector3(65 * s, 0, -65 * c)
 
 func _update_walk_animation() -> void:
-	if not _anim_player or _is_punching:
+	if not _anim_player or _is_punching or _is_jumping:
 		return
 	var is_moving = Vector2(velocity.x, velocity.z).length() > 0.1
 	if is_moving:
