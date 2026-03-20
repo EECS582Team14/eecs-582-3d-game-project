@@ -27,6 +27,10 @@ var _taser_scene: PackedScene = preload("res://scenes/weapons/taser/heavy_assaul
 var _held_taser: Node3D = null
 var _projectile_script = preload("res://scenes/weapons/taser/taser_projectile.gd")
 
+# Extra animation scenes
+var _dying_scene: PackedScene = preload("res://scenes/player/Dying.fbx")
+var _strafe_left_scene: PackedScene = preload("res://scenes/player/left_strafe_walk.fbx")
+
 # Taser shooting
 const TASER_COOLDOWN: float = 0.5
 var _taser_cooldown_timer: float = 0.0
@@ -134,6 +138,23 @@ func _ready() -> void:
 		if child is AnimationPlayer:
 			_anim_player = child
 			break
+
+	# Rename the original walk animation and import extras
+	if _anim_player:
+		# Rename the existing animation from the Walking.fbx to "walk"
+		var lib_names = _anim_player.get_animation_library_list()
+		for lib_name in lib_names:
+			var lib = _anim_player.get_animation_library(lib_name)
+			if lib:
+				for anim_name in lib.get_animation_list():
+					if anim_name != "walk":
+						var anim = lib.get_animation(anim_name)
+						lib.add_animation("walk", anim)
+						lib.remove_animation(anim_name)
+						break
+				break
+		_import_animation(_dying_scene, "dying")
+		_import_animation(_strafe_left_scene, "strafe_left")
 
 	if is_local_player:
 		# Capture the mouse cursor for looking around
@@ -434,42 +455,95 @@ func _physics_process(delta: float) -> void:
 	else:
 		_process_remote_movement(delta)
 
+func _import_animation(scene: PackedScene, anim_name: String) -> void:
+	var temp = scene.instantiate()
+	for child in temp.get_children():
+		if child is AnimationPlayer:
+			# Find the first available animation library (e.g. "mixamo_com")
+			var lib_names = child.get_animation_library_list()
+			for lib_name in lib_names:
+				var lib = child.get_animation_library(lib_name)
+				if lib:
+					var anim_list = lib.get_animation_list()
+					if anim_list.size() > 0:
+						var anim = lib.get_animation(anim_list[0])
+						var main_lib = _anim_player.get_animation_library(lib_names[0])
+						if main_lib and not main_lib.has_animation(anim_name):
+							main_lib.add_animation(anim_name, anim)
+						break
+			break
+	temp.queue_free()
+
+func _reset_model_mirror() -> void:
+	var model_transform = $PlayerModel.transform
+	model_transform.basis.x = Vector3(-65, 0, 0)
+	$PlayerModel.transform = model_transform
+
+func _set_model_diagonal_rotation(angle_deg: float) -> void:
+	var rad = deg_to_rad(angle_deg)
+	var s = sin(rad)
+	var c = cos(rad)
+	# Rotate around Y while preserving the scale of 65
+	$PlayerModel.transform.basis.x = Vector3(-65 * c, 0, -65 * s)
+	$PlayerModel.transform.basis.z = Vector3(65 * s, 0, -65 * c)
+
 func _update_walk_animation() -> void:
 	if not _anim_player:
 		return
 	var is_moving = Vector2(velocity.x, velocity.z).length() > 0.1
 	if is_moving:
 		var forward = -transform.basis.z
+		var right = transform.basis.x
 		var move_dir = Vector3(velocity.x, 0, velocity.z).normalized()
 		var dot = forward.dot(move_dir)
+		var side_dot = right.dot(move_dir)
 		var going_backward = dot < -0.1
-		var anims = _anim_player.get_animation_list()
-		if anims.size() > 0:
-			if going_backward:
-				if not _anim_player.is_playing() or _anim_player.speed_scale > 0:
-					_anim_player.play_backwards(anims[0])
-					_anim_player.speed_scale = 2.0
+		var going_left = side_dot < -0.5 and abs(dot) < 0.5
+		var going_right = side_dot > 0.5 and abs(dot) < 0.5
+		var strafing = going_left or going_right
+
+		if strafing and _anim_player.has_animation("strafe_left"):
+			# Mirror the model for right strafe (swapped: left uses mirror, right is default)
+			var model_transform = $PlayerModel.transform
+			if going_left:
+				model_transform.basis.x = Vector3(65, 0, 0)
 			else:
-				if not _anim_player.is_playing() or _anim_player.speed_scale < 0:
-					_anim_player.play(anims[0])
-					_anim_player.speed_scale = 2.0
+				model_transform.basis.x = Vector3(-65, 0, 0)
+			$PlayerModel.transform = model_transform
+			if _anim_player.current_animation != "strafe_left":
+				_anim_player.play("strafe_left")
+				_anim_player.speed_scale = 1.0
+		elif going_backward:
+			_reset_model_mirror()
+			var diagonal_angle = side_dot * -25.0
+			_set_model_diagonal_rotation(diagonal_angle)
+			if not _anim_player.is_playing() or _anim_player.speed_scale > 0 or _anim_player.current_animation != "walk":
+				_anim_player.play_backwards("walk")
+				_anim_player.speed_scale = 2.0
+		else:
+			_reset_model_mirror()
+			# Rotate model slightly when moving diagonally
+			var diagonal_angle = side_dot * 25.0  # up to 25 degrees
+			_set_model_diagonal_rotation(diagonal_angle)
+			if not _anim_player.is_playing() or _anim_player.speed_scale < 0 or _anim_player.current_animation != "walk":
+				_anim_player.play("walk")
+				_anim_player.speed_scale = 2.0
 	elif not is_moving and _anim_player.is_playing():
 		_anim_player.stop()
+		_set_model_diagonal_rotation(0.0)
 
 func _set_remote_moving(moving: bool, moving_backward: bool = false) -> void:
 	if not _anim_player:
 		return
 	if moving:
-		var anims = _anim_player.get_animation_list()
-		if anims.size() > 0:
-			if moving_backward:
-				if not _anim_player.is_playing() or _anim_player.speed_scale > 0:
-					_anim_player.play_backwards(anims[0])
-					_anim_player.speed_scale = 2.0
-			else:
-				if not _anim_player.is_playing() or _anim_player.speed_scale < 0:
-					_anim_player.play(anims[0])
-					_anim_player.speed_scale = 2.0
+		if moving_backward:
+			if not _anim_player.is_playing() or _anim_player.speed_scale > 0 or _anim_player.current_animation != "walk":
+				_anim_player.play_backwards("walk")
+				_anim_player.speed_scale = 2.0
+		else:
+			if not _anim_player.is_playing() or _anim_player.speed_scale < 0 or _anim_player.current_animation != "walk":
+				_anim_player.play("walk")
+				_anim_player.speed_scale = 2.0
 	elif not moving and _anim_player.is_playing():
 		_anim_player.stop()
 
@@ -745,6 +819,11 @@ func _toggle_third_person() -> void:
 
 func _enter_dead_state() -> void:
 	is_dead = true
+	if _anim_player and _anim_player.has_animation("dying"):
+		$PlayerModel.visible = true
+		_anim_player.play("dying")
+		_anim_player.speed_scale = 1.0
+		await _anim_player.animation_finished
 	$PlayerModel.visible = false
 	if _held_taser:
 		_held_taser.visible = false
