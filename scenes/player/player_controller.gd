@@ -179,8 +179,8 @@ func _ready() -> void:
 		_is_mouse_captured = true
 		# Make this the active camera
 		camera.current = true
-		# Hide own model in first-person view
-		$PlayerModel.visible = false
+		# Show own model in first-person view
+		$PlayerModel.visible = true
 		# Connect to receive remote player states
 		NetworkManager.player_state_received.connect(_on_player_state_received)
 		NetworkManager.health_update_received.connect(_on_health_update_received)
