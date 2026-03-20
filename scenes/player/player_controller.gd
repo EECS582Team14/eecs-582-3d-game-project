@@ -424,7 +424,7 @@ func _input(event: InputEvent) -> void:
 func _play_jump() -> void:
 	_is_jumping = true
 	_current_anim_state = "jumping"
-	_anim_player.play(_anim("jumping"))
+	_anim_player.play(_anim("jumping"), ANIM_BLEND)
 	_anim_player.speed_scale = 1.0
 
 const PUNCH_DAMAGE: int = 10
@@ -434,7 +434,7 @@ const PUNCH_ANGLE: float = 0.5  # dot product threshold (~60 degree cone)
 func _play_punch() -> void:
 	_is_punching = true
 	_current_anim_state = "punch"
-	_anim_player.play(_anim("punch"))
+	_anim_player.play(_anim("punch"), ANIM_BLEND)
 	_anim_player.speed_scale = 2.0
 	# Deal damage partway through the animation
 	await get_tree().create_timer(0.2).timeout
@@ -538,6 +538,8 @@ func _import_animation(scene: PackedScene, anim_name: String) -> void:
 			break
 	temp.queue_free()
 
+const ANIM_BLEND: float = 0.2  # crossfade duration between animations
+
 func _anim(anim_name: String) -> String:
 	return _anim_lib_prefix + anim_name
 
@@ -584,7 +586,7 @@ func _update_walk_animation() -> void:
 			$PlayerModel.transform = model_transform
 			if _current_anim_state != "strafe":
 				_current_anim_state = "strafe"
-				_anim_player.play(_anim("strafe_left"))
+				_anim_player.play(_anim("strafe_left"), ANIM_BLEND)
 				_anim_player.speed_scale = 1.0
 		elif going_backward:
 			_reset_model_mirror()
@@ -592,7 +594,7 @@ func _update_walk_animation() -> void:
 			_set_model_diagonal_rotation(diagonal_angle)
 			if _current_anim_state != "walk_back":
 				_current_anim_state = "walk_back"
-				_anim_player.play_backwards(_anim("walk"))
+				_anim_player.play_backwards(_anim("walk"), ANIM_BLEND)
 				_anim_player.speed_scale = 2.0
 		else:
 			_reset_model_mirror()
@@ -601,14 +603,14 @@ func _update_walk_animation() -> void:
 			_set_model_diagonal_rotation(diagonal_angle)
 			if _current_anim_state != "walk_forward":
 				_current_anim_state = "walk_forward"
-				_anim_player.play(_anim("walk"))
+				_anim_player.play(_anim("walk"), ANIM_BLEND)
 				_anim_player.speed_scale = 2.0
 	elif not is_moving:
 		if _current_anim_state != "idle":
 			_current_anim_state = "idle"
 			_reset_model_mirror()
 			_set_model_diagonal_rotation(0.0)
-			_anim_player.play(_anim("idle"))
+			_anim_player.play(_anim("idle"), ANIM_BLEND)
 			_anim_player.speed_scale = 1.0
 
 func _set_remote_moving(moving: bool, moving_backward: bool = false) -> void:
@@ -618,17 +620,17 @@ func _set_remote_moving(moving: bool, moving_backward: bool = false) -> void:
 		if moving_backward:
 			if _current_anim_state != "walk_back":
 				_current_anim_state = "walk_back"
-				_anim_player.play_backwards(_anim("walk"))
+				_anim_player.play_backwards(_anim("walk"), ANIM_BLEND)
 				_anim_player.speed_scale = 2.0
 		else:
 			if _current_anim_state != "walk_forward":
 				_current_anim_state = "walk_forward"
-				_anim_player.play(_anim("walk"))
+				_anim_player.play(_anim("walk"), ANIM_BLEND)
 				_anim_player.speed_scale = 2.0
 	elif not moving:
 		if _current_anim_state != "idle":
 			_current_anim_state = "idle"
-			_anim_player.play(_anim("idle"))
+			_anim_player.play(_anim("idle"), ANIM_BLEND)
 			_anim_player.speed_scale = 1.0
 
 func _process_local_movement(_delta: float) -> void:
@@ -907,7 +909,7 @@ func _enter_dead_state() -> void:
 	is_dead = true
 	if _anim_player and _anim_player.has_animation(_anim("dying")):
 		$PlayerModel.visible = true
-		_anim_player.play(_anim("dying"))
+		_anim_player.play(_anim("dying"), ANIM_BLEND)
 		_anim_player.speed_scale = 1.0
 		await _anim_player.animation_finished
 	$PlayerModel.visible = false
