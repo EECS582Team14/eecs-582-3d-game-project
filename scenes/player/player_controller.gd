@@ -393,6 +393,10 @@ func _process(delta: float) -> void:
 	if not is_local_player or not _role_received:
 		return
 	if GameManager.game_state == GameManager.GAME_STATE_GAME_OVER:
+		if _is_paused:
+			_is_paused = false
+			_pause_menu.visible = false
+			_pause_layer.visible = false
 		return
 
 	if _role_timer > 0.0:
