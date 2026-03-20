@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://d2x7pl2ej6xkc"]
+
+[ext_resource type="Script" uid="uid://dc32hgi3r3ars" path="res://scenes/weapons/baton/baton_pickup.gd" id="1_nltpq"]
+[ext_resource type="PackedScene" uid="uid://bjyj14q1f1d47" path="res://scenes/weapons/baton/stun_baton.glb" id="1_t55ub"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_t55ub"]
+height = 1.6990356
+radius = 0.06689453
+
+[node name="baton_pickup" type="StaticBody3D" unique_id=2003324940 groups=["pickup"]]
+script = ExtResource("1_nltpq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=836703079]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8128967, 0)
+shape = SubResource("CylinderShape3D_t55ub")
+
+[node name="model" parent="." unique_id=1780498395 instance=ExtResource("1_t55ub")]
+transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)

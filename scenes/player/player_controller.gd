@@ -26,6 +26,12 @@ extends CharacterBody3D
 var _taser_scene: PackedScene = preload("res://scenes/weapons/taser/heavy_assault_rifle.glb")
 var _held_taser: Node3D = null
 var _projectile_script = preload("res://scenes/weapons/taser/taser_projectile.gd")
+var _baton_scene: PackedScene = preload("res://scenes/weapons/baton/stun_baton.glb")
+var _held_baton: Node3D = null
+# Weapon drop scenes
+var _taser_pickup_scene: PackedScene = preload("res://scenes/weapons/taser/taser_pickup.tscn")
+var _baton_pickup_scene: PackedScene = preload("res://scenes/weapons/baton/baton.tscn")
+
 
 # Extra animation scenes
 var _dying_scene: PackedScene = preload("res://scenes/player/Dying.fbx")
@@ -59,6 +65,7 @@ var _anim_player: AnimationPlayer = null
 var _anim_lib_prefix: String = ""
 var _current_anim_state: String = ""
 var _is_punching: bool = false
+var _is_swinging: bool = false
 var _is_jumping: bool = false
 
 # Third-person camera
@@ -82,6 +89,8 @@ var _timer_label: Label = null
 # Inventory
 var has_taser: bool = false
 var _taser_hidden: bool = false
+var has_baton: bool = false
+var _baton_hidden: bool = false
 
 
 
@@ -208,6 +217,7 @@ func _ready() -> void:
 		NetworkManager.taser_shot_received.connect(_on_taser_shot_received)
 		NetworkManager.taser_hit_received.connect(_on_taser_hit_received)
 		NetworkManager.taser_hide_received.connect(_on_taser_hide_received)
+		NetworkManager.item_dropped_received.connect(_on_item_dropped_received)
 
 		# Create pause menu on a CanvasLayer so it renders on top and receives input
 		_pause_layer = CanvasLayer.new()
@@ -442,6 +452,8 @@ func _input(event: InputEvent) -> void:
 				_is_mouse_captured = true
 			elif has_taser and not is_dead and not _taser_hidden:
 				_shoot_taser()
+			elif has_baton and not is_dead and not _baton_hidden and not _is_swinging:
+				_swing_baton()
 			elif not is_dead and not _is_punching:
 				_play_punch()
 
@@ -588,7 +600,7 @@ func _set_model_diagonal_rotation(angle_deg: float) -> void:
 	$PlayerModel.transform.basis.z = Vector3(65 * s, 0, -65 * c)
 
 func _update_walk_animation() -> void:
-	if not _anim_player or _is_punching or _is_jumping:
+	if not _anim_player or _is_punching or _is_jumping or _is_swinging:
 		return
 	var is_moving = Vector2(velocity.x, velocity.z).length() > 0.1
 	if is_moving:
@@ -682,8 +694,8 @@ func _process_local_movement(_delta: float) -> void:
 	# Normalize the direction vector to ensure consistent speed in all directions
 	var input_direction = direction.normalized()
 
-	# Slow down movement while punching
-	var move_speed = speed * 0.3 if _is_punching else speed
+	# Slow down movement while punching or swinging
+	var move_speed = speed * 0.3 if (_is_punching) else speed
 	# Only set horizontal velocity — preserve velocity.y for gravity and jumping
 	velocity.x = input_direction.x * move_speed
 	velocity.z = input_direction.z * move_speed
@@ -779,6 +791,8 @@ func _on_health_update_received(sender_steam_id: int, health: int) -> void:
 			player.get_node("PlayerModel").visible = false
 			if player._held_taser:
 				player._held_taser.visible = false
+			if player._held_baton:
+				player._held_baton.visible = false
 
 # Apply gravity for local player
 func _apply_gravity(delta: float) -> void:
@@ -873,6 +887,7 @@ func _try_interact() -> void:
 func give_taser() -> void:
 	if has_taser:
 		return
+	drop_current_weapon()
 	has_taser = true
 	_attach_taser_model()
 	if is_local_player:
@@ -893,6 +908,72 @@ func _on_taser_hide_received(sender_steam_id: int, hidden: bool) -> void:
 	var player = NetworkManager.get_player(sender_steam_id)
 	if player and player != self and player._held_taser:
 		player._held_taser.visible = not hidden
+		
+func give_baton() -> void:
+	if has_baton:
+		return
+	drop_current_weapon()
+	has_baton = true
+	_attach_baton_model()
+	if is_local_player:
+		_notification_label.text = "Baton Acquired!"
+		_notification_label.visible = true
+		await get_tree().create_timer(3.0).timeout
+		_notification_label.visible = false
+
+func _attach_baton_model() -> void:
+	if _held_baton:
+		return
+	_held_baton = _baton_scene.instantiate()
+	_held_baton.scale = Vector3(1, 1, 1)
+	_held_baton.rotation_degrees.y = 90.0
+	weapon_holder.add_child(_held_baton)
+	
+func _on_baton_hide_received(sender_steam_id: int, hidden: bool) -> void:
+	var player = NetworkManager.get_player(sender_steam_id)
+	if player and player != self and player._held_baton:
+		player._held_baton.visible = not hidden
+		
+func drop_current_weapon() -> void:
+	var pickup_to_spawn: PackedScene = null
+	var dropped_id: String = ""
+	
+	if has_taser:
+		pickup_to_spawn = _taser_pickup_scene
+		dropped_id = "taser_01"
+		has_taser = false
+		if _held_taser:
+			_held_taser.queue_free()
+			_held_taser = null
+	elif has_baton:
+		pickup_to_spawn = _baton_pickup_scene
+		dropped_id = "baton_01"
+		has_baton = false
+		if _held_baton:
+			_held_baton.queue_free()
+			_held_baton = null
+			
+	if pickup_to_spawn:
+		var pickup = pickup_to_spawn.instantiate()
+		get_tree().root.add_child(pickup)
+		pickup.global_position = global_position + (-global_transform.basis.z * 1.5) + Vector3(0, 0.5, 0)
+		NetworkManager.send_item_dropped(dropped_id, pickup.global_position)
+
+func _on_item_dropped_received(item_id: String, pos: Vector3) -> void:
+	var scene_to_spawn: PackedScene = null
+	if item_id == "taser_01":
+		scene_to_spawn = _taser_pickup_scene
+	elif item_id == "baton_01":
+		scene_to_spawn = _baton_pickup_scene
+	if scene_to_spawn:
+		_spawn_pickup_in_world(item_id, scene_to_spawn, pos)
+		
+func _spawn_pickup_in_world(id: String, scene: PackedScene, pos: Vector3) -> void:
+	var pickup = scene.instantiate()
+	get_tree().root.add_child(pickup)
+	pickup.global_position = pos
+	if "item_id" in pickup:
+		pickup.item_id = id
 
 func _on_item_picked_up(picker_steam_id: int, item_id: String) -> void:
 	if not item_id.begins_with("taser"):
@@ -925,6 +1006,32 @@ func _on_taser_shot_received(sender_steam_id: int, origin: Vector3, direction: V
 	if sender_steam_id == steam_id:
 		return
 	_spawn_projectile(origin, direction, sender_steam_id)
+	
+func _swing_baton() -> void:
+	if _is_swinging:
+		return
+	_is_swinging = true
+	_current_anim_state = "punch"
+	_anim_player.play(_anim("punch"), 0.2)
+	
+	await get_tree().create_timer(0.2).timeout
+	_baton_hit_check()
+	
+	await _anim_player.animation_finished
+	_is_swinging = false
+	_current_anim_state = ""
+	
+func _baton_hit_check() -> void:
+	const BATON_DAMAGE: int = 25
+	const BATON_RANGE: float = 3.0
+	
+	var swing_dir = -global_transform.basis.z
+	for player in GameManager.players_container.get_children():
+		if player == self or not player is CharacterBody3D or player.is_dead:
+			continue
+		var to_player = player.global_position - global_position
+		if to_player.length() < BATON_RANGE and swing_dir.dot(to_player.normalized()) > 0.5:
+			NetworkManager.send_taser_hit(player.steam_id, BATON_DAMAGE)
 
 func _toggle_third_person() -> void:
 	_third_person = not _third_person
@@ -948,6 +1055,8 @@ func _enter_dead_state() -> void:
 	$PlayerModel.visible = false
 	if _held_taser:
 		_held_taser.visible = false
+	if _held_baton:
+		_held_baton.visible = false
 	$PhysicsCollider.disabled = true
 	_interact_label.visible = false
 

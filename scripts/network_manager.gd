@@ -24,6 +24,7 @@ signal door_closed(door_id: String)
 signal ship_integrity_update_received(sender_steam_id: int, integrity: float)
 signal taser_hide_received(steam_id: int, hidden: bool)
 signal armory_button_changed(button_id: String, pressed: bool)
+signal item_dropped_received(idem_id: String, pos: Vector3)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -36,6 +37,7 @@ enum PacketType {
 	HEALTH_UPDATE,
 	ROLE_ASSIGNMENT,
 	ITEM_PICKUP,
+	ITEM_DROP,
 	TASER_SHOT,
 	TASER_HIT,
 	PROGRESS_UPDATE,
@@ -147,6 +149,14 @@ func send_taser_shot(origin: Vector3, direction: Vector3):
 func send_item_pickup(item_id: String):
 	send_p2p_packet(0, {"type": PacketType.ITEM_PICKUP, "item_id": item_id, "picker": Steam.getSteamID()}, Steam.P2P_SEND_RELIABLE, 0)
 	item_picked_up.emit(Steam.getSteamID(), item_id)
+
+func send_item_dropped(item_id: String, pos: Vector3) -> void:
+	var data = {
+		"type": PacketType.ITEM_DROP,
+		"item_id": item_id,
+		"position": { "x": pos.x, "y": pos.y, "z": pos.z}
+	}
+	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE)
 
 func send_taser_hide(hidden: bool):
 	send_p2p_packet(0, {"type": PacketType.TASER_HIDE, "hidden": hidden}, Steam.P2P_SEND_RELIABLE, 0)
