@@ -418,14 +418,38 @@ func _input(event: InputEvent) -> void:
 			elif not is_dead and not _is_punching:
 				_play_punch()
 
+const PUNCH_DAMAGE: int = 10
+const PUNCH_RANGE: float = 2.0
+const PUNCH_ANGLE: float = 0.5  # dot product threshold (~60 degree cone)
+
 func _play_punch() -> void:
 	_is_punching = true
 	_current_anim_state = "punch"
 	_anim_player.play(_anim("punch"))
 	_anim_player.speed_scale = 2.0
+	# Deal damage partway through the animation
+	await get_tree().create_timer(0.2).timeout
+	_punch_hit_check()
 	await _anim_player.animation_finished
 	_is_punching = false
 	_current_anim_state = ""  # Reset so the next frame picks the correct animation
+
+func _punch_hit_check() -> void:
+	if not GameManager.players_container:
+		return
+	var punch_dir = -global_transform.basis.z
+	for player in GameManager.players_container.get_children():
+		if player == self or not player is CharacterBody3D:
+			continue
+		if player.is_dead:
+			continue
+		var to_player = player.global_position - global_position
+		var distance = to_player.length()
+		if distance > PUNCH_RANGE:
+			continue
+		var direction = to_player.normalized()
+		if punch_dir.dot(direction) > PUNCH_ANGLE:
+			NetworkManager.send_taser_hit(player.steam_id, PUNCH_DAMAGE)
 
 func _on_resume_game() -> void:
 	_is_paused = false
