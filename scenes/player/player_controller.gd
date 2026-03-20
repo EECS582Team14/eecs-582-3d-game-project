@@ -53,6 +53,8 @@ var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 # Animation
 var _anim_player: AnimationPlayer = null
+var _anim_lib_prefix: String = ""
+var _current_anim_state: String = ""
 
 # Third-person camera
 var _third_person: bool = false
@@ -141,8 +143,11 @@ func _ready() -> void:
 
 	# Rename the original walk animation and import extras
 	if _anim_player:
-		# Rename the existing animation from the Walking.fbx to "walk"
+		# Find the library prefix (e.g. "mixamo_com/")
 		var lib_names = _anim_player.get_animation_library_list()
+		if lib_names.size() > 0 and lib_names[0] != "":
+			_anim_lib_prefix = lib_names[0] + "/"
+		# Rename the existing animation from the Walking.fbx to "walk"
 		for lib_name in lib_names:
 			var lib = _anim_player.get_animation_library(lib_name)
 			if lib:
@@ -155,6 +160,9 @@ func _ready() -> void:
 				break
 		_import_animation(_dying_scene, "dying")
 		_import_animation(_strafe_left_scene, "strafe_left")
+		# Set walk and strafe to loop (dying should not loop)
+		_set_anim_looping("walk", true)
+		_set_anim_looping("strafe_left", true)
 
 	if is_local_player:
 		# Capture the mouse cursor for looking around
@@ -389,6 +397,8 @@ func _input(event: InputEvent) -> void:
 			GameManager.adjust_ship_integrity(10.0)
 		elif event.key_label == KEY_F5 and event.pressed:
 			_toggle_third_person()
+		elif event.key_label == KEY_PERIOD and event.pressed and not is_dead:
+			_enter_dead_state()  # Debug: kill player
 
 
 	# If the input is a mouse button event
@@ -474,6 +484,14 @@ func _import_animation(scene: PackedScene, anim_name: String) -> void:
 			break
 	temp.queue_free()
 
+func _anim(anim_name: String) -> String:
+	return _anim_lib_prefix + anim_name
+
+func _set_anim_looping(anim_name: String, looping: bool) -> void:
+	var anim = _anim_player.get_animation(_anim(anim_name))
+	if anim:
+		anim.loop_mode = Animation.LOOP_LINEAR if looping else Animation.LOOP_NONE
+
 func _reset_model_mirror() -> void:
 	var model_transform = $PlayerModel.transform
 	model_transform.basis.x = Vector3(-65, 0, 0)
@@ -502,7 +520,7 @@ func _update_walk_animation() -> void:
 		var going_right = side_dot > 0.5 and abs(dot) < 0.5
 		var strafing = going_left or going_right
 
-		if strafing and _anim_player.has_animation("strafe_left"):
+		if strafing and _anim_player.has_animation(_anim("strafe_left")):
 			# Mirror the model for right strafe (swapped: left uses mirror, right is default)
 			var model_transform = $PlayerModel.transform
 			if going_left:
@@ -510,42 +528,51 @@ func _update_walk_animation() -> void:
 			else:
 				model_transform.basis.x = Vector3(-65, 0, 0)
 			$PlayerModel.transform = model_transform
-			if _anim_player.current_animation != "strafe_left":
-				_anim_player.play("strafe_left")
+			if _current_anim_state != "strafe":
+				_current_anim_state = "strafe"
+				_anim_player.play(_anim("strafe_left"))
 				_anim_player.speed_scale = 1.0
 		elif going_backward:
 			_reset_model_mirror()
 			var diagonal_angle = side_dot * -25.0
 			_set_model_diagonal_rotation(diagonal_angle)
-			if not _anim_player.is_playing() or _anim_player.speed_scale > 0 or _anim_player.current_animation != "walk":
-				_anim_player.play_backwards("walk")
+			if _current_anim_state != "walk_back":
+				_current_anim_state = "walk_back"
+				_anim_player.play_backwards(_anim("walk"))
 				_anim_player.speed_scale = 2.0
 		else:
 			_reset_model_mirror()
 			# Rotate model slightly when moving diagonally
 			var diagonal_angle = side_dot * 25.0  # up to 25 degrees
 			_set_model_diagonal_rotation(diagonal_angle)
-			if not _anim_player.is_playing() or _anim_player.speed_scale < 0 or _anim_player.current_animation != "walk":
-				_anim_player.play("walk")
+			if _current_anim_state != "walk_forward":
+				_current_anim_state = "walk_forward"
+				_anim_player.play(_anim("walk"))
 				_anim_player.speed_scale = 2.0
-	elif not is_moving and _anim_player.is_playing():
-		_anim_player.stop()
-		_set_model_diagonal_rotation(0.0)
+	elif not is_moving:
+		if _current_anim_state != "idle":
+			_current_anim_state = "idle"
+			_anim_player.stop()
+			_set_model_diagonal_rotation(0.0)
 
 func _set_remote_moving(moving: bool, moving_backward: bool = false) -> void:
 	if not _anim_player:
 		return
 	if moving:
 		if moving_backward:
-			if not _anim_player.is_playing() or _anim_player.speed_scale > 0 or _anim_player.current_animation != "walk":
-				_anim_player.play_backwards("walk")
+			if _current_anim_state != "walk_back":
+				_current_anim_state = "walk_back"
+				_anim_player.play_backwards(_anim("walk"))
 				_anim_player.speed_scale = 2.0
 		else:
-			if not _anim_player.is_playing() or _anim_player.speed_scale < 0 or _anim_player.current_animation != "walk":
-				_anim_player.play("walk")
+			if _current_anim_state != "walk_forward":
+				_current_anim_state = "walk_forward"
+				_anim_player.play(_anim("walk"))
 				_anim_player.speed_scale = 2.0
-	elif not moving and _anim_player.is_playing():
-		_anim_player.stop()
+	elif not moving:
+		if _current_anim_state != "idle":
+			_current_anim_state = "idle"
+			_anim_player.stop()
 
 func _process_local_movement(_delta: float) -> void:
 	# Initialize the direction vector
@@ -819,9 +846,9 @@ func _toggle_third_person() -> void:
 
 func _enter_dead_state() -> void:
 	is_dead = true
-	if _anim_player and _anim_player.has_animation("dying"):
+	if _anim_player and _anim_player.has_animation(_anim("dying")):
 		$PlayerModel.visible = true
-		_anim_player.play("dying")
+		_anim_player.play(_anim("dying"))
 		_anim_player.speed_scale = 1.0
 		await _anim_player.animation_finished
 	$PlayerModel.visible = false
