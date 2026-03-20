@@ -617,9 +617,11 @@ func _process_local_movement(_delta: float) -> void:
 	# Normalize the direction vector to ensure consistent speed in all directions
 	var input_direction = direction.normalized()
 
+	# Slow down movement while punching
+	var move_speed = speed * 0.3 if _is_punching else speed
 	# Only set horizontal velocity — preserve velocity.y for gravity and jumping
-	velocity.x = input_direction.x * speed
-	velocity.z = input_direction.z * speed
+	velocity.x = input_direction.x * move_speed
+	velocity.z = input_direction.z * move_speed
 
 func _process_ghost_movement(_delta: float) -> void:
 	var direction: Vector3 = Vector3.ZERO
