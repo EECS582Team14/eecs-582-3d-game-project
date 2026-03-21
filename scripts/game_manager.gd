@@ -13,6 +13,8 @@ const TASER_SPAWN_POS = Vector3(-19.66497, 0.45656508, 16.686378)
 const BATON01_SPAWN_POS = Vector3(-19.932, 0.0, 21.235)
 const BATON02_SPAWN_POS = Vector3(-19.932, 0.0, 23.177)
 
+var _initial_weapon_data: Array = []	# Stores lists of [item_id, global_position] for each weapon spawn
+
 @export var spawn_points: Array[Vector3] = [
 	Vector3(0, 1, 0),
 	Vector3(3, 1, 0),
@@ -308,12 +310,10 @@ func _on_play_again():
 		
 	# Clear existing weapons
 	var existing_pickups = get_tree().get_nodes_in_group("pickup")
-	var weapons = []
 	for p in existing_pickups:
 		if p.item_id.contains("Healthpack") or p.item_id == "":
 			continue
 		else:
-			weapons.append([p.item_id, p.position])
 			p.queue_free()
 
 	# Despawn all players
@@ -337,8 +337,8 @@ func _on_play_again():
 	await get_tree().process_frame
 	_spawn_all_players()
 	_spawn_local_hud()
-	#_respawn_taser_pickup()
-	_respawn_weapon_pickups(weapons)
+	if LobbyManager.is_host():
+		_reset_weapon_pickups()
 	_reset_ship_integrity()
 
 	# Host starts the timer
@@ -357,26 +357,22 @@ func _respawn_taser_pickup():
 	taser.position = TASER_SPAWN_POS
 	parent.add_child(taser)
 
-func _respawn_weapon_pickups(weapons):
+func _reset_weapon_pickups():
 	var parent = get_tree().current_scene.get_node_or_null("UpperDeck")
 	if parent == null:
 		parent = get_tree().current_scene
-	var taser = TaserPickupScene.instantiate()
-	var baton = BatonPickupScene.instantiate()
 	
-	for weapon in weapons:
-		print(weapon)
+	for weapon in _initial_weapon_data:
 		var new_weapon = null
-		var weapon_id = weapon[0]
-		var weapon_position = weapon[1]
-		if weapon_id.begins_with("taser"):
+		if weapon.id.begins_with("taser"):
 			new_weapon = TaserPickupScene.instantiate()
-		elif weapon_id.begins_with("baton"):
+		elif weapon.id.begins_with("baton"):
 			new_weapon = BatonPickupScene.instantiate()
-		new_weapon.item_id = weapon_id
-		new_weapon.position = weapon_position
-		print(new_weapon)
-		parent.add_child(new_weapon)
+			
+		if new_weapon:
+			new_weapon.item_id = weapon.id
+			new_weapon.position = weapon.pos
+			parent.add_child(new_weapon)
 	
 
 # ============ GAME START ============
@@ -403,6 +399,10 @@ func _load_game_level():
 	# Wait for scene to load, then spawn players
 	await get_tree().process_frame
 	await get_tree().process_frame
+	
+	if LobbyManager.is_host():
+		_capture_initial_weapon_states()
+	
 	_spawn_all_players()
 	_spawn_local_hud()
 	if LobbyManager.is_host():
@@ -488,6 +488,17 @@ func _spawn_local_hud():
 	# Make sure it's visible and top-level
 	hud_instance.owner = get_tree().current_scene
 
+func _capture_initial_weapon_states():
+	_initial_weapon_data.clear()
+	var starting_pickups = get_tree().get_nodes_in_group("pickup")
+	
+	for p in starting_pickups:
+		if not p.item_id.contains("Healthpack") and p.item_id != "":
+			_initial_weapon_data.append({
+				"id": p.item_id,
+				"pos": p.global_position
+			})
+	print("Weapon state captured: ", _initial_weapon_data.size(), " weapons found")
 
 func _assign_roles():
 	# Pick one random player as the impostor
@@ -514,7 +525,7 @@ func _assign_roles():
 			NetworkManager.send_role_assignment(member_steam_id, is_impostor)
 
 	# Give the impostor the taser after the role reveal delay
-	_give_impostor_taser_after_reveal(impostor_steam_id)
+	#_give_impostor_taser_after_reveal(impostor_steam_id)
 
 	var impostor_name = LobbyManager.lobby_members[impostor_index].name
 	print("Impostor assigned: ", impostor_name)

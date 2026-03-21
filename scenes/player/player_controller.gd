@@ -939,18 +939,15 @@ func _on_baton_hide_received(sender_steam_id: int, hidden: bool) -> void:
 		
 func drop_current_weapon() -> void:
 	var pickup_to_spawn: PackedScene = null
-	var dropped_id: String = ""
 	
 	if has_taser:
 		pickup_to_spawn = _taser_pickup_scene
-		dropped_id = "taser_01"
 		has_taser = false
 		if _held_taser:
 			_held_taser.queue_free()
 			_held_taser = null
 	elif has_baton:
 		pickup_to_spawn = _baton_pickup_scene
-		dropped_id = "baton_01"
 		has_baton = false
 		if _held_baton:
 			_held_baton.queue_free()
@@ -959,9 +956,12 @@ func drop_current_weapon() -> void:
 	if pickup_to_spawn:
 		var pickup = pickup_to_spawn.instantiate()
 		pickup.scale = Vector3(0.5, 0.5, 0.5)
-		get_tree().root.add_child(pickup)
 		pickup.global_position = global_position + (-global_transform.basis.z * 1.5) + Vector3(0, 0.5, 0)
-		NetworkManager.send_item_dropped(dropped_id, pickup.global_position)
+		pickup.item_id = player_weapon_id
+		pickup.add_to_group("pickup")
+		get_tree().root.add_child(pickup)
+		NetworkManager.send_item_dropped(player_weapon_id, pickup.global_position)
+		player_weapon_id = ""
 
 func _on_item_dropped_received(item_id: String, pos: Vector3) -> void:
 	var scene_to_spawn: PackedScene = null
@@ -974,11 +974,11 @@ func _on_item_dropped_received(item_id: String, pos: Vector3) -> void:
 		
 func _spawn_pickup_in_world(id: String, scene: PackedScene, pos: Vector3) -> void:
 	var pickup = scene.instantiate()
+	pickup.global_position = pos
+	pickup.item_id = id
 	pickup.add_to_group("pickup")
 	get_tree().root.add_child(pickup)
-	pickup.global_position = pos
-	if "item_id" in pickup:
-		pickup.item_id = id
+	print(id, pickup.item_id)
 
 func _on_item_picked_up(picker_steam_id: int, item_id: String) -> void:
 	#if not item_id.begins_with("taser"):
