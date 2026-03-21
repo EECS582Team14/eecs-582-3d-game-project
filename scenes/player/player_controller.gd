@@ -888,8 +888,6 @@ func _try_interact() -> void:
 		_looking_at_interactable.activate()
 
 func give_taser() -> void:
-	if has_taser:
-		return
 	drop_current_weapon()
 	has_taser = true
 	_attach_taser_model()
@@ -913,8 +911,6 @@ func _on_taser_hide_received(sender_steam_id: int, hidden: bool) -> void:
 		player._held_taser.visible = not hidden
 		
 func give_baton() -> void:
-	if has_baton:
-		return
 	drop_current_weapon()
 	has_baton = true
 	_attach_baton_model()
