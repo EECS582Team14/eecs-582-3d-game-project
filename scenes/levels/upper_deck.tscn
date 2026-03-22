@@ -548,6 +548,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.66497, 0.45656508, 14.377
 item_id = "taser_02"
 
 [node name="Flooring" type="Node3D" parent="." unique_id=1097702279]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.04, 0)
 
 [node name="floor_path_single" parent="Flooring" unique_id=1860156831 instance=ExtResource("33_sco87")]
 
