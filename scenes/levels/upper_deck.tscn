@@ -32,6 +32,11 @@
 [ext_resource type="Script" uid="uid://cvsghl2twbfdu" path="res://scenes/tasks/Crew_task_script.gd" id="25_efilq"]
 [ext_resource type="PackedScene" uid="uid://dkmlnl6gy54df" path="res://scenes/items/Healthpack Table/Healthpack1 Table.tscn" id="28_4ertf"]
 [ext_resource type="PackedScene" uid="uid://d2x7pl2ej6xkc" path="res://scenes/weapons/baton/baton.tscn" id="32_4clrc"]
+[ext_resource type="PackedScene" uid="uid://vynka2gbh04c" path="res://scenes/levels/flooring/floor_path_single.tscn" id="33_sco87"]
+[ext_resource type="PackedScene" uid="uid://b1h3bxid3r3x6" path="res://scenes/levels/flooring/floor_path_long.tscn" id="34_0m6m5"]
+[ext_resource type="PackedScene" uid="uid://c4158nddi7ibs" path="res://scenes/levels/flooring/floor_path_4_way.tscn" id="35_efilq"]
+[ext_resource type="PackedScene" uid="uid://chgtivhv2h0my" path="res://scenes/levels/flooring/floor_path_edge.tscn" id="36_orgge"]
+[ext_resource type="PackedScene" uid="uid://cxy2cael0sox" path="res://scenes/levels/flooring/floor_path_3_way.tscn" id="37_brw7n"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]
 size = Vector2(60, 80)
@@ -74,7 +79,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6176357, -0.017402649, 11.
 [node name="Ceiling" type="StaticBody3D" parent="." unique_id=1243012629]
 
 [node name="PlaneMesh" type="MeshInstance3D" parent="Ceiling" unique_id=2110469671]
-transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, -0.068395704, 2.4389405, 10.014011)
+transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, -0.068395615, 2.4389405, 11.01401)
 mesh = SubResource("PlaneMesh_mgbrt")
 
 [node name="PlaneCollision" type="CollisionShape3D" parent="Ceiling" unique_id=1216043302]
@@ -541,3 +546,61 @@ item_id = "baton_02"
 [node name="TaserPickup2" parent="." unique_id=1416351404 instance=ExtResource("7_rmbde")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.66497, 0.45656508, 14.377852)
 item_id = "taser_02"
+
+[node name="Flooring" type="Node3D" parent="." unique_id=1097702279]
+
+[node name="floor_path_single" parent="Flooring" unique_id=1860156831 instance=ExtResource("33_sco87")]
+
+[node name="floor_path_long" parent="Flooring" unique_id=1126262065 instance=ExtResource("34_0m6m5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.2)
+
+[node name="floor_path_long2" parent="Flooring" unique_id=845328670 instance=ExtResource("34_0m6m5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.2000003)
+
+[node name="floor_path_single2" parent="Flooring" unique_id=1477334756 instance=ExtResource("33_sco87")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.400001)
+
+[node name="floor_path_single3" parent="Flooring" unique_id=1005455206 instance=ExtResource("33_sco87")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9.8)
+
+[node name="floor_path_single4" parent="Flooring" unique_id=1587819016 instance=ExtResource("33_sco87")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0010000002, -11.1)
+
+[node name="floor_path_4_way" parent="Flooring" unique_id=1062276463 instance=ExtResource("35_efilq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12.500001)
+
+[node name="floor_path_long3" parent="Flooring" unique_id=237588788 instance=ExtResource("34_0m6m5")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -4.2000003, 0, -12.500001)
+
+[node name="floor_path_long4" parent="Flooring" unique_id=1246788106 instance=ExtResource("34_0m6m5")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.2000003, 0, -12.500001)
+
+[node name="floor_path_long5" parent="Flooring" unique_id=1295051263 instance=ExtResource("34_0m6m5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -16.7)
+
+[node name="floor_path_edge" parent="Flooring" unique_id=538114580 instance=ExtResource("36_orgge")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, -20.9)
+
+[node name="floor_path_long6" parent="Flooring" unique_id=1680521776 instance=ExtResource("34_0m6m5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.7, 0, -16.7)
+
+[node name="floor_path_edge2" parent="Flooring" unique_id=2083803629 instance=ExtResource("36_orgge")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 9.7, 0, -20.9)
+
+[node name="floor_path_long7" parent="Flooring" unique_id=1410454596 instance=ExtResource("34_0m6m5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.7, 0, -16.7)
+
+[node name="floor_path_edge3" parent="Flooring" unique_id=1289013651 instance=ExtResource("36_orgge")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -9.7, 0, -20.9)
+
+[node name="floor_path_3_way" parent="Flooring" unique_id=1763069854 instance=ExtResource("37_brw7n")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 9.7, 0, -12.5)
+
+[node name="floor_path_single5" parent="Flooring" unique_id=10691429 instance=ExtResource("33_sco87")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -8.3, 0.0010000002, -12.5)
+
+[node name="floor_path_single6" parent="Flooring" unique_id=510259998 instance=ExtResource("33_sco87")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 8.3, 0.0010000002, -12.5)
+
+[node name="floor_path_3_way2" parent="Flooring" unique_id=1380333298 instance=ExtResource("37_brw7n")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -9.7, 0, -12.5)

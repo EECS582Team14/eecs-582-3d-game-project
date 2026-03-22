@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://chgtivhv2h0my"]
+
+[ext_resource type="Texture2D" uid="uid://b85nfpxgd1lh" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_Roughness.png" id="1_5hoov"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7a6m7"]
+albedo_texture = ExtResource("1_5hoov")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ycwdt"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_geint"]
+albedo_color = Color(0.10932005, 0.09097696, 0.033233657, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_n4u8s"]
+
+[node name="floor_path" type="Node3D" unique_id=1860156831]
+
+[node name="path_middle" type="MeshInstance3D" parent="." unique_id=1345867871]
+transform = Transform3D(0.7, 0, 0, 0, 1, 0, 0, 0, 0.7, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_7a6m7")
+mesh = SubResource("PlaneMesh_ycwdt")
+
+[node name="path_border1" type="MeshInstance3D" parent="." unique_id=1407840658]
+transform = Transform3D(0.05, 0, -2.1139412e-07, 0, -0.05, 0, -7.54979e-09, 0, -1.4, 0.7, 0, 4.529874e-08)
+material_override = SubResource("StandardMaterial3D_geint")
+mesh = SubResource("BoxMesh_n4u8s")
+
+[node name="path_border2" type="MeshInstance3D" parent="." unique_id=908947783]
+transform = Transform3D(8.146034e-09, 0, 1.4, 0, -0.05, 0, 0.05, 0, -2.2808895e-07, -1.1920929e-07, 0, -0.70000017)
+material_override = SubResource("StandardMaterial3D_geint")
+mesh = SubResource("BoxMesh_n4u8s")
+
+[node name="path_border3" type="MeshInstance3D" parent="." unique_id=1821243943]
+transform = Transform3D(8.146034e-09, 0, 1.4, 0, -0.05, 0, 0.05, 0, -2.2808895e-07, -1.1920929e-07, 0, 0.6999998)
+material_override = SubResource("StandardMaterial3D_geint")
+mesh = SubResource("BoxMesh_n4u8s")
