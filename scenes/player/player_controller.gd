@@ -1121,6 +1121,7 @@ func _enter_dead_state() -> void:
 		_anim_player.speed_scale = 1.0
 		await _anim_player.animation_finished
 	$PlayerModel.visible = false
+	nametag.visible = false
 	if _held_taser:
 		_held_taser.visible = false
 	if _held_baton:
