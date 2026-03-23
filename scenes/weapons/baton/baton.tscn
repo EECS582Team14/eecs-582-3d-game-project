@@ -11,8 +11,8 @@ radius = 0.06689453
 script = ExtResource("1_nltpq")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=836703079]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8128967, 0)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.4096585, 0)
 shape = SubResource("CylinderShape3D_t55ub")
 
-[node name="model" parent="." unique_id=1780498395 instance=ExtResource("1_t55ub")]
-transform = Transform3D(0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001, 0, 0, 0)
+[node name="model" parent="." unique_id=1670465857 instance=ExtResource("1_t55ub")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
