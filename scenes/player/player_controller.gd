@@ -210,6 +210,8 @@ func _ready() -> void:
 		_set_anim_looping("strafe_left", true)
 		_set_anim_looping("idle", true)
 
+	NetworkManager.punch_received.connect(_on_punch_received)
+
 	if is_local_player:
 		# Capture the mouse cursor for looking around
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -227,7 +229,6 @@ func _ready() -> void:
 		NetworkManager.taser_hit_received.connect(_on_taser_hit_received)
 		NetworkManager.taser_hide_received.connect(_on_taser_hide_received)
 		NetworkManager.item_dropped_received.connect(_on_item_dropped_received)
-		NetworkManager.punch_received.connect(_on_punch_received)
 
 		# Create pause menu on a CanvasLayer so it renders on top and receives input
 		_pause_layer = CanvasLayer.new()
@@ -499,15 +500,17 @@ func _play_punch() -> void:
 	_current_anim_state = ""  # Reset so the next frame picks the correct animation
 
 func _on_punch_received(sender_steam_id: int) -> void:
-	var player = NetworkManager.get_player(sender_steam_id)
-	if player and player != self and player._anim_player:
-		player._is_punching = true
-		player._current_anim_state = "punch"
-		player._anim_player.play(player._anim("punch"), ANIM_BLEND)
-		player._anim_player.speed_scale = 2.0
-		await player._anim_player.animation_finished
-		player._is_punching = false
-		player._current_anim_state = ""
+	if sender_steam_id != steam_id:
+		return
+	if not _anim_player:
+		return
+	_is_punching = true
+	_current_anim_state = "punch"
+	_anim_player.play(_anim("punch"), ANIM_BLEND)
+	_anim_player.speed_scale = 2.0
+	await _anim_player.animation_finished
+	_is_punching = false
+	_current_anim_state = ""
 
 func _punch_hit_check() -> void:
 	if not GameManager.players_container:
@@ -692,6 +695,8 @@ func _update_walk_animation() -> void:
 
 func _set_remote_moving(moving: bool, moving_backward: bool = false) -> void:
 	if not _anim_player:
+		return
+	if _is_punching or _is_swinging:
 		return
 	if moving:
 		if moving_backward:
