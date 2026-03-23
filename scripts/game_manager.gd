@@ -32,7 +32,7 @@ const PLAYER_COLORS: Array[Color] = [
 var players_container: Node3D = null
 var hud_instance: Control = null  # hold reference to local HUD
 # Destination progress
-const time_to_dest: float = 60
+const time_to_dest: float = 600
 
 var destination_progress: float = 0.0
 var destination_distance: float = time_to_dest
@@ -44,7 +44,7 @@ var _progress_sync_timer: float = 0.0
 # Arrival countdown
 var arrival_time: float = 0.0  # absolute Unix timestamp
 var timer_active: bool = false
-var timer_phase_one: float = 5.0  # default 5-minute countdown
+var timer_phase_one: float = 30.0  # default 5-minute countdown
 var timer_phase_two: float = time_to_dest
 
 # Ship integrity

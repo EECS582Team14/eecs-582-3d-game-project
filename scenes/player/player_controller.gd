@@ -16,7 +16,7 @@ extends CharacterBody3D
 @export var jump_velocity: float = 5.0
 
 @onready var current_health: int = max_health
-
+@onready var nametag = $Label3D
 
 # Load child nodes
 @onready var camera: Camera3D = $PlayerCamera
@@ -160,7 +160,8 @@ func _ready() -> void:
 	_target_rotation_y = rotation.y
 	_target_camera_rotation_x = 0.0
 	_first_person_camera_pos = camera.position
-
+	
+	nametag.text = "Player"
 	# Find AnimationPlayer inside the FBX model
 	var model = $PlayerModel
 	for child in model.get_children():
