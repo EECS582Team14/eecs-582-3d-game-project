@@ -374,6 +374,7 @@ func _reset_weapon_pickups():
 			new_weapon.item_id = weapon.id
 			new_weapon.position = weapon.pos
 			parent.add_child(new_weapon)
+			NetworkManager.send_item_dropped(weapon.id, weapon.pos)
 	
 
 # ============ GAME START ============
