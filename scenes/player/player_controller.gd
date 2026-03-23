@@ -227,6 +227,7 @@ func _ready() -> void:
 		NetworkManager.taser_hit_received.connect(_on_taser_hit_received)
 		NetworkManager.taser_hide_received.connect(_on_taser_hide_received)
 		NetworkManager.item_dropped_received.connect(_on_item_dropped_received)
+		NetworkManager.punch_received.connect(_on_punch_received)
 
 		# Create pause menu on a CanvasLayer so it renders on top and receives input
 		_pause_layer = CanvasLayer.new()
@@ -489,12 +490,24 @@ func _play_punch() -> void:
 	_current_anim_state = "punch"
 	_anim_player.play(_anim("punch"), ANIM_BLEND)
 	_anim_player.speed_scale = 2.0
+	NetworkManager.send_punch()
 	# Deal damage partway through the animation
 	await get_tree().create_timer(0.2).timeout
 	_punch_hit_check()
 	await _anim_player.animation_finished
 	_is_punching = false
 	_current_anim_state = ""  # Reset so the next frame picks the correct animation
+
+func _on_punch_received(sender_steam_id: int) -> void:
+	var player = NetworkManager.get_player(sender_steam_id)
+	if player and player != self and player._anim_player:
+		player._is_punching = true
+		player._current_anim_state = "punch"
+		player._anim_player.play(player._anim("punch"), ANIM_BLEND)
+		player._anim_player.speed_scale = 2.0
+		await player._anim_player.animation_finished
+		player._is_punching = false
+		player._current_anim_state = ""
 
 func _punch_hit_check() -> void:
 	if not GameManager.players_container:

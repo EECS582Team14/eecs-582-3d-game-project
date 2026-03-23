@@ -24,6 +24,7 @@ signal door_closed(door_id: String)
 signal ship_integrity_update_received(sender_steam_id: int, integrity: float)
 signal taser_hide_received(steam_id: int, hidden: bool)
 signal armory_button_changed(button_id: String, pressed: bool)
+signal punch_received(steam_id: int)
 signal item_dropped_received(idem_id: String, pos: Vector3)
 
 const PACKET_READ_LIMIT: int = 32
@@ -49,7 +50,8 @@ enum PacketType {
 	DOOR_STATE_CHANGE,
 	SHIP_INTEGRITY,
 	TASER_HIDE,
-	ARMORY_BUTTON
+	ARMORY_BUTTON,
+	PUNCH
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -193,6 +195,9 @@ func send_ship_integrity_update(integrity: float):
 func send_door_state_change(door_id: String, action: String):
 	send_p2p_packet(0, {"type": PacketType.DOOR_STATE_CHANGE, "door_id": door_id, "action": action}, Steam.P2P_SEND_RELIABLE, 0)
 
+func send_punch():
+	send_p2p_packet(0, {"type": PacketType.PUNCH}, Steam.P2P_SEND_RELIABLE, 0)
+
 func send_armory_button(button_id: String, pressed: bool):
 	send_p2p_packet(0, {"type": PacketType.ARMORY_BUTTON, "button_id": button_id, "pressed": pressed}, Steam.P2P_SEND_RELIABLE, 0)
 	armory_button_changed.emit(button_id, pressed)
@@ -297,6 +302,9 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 
 		PacketType.ARMORY_BUTTON:
 			armory_button_changed.emit(data.get("button_id", ""), data.get("pressed", false))
+
+		PacketType.PUNCH:
+			punch_received.emit(sender_steam_id)
 
 		_:
 			print("Unknown packet type: %s" % packet_type)
