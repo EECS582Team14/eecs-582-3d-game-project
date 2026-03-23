@@ -40,6 +40,7 @@ var base_progress_speed: float = 1.0
 var progress_speed_modifier: float = 1.0
 const PROGRESS_SYNC_RATE: float = 1.0
 var _progress_sync_timer: float = 0.0
+var true_destination_progress: float = 0
 
 # Arrival countdown
 var arrival_time: float = 0.0  # absolute Unix timestamp
@@ -89,7 +90,7 @@ func _process(delta):
 		UIState.system_alert.emit("Successful hyperjump achieved, all systems nominal. Avoid contact with the the warp. Risk of data corruption: Low")
 	if game_state == 2:
 		destination_progress += base_progress_speed * progress_speed_modifier * delta
-		var true_destination_progress: float = destination_progress / destination_distance 
+		true_destination_progress = destination_progress / destination_distance 
 		true_destination_progress = clampf(true_destination_progress * 100, 0.0, 100.0)
 
 		_progress_sync_timer += delta
@@ -160,7 +161,7 @@ func _check_win_conditions():
 		return
 
 	# Condition 3: Destination progress reaches 100% -> Crewmates win
-	if destination_progress >= 100.0:
+	if destination_progress >= destination_distance:
 		_trigger_game_over(false)
 		return
 
