@@ -1103,8 +1103,8 @@ func _toggle_third_person() -> void:
 func _enter_dead_state() -> void:
 	is_dead = true
 	
-	if is_local_player:
-		drop_current_weapon()
+	#if is_local_player:
+	drop_current_weapon()
 	
 	if _anim_player and _anim_player.has_animation(_anim("dying")):
 		$PlayerModel.visible = true
