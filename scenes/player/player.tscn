@@ -9,7 +9,7 @@ size = Vector3(0.4, 1.2, 0.4)
 [node name="Player" type="CharacterBody3D" unique_id=119440718]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
 collision_layer = 3
-floor_max_angle = 1.5707964
+floor_max_angle = 0.98611104
 floor_snap_length = 0.4
 script = ExtResource("1_dovo2")
 
