@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://ckqknkquj1prp" path="res://scenes/player/Walking.fbx" id="2_walking"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_x7p2l"]
-size = Vector3(0.4, 1.2, 0.4)
+size = Vector3(0.4, 1.2, 0.55)
 
 [node name="Player" type="CharacterBody3D" unique_id=119440718]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
@@ -14,7 +14,7 @@ floor_snap_length = 0.4
 script = ExtResource("1_dovo2")
 
 [node name="PhysicsCollider" type="CollisionShape3D" parent="." unique_id=616283659]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -0.075)
 shape = SubResource("BoxShape3D_x7p2l")
 
 [node name="PlayerModel" parent="." unique_id=740099854 instance=ExtResource("2_walking")]
