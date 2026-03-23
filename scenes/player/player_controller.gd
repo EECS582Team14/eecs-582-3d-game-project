@@ -161,7 +161,10 @@ func _ready() -> void:
 	_target_camera_rotation_x = 0.0
 	_first_person_camera_pos = camera.position
 	
-	nametag.text = "Player"
+	if steam_id != 0:
+		nametag.text = Steam.getFriendPersonaName(steam_id)
+	else:
+		nametag.text = Steam.getPersonaName()
 	# Find AnimationPlayer inside the FBX model
 	var model = $PlayerModel
 	for child in model.get_children():
