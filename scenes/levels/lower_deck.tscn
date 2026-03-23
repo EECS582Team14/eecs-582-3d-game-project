@@ -288,7 +288,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.246185, 0, -29.505)
 [node name="Maze" type="Node3D" parent="." unique_id=806643983]
 
 [node name="ElevatorWall1" parent="Maze" unique_id=711712572 instance=ExtResource("10_myntk")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.5, 0, 23.655354)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.6, 0, 23.655)
 
 [node name="ElevatorWall2" parent="Maze" unique_id=1208048071 instance=ExtResource("10_myntk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.77, 0, 25.904982)
@@ -327,7 +327,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.77, 0, 30.404982)
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -15.378501, 0, 31.742981)
 
 [node name="SouthWall7" parent="Maze" unique_id=721026694 instance=ExtResource("10_myntk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.77, 0, 21.404982)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.78, 0, 21.405)
 
 [node name="SouthWall8" parent="Maze" unique_id=1169424813 instance=ExtResource("10_myntk")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 6, 0, 23.654982)
