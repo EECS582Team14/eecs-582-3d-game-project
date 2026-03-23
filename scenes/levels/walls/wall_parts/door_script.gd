@@ -75,19 +75,19 @@ func _on_door_detection_range_body_entered(_body: Node3D) -> void:
 	_bodies_in_range += 1
 	if not is_locked and _bodies_in_range == 1:
 		_open_door()
-		NetworkManager.send_door_state_change(self.name, "open")
+		NetworkManager.send_door_state_change(str(get_path()), "open")
 
 ## SIGNAL CALLBACK FOR WHEN A BODY EXITS THE DOOR'S DETECTION RANGE
 func _on_door_detection_range_body_exited(_body: Node3D) -> void:
 	_bodies_in_range = max(_bodies_in_range - 1, 0)
 	if _bodies_in_range == 0:
 		_close_door()
-		NetworkManager.send_door_state_change(self.name, "close")
+		NetworkManager.send_door_state_change(str(get_path()), "close")
 
 func _on_door_opened(door_id: String) -> void:
-	if door_id == self.name:
+	if door_id == str(get_path()):
 		_open_door()
 
 func _on_door_closed(door_id: String) -> void:
-	if door_id == self.name:
+	if door_id == str(get_path()):
 		_close_door()
