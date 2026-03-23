@@ -178,9 +178,12 @@ func _ready() -> void:
 			if main_lib_name != "":
 				_anim_lib_prefix = main_lib_name + "/"
 
-		# Get the main library and rename the original animation to "walk"
-		var main_lib = _anim_player.get_animation_library(main_lib_name)
-		if main_lib:
+		# Duplicate the library so each player instance has its own copy
+		var shared_lib = _anim_player.get_animation_library(main_lib_name)
+		if shared_lib:
+			var main_lib = shared_lib.duplicate()
+			_anim_player.remove_animation_library(main_lib_name)
+			_anim_player.add_animation_library(main_lib_name, main_lib)
 			# Remove all existing animations and re-add the first one as "walk"
 			var existing_anims = main_lib.get_animation_list()
 			if existing_anims.size() > 0:
@@ -590,7 +593,8 @@ func _import_animation(scene: PackedScene, anim_name: String) -> void:
 					var anim_list = lib.get_animation_list()
 					if anim_list.size() > 0:
 						var anim = lib.get_animation(anim_list[0])
-						var main_lib = _anim_player.get_animation_library(lib_names[0])
+						var main_lib_names = _anim_player.get_animation_library_list()
+						var main_lib = _anim_player.get_animation_library(main_lib_names[0]) if main_lib_names.size() > 0 else null
 						if main_lib and not main_lib.has_animation(anim_name):
 							main_lib.add_animation(anim_name, anim)
 						break
