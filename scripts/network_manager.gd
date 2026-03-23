@@ -25,7 +25,7 @@ signal ship_integrity_update_received(sender_steam_id: int, integrity: float)
 signal taser_hide_received(steam_id: int, hidden: bool)
 signal armory_button_changed(button_id: String, pressed: bool)
 signal punch_received(steam_id: int)
-signal item_dropped_received(idem_id: String, pos: Vector3)
+signal item_dropped_received(idem_id: String, pos: Vector3, uses: int)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -152,11 +152,12 @@ func send_item_pickup(item_id: String):
 	send_p2p_packet(0, {"type": PacketType.ITEM_PICKUP, "item_id": item_id, "picker": Steam.getSteamID()}, Steam.P2P_SEND_RELIABLE, 0)
 	item_picked_up.emit(Steam.getSteamID(), item_id)
 
-func send_item_dropped(item_id: String, pos: Vector3) -> void:
+func send_item_dropped(item_id: String, pos: Vector3, uses: int = 0) -> void:
 	var data = {
 		"type": PacketType.ITEM_DROP,
 		"item_id": item_id,
-		"position": { "x": pos.x, "y": pos.y, "z": pos.z}
+		"position": { "x": pos.x, "y": pos.y, "z": pos.z},
+		"uses": uses
 	}
 	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE)
 
@@ -261,6 +262,12 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 			var picker_id = data.get("picker", 0)
 			var item_id = data.get("item_id", "")
 			item_picked_up.emit(picker_id, item_id)
+			
+		PacketType.ITEM_DROP:
+			var id = data.item_id
+			var pos = Vector3(data.position.x, data.position.y, data.position.z)
+			var uses = data.get("uses", 0)
+			item_dropped_received.emit(id, pos, uses)
 
 		PacketType.TASER_SHOT:
 			var origin = Vector3(data.get("ox", 0), data.get("oy", 0), data.get("oz", 0))

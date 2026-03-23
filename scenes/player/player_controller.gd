@@ -44,6 +44,13 @@ var _jumping_scene: PackedScene = preload("res://scenes/player/jumping.fbx")
 const TASER_COOLDOWN: float = 0.5
 var _taser_cooldown_timer: float = 0.0
 
+# Baton controls
+const BATON_DAMAGE: int = 25
+const BATON_RANGE: float = 3.0
+const MAX_BATON_USES = 3
+# Baton uses
+var baton_uses: int = 0
+
 # Weapon id
 var player_weapon_id: String = ""
 
@@ -476,7 +483,10 @@ func _input(event: InputEvent) -> void:
 			elif has_taser and not is_dead and not _taser_hidden:
 				_shoot_taser()
 			elif has_baton and not is_dead and not _baton_hidden and not _is_swinging:
-				_swing_baton()
+				if baton_uses > 0:
+					_swing_baton()
+				else:
+					_update_baton_status()
 			elif not is_dead and not _is_punching:
 				_play_punch()
 
@@ -955,12 +965,13 @@ func _on_taser_hide_received(sender_steam_id: int, hidden: bool) -> void:
 	if player and player != self and player._held_taser:
 		player._held_taser.visible = not hidden
 		
-func give_baton() -> void:
+func give_baton(current_uses: int = MAX_BATON_USES) -> void:
 	drop_current_weapon()
 	has_baton = true
+	baton_uses = current_uses
 	_attach_baton_model()
 	if is_local_player:
-		_notification_label.text = "Baton Acquired!"
+		_notification_label.text = "Baton Acquired (Power Level: %s%%)!" % (baton_uses * 100 / MAX_BATON_USES)
 		_notification_label.visible = true
 		await get_tree().create_timer(3.0).timeout
 		_notification_label.visible = false
@@ -979,6 +990,7 @@ func _on_baton_hide_received(sender_steam_id: int, hidden: bool) -> void:
 		player._held_baton.visible = not hidden
 		
 func drop_current_weapon() -> void:
+	var uses = baton_uses
 	var pickup_to_spawn: PackedScene = null
 	
 	if has_taser:
@@ -1000,23 +1012,27 @@ func drop_current_weapon() -> void:
 		pickup.global_position = global_position + (-global_transform.basis.z * 1.5) + Vector3(0, 0.5, 0)
 		pickup.item_id = player_weapon_id
 		pickup.add_to_group("pickup")
+		if "current_uses" in pickup:
+			pickup.current_uses = uses
 		get_tree().root.add_child(pickup)
-		NetworkManager.send_item_dropped(player_weapon_id, pickup.global_position)
+		NetworkManager.send_item_dropped(player_weapon_id, pickup.global_position, uses)
 		player_weapon_id = ""
 
-func _on_item_dropped_received(item_id: String, pos: Vector3) -> void:
+func _on_item_dropped_received(item_id: String, pos: Vector3, uses: int) -> void:
 	var scene_to_spawn: PackedScene = null
 	if item_id.begins_with("taser"):
 		scene_to_spawn = _taser_pickup_scene
 	elif item_id.begins_with("baton"):
 		scene_to_spawn = _baton_pickup_scene
 	if scene_to_spawn:
-		_spawn_pickup_in_world(item_id, scene_to_spawn, pos)
+		_spawn_pickup_in_world(item_id, scene_to_spawn, pos, uses)
 		
-func _spawn_pickup_in_world(id: String, scene: PackedScene, pos: Vector3) -> void:
+func _spawn_pickup_in_world(id: String, scene: PackedScene, pos: Vector3, uses: int) -> void:
 	var pickup = scene.instantiate()
 	pickup.global_position = pos
 	pickup.item_id = id
+	if "current_uses" in pickup:
+		pickup.current_uses = uses
 	pickup.add_to_group("pickup")
 	get_tree().root.add_child(pickup)
 	print(id, pickup.item_id)
@@ -1071,10 +1087,10 @@ func _swing_baton() -> void:
 	_is_swinging = false
 	_current_anim_state = ""
 	
-func _baton_hit_check() -> void:
-	const BATON_DAMAGE: int = 25
-	const BATON_RANGE: float = 3.0
+	baton_uses -= 1
+	_update_baton_status()
 	
+func _baton_hit_check() -> void:
 	var swing_dir = -global_transform.basis.z
 	for player in GameManager.players_container.get_children():
 		if player == self or not player is CharacterBody3D or player.is_dead:
@@ -1082,6 +1098,19 @@ func _baton_hit_check() -> void:
 		var to_player = player.global_position - global_position
 		if to_player.length() < BATON_RANGE and swing_dir.dot(to_player.normalized()) > 0.5:
 			NetworkManager.send_taser_hit(player.steam_id, BATON_DAMAGE)
+			break
+
+func _update_baton_status() -> void:
+	if is_local_player:
+		_notification_label.text = "Baton Power Remaining: %s%%" % (baton_uses * 100 / MAX_BATON_USES)
+		_notification_label.visible = true
+		
+	if baton_uses <= 0:
+		drop_current_weapon()
+		if is_local_player:
+			_notification_label.text = "Baton Out of Power!"
+			await get_tree().create_timer(2.0).timeout
+			_notification_label.visible = false
 
 func reset_inventory():
 	has_taser = false
