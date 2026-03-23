@@ -23,7 +23,7 @@ extends CharacterBody3D
 @onready var weapon_holder: Node3D = $PlayerCamera/WeaponHolder
 
 # Weapon scenes
-var _taser_scene: PackedScene = preload("res://scenes/weapons/taser/heavy_assault_rifle.glb")
+var _taser_scene: PackedScene = preload("res://scenes/weapons/taser/gun_model.glb") #preload("res://scenes/weapons/taser/heavy_assault_rifle.glb")
 var _held_taser: Node3D = null
 var _projectile_script = preload("res://scenes/weapons/taser/taser_projectile.gd")
 var _baton_scene: PackedScene = preload("res://scenes/weapons/baton/stun_baton.glb")
@@ -920,7 +920,7 @@ func _attach_taser_model() -> void:
 		return
 	_held_taser = _taser_scene.instantiate()
 	_held_taser.scale = Vector3(0.5, 0.5, 0.5)
-	_held_taser.rotation_degrees.y = 90.0
+	_held_taser.rotation_degrees.y = 180.0
 	weapon_holder.add_child(_held_taser)
 
 func _on_taser_hide_received(sender_steam_id: int, hidden: bool) -> void:

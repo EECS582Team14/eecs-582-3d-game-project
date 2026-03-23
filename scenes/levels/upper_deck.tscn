@@ -454,7 +454,7 @@ constant_linear_velocity = Vector3(0, 0.5, 0)
 script = ExtResource("25_efilq")
 task_id = "Crew_task"
 
-[node name="TaserPickup" parent="." unique_id=811668839 instance=ExtResource("7_rmbde")]
+[node name="TaserPickup" parent="." unique_id=1416351404 instance=ExtResource("7_rmbde")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.66497, 0.45656508, 16.686378)
 item_id = "taser_01"
 
@@ -542,14 +542,14 @@ transform = Transform3D(-0.5, -4.371139e-08, 1.9106855e-15, 0, -2.1855694e-08, -
 transform = Transform3D(-0.5, -4.371139e-08, 1.9106855e-15, 0, -2.1855694e-08, -0.5, 4.371139e-08, -0.5, 2.1855694e-08, 1.2, 1, 9.793)
 
 [node name="baton_pickup" parent="." unique_id=2003324940 instance=ExtResource("32_4clrc")]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -19.932487, 0, 21.234604)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.932487, 0, 21.234604)
 item_id = "baton_01"
 
-[node name="baton_pickup2" parent="." unique_id=1850898923 instance=ExtResource("32_4clrc")]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -19.932487, 0, 23.176758)
+[node name="baton_pickup2" parent="." unique_id=21839922 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.932487, 0, 23.176758)
 item_id = "baton_02"
 
-[node name="TaserPickup2" parent="." unique_id=1416351404 instance=ExtResource("7_rmbde")]
+[node name="TaserPickup2" parent="." unique_id=550459478 instance=ExtResource("7_rmbde")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.66497, 0.45656508, 14.377852)
 item_id = "taser_02"
 

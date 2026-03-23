@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bjyj14q1f1d47"
-path="res://.godot/imported/stun_baton.glb-f95f3f8c2d531f7c6f5326aaadb581f4.scn"
+uid="uid://dtyft7xutakok"
+path="res://.godot/imported/gun_model.glb-f2b5a2dfc6b7068876e25f3cb076dca4.scn"
 
 [deps]
 
-source_file="res://scenes/weapons/baton/stun_baton.glb"
-dest_files=["res://.godot/imported/stun_baton.glb-f95f3f8c2d531f7c6f5326aaadb581f4.scn"]
+source_file="res://scenes/weapons/taser/gun_model.glb"
+dest_files=["res://.godot/imported/gun_model.glb-f2b5a2dfc6b7068876e25f3cb076dca4.scn"]
 
 [params]
 
@@ -17,7 +17,7 @@ nodes/root_type=""
 nodes/root_name=""
 nodes/root_script=null
 nodes/apply_root_scale=true
-nodes/root_scale=0.001
+nodes/root_scale=0.05
 nodes/import_as_skeleton_bones=false
 nodes/use_name_suffixes=true
 nodes/use_node_type_suffixes=true
