@@ -180,8 +180,9 @@ func _ready() -> void:
 
 		# Duplicate the library so each player instance has its own copy
 		var shared_lib = _anim_player.get_animation_library(main_lib_name)
+		var main_lib: AnimationLibrary = null
 		if shared_lib:
-			var main_lib = shared_lib.duplicate()
+			main_lib = shared_lib.duplicate()
 			_anim_player.remove_animation_library(main_lib_name)
 			_anim_player.add_animation_library(main_lib_name, main_lib)
 			# Remove all existing animations and re-add the first one as "walk"
