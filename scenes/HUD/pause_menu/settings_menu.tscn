@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://psaplkrdbvwg"]
+
+[ext_resource type="Script" uid="uid://bssnfh3n2n6hs" path="res://scenes/HUD/pause_menu/settings_menu.gd" id="1_5515u"]
+
+[node name="SettingsMenu" type="Control" unique_id=192674749]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5515u")
+
+[node name="DimBackground" type="ColorRect" parent="." unique_id=1075317578]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5)
+
+[node name="TempLabel" type="Label" parent="." unique_id=583468775]
+layout_mode = 0
+offset_left = 553.0
+offset_top = 286.0
+offset_right = 759.0
+offset_bottom = 309.0
+text = "This is the settings menu (:"
+
+[node name="BackButton" type="Button" parent="." unique_id=352059644]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 16.0
+offset_right = 140.0
+offset_bottom = 74.0
+text = "<-Back"

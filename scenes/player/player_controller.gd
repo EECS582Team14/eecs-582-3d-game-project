@@ -60,6 +60,8 @@ var _target_camera_rotation_x: float
 var _is_mouse_captured: bool
 var _pause_menu: Control = null
 var _pause_layer: CanvasLayer = null
+var _settings_menu: Control
+var _settings_layer: CanvasLayer
 var _is_paused: bool = false
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -225,12 +227,20 @@ func _ready() -> void:
 		# Create pause menu on a CanvasLayer so it renders on top and receives input
 		_pause_layer = CanvasLayer.new()
 		_pause_layer.layer = 100
+		_settings_layer = CanvasLayer.new()
+		_settings_layer.layer = 100
 		add_child(_pause_layer)
+		add_child(_settings_layer)
 		var pause_menu_scene = preload("res://scenes/HUD/pause_menu/pause_menu.tscn")
+		var settings_menu_scene = preload("res://scenes/HUD/pause_menu/settings_menu.tscn")
 		_pause_menu = pause_menu_scene.instantiate()
+		_settings_menu = settings_menu_scene.instantiate()
 		_pause_layer.add_child(_pause_menu)
+		_settings_layer.add_child(_settings_menu)
 		_pause_menu.resume_game.connect(_on_resume_game)
+		_pause_menu.settings_menu.connect(_on_settings)
 		_pause_menu.quit_game.connect(_on_quit_game)
+		_settings_menu.back_to_menu.connect(_on_back_to_menu)
 		if GameManager.hud_instance:
 			var crosshair = GameManager.hud_instance.get_node_or_null("Crosshair")
 			if crosshair:
@@ -503,6 +513,14 @@ func _on_resume_game() -> void:
 	_is_paused = false
 	_is_mouse_captured = true
 	_pause_menu.hide_menu()
+
+func _on_settings() -> void:
+	_pause_menu.hide()
+	_settings_menu.show()
+
+func _on_back_to_menu() -> void:
+	_settings_menu.hide()
+	_pause_menu.show()
 
 func _on_quit_game() -> void:
 	# Leave the lobby and return to main menu

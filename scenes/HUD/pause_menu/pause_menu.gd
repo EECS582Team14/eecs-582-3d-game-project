@@ -1,6 +1,7 @@
 extends Control
 
 signal resume_game
+signal settings_menu
 signal quit_game
 
 var _crosshair: Control = null
@@ -8,6 +9,7 @@ var _crosshair: Control = null
 func _ready() -> void:
 	visible = false
 	$CenterContainer/PanelContainer/VBoxContainer/ResumeButton.pressed.connect(_on_resume_pressed)
+	$CenterContainer/PanelContainer/VBoxContainer/SettingsButton.pressed.connect(_on_settings_pressed)
 	$CenterContainer/PanelContainer/VBoxContainer/QuitButton.pressed.connect(_on_quit_pressed)
 
 func set_crosshair(crosshair: Control) -> void:
@@ -27,6 +29,11 @@ func hide_menu() -> void:
 
 func _on_resume_pressed() -> void:
 	resume_game.emit()
+
+func _on_settings_pressed() -> void:
+	settings_menu.emit()
+	
+
 
 func _on_quit_pressed() -> void:
 	quit_game.emit()
