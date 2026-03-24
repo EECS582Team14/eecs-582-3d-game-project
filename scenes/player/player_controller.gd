@@ -1117,7 +1117,7 @@ func _update_baton_status() -> void:
 		
 	if baton_uses <= 0:
 		drop_current_weapon()
-		NetworkManager.taser_dead.emit(player.steam_id)
+		NetworkManager.send_taser_dead(player.steam_id)
 		if is_local_player:
 			_notification_label.text = "Baton Out of Power!"
 			await get_tree().create_timer(2.0).timeout
