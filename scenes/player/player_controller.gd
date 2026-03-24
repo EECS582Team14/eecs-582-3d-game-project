@@ -1089,9 +1089,7 @@ func _swing_baton() -> void:
 	await _anim_player.animation_finished
 	_is_swinging = false
 	_current_anim_state = ""
-	
-	baton_uses -= 1
-	_update_baton_status()
+
 	
 func _baton_hit_check() -> void:
 	var swing_dir = -global_transform.basis.z
@@ -1099,7 +1097,9 @@ func _baton_hit_check() -> void:
 		if player == self or not player is CharacterBody3D or player.is_dead:
 			continue
 		var to_player = player.global_position - global_position
-		if to_player.length() < BATON_RANGE and swing_dir.dot(to_player.normalized()) > 0.5:
+		if to_player.length() < BATON_RANGE and swing_dir.dot(to_player.normalized()) > 0.5:			
+			baton_uses -= 1
+			_update_baton_status()
 			NetworkManager.send_taser_hit(player.steam_id, BATON_DAMAGE)
 			break
 
