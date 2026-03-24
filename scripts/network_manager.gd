@@ -26,6 +26,7 @@ signal taser_hide_received(steam_id: int, hidden: bool)
 signal armory_button_changed(button_id: String, pressed: bool)
 signal punch_received(steam_id: int)
 signal item_dropped_received(item_id: String, pos: Vector3, uses: int)
+signal taser_dead(steam_id: int)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -51,7 +52,8 @@ enum PacketType {
 	SHIP_INTEGRITY,
 	TASER_HIDE,
 	ARMORY_BUTTON,
-	PUNCH
+	PUNCH,
+	TASER_DEAD
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -202,6 +204,10 @@ func send_punch():
 func send_armory_button(button_id: String, pressed: bool):
 	send_p2p_packet(0, {"type": PacketType.ARMORY_BUTTON, "button_id": button_id, "pressed": pressed}, Steam.P2P_SEND_RELIABLE, 0)
 	armory_button_changed.emit(button_id, pressed)
+
+func send_tazer_dead(target_id: int):
+	send_p2p_packet(0, {"type": PacketType.TASER_DEAD, "steam_id": target_id }, Steam.P2P_SEND_RELIABLE, 0)
+	taser_dead.emit(target_id)
 # ============ READ PACKETS ============
 
 func _read_all_p2p_packets(read_count: int = 0):
@@ -313,6 +319,8 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 		PacketType.PUNCH:
 			punch_received.emit(sender_steam_id)
 
+		PacketType.TASER_DEAD:
+			taser_dead.emit(sender_steam_id)
 		_:
 			print("Unknown packet type: %s" % packet_type)
 

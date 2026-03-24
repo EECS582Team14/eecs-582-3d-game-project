@@ -240,7 +240,7 @@ func _ready() -> void:
 		NetworkManager.taser_hit_received.connect(_on_taser_hit_received)
 		NetworkManager.taser_hide_received.connect(_on_taser_hide_received)
 		NetworkManager.item_dropped_received.connect(_on_item_dropped_received)
-
+		NetworkManager.taser_dead.connect(_on_taser_dead)
 		# Create pause menu on a CanvasLayer so it renders on top and receives input
 		_pause_layer = CanvasLayer.new()
 		_pause_layer.layer = 100
@@ -986,6 +986,12 @@ func _attach_baton_model() -> void:
 	_held_baton.rotation_degrees.y = 90.0
 	weapon_holder.add_child(_held_baton)
 	
+func _on_taser_dead(steam_id):
+	var player = NetworkManager.get_player(steam_id)
+	if player and player != self and player._held_baton:
+		player.drop_current_weapon()
+		
+	
 func _on_baton_hide_received(sender_steam_id: int, hidden: bool) -> void:
 	var player = NetworkManager.get_player(sender_steam_id)
 	if player and player != self and player._held_baton:
@@ -1104,12 +1110,14 @@ func _baton_hit_check() -> void:
 			break
 
 func _update_baton_status() -> void:
+	var player = self
 	if is_local_player:
 		_notification_label.text = "Baton Power Remaining: %s%%" % (baton_uses * 100 / MAX_BATON_USES)
 		_notification_label.visible = true
 		
 	if baton_uses <= 0:
 		drop_current_weapon()
+		NetworkManager.taser_dead.emit(player.steam_id)
 		if is_local_player:
 			_notification_label.text = "Baton Out of Power!"
 			await get_tree().create_timer(2.0).timeout
