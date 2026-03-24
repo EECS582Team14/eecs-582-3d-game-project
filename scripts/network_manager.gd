@@ -336,7 +336,6 @@ func get_player(steam_id: int) -> Node:
 	return players_in_game.get(steam_id, null)
 
 # ============ CLEANUP ============
-
 func close_all_sessions():
 	for member in LobbyManager.lobby_members:
 		if member['steam_id'] != Steam.getSteamID():

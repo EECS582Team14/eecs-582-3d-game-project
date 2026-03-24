@@ -9,7 +9,7 @@ const PlayerScene = preload("res://scenes/player/player.tscn")
 const TaserPickupScene = preload("res://scenes/weapons/taser/taser_pickup.tscn")
 const BatonPickupScene = preload("res://scenes/weapons/baton/baton.tscn")
 const GAME_LEVEL = "res://scenes/levels/main.tscn"
-const LOBBY_SCENE = "res://scenes/lobby/lobby.tscn"
+const LOBBY_SCENE = preload("res://scenes/lobby/lobby_ui.tscn.tscn")
 const TASER_SPAWN_POS = Vector3(-19.66497, 0.45656508, 16.686378)
 const BATON01_SPAWN_POS = Vector3(-19.932, 0.0, 21.235)
 const BATON02_SPAWN_POS = Vector3(-19.932, 0.0, 23.177)
@@ -297,7 +297,8 @@ func _show_end_screen(impostor_won: bool):
 
 func _on_play_again_pressed():
 	NetworkManager.send_play_again()
-
+	_on_play_again()
+	
 func _on_play_again():
 	# Remove end screen
 	if _end_screen_layer != null:
@@ -310,10 +311,7 @@ func _on_play_again():
 		hud_instance.queue_free()
 		hud_instance = null
 		
-	# Stop voice
 	VoiceManager.stop()
-	
-	# Despawn all players
 	despawn_all_players()
 	
 	# Reset game state variables (important for next match)
@@ -322,6 +320,8 @@ func _on_play_again():
 	progress_speed_modifier = 1.0
 	_progress_sync_timer = 0.0
 	timer_active = false
+	
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 	# Clear buffered role
 	NetworkManager.pending_role_received = false
@@ -331,7 +331,8 @@ func _on_play_again():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 	#Go back to lobby scene
-	get_tree().change_scene_to_file(LOBBY_SCENE)
+	get_tree().call_deferred("change_scene_to_packed", LOBBY_SCENE)
+	#get_tree().change_scene_to_packed(LOBBY_SCENE)
 
 func _respawn_taser_pickup():
 	# The taser pickup calls queue_free() when picked up, so re-instantiate it on play again
@@ -533,7 +534,6 @@ func _on_player_left(steam_id: int):
 		print("Removed player: ", steam_id)
 
 func despawn_all_players():
-	VoiceManager.stop()
 	if players_container:
 		for player in players_container.get_children():
 			player.queue_free()

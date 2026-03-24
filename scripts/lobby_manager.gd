@@ -45,6 +45,9 @@ func _check_host_change():
 		print("Host migrated to:", new_host)
 		current_host_id = new_host
 		host_changed.emit(new_host)
+		
+func is_in_lobby() -> bool:
+	return lobby_id != 0
 
 # ============ CREATE ============
 

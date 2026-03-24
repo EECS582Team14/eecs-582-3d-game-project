@@ -16,31 +16,59 @@ var dot_purple = preload("res://scenes/lobby/lobby_assets/PurpleIcon.png")
 var dot_host = preload("res://scenes/lobby/lobby_assets/HostIcon.png")
 
 func _ready():
-	host_btn.pressed.connect(_on_host_pressed)
-	refresh_btn.pressed.connect(_on_refresh_pressed)
-	start_btn.pressed.connect(_on_start_pressed)
-	leave_lobby.pressed.connect(_on_leave_lobby_pressed)
-	close_lobby.pressed.connect(_on_close_lobby_pressed)
-	lobby_list.item_activated.connect(_on_lobby_selected)
+	#SAFE SIGNAL CONNECTIONS (prevents duplicates)
+	if not host_btn.pressed.is_connected(_on_host_pressed):
+		host_btn.pressed.connect(_on_host_pressed)
+	if not refresh_btn.pressed.is_connected(_on_refresh_pressed):
+		refresh_btn.pressed.connect(_on_refresh_pressed)
+	if not start_btn.pressed.is_connected(_on_start_pressed):
+		start_btn.pressed.connect(_on_start_pressed)
+	if not leave_lobby.pressed.is_connected(_on_leave_lobby_pressed):
+		leave_lobby.pressed.connect(_on_leave_lobby_pressed)
+	if not close_lobby.pressed.is_connected(_on_close_lobby_pressed):
+		close_lobby.pressed.connect(_on_close_lobby_pressed)
+	if not lobby_list.item_activated.is_connected(_on_lobby_selected):
+		lobby_list.item_activated.connect(_on_lobby_selected)
 
-	LobbyManager.lobby_created.connect(_on_lobby_created)
-	LobbyManager.lobby_joined.connect(_on_lobby_joined)
-	LobbyManager.player_joined.connect(_on_player_update)
-	LobbyManager.player_left.connect(_on_player_update)
-	LobbyManager.lobby_list_received.connect(_on_lobby_list_received)
-	NetworkManager.game_started.connect(_on_game_started)
-	LobbyManager.host_changed.connect(_on_host_changed)
+	if not LobbyManager.lobby_created.is_connected(_on_lobby_created):
+		LobbyManager.lobby_created.connect(_on_lobby_created)
+	if not LobbyManager.lobby_joined.is_connected(_on_lobby_joined):
+		LobbyManager.lobby_joined.connect(_on_lobby_joined)
+	if not LobbyManager.player_joined.is_connected(_on_player_update):
+		LobbyManager.player_joined.connect(_on_player_update)
+	if not LobbyManager.player_left.is_connected(_on_player_update):
+		LobbyManager.player_left.connect(_on_player_update)
+	if not LobbyManager.lobby_list_received.is_connected(_on_lobby_list_received):
+		LobbyManager.lobby_list_received.connect(_on_lobby_list_received)
+	if not NetworkManager.game_started.is_connected(_on_game_started):
+		NetworkManager.game_started.connect(_on_game_started)
+	if not LobbyManager.host_changed.is_connected(_on_host_changed):
+		LobbyManager.host_changed.connect(_on_host_changed)
 
+	#RESET DEFAULT UI
 	status_label.text = "Not in lobby"
 	start_btn.visible = false
 	player_list.visible = false
 	leave_lobby.visible = false
 	close_lobby.visible = false
+	
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	await get_tree().process_frame
+	#HANDLE RETURNING FROM GAME
+	if LobbyManager.is_in_lobby():
+		status_label.text = "Returned to lobby"
+		lobby_list.visible = false
+		refresh_btn.visible = false
+		host_btn.visible = false
+		player_list.visible = true
 
-	# Auto-search for lobbies on startup
-	_on_refresh_pressed()
+		_update_lobby_buttons()
+		_refresh_players()
+	else:
+		_on_refresh_pressed()
 
 # ============ HOST ============
+
 func _on_host_changed(_new_host_id):
 	_update_lobby_buttons()
 	_refresh_players()
@@ -49,13 +77,11 @@ func _on_host_changed(_new_host_id):
 		status_label.text = "You are now the host."
 	else:
 		status_label.text = "Host changed."
-		
+
 func _on_host_pressed():
 	status_label.text = "Creating lobby..."
-	
 	player_list.visible = true
 	lobby_list.visible = false
-	
 	LobbyManager.create_lobby(8)
 
 func _on_lobby_created(_lobby_id: int):
@@ -63,7 +89,7 @@ func _on_lobby_created(_lobby_id: int):
 	close_lobby.visible = true
 	status_label.text = "Lobby created! Waiting for players..."
 	_refresh_players()
-	
+
 func _update_lobby_buttons():
 	if LobbyManager.is_host():
 		close_lobby.visible = true
@@ -90,14 +116,9 @@ func _on_lobby_list_received(lobbies: Array):
 
 	for lobby in lobbies:
 		var text = "%s  (%d/%d)" % [lobby.name, lobby.player_count, lobby.max_players]
-		#lobby_list.add_item(text)
 		var icon = dot_purple
-		# Example logic: change color depending on fullness
 		var ratio = float(lobby.player_count) / lobby.max_players
-		if ratio >= 0.75:
-			icon = dot_blue   # almost full
-		else:
-			icon = dot_red  # available
+		icon = dot_blue if ratio >= 0.75 else dot_red
 		lobby_list.add_item(text, icon)
 
 	status_label.text = "Found %d lobby(s). Double-click to join." % lobbies.size()
@@ -117,7 +138,6 @@ func _on_lobby_joined(_lobby_id: int):
 	refresh_btn.visible = false
 	host_btn.visible = false
 	player_list.visible = true
-	# Show start button if we're the host
 	_update_lobby_buttons()
 	_refresh_players()
 
@@ -134,12 +154,10 @@ func _refresh_players():
 		player_list.add_item(member["name"], icon)
 
 # ============ LEAVING ============
+
 func _on_leave_lobby_pressed():
 	status_label.text = "Leaving lobby..."
-
 	LobbyManager.leave_lobby()
-
-	# Reset UI
 	player_list.clear()
 	player_list.visible = false
 	lobby_list.visible = true
@@ -148,35 +166,27 @@ func _on_leave_lobby_pressed():
 	start_btn.visible = false
 	close_lobby.visible = false
 	leave_lobby.visible = false
-
 	_on_refresh_pressed()
-	
+
 func _on_close_lobby_pressed():
-	if !LobbyManager.is_host():
+	if not LobbyManager.is_host():
 		return
-
 	status_label.text = "Closing lobby..."
-
 	LobbyManager.close_lobby()
-
 	_return_to_start_screen()
-	
+
 func _return_to_start_screen():
 	player_list.clear()
-
 	player_list.visible = false
 	lobby_list.visible = true
 	refresh_btn.visible = true
 	host_btn.visible = true
-
 	start_btn.visible = false
 	close_lobby.visible = false
 	leave_lobby.visible = false
-
 	status_label.text = "Lobby closed."
-
 	_on_refresh_pressed()
-	
+
 # ============ GAME START ============
 
 func _on_start_pressed():
