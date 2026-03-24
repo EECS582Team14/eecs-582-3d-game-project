@@ -8,10 +8,10 @@ func _ready() -> void:
 	NetworkManager.item_picked_up.connect(_on_item_picked_up)
 	
 func activate(picker_steam_id: int) -> void:
-	NetworkManager.send_item_pickup(item_id)
 	var player = NetworkManager.get_player(picker_steam_id)
 	if player and player.has_method("give_baton"):
 		player.give_baton(current_uses)
+	NetworkManager.send_item_pickup(item_id)
 	queue_free()
 
 func _on_item_picked_up(_steam_id: int, picked_item_id: String) -> void:

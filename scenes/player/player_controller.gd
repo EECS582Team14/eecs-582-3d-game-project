@@ -1038,15 +1038,15 @@ func _spawn_pickup_in_world(id: String, scene: PackedScene, pos: Vector3, uses: 
 	print(id, pickup.item_id)
 
 func _on_item_picked_up(picker_steam_id: int, item_id: String) -> void:
-	#if not item_id.begins_with("taser"):
-	#	return
 	var player = NetworkManager.get_player(picker_steam_id)
-	if player and player != self:
-		if item_id.begins_with("taser") and player.has_method("give_taser"):
-			player.give_taser()
-		elif item_id.begins_with("baton") and player.has_method("give_baton"):
-			player.give_baton()
-	player_weapon_id = item_id
+	if player:
+		if player != self:
+			if item_id.begins_with("taser") and player.has_method("give_taser"):
+				player.give_taser()
+			elif item_id.begins_with("baton") and player.has_method("give_baton"):
+				player.give_baton()
+		else:
+			player_weapon_id = item_id
 
 func _shoot_taser() -> void:
 	if _taser_cooldown_timer > 0.0:
