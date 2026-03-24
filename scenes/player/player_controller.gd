@@ -127,23 +127,23 @@ var _breaker_scene: PackedScene = preload("res://scenes/tasks/breaker_minigame.t
 #Task Designations
 var integrity_tasks = ["Armory_task", "Cam_task", "Crew_task", "Fab_task", "Life_task", "Sheilding_task", "Trash_task"]
 var TASK_DESCRIPTIONS := {
-	"Armory_task": "Secure weapon lockers and verify ammunition counts. (Upper - Armory)",
-	"Cam_task": "Realign and calibrate surveillance camera feeds. (Upper - Cams)",
-	"Colonial_task": "Inspect colonial artifacts and log preservation status. (Lower - Colonial)",
-	"Crew_task": "Update crew manifest and verify ID badge scans. (Upper - Crew Quarters)",
-	"Electrical_task": "Reset overloaded breakers and reroute power flow. (Lower - Electrical)",
-	"Fab_task": "Fabricate replacement components using the nano‑printer. (Lower - Fabrication Lab)",
-	"Human_Resources_task": "File crew performance reports and update duty assignments. (Upper - Human Resources)",
-	"Intercom_task": "Test shipwide intercom channels and repair faulty speakers. (Upper - Intercoms)",
-	"Life_task": "Check life support filters and balance oxygen levels. (Upper - Life Support)",
+	"Armory_task": "Secure weapons. (Upper - Armory)",
+	"Cam_task": "Calibrate camera feeds. (Upper - Cams)",
+	"Colonial_task": "Log preservation status. (Lower - Colonial)",
+	"Crew_task": "Verify ID badge scans. (Upper - Crew Quarters)",
+	"Electrical_task": "Reroute power flow. (Lower - Electrical)",
+	"Fab_task": "Fabricate replacement components. (Lower - Fabrication Lab)",
+	"Human_Resources_task": "File crew reports. (Upper - Human Resources)",
+	"Intercom_task": "Test intercom channels. (Upper - Intercoms)",
+	"Life_task": "Balance oxygen levels. (Upper - Life Support)",
 	"Lower_Reactor_task": "Calibrate reactor temperature. (Lower - Reactor)",
 	"Nav_task": "Align navigation array. (Upper - Nav)",
-	"Nexus_task": "Stabilize data uplinks and clear corrupted routing nodes. (Upper - Nexus)",
-	"Personal_task": "Sort personal storage items and verify locker security. (Lower - Personal Items)",
-	"Shielding_task": "Reinforce hull shielding and patch micro‑fractures. (Upper - Shielding)",
-	"Supply_Closet_task": "Restock essential supplies and inventory materials. (Upper - Supply Closet)",
-	"Trash_task": "Empty waste bins and compact refuse for disposal. (Lower - Trash)",
-	"Upper_Reactor_task": "Balance plasma conduits and tune reactor output. (Upper - Reactor)",
+	"Nexus_task": "Stabilize data uplinks. (Upper - Nexus)",
+	"Personal_task": "Sort storage items. (Lower - Personal Items)",
+	"Shielding_task": "Reinforce hull shielding. (Upper - Shielding)",
+	"Supply_Closet_task": "Restock supplies. (Upper - Supply Closet)",
+	"Trash_task": "Empty waste bins. (Lower - Trash)",
+	"Upper_Reactor_task": "Balance plasma conduits. (Upper - Reactor)",
 }
 
 

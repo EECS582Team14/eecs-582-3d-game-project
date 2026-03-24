@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://dboobytgxwun0"]
 
-[ext_resource type="Script" path="res://scenes/tasks/breaker_minigame.gd" id="1"]
+[ext_resource type="Script" uid="uid://ddqqjhsoyfjlj" path="res://scenes/tasks/breaker_minigame.gd" id="1"]
 
-[node name="BreakerMinigame" type="Control"]
+[node name="BreakerMinigame" type="Control" unique_id=486929193]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
