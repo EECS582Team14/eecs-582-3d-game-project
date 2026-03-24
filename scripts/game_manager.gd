@@ -9,6 +9,7 @@ const PlayerScene = preload("res://scenes/player/player.tscn")
 const TaserPickupScene = preload("res://scenes/weapons/taser/taser_pickup.tscn")
 const BatonPickupScene = preload("res://scenes/weapons/baton/baton.tscn")
 const GAME_LEVEL = "res://scenes/levels/main.tscn"
+const LOBBY_SCENE = "res://scenes/lobby/lobby.tscn"
 const TASER_SPAWN_POS = Vector3(-19.66497, 0.45656508, 16.686378)
 const BATON01_SPAWN_POS = Vector3(-19.932, 0.0, 21.235)
 const BATON02_SPAWN_POS = Vector3(-19.932, 0.0, 23.177)
@@ -309,18 +310,13 @@ func _on_play_again():
 		hud_instance.queue_free()
 		hud_instance = null
 		
-	# Clear existing weapons
-	var existing_pickups = get_tree().get_nodes_in_group("pickup")
-	for p in existing_pickups:
-		if p.item_id.contains("Healthpack") or p.item_id == "":
-			continue
-		else:
-			p.queue_free()
-
+	# Stop voice
+	VoiceManager.stop()
+	
 	# Despawn all players
 	despawn_all_players()
-
-	# Reset game state
+	
+	# Reset game state variables (important for next match)
 	game_state = 1
 	destination_progress = 0.0
 	progress_speed_modifier = 1.0
@@ -334,20 +330,8 @@ func _on_play_again():
 	# Re-capture mouse
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-	# Re-spawn players, HUD, and pickups, and reset ship integrity in the same level
-	await get_tree().process_frame
-	_spawn_all_players()
-	_spawn_local_hud()
-	if LobbyManager.is_host():
-		_reset_weapon_pickups()
-	_reset_ship_integrity()
-
-	# Host starts the timer
-	if LobbyManager.is_host():
-		var now = Time.get_unix_time_from_system()
-		arrival_time = now + timer_phase_one
-		timer_active = true
-		_broadcast_timer_sync()
+	#Go back to lobby scene
+	get_tree().change_scene_to_file(LOBBY_SCENE)
 
 func _respawn_taser_pickup():
 	# The taser pickup calls queue_free() when picked up, so re-instantiate it on play again
