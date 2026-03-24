@@ -205,7 +205,7 @@ func send_armory_button(button_id: String, pressed: bool):
 	send_p2p_packet(0, {"type": PacketType.ARMORY_BUTTON, "button_id": button_id, "pressed": pressed}, Steam.P2P_SEND_RELIABLE, 0)
 	armory_button_changed.emit(button_id, pressed)
 
-func send_tazer_dead(target_id: int):
+func send_taser_dead(target_id: int):
 	send_p2p_packet(0, {"type": PacketType.TASER_DEAD, "steam_id": target_id }, Steam.P2P_SEND_RELIABLE, 0)
 	taser_dead.emit(target_id)
 # ============ READ PACKETS ============
