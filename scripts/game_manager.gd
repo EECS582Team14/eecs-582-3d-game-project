@@ -263,7 +263,7 @@ func _show_end_screen(impostor_won: bool):
 	# Host: Play Again button. Non-host: Waiting label.
 	if LobbyManager.is_host():
 		var play_again_btn = Button.new()
-		play_again_btn.text = "Play Again"
+		play_again_btn.text = "Back To Lobby"
 		play_again_btn.anchor_left = 0.5
 		play_again_btn.anchor_right = 0.5
 		play_again_btn.anchor_top = 0.5
