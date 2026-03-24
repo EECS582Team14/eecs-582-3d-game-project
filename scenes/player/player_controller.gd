@@ -989,7 +989,8 @@ func _on_baton_hide_received(sender_steam_id: int, hidden: bool) -> void:
 	if player and player != self and player._held_baton:
 		player._held_baton.visible = not hidden
 		
-func drop_current_weapon() -> void:
+func drop_current_weapon() -> void:	
+	var saved_id = player_weapon_id
 	var uses = baton_uses
 	var pickup_to_spawn: PackedScene = null
 	
@@ -1015,7 +1016,7 @@ func drop_current_weapon() -> void:
 		if "current_uses" in pickup:
 			pickup.current_uses = uses
 		get_tree().root.add_child(pickup)
-		NetworkManager.send_item_dropped(player_weapon_id, pickup.global_position, uses)
+		NetworkManager.send_item_dropped(saved_id, pickup.global_position, uses)
 		player_weapon_id = ""
 
 func _on_item_dropped_received(item_id: String, pos: Vector3, uses: int) -> void:

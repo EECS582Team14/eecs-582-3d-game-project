@@ -25,7 +25,7 @@ signal ship_integrity_update_received(sender_steam_id: int, integrity: float)
 signal taser_hide_received(steam_id: int, hidden: bool)
 signal armory_button_changed(button_id: String, pressed: bool)
 signal punch_received(steam_id: int)
-signal item_dropped_received(idem_id: String, pos: Vector3, uses: int)
+signal item_dropped_received(item_id: String, pos: Vector3, uses: int)
 
 const PACKET_READ_LIMIT: int = 32
 
