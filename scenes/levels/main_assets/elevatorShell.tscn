@@ -1,11 +1,7 @@
 [gd_scene format=3 uid="uid://dmapmbx6ymccv"]
 
 [ext_resource type="Script" uid="uid://ccje720xfacwd" path="res://scenes/levels/main_assets/elevator.gd" id="1_q2cks"]
-[ext_resource type="Texture2D" uid="uid://dkk3fp8xgkqxs" path="res://scenes/levels/main_assets/space_floor.jpg" id="2_space_wall"]
 [ext_resource type="PackedScene" uid="uid://b1xa510ig5d86" path="res://scenes/levels/elevator_wall_button_model.glb" id="3_wall_btn"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_q2cks"]
-size = Vector3(3, 0.1, 3)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_elevator_walls"]
 albedo_color = Color(0.75, 0.75, 0.78, 1)
@@ -18,10 +14,6 @@ size = Vector3(0.25, 0.25, 0.25)
 [node name="AnimatedBody3D" type="AnimatableBody3D" unique_id=1904553526 node_paths=PackedStringArray("button_mesh")]
 script = ExtResource("1_q2cks")
 button_mesh = NodePath("Button/WallButton")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1772064080]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3050067, -1.5505645, 0)
-shape = SubResource("BoxShape3D_q2cks")
 
 [node name="CSGBoxParent" type="CSGBox3D" parent="." unique_id=1188355160 groups=["elevator_button"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.360774, -0.599262, 0)
