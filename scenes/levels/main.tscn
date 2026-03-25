@@ -55,9 +55,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.53, 0)
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.041, 1.5, 20)
 
 [node name="ElevatorShaft" type="StaticBody3D" parent="." unique_id=1368455669]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 21.367)
 
 [node name="LowerFloorCallButton" type="StaticBody3D" parent="ElevatorShaft" unique_id=1428529895 node_paths=PackedStringArray("elevator", "button_mesh") groups=["elevator_button"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6362401, -2.3954341, 19.376263)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.636, -2.395, -1.991)
 script = ExtResource("5_u81e1")
 elevator = NodePath("../../Elevator")
 button_mesh = NodePath("CallButton")
@@ -70,7 +71,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.017210245, 0)
 shape = SubResource("CylinderShape3D_u81e1")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="ElevatorShaft" unique_id=1872470269]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0.10165805, -0.16177987, 21.36711)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0.102, -0.162, 0)
 use_collision = true
 size = Vector3(3.199, 5.1236367, 3)
 material = SubResource("StandardMaterial3D_shaft")
@@ -82,7 +83,7 @@ size = Vector3(2.8, 4.8, 2.8)
 material = SubResource("StandardMaterial3D_shaft")
 
 [node name="UpperFloorCallButton" type="StaticBody3D" parent="ElevatorShaft" unique_id=1217978986 node_paths=PackedStringArray("elevator", "button_mesh") groups=["elevator_button"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6362401, -2.3954341, 19.376263)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.636, -2.395, -1.991)
 script = ExtResource("5_u81e1")
 elevator = NodePath("../../Elevator")
 button_mesh = NodePath("CallButton2")
