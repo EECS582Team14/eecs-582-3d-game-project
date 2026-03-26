@@ -122,7 +122,11 @@ var _simon_says_scene: PackedScene = preload("res://scenes/tasks/simon_says_mini
 var _wiring_scene: PackedScene = preload("res://scenes/tasks/wiring_minigame.tscn")
 var _reactor_temp_scene: PackedScene = preload("res://scenes/tasks/reactor_temp_minigame.tscn")
 var _breaker_scene: PackedScene = preload("res://scenes/tasks/breaker_minigame.tscn")
-
+var _targetNumber_scene: PackedScene = preload("res://scenes/tasks/targetNumber_minigame.tscn")
+var _sorting_scene: PackedScene = preload("res://scenes/tasks/sorting_minigame.tscn")
+var _signal_scene: PackedScene = preload("res://scenes/tasks/signal_minigame.tscn")
+var _path_scene: PackedScene = preload("res://scenes/tasks/path_minigame.tscn")
+var _download_scene: PackedScene = preload("res://scenes/tasks/download_minigame.tscn")
 
 #Task Designations
 var integrity_tasks = ["Armory_task", "Cam_task", "Crew_task", "Fab_task", "Life_task", "Sheilding_task", "Trash_task"]
@@ -1267,6 +1271,16 @@ func _open_minigame(task_id: String, minigame_type: String) -> void:
 			_minigame_instance = _reactor_temp_scene.instantiate()
 		"breaker":
 			_minigame_instance = _breaker_scene.instantiate()
+		"targetNumber":
+			_minigame_instance = _targetNumber_scene.instantiate()
+		"sorting":
+			_minigame_instance = _sorting_scene.instantiate()
+		"signal":
+			_minigame_instance = _signal_scene.instantiate()
+		"path":
+			_minigame_instance = _path_scene.instantiate()
+		"download":
+			_minigame_instance = _download_scene.instantiate()
 		_:
 			_minigame_instance = _simon_says_scene.instantiate()
 

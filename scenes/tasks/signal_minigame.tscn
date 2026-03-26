@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dc5afc4lre2r6"]
+
+[ext_resource type="Script" uid="uid://c0nk8cjrbyrr6" path="res://scenes/tasks/signal_minigame.gd" id="1_o4swu"]
+
+[node name="SignalMinigame" type="Control" unique_id=938113941]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_o4swu")

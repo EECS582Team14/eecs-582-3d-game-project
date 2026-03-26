@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://br3nmff7gvusg"]
+
+[ext_resource type="Script" uid="uid://28ccq5h0jqj8" path="res://scenes/tasks/download_minigame.gd" id="1_qsuqd"]
+
+[node name="DownloadMinigame" type="Control" unique_id=536481201]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_qsuqd")
