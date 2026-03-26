@@ -12,23 +12,20 @@ extends Control
 	#"Inspect hull integrity sensors."
 #]
 var TASK_DESCRIPTIONS := {
-	"Armory_task": "Secure weapons. (Upper - Armory)",
-	"Cam_task": "Calibrate camera feeds. (Upper - Cams)",
 	"Colonial_task": "Log preservation status. (Lower - Colonial)",
 	"Crew_task": "Verify ID badge scans. (Upper - Crew Quarters)",
 	"Electrical_task": "Reroute power flow. (Lower - Electrical)",
 	"Fab_task": "Fabricate replacement components. (Lower - Fabrication Lab)",
 	"Human_Resources_task": "File crew reports. (Upper - Human Resources)",
-	"Intercom_task": "Test intercom channels. (Upper - Intercoms)",
 	"Life_task": "Balance oxygen levels. (Upper - Life Support)",
 	"Lower_Reactor_task": "Calibrate reactor temperature. (Lower - Reactor)",
 	"Nav_task": "Align navigation array. (Upper - Nav)",
 	"Nexus_task": "Stabilize data uplinks. (Upper - Nexus)",
 	"Personal_task": "Sort storage items. (Lower - Personal Items)",
 	"Shielding_task": "Reinforce hull shielding. (Upper - Shielding)",
+	"Supply_task": "Sort supply inventory. (Lower - Ship Supplies)",
 	"Supply_Closet_task": "Restock supplies. (Upper - Supply Closet)",
 	"Trash_task": "Empty waste bins. (Lower - Trash)",
-	"Upper_Reactor_task": "Balance plasma conduits. (Upper - Reactor)",
 }
 
 var typing_speed = 0.02
