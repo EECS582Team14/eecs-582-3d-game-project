@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://l7a6ls4tdms7" path="res://scenes/levels/lower_deck.tscn" id="2_2vj2h"]
 [ext_resource type="PackedScene" uid="uid://dmapmbx6ymccv" path="res://scenes/levels/main_assets/elevatorShell.tscn" id="4_j4d2a"]
 [ext_resource type="Script" uid="uid://jhrb64rmtkho" path="res://scenes/levels/main_assets/call_button.gd" id="5_u81e1"]
+[ext_resource type="PackedScene" uid="uid://bxu0amgqhkfmi" path="res://scenes/levels/main_assets/elevatorShaft.tscn" id="5_vkq25"]
 [ext_resource type="PackedScene" uid="uid://ckods7tupa2e8" path="res://scenes/levels/main_assets/ladder.tscn" id="6_b6bv0"]
 [ext_resource type="PackedScene" uid="uid://bnsi3ojfq1xff" path="res://scenes/levels/scifi_button.glb" id="8_scifi_btn"]
 
@@ -31,11 +32,6 @@ glow_bloom = 0.1
 height = 0.39328957
 radius = 0.21435547
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shaft"]
-albedo_color = Color(0.75, 0.75, 0.78, 1)
-metallic = 0.9
-roughness = 0.1
-
 [node name="MainTestScene" type="Node3D" unique_id=321426474]
 script = ExtResource("1_y0acb")
 
@@ -57,8 +53,11 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.04
 [node name="ElevatorShaft" type="StaticBody3D" parent="." unique_id=1368455669]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 21.367)
 
+[node name="ElevatorShaft" parent="ElevatorShaft" unique_id=2121522992 instance=ExtResource("5_vkq25")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+
 [node name="LowerFloorCallButton" type="StaticBody3D" parent="ElevatorShaft" unique_id=1428529895 node_paths=PackedStringArray("elevator", "button_mesh") groups=["elevator_button"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.636, -2.395, -1.991)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.636, -2, -1.8)
 script = ExtResource("5_u81e1")
 elevator = NodePath("../../Elevator")
 button_mesh = NodePath("CallButton")
@@ -70,20 +69,8 @@ transform = Transform3D(-0.4, 0, 0, 0, 0.4, 0, 0, 0, -0.4, 0, -0.5, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.017210245, 0)
 shape = SubResource("CylinderShape3D_u81e1")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="ElevatorShaft" unique_id=1872470269]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0.102, -0.162, 0)
-use_collision = true
-size = Vector3(3.199, 5.1236367, 3)
-material = SubResource("StandardMaterial3D_shaft")
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="ElevatorShaft/CSGBox3D" unique_id=970429745]
-transform = Transform3D(1, 4.947651e-10, -1.8626451e-09, 4.656613e-10, 1.0000002, 0, -1.8626451e-09, -3.7252903e-09, 1.0000002, 0.002509147, 0.0033603907, -0.17472458)
-operation = 2
-size = Vector3(2.8, 4.8, 2.8)
-material = SubResource("StandardMaterial3D_shaft")
-
 [node name="UpperFloorCallButton" type="StaticBody3D" parent="ElevatorShaft" unique_id=1217978986 node_paths=PackedStringArray("elevator", "button_mesh") groups=["elevator_button"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.636, -2.395, -1.991)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.636, -2, -1.8)
 script = ExtResource("5_u81e1")
 elevator = NodePath("../../Elevator")
 button_mesh = NodePath("CallButton2")
