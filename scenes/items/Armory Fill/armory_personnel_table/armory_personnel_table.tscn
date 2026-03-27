@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://bvuehs8r77do5"]
+
+[ext_resource type="PackedScene" uid="uid://dxit0grv70n44" path="res://scenes/items/Armory Fill/armory_personnel_table/sci-fi_table_2.glb" id="1_m66w5"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_m66w5"]
+size = Vector3(3.7052917, 0.819458, 1.2182007)
+
+[node name="armory_personnel_table" type="StaticBody3D" unique_id=1571720089]
+
+[node name="Sketchfab_Scene" parent="." unique_id=1286572487 instance=ExtResource("1_m66w5")]
+transform = Transform3D(1, 0, 0, 0, 0.75, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=568137749]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.002609253, -0.39300537, -0.0008239746)
+shape = SubResource("BoxShape3D_m66w5")
+debug_color = Color(0, 11.708403, 13.469126, 1)

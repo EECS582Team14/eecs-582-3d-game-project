@@ -30,6 +30,7 @@
 [ext_resource type="Script" uid="uid://cg87m34jjco5u" path="res://scenes/buttons/Button_left.gd" id="24_4clrc"]
 [ext_resource type="PackedScene" uid="uid://ilqnvmrks6hl" path="res://scenes/items/Armory Fill/Ammo Locker/ammo_locker.tscn" id="24_efilq"]
 [ext_resource type="Script" uid="uid://cvsghl2twbfdu" path="res://scenes/tasks/Crew_task_script.gd" id="25_efilq"]
+[ext_resource type="PackedScene" uid="uid://bvuehs8r77do5" path="res://scenes/items/Armory Fill/armory_personnel_table/armory_personnel_table.tscn" id="25_orgge"]
 [ext_resource type="PackedScene" uid="uid://dkmlnl6gy54df" path="res://scenes/items/Healthpack Table/Healthpack1 Table.tscn" id="28_4ertf"]
 [ext_resource type="PackedScene" uid="uid://d2x7pl2ej6xkc" path="res://scenes/weapons/baton/baton.tscn" id="32_4clrc"]
 [ext_resource type="PackedScene" uid="uid://vynka2gbh04c" path="res://scenes/levels/flooring/floor_path_single.tscn" id="33_sco87"]
@@ -423,6 +424,9 @@ transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, 4.87
 [node name="ammo_locker11" parent="Armory" unique_id=402019605 instance=ExtResource("24_efilq")]
 transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, 4.872999, 0, 20.953762)
 
+[node name="armory_personnel_table" parent="Armory" unique_id=1571720089 instance=ExtResource("25_orgge")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7300302, 23)
+
 [node name="Shielding" type="Node3D" parent="." unique_id=1596150144]
 
 [node name="ShieldingLight" type="OmniLight3D" parent="Shielding" unique_id=639666854]
@@ -595,7 +599,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.932487, 0, 17.688927)
 item_id = "baton_01"
 
 [node name="baton_pickup2" parent="." unique_id=21839922 instance=ExtResource("32_4clrc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.932487, 0, 18.846512)
+transform = Transform3D(0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, 0.70710677, -3.090862e-08, -18.418901, 0.7667409, 22.61708)
 item_id = "baton_02"
 
 [node name="TaserPickup2" parent="." unique_id=550459478 instance=ExtResource("7_rmbde")]
@@ -1013,3 +1017,23 @@ mesh = SubResource("BoxMesh_efilq")
 transform = Transform3D(0.04999997, 0, 1.2157527e-07, 0, -0.049999993, 0, -7.549785e-09, 0, 0.8051566, 0.6999999, 0, 19.399998)
 material_override = SubResource("StandardMaterial3D_0m6m5")
 mesh = SubResource("BoxMesh_efilq")
+
+[node name="baton_pickup3" parent="." unique_id=828937330 instance=ExtResource("32_4clrc")]
+transform = Transform3D(0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, 0.70710677, -3.090862e-08, -18.97366, 0.7667409, 22.61708)
+item_id = "baton_03"
+
+[node name="baton_pickup4" parent="." unique_id=1829397232 instance=ExtResource("32_4clrc")]
+transform = Transform3D(0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, 0.70710677, -3.090862e-08, -19.605984, 0.7667409, 22.61708)
+item_id = "baton_04"
+
+[node name="baton_pickup5" parent="." unique_id=835796985 instance=ExtResource("32_4clrc")]
+transform = Transform3D(0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, 0.70710677, -3.090862e-08, -20.259842, 0.7667409, 22.61708)
+item_id = "baton_05"
+
+[node name="baton_pickup6" parent="." unique_id=391333557 instance=ExtResource("32_4clrc")]
+transform = Transform3D(0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, 0.70710677, -3.090862e-08, -20.802227, 0.7667409, 22.61708)
+item_id = "baton_06"
+
+[node name="baton_pickup7" parent="." unique_id=990634986 instance=ExtResource("32_4clrc")]
+transform = Transform3D(0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, 0.70710677, -3.090862e-08, -21.22789, 0.7667409, 22.61708)
+item_id = "baton_07"
