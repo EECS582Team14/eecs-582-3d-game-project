@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://dvs4h8evm00ev"]
+
+[ext_resource type="PackedScene" uid="uid://m5m4pgophkvg" path="res://scenes/items/Armory Fill/Shelf/metal_shelf_-_14mb.glb" id="1_lrowe"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_oaywc"]
+height = 2.988037
+radius = 0.04296875
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lrowe"]
+size = Vector3(0.7077637, 0.042419434, 2.0084229)
+
+[node name="Shelf" type="StaticBody3D" unique_id=758944203]
+
+[node name="Sketchfab_Scene" parent="." unique_id=800950820 instance=ExtResource("1_lrowe")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=207372764]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33801913, 1.4957408, 0.99738735)
+shape = SubResource("CylinderShape3D_oaywc")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=478281653]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34592527, 1.4957408, 0.99738735)
+shape = SubResource("CylinderShape3D_oaywc")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="." unique_id=1806357320]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33801913, 1.4957408, -1.009054)
+shape = SubResource("CylinderShape3D_oaywc")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="." unique_id=1085561784]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34249234, 1.4957408, -1.009054)
+shape = SubResource("CylinderShape3D_oaywc")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="." unique_id=374365904]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0008544922, 0.24788868, -0.0026245117)
+shape = SubResource("BoxShape3D_lrowe")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="." unique_id=901210066]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0008544922, 0.7463263, -0.0026245117)
+shape = SubResource("BoxShape3D_lrowe")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D7" type="CollisionShape3D" parent="." unique_id=1231620109]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0008544922, 1.2514389, -0.0026245117)
+shape = SubResource("BoxShape3D_lrowe")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D8" type="CollisionShape3D" parent="." unique_id=1428474731]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0008544922, 1.7462211, -0.0026245117)
+shape = SubResource("BoxShape3D_lrowe")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D9" type="CollisionShape3D" parent="." unique_id=1027518009]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0008544922, 2.2471657, -0.0026245117)
+shape = SubResource("BoxShape3D_lrowe")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D10" type="CollisionShape3D" parent="." unique_id=1299184917]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0008544922, 2.7467046, -0.0026245117)
+shape = SubResource("BoxShape3D_lrowe")
+debug_color = Color(0, 11.708403, 13.469126, 1)

@@ -33,6 +33,7 @@
 [ext_resource type="PackedScene" uid="uid://bvuehs8r77do5" path="res://scenes/items/Armory Fill/armory_personnel_table/armory_personnel_table.tscn" id="25_orgge"]
 [ext_resource type="PackedScene" uid="uid://bngmfl0csp70c" path="res://scenes/items/Armory Fill/Workbench/workbench.tscn" id="26_brw7n"]
 [ext_resource type="PackedScene" uid="uid://b6gb7jdttl0e1" path="res://scenes/items/Armory Fill/Small Weapon Crate/small_weapon_crate.tscn" id="27_dw7al"]
+[ext_resource type="PackedScene" uid="uid://dvs4h8evm00ev" path="res://scenes/items/Armory Fill/Shelf/shelf.tscn" id="28_3j6qi"]
 [ext_resource type="PackedScene" uid="uid://dkmlnl6gy54df" path="res://scenes/items/Healthpack Table/Healthpack1 Table.tscn" id="28_4ertf"]
 [ext_resource type="PackedScene" uid="uid://d2x7pl2ej6xkc" path="res://scenes/weapons/baton/baton.tscn" id="32_4clrc"]
 [ext_resource type="PackedScene" uid="uid://vynka2gbh04c" path="res://scenes/levels/flooring/floor_path_single.tscn" id="33_sco87"]
@@ -488,6 +489,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.92512894, 1.6123518, 10.480
 
 [node name="small_weapon_crate4" parent="Armory" unique_id=589881216 instance=ExtResource("27_dw7al")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6721802, 1.6123518, 10.462234)
+
+[node name="Shelf" parent="Armory" unique_id=758944203 instance=ExtResource("28_3j6qi")]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -2.8002872, 0, 15.731057)
+
+[node name="Shelf2" parent="Armory" unique_id=1759453820 instance=ExtResource("28_3j6qi")]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -1.05, 0, 15.731)
+
+[node name="Shelf3" parent="Armory" unique_id=400156406 instance=ExtResource("28_3j6qi")]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0.7, 0, 15.731)
+
+[node name="Shelf4" parent="Armory" unique_id=1472804518 instance=ExtResource("28_3j6qi")]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 2.45, 0, 15.731)
 
 [node name="Shielding" type="Node3D" parent="." unique_id=1596150144]
 
