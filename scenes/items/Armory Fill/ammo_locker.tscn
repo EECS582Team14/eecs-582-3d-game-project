@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://ilqnvmrks6hl"]
+
+[ext_resource type="PackedScene" uid="uid://d4ca4upajrq1r" path="res://scenes/items/Armory Fill/ammo_locker.glb" id="1_22f8v"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xnv6w"]
+size = Vector3(0.5498047, 1.9350586, 0.47399902)
+
+[node name="ammo_locker" type="StaticBody3D" unique_id=302080072]
+
+[node name="Sketchfab_Scene" parent="." unique_id=1032970760 instance=ExtResource("1_22f8v")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1319557357]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0073242188, 0.9655762, 0.18182373)
+shape = SubResource("BoxShape3D_xnv6w")
+debug_color = Color(0, 11.708403, 13.469126, 1)

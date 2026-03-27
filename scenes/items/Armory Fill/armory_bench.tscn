@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://dnb0mheryqfrt"]
+
+[ext_resource type="PackedScene" uid="uid://jyv8kttebfln" path="res://scenes/items/Armory Fill/park_bench.glb" id="1_wenuu"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hsf24"]
+size = Vector3(6.4642334, 1.769043, 2.9295654)
+
+[node name="armory_bench" type="StaticBody3D" unique_id=1559148481]
+
+[node name="Sketchfab_Scene" parent="." unique_id=338417850 instance=ExtResource("1_wenuu")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1692043040]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8899536, -0.6381836, -0.081604004)
+shape = SubResource("BoxShape3D_hsf24")
+debug_color = Color(0, 11.708403, 13.469126, 1)

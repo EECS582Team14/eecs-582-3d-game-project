@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://dqpmx8qtduhqq"]
+
+[ext_resource type="PackedScene" uid="uid://ivbh8f4lg3qx" path="res://scenes/items/Armory Fill/locker_scifi_type_va.glb" id="1_dr6rw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2tasm"]
+size = Vector3(0.6209717, 2.0527954, 0.31030273)
+
+[node name="personal_locker" type="StaticBody3D" unique_id=762682541]
+
+[node name="Sketchfab_Scene" parent="." unique_id=1975413553 instance=ExtResource("1_dr6rw")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=89406211]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003967285, 0.9825134, -0.15197754)
+shape = SubResource("BoxShape3D_2tasm")
+debug_color = Color(0, 11.708403, 13.469126, 1)
