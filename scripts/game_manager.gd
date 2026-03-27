@@ -310,18 +310,16 @@ func _on_play_again():
 	if hud_instance != null:
 		hud_instance.queue_free()
 		hud_instance = null
-		
-	VoiceManager.stop()
+
+	# Despawn all players
 	despawn_all_players()
-	
-	# Reset game state variables (important for next match)
+
+	# Reset game state
 	game_state = 1
 	destination_progress = 0.0
 	progress_speed_modifier = 1.0
 	_progress_sync_timer = 0.0
 	timer_active = false
-	
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 	# Clear buffered role
 	NetworkManager.pending_role_received = false
@@ -330,9 +328,15 @@ func _on_play_again():
 	# Re-capture mouse
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
+	# Re-spawn players, HUD, and pickups, and reset ship integrity in the same level
+	await get_tree().process_frame
+	_spawn_all_players()
+	_spawn_local_hud()
+	_respawn_taser_pickup()
+	_reset_ship_integrity()
+
 	#Go back to lobby scene
 	get_tree().call_deferred("change_scene_to_packed", LOBBY_SCENE)
-	#get_tree().change_scene_to_packed(LOBBY_SCENE)
 
 func _respawn_taser_pickup():
 	# The taser pickup calls queue_free() when picked up, so re-instantiate it on play again
