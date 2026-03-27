@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://ci17faevvkdnc"]
 
 [ext_resource type="Script" uid="uid://c6re08y4tngkt" path="res://scenes/weapons/taser/taser_pickup.gd" id="1_script"]
-[ext_resource type="PackedScene" uid="uid://cxo05w5r66b30" path="res://scenes/weapons/taser/heavy_assault_rifle.glb" id="2_model"]
 [ext_resource type="PackedScene" uid="uid://dtyft7xutakok" path="res://scenes/weapons/taser/gun_model.glb" id="3_0phn5"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pickup"]
@@ -13,8 +12,5 @@ script = ExtResource("1_script")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=412372728]
 shape = SubResource("BoxShape3D_pickup")
 
-[node name="Model" parent="." unique_id=515334387 instance=ExtResource("2_model")]
-visible = false
-
 [node name="Pistol_Model" parent="." unique_id=1460500515 instance=ExtResource("3_0phn5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18018857, 0.18105677)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.18018857, 0.18105677)

@@ -570,7 +570,7 @@ script = ExtResource("25_efilq")
 task_id = "Crew_task"
 
 [node name="TaserPickup" parent="." unique_id=1416351404 instance=ExtResource("7_rmbde")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.66497, 0.45656508, 19.942848)
+transform = Transform3D(3.3985966e-08, 0.77750814, -0.62887275, 1, -4.371139e-08, -1.6415074e-15, -2.7488898e-08, -0.62887275, -0.77750814, -18.964157, 0.7129056, 13.29552)
 item_id = "taser_01"
 
 [node name="ClosingOffWalls" type="Node3D" parent="." unique_id=368400362]
@@ -657,15 +657,15 @@ transform = Transform3D(-0.5, -4.371139e-08, 1.9106855e-15, 0, -2.1855694e-08, -
 transform = Transform3D(-0.5, -4.371139e-08, 1.9106855e-15, 0, -2.1855694e-08, -0.5, 4.371139e-08, -0.5, 2.1855694e-08, 1.2, 1, 9.793)
 
 [node name="baton_pickup" parent="." unique_id=2003324940 instance=ExtResource("32_4clrc")]
-transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -22.107187, 1.3288983, 10.627875)
+transform = Transform3D(-4.1383533e-08, -0.94674486, 0.3219848, 1, -4.371139e-08, 0, 1.4074402e-08, 0.3219848, 0.94674486, -22.107187, 1.3288983, 10.52917)
 item_id = "baton_01"
 
 [node name="baton_pickup2" parent="." unique_id=21839922 instance=ExtResource("32_4clrc")]
-transform = Transform3D(0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, 0.70710677, -3.090862e-08, -18.418901, 0.7667409, 22.61708)
+transform = Transform3D(0.92853767, -0.37123817, 1.622734e-08, 0, -4.371138e-08, -1, 0.37123817, 0.92853767, -4.0587672e-08, -18.418901, 0.7667409, 22.61708)
 item_id = "baton_02"
 
 [node name="TaserPickup2" parent="." unique_id=550459478 instance=ExtResource("7_rmbde")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.66497, 0.45656508, 20.934315)
+transform = Transform3D(4.308248e-08, -0.98561215, 0.16902259, -1, -4.371139e-08, 0, 7.3882127e-09, -0.16902259, -0.98561215, -20.316658, 0.713, 13.221393)
 item_id = "taser_02"
 
 [node name="Flooring" type="Node3D" parent="." unique_id=1097702279]
@@ -1081,21 +1081,45 @@ material_override = SubResource("StandardMaterial3D_0m6m5")
 mesh = SubResource("BoxMesh_efilq")
 
 [node name="baton_pickup3" parent="." unique_id=828937330 instance=ExtResource("32_4clrc")]
-transform = Transform3D(0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, 0.70710677, -3.090862e-08, -18.97366, 0.7667409, 22.61708)
+transform = Transform3D(0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, 0.70710677, -3.090862e-08, -19.21488, 0.7667409, 22.61708)
 item_id = "baton_03"
 
 [node name="baton_pickup4" parent="." unique_id=1829397232 instance=ExtResource("32_4clrc")]
-transform = Transform3D(0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, 0.70710677, -3.090862e-08, -19.605984, 0.7667409, 22.61708)
+transform = Transform3D(0.935592, 0.35308293, -1.543374e-08, 0, -4.371138e-08, -1, -0.35308293, 0.935592, -4.0896026e-08, -21.24228, 0.7667409, 22.661186)
 item_id = "baton_04"
 
 [node name="baton_pickup5" parent="." unique_id=835796985 instance=ExtResource("32_4clrc")]
-transform = Transform3D(0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, 0.70710677, -3.090862e-08, -20.259842, 0.7667409, 22.61708)
+transform = Transform3D(0.98362494, -0.18022728, 7.877988e-09, 0, -4.371138e-08, -1, 0.18022728, 0.98362494, -4.299561e-08, -21.527523, 0.7667409, 22.61708)
 item_id = "baton_05"
 
-[node name="baton_pickup6" parent="." unique_id=391333557 instance=ExtResource("32_4clrc")]
-transform = Transform3D(0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, 0.70710677, -3.090862e-08, -20.802227, 0.7667409, 22.61708)
+[node name="TaserPickup3" parent="." unique_id=1534766223 instance=ExtResource("7_rmbde")]
+transform = Transform3D(-3.2979408e-08, 0.7544807, -0.65632236, -1, -4.371139e-08, 4.3769972e-16, -2.8688767e-08, 0.65632236, 0.7544807, -20.45074, 0.7777309, 22.884544)
+item_id = "taser_03"
+
+[node name="baton_pickup6" parent="." unique_id=1190476456 instance=ExtResource("32_4clrc")]
+transform = Transform3D(-2.9387827e-08, -0.6723151, -0.74026513, 1, -4.371139e-08, 0, -3.2358013e-08, -0.74026513, 0.6723151, -22.687365, 0.7144527, 13.484836)
 item_id = "baton_06"
 
-[node name="baton_pickup7" parent="." unique_id=990634986 instance=ExtResource("32_4clrc")]
-transform = Transform3D(0.70710677, -0.70710677, 3.090862e-08, 0, -4.371139e-08, -1, 0.70710677, 0.70710677, -3.090862e-08, -21.22789, 0.7667409, 22.61708)
+[node name="baton_pickup7" parent="." unique_id=260270063 instance=ExtResource("32_4clrc")]
+transform = Transform3D(-3.91995e-08, -0.89678013, -0.44247657, 1, -4.371139e-08, -1.314975e-15, -1.9341265e-08, -0.44247657, 0.89678013, -22.044401, 0.7144527, 13.338424)
 item_id = "baton_07"
+
+[node name="baton_pickup8" parent="." unique_id=808378944 instance=ExtResource("32_4clrc")]
+transform = Transform3D(3.1240738e-08, 0.71470475, -0.69942635, 1, -4.371139e-08, -1.314975e-15, -3.0572902e-08, -0.69942635, -0.71470475, -21.662928, 0.7144527, 13.484836)
+item_id = "baton_08"
+
+[node name="baton_pickup9" parent="." unique_id=2047989492 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.5210826e-08, 0.34798315, -0.93750083, 1, -4.371139e-08, -1.314975e-15, -4.0979465e-08, -0.93750083, -0.34798315, -20.039753, 0.7144527, 13.521516)
+item_id = "baton_09"
+
+[node name="baton_pickup10" parent="." unique_id=1879048852 instance=ExtResource("32_4clrc")]
+transform = Transform3D(6.3545498e-09, 0.14537513, -0.9893766, 1, -4.371139e-08, -9.64614e-16, -4.3247027e-08, -0.9893766, -0.14537513, -19.456642, 0.7144527, 13.56022)
+item_id = "baton_10"
+
+[node name="baton_pickup11" parent="." unique_id=2093834252 instance=ExtResource("32_4clrc")]
+transform = Transform3D(-4.1138307e-08, -0.94113475, -0.33803174, 1, -4.371139e-08, -9.64614e-16, -1.477584e-08, -0.33803174, 0.94113475, -17.703442, 0.7144527, 13.408776)
+item_id = "baton_11"
+
+[node name="baton_pickup12" parent="." unique_id=2028520216 instance=ExtResource("32_4clrc")]
+transform = Transform3D(-3.562374e-08, -0.8149761, -0.57949466, 1, -4.371139e-08, -9.64614e-16, -2.533052e-08, -0.57949466, 0.8149761, -16.966074, 0.7144527, 13.408841)
+item_id = "baton_12"
