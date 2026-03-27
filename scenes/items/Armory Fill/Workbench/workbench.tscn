@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://bngmfl0csp70c"]
+
+[ext_resource type="PackedScene" uid="uid://bo2hywdh1srsc" path="res://scenes/items/Armory Fill/Workbench/workbench.glb" id="1_dahys"]
+[ext_resource type="PackedScene" uid="uid://cfevk2fjc01c7" path="res://scenes/items/Armory Fill/Ammo Box/ammo_box.tscn" id="2_afx17"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_q3m8j"]
+size = Vector3(1.6396484, 0.69970703, 0.7429199)
+
+[node name="Workbench" type="StaticBody3D" unique_id=1978762304]
+
+[node name="Sketchfab_Scene" parent="." unique_id=28388147 instance=ExtResource("1_dahys")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1148071308]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0024414063, 0.3425293, -0.0028076172)
+shape = SubResource("BoxShape3D_q3m8j")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="ammo_box" parent="." unique_id=1444754923 instance=ExtResource("2_afx17")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, 0.004117191, 0.24427038, 0.039894104)
+
+[node name="ammo_box2" parent="." unique_id=1608970943 instance=ExtResource("2_afx17")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.49156535, 0.244, 0.04)
+
+[node name="ammo_box3" parent="." unique_id=1601404109 instance=ExtResource("2_afx17")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, 0.4996333, 0.24427038, 0.039894104)
