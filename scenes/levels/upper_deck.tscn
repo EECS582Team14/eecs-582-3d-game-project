@@ -20,14 +20,15 @@
 [ext_resource type="PackedScene" uid="uid://bhnihej24hlrx" path="res://scenes/items/healthpack.tscn" id="15_bj8xs"]
 [ext_resource type="Script" uid="uid://djtnepb2xxgnx" path="res://scenes/tasks/Life_task_script.gd" id="18_sco87"]
 [ext_resource type="Script" uid="uid://xrgl7inoxsg" path="res://scenes/tasks/Human_Resources_task_script.gd" id="19_a5xa1"]
-[ext_resource type="PackedScene" uid="uid://teatsvvq70xk" path="res://scenes/items/Armory Fill/large_weapon_crate.tscn" id="21_ydp2g"]
-[ext_resource type="PackedScene" uid="uid://c5rrxl1atxykp" path="res://scenes/items/Armory Fill/personal_locker_wall.tscn" id="22_57p4a"]
+[ext_resource type="PackedScene" uid="uid://teatsvvq70xk" path="res://scenes/items/Armory Fill/Large Weapon Crate/large_weapon_crate.tscn" id="21_ydp2g"]
+[ext_resource type="PackedScene" uid="uid://c5rrxl1atxykp" path="res://scenes/items/Armory Fill/Personal Locker/personal_locker_wall.tscn" id="22_57p4a"]
 [ext_resource type="PackedScene" uid="uid://db1mrpytrj148" path="res://scenes/buttons/button.tscn" id="22_r35sg"]
-[ext_resource type="PackedScene" uid="uid://dnb0mheryqfrt" path="res://scenes/items/Armory Fill/armory_bench.tscn" id="23_0m6m5"]
+[ext_resource type="PackedScene" uid="uid://dnb0mheryqfrt" path="res://scenes/items/Armory Fill/Armory Bench/armory_bench.tscn" id="23_0m6m5"]
 [ext_resource type="Script" uid="uid://dxiyilrrregsc" path="res://scenes/tasks/Shielding_task_script.gd" id="23_57p4a"]
 [ext_resource type="Script" uid="uid://6tr2eiwi5bfw" path="res://scenes/buttons/Button_right.gd" id="23_eofsf"]
 [ext_resource type="Script" uid="uid://dy8t20vmm7jdp" path="res://scenes/tasks/Supply_Closet_task_script.gd" id="24_0m6m5"]
 [ext_resource type="Script" uid="uid://cg87m34jjco5u" path="res://scenes/buttons/Button_left.gd" id="24_4clrc"]
+[ext_resource type="PackedScene" uid="uid://ilqnvmrks6hl" path="res://scenes/items/Armory Fill/Ammo Locker/ammo_locker.tscn" id="24_efilq"]
 [ext_resource type="Script" uid="uid://cvsghl2twbfdu" path="res://scenes/tasks/Crew_task_script.gd" id="25_efilq"]
 [ext_resource type="PackedScene" uid="uid://dkmlnl6gy54df" path="res://scenes/items/Healthpack Table/Healthpack1 Table.tscn" id="28_4ertf"]
 [ext_resource type="PackedScene" uid="uid://d2x7pl2ej6xkc" path="res://scenes/weapons/baton/baton.tscn" id="32_4clrc"]
@@ -371,20 +372,56 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.94
 [node name="personal_locker_wall5" parent="Armory" unique_id=2122329873 instance=ExtResource("22_57p4a")]
 transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -4.945, 0, 25.319)
 
+[node name="personal_locker_wall6" parent="Armory" unique_id=2140692140 instance=ExtResource("22_57p4a")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -4.9449997, 0, 22.311356)
+
 [node name="armory_bench" parent="Armory" unique_id=1559148481 instance=ExtResource("23_0m6m5")]
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 3.1609364, 0.40394884, 24.805897)
 
-[node name="armory_bench2" parent="Armory" unique_id=626946619 instance=ExtResource("23_0m6m5")]
+[node name="armory_bench2" parent="Armory" unique_id=1244443587 instance=ExtResource("23_0m6m5")]
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.8405533, 0.40394884, 24.805897)
 
-[node name="armory_bench3" parent="Armory" unique_id=429916317 instance=ExtResource("23_0m6m5")]
+[node name="armory_bench3" parent="Armory" unique_id=2110403540 instance=ExtResource("23_0m6m5")]
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -1.4879818, 0.40394884, 24.805897)
 
-[node name="armory_bench4" parent="Armory" unique_id=159943034 instance=ExtResource("23_0m6m5")]
+[node name="armory_bench4" parent="Armory" unique_id=390143129 instance=ExtResource("23_0m6m5")]
 transform = Transform3D(-1.3113417e-08, 0, 0.3, 0, 0.3, 0, -0.3, 0, -1.3113417e-08, 2.8523083, 0.40394884, 22.299664)
 
-[node name="armory_bench5" parent="Armory" unique_id=1958321124 instance=ExtResource("23_0m6m5")]
+[node name="armory_bench5" parent="Armory" unique_id=1434347715 instance=ExtResource("23_0m6m5")]
 transform = Transform3D(-1.3113417e-08, 0, 0.3, 0, 0.3, 0, -0.3, 0, -1.3113417e-08, -3.2822552, 0.40394884, 22.299664)
+
+[node name="ammo_locker" parent="Armory" unique_id=302080072 instance=ExtResource("24_efilq")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -4.8731537, 0, 20.456306)
+
+[node name="ammo_locker2" parent="Armory" unique_id=570485598 instance=ExtResource("24_efilq")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -4.8731537, 0, 19.923588)
+
+[node name="ammo_locker3" parent="Armory" unique_id=330816743 instance=ExtResource("24_efilq")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -4.8731537, 0, 19.394897)
+
+[node name="ammo_locker4" parent="Armory" unique_id=1012956294 instance=ExtResource("24_efilq")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -4.8731537, 0, 18.871063)
+
+[node name="ammo_locker5" parent="Armory" unique_id=545955985 instance=ExtResource("24_efilq")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -4.8731537, 0, 18.345055)
+
+[node name="ammo_locker6" parent="Armory" unique_id=1307219558 instance=ExtResource("24_efilq")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, 4.872999, 0, 23.455769)
+
+[node name="ammo_locker7" parent="Armory" unique_id=433288424 instance=ExtResource("24_efilq")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, 4.872999, 0, 22.956203)
+
+[node name="ammo_locker8" parent="Armory" unique_id=886372391 instance=ExtResource("24_efilq")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, 4.872999, 0, 22.44566)
+
+[node name="ammo_locker9" parent="Armory" unique_id=698657990 instance=ExtResource("24_efilq")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, 4.872999, 0, 21.94252)
+
+[node name="ammo_locker10" parent="Armory" unique_id=1212964487 instance=ExtResource("24_efilq")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, 4.872999, 0, 21.44165)
+
+[node name="ammo_locker11" parent="Armory" unique_id=402019605 instance=ExtResource("24_efilq")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, 4.872999, 0, 20.953762)
 
 [node name="Shielding" type="Node3D" parent="." unique_id=1596150144]
 

@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://cfevk2fjc01c7"]
+
+[ext_resource type="PackedScene" uid="uid://bqly3rc5psttx" path="res://scenes/items/Armory Fill/Ammo Box/tpc_-_sci_fi_ammo_box.glb" id="1_agefm"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_y8nq7"]
+size = Vector3(0.22192383, 0.36901855, 0.47875977)
+
+[node name="ammo_box" type="StaticBody3D" unique_id=1444754923]
+
+[node name="Sketchfab_Scene" parent="." unique_id=1072558234 instance=ExtResource("1_agefm")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=617786247]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0018310547, 0.17828369, -0.0015869141)
+shape = SubResource("BoxShape3D_y8nq7")
+debug_color = Color(0, 11.708403, 13.469126, 1)

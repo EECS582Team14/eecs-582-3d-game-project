@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://c5rrxl1atxykp"]
+
+[ext_resource type="PackedScene" uid="uid://dqpmx8qtduhqq" path="res://scenes/items/Armory Fill/Personal Locker/personal_locker.tscn" id="1_bptot"]
+
+[node name="personal_locker_wall" type="Node3D" unique_id=1467040260]
+
+[node name="personal_locker" parent="." unique_id=762682541 instance=ExtResource("1_bptot")]
+
+[node name="personal_locker2" parent="." unique_id=1729145197 instance=ExtResource("1_bptot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.59273994, 0, 0)
+
+[node name="personal_locker3" parent="." unique_id=1718067486 instance=ExtResource("1_bptot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1877308, 0, 0)
+
+[node name="personal_locker4" parent="." unique_id=629399369 instance=ExtResource("1_bptot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.59920377, 0, 0)
+
+[node name="personal_locker5" parent="." unique_id=1438986195 instance=ExtResource("1_bptot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2037263, 0, 0)

@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://b6gb7jdttl0e1"]
+
+[ext_resource type="PackedScene" uid="uid://b7yu8dpvgilat" path="res://scenes/items/Armory Fill/Small Weapon Crate/subd_scifi_storage_container_-_black.glb" id="1_lm6rq"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ht8b8"]
+size = Vector3(0.8223877, 0.62945557, 0.8248291)
+
+[node name="small_weapon_crate" type="StaticBody3D" unique_id=400241379]
+
+[node name="Sketchfab_Scene" parent="." unique_id=2096879536 instance=ExtResource("1_lm6rq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6039442, 0, -1.2142266)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=622352896]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.028625488, -0.0011291504, 0.024230957)
+shape = SubResource("BoxShape3D_ht8b8")
+debug_color = Color(0, 11.708403, 13.469126, 1)
