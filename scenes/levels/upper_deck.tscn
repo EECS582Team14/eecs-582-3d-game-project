@@ -35,9 +35,14 @@
 [ext_resource type="PackedScene" uid="uid://b6gb7jdttl0e1" path="res://scenes/items/Armory Fill/Small Weapon Crate/small_weapon_crate.tscn" id="27_dw7al"]
 [ext_resource type="PackedScene" uid="uid://dvs4h8evm00ev" path="res://scenes/items/Armory Fill/Shelf/shelf.tscn" id="28_3j6qi"]
 [ext_resource type="PackedScene" uid="uid://dkmlnl6gy54df" path="res://scenes/items/Healthpack Table/Healthpack1 Table.tscn" id="28_4ertf"]
+[ext_resource type="PackedScene" uid="uid://dv8byp512pwmc" path="res://scenes/items/Armory Fill/Ammo Crate/ammo_crate.tscn" id="29_egdqv"]
+[ext_resource type="PackedScene" uid="uid://b8nyeer3esrs1" path="res://scenes/items/Armory Fill/Ammo Can/ammo_can.tscn" id="30_348df"]
+[ext_resource type="PackedScene" uid="uid://dsrc7a4m8itce" path="res://scenes/items/Armory Fill/Kit Bag/kit_bag.tscn" id="31_utxkb"]
 [ext_resource type="PackedScene" uid="uid://d2x7pl2ej6xkc" path="res://scenes/weapons/baton/baton.tscn" id="32_4clrc"]
+[ext_resource type="PackedScene" uid="uid://c7b0axyo0a1v3" path="res://scenes/items/Armory Fill/Target Dummy/target_dummy.tscn" id="33_47d0t"]
 [ext_resource type="PackedScene" uid="uid://vynka2gbh04c" path="res://scenes/levels/flooring/floor_path_single.tscn" id="33_sco87"]
 [ext_resource type="PackedScene" uid="uid://b1h3bxid3r3x6" path="res://scenes/levels/flooring/floor_path_long.tscn" id="34_0m6m5"]
+[ext_resource type="PackedScene" uid="uid://cdvhccx6bp70y" path="res://scenes/items/Armory Fill/Training Dummy/training_dummy.tscn" id="34_82lgw"]
 [ext_resource type="PackedScene" uid="uid://c4158nddi7ibs" path="res://scenes/levels/flooring/floor_path_4_way.tscn" id="35_efilq"]
 [ext_resource type="PackedScene" uid="uid://chgtivhv2h0my" path="res://scenes/levels/flooring/floor_path_edge.tscn" id="36_orgge"]
 [ext_resource type="PackedScene" uid="uid://cxy2cael0sox" path="res://scenes/levels/flooring/floor_path_3_way.tscn" id="37_brw7n"]
@@ -493,14 +498,174 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6721802, 1.6123518, 10.462
 [node name="Shelf" parent="Armory" unique_id=758944203 instance=ExtResource("28_3j6qi")]
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -2.8002872, 0, 15.731057)
 
+[node name="ammo_crate" parent="Armory/Shelf" unique_id=661695395 instance=ExtResource("29_egdqv")]
+transform = Transform3D(0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0, 0.29339698, 0)
+
+[node name="ammo_crate2" parent="Armory/Shelf" unique_id=778280288 instance=ExtResource("29_egdqv")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0, 0.80391306, 0)
+
+[node name="baton_pickup12" parent="Armory/Shelf" unique_id=2003324940 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.6147119e-09, 0.03694032, 0.999317, 0.99999976, -4.3711374e-08, -4.7549118e-17, 4.368154e-08, 0.999317, -0.03694032, -0.14146805, 1.297066, 0.009262085)
+item_id = "baton_13"
+
+[node name="baton_pickup14" parent="Armory/Shelf" unique_id=1847187194 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.5348773e-08, 0.351139, 0.9363228, 0.99999994, -4.371139e-08, -3.5293023e-22, 4.0927976e-08, 0.9363228, -0.351139, -0.14146805, 1.297066, -0.6329613)
+item_id = "baton_14"
+
+[node name="baton_pickup13" parent="Armory/Shelf" unique_id=1749528792 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.2874779e-08, 0.29454058, -0.95563847, 0.9999998, -4.3711385e-08, -3.5293023e-22, -4.1772285e-08, -0.95563847, -0.29454058, -0.14099884, 1.8079998, -0.055923462)
+item_id = "baton_15"
+
+[node name="baton_pickup15" parent="Armory/Shelf" unique_id=1194570293 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.0527353e-08, 0.24083775, -0.9705648, 0.99999976, -4.371138e-08, 1.4146281e-15, -4.242473e-08, -0.9705648, -0.24083775, -0.057998657, 1.8079998, 0.776001)
+item_id = "baton_16"
+
+[node name="kit_bag" parent="Armory/Shelf" unique_id=187025937 instance=ExtResource("31_utxkb")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0, 2.430449, 0)
+
+[node name="kit_bag2" parent="Armory/Shelf" unique_id=273556696 instance=ExtResource("31_utxkb")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0.026275635, 2.9409995, 0.092689514)
+
 [node name="Shelf2" parent="Armory" unique_id=1759453820 instance=ExtResource("28_3j6qi")]
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -1.05, 0, 15.731)
+
+[node name="ammo_crate" parent="Armory/Shelf2" unique_id=1218903588 instance=ExtResource("29_egdqv")]
+transform = Transform3D(0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0, 0.29339698, 0)
+
+[node name="ammo_crate2" parent="Armory/Shelf2" unique_id=1621525490 instance=ExtResource("29_egdqv")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0, 0.80391306, 0)
+
+[node name="baton_pickup12" parent="Armory/Shelf2" unique_id=1357545683 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.6147119e-09, 0.03694032, 0.999317, 0.99999976, -4.3711374e-08, -4.7549118e-17, 4.368154e-08, 0.999317, -0.03694032, -0.14146805, 1.297066, 0.009262085)
+item_id = "baton_17"
+
+[node name="baton_pickup14" parent="Armory/Shelf2" unique_id=1665927599 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.5348773e-08, 0.351139, 0.9363228, 0.99999994, -4.371139e-08, -3.5293023e-22, 4.0927976e-08, 0.9363228, -0.351139, -0.14146805, 1.297066, -0.6329613)
+item_id = "baton_18"
+
+[node name="baton_pickup13" parent="Armory/Shelf2" unique_id=1456493605 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.2874779e-08, 0.29454058, -0.95563847, 0.9999998, -4.3711385e-08, -3.5293023e-22, -4.1772285e-08, -0.95563847, -0.29454058, -0.14099884, 1.8079998, -0.055923462)
+item_id = "baton_19"
+
+[node name="baton_pickup15" parent="Armory/Shelf2" unique_id=1275618529 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.0527353e-08, 0.24083775, -0.9705648, 0.99999976, -4.371138e-08, 1.4146281e-15, -4.242473e-08, -0.9705648, -0.24083775, -0.057998657, 1.8079998, 0.776001)
+item_id = "baton_20"
+
+[node name="kit_bag" parent="Armory/Shelf2" unique_id=453435408 instance=ExtResource("31_utxkb")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0, 2.430449, 0)
+
+[node name="kit_bag2" parent="Armory/Shelf2" unique_id=850502533 instance=ExtResource("31_utxkb")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0.026275635, 2.9409995, 0.092689514)
 
 [node name="Shelf3" parent="Armory" unique_id=400156406 instance=ExtResource("28_3j6qi")]
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0.7, 0, 15.731)
 
+[node name="ammo_crate" parent="Armory/Shelf3" unique_id=601009931 instance=ExtResource("29_egdqv")]
+transform = Transform3D(0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0, 0.29339698, 0)
+
+[node name="ammo_crate2" parent="Armory/Shelf3" unique_id=1378260266 instance=ExtResource("29_egdqv")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0, 0.80391306, 0)
+
+[node name="baton_pickup12" parent="Armory/Shelf3" unique_id=691089675 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.6147119e-09, 0.03694032, 0.999317, 0.99999976, -4.3711374e-08, -4.7549118e-17, 4.368154e-08, 0.999317, -0.03694032, -0.14146805, 1.297066, 0.009262085)
+item_id = "baton_21"
+
+[node name="baton_pickup14" parent="Armory/Shelf3" unique_id=709328612 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.5348773e-08, 0.351139, 0.9363228, 0.99999994, -4.371139e-08, -3.5293023e-22, 4.0927976e-08, 0.9363228, -0.351139, -0.14146805, 1.297066, -0.6329613)
+item_id = "baton_22"
+
+[node name="baton_pickup13" parent="Armory/Shelf3" unique_id=1993267722 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.2874779e-08, 0.29454058, -0.95563847, 0.9999998, -4.3711385e-08, -3.5293023e-22, -4.1772285e-08, -0.95563847, -0.29454058, -0.14099884, 1.8079998, -0.055923462)
+item_id = "baton_23"
+
+[node name="baton_pickup15" parent="Armory/Shelf3" unique_id=1306978980 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.0527353e-08, 0.24083775, -0.9705648, 0.99999976, -4.371138e-08, 1.4146281e-15, -4.242473e-08, -0.9705648, -0.24083775, -0.057998657, 1.8079998, 0.776001)
+item_id = "baton_24"
+
+[node name="kit_bag" parent="Armory/Shelf3" unique_id=1483326606 instance=ExtResource("31_utxkb")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0, 2.430449, 0)
+
+[node name="kit_bag2" parent="Armory/Shelf3" unique_id=647812410 instance=ExtResource("31_utxkb")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0.026275635, 2.9409995, 0.092689514)
+
 [node name="Shelf4" parent="Armory" unique_id=1472804518 instance=ExtResource("28_3j6qi")]
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 2.45, 0, 15.731)
+
+[node name="ammo_can" parent="Armory/Shelf4" unique_id=1139933471 instance=ExtResource("30_348df")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0, 0.3969895, 0.78103256)
+
+[node name="ammo_can2" parent="Armory/Shelf4" unique_id=170407815 instance=ExtResource("30_348df")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0.023666382, 0.3969895, 0.42871094)
+
+[node name="ammo_can3" parent="Armory/Shelf4" unique_id=2057519580 instance=ExtResource("30_348df")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0.034923553, 0.3969895, 0.109638214)
+
+[node name="ammo_can4" parent="Armory/Shelf4" unique_id=1687133709 instance=ExtResource("30_348df")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, -0.026096344, 0.3969895, -0.22605133)
+
+[node name="ammo_can5" parent="Armory/Shelf4" unique_id=1529002877 instance=ExtResource("30_348df")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0, 0.3969895, -0.5033989)
+
+[node name="ammo_can6" parent="Armory/Shelf4" unique_id=836411143 instance=ExtResource("30_348df")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, -0.02796936, 0.3969895, -0.7906914)
+
+[node name="ammo_can7" parent="Armory/Shelf4" unique_id=1551067261 instance=ExtResource("30_348df")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0, 0.908, 0.781)
+
+[node name="ammo_can8" parent="Armory/Shelf4" unique_id=732706890 instance=ExtResource("30_348df")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0.024, 0.908, 0.429)
+
+[node name="ammo_can9" parent="Armory/Shelf4" unique_id=406676575 instance=ExtResource("30_348df")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0.035, 0.908, 0.11)
+
+[node name="ammo_can10" parent="Armory/Shelf4" unique_id=152609988 instance=ExtResource("30_348df")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, -0.026, 0.908, -0.226)
+
+[node name="ammo_can11" parent="Armory/Shelf4" unique_id=217006939 instance=ExtResource("30_348df")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0, 0.908, -0.503)
+
+[node name="ammo_can12" parent="Armory/Shelf4" unique_id=233904706 instance=ExtResource("30_348df")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, -0.028, 0.908, -0.791)
+
+[node name="baton_pickup12" parent="Armory/Shelf4" unique_id=1197343658 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.6147119e-09, 0.03694032, 0.999317, 0.99999976, -4.3711374e-08, -4.7549118e-17, 4.368154e-08, 0.999317, -0.03694032, -0.14146805, 1.297066, 0.009262085)
+item_id = "baton_25"
+
+[node name="baton_pickup14" parent="Armory/Shelf4" unique_id=690746517 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.5348773e-08, 0.351139, 0.9363228, 0.99999994, -4.371139e-08, -3.5293023e-22, 4.0927976e-08, 0.9363228, -0.351139, -0.14146805, 1.297066, -0.6329613)
+item_id = "baton_26"
+
+[node name="baton_pickup13" parent="Armory/Shelf4" unique_id=2053778543 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.2874779e-08, 0.29454058, -0.95563847, 0.9999998, -4.3711385e-08, -3.5293023e-22, -4.1772285e-08, -0.95563847, -0.29454058, -0.14099884, 1.8079998, -0.055923462)
+item_id = "baton_27"
+
+[node name="baton_pickup15" parent="Armory/Shelf4" unique_id=247165805 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1.0527353e-08, 0.24083775, -0.9705648, 0.99999976, -4.371138e-08, 1.4146281e-15, -4.242473e-08, -0.9705648, -0.24083775, -0.057998657, 1.8079998, 0.776001)
+item_id = "baton_28"
+
+[node name="kit_bag" parent="Armory/Shelf4" unique_id=976145905 instance=ExtResource("31_utxkb")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0, 2.430449, 0)
+
+[node name="kit_bag2" parent="Armory/Shelf4" unique_id=237318421 instance=ExtResource("31_utxkb")]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0.026275635, 2.9409995, 0.092689514)
+
+[node name="target_dummy" parent="Armory" unique_id=1647091789 instance=ExtResource("33_47d0t")]
+transform = Transform3D(-3.278354e-08, 0, 0.75, 0, 0.75, 0, -0.75, 0, -3.278354e-08, -4.5373116, 0, 17.628868)
+
+[node name="target_dummy2" parent="Armory" unique_id=1647003213 instance=ExtResource("33_47d0t")]
+transform = Transform3D(-3.278354e-08, 0, 0.75, 0, 0.75, 0, -0.75, 0, -3.278354e-08, -4.5373116, 0, 16.837421)
+
+[node name="training_dummy" parent="Armory" unique_id=113913922 instance=ExtResource("34_82lgw")]
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, -2.624504, 0, 18.482193)
+
+[node name="training_dummy2" parent="Armory" unique_id=563066376 instance=ExtResource("34_82lgw")]
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, -1.1022053, 0, 18.482193)
+
+[node name="training_dummy3" parent="Armory" unique_id=250683763 instance=ExtResource("34_82lgw")]
+transform = Transform3D(-0.75, 0, -1.13246855e-07, 0, 0.75, 0, 1.13246855e-07, 0, -0.75, -2.624504, 0, 20.701115)
+
+[node name="training_dummy4" parent="Armory" unique_id=1300122545 instance=ExtResource("34_82lgw")]
+transform = Transform3D(-0.75, 0, -1.13246855e-07, 0, 0.75, 0, 1.13246855e-07, 0, -0.75, -1.1, 0, 20.7)
 
 [node name="Shielding" type="Node3D" parent="." unique_id=1596150144]
 
@@ -669,7 +834,7 @@ transform = Transform3D(-0.5, -4.371139e-08, 1.9106855e-15, 0, -2.1855694e-08, -
 [node name="Healthpack16" parent="." unique_id=275838857 instance=ExtResource("15_bj8xs")]
 transform = Transform3D(-0.5, -4.371139e-08, 1.9106855e-15, 0, -2.1855694e-08, -0.5, 4.371139e-08, -0.5, 2.1855694e-08, 1.2, 1, 9.793)
 
-[node name="baton_pickup" parent="." unique_id=2003324940 instance=ExtResource("32_4clrc")]
+[node name="baton_pickup" parent="." unique_id=1984907010 instance=ExtResource("32_4clrc")]
 transform = Transform3D(-4.1383533e-08, -0.94674486, 0.3219848, 1, -4.371139e-08, 0, 1.4074402e-08, 0.3219848, 0.94674486, -22.107187, 1.3288983, 10.52917)
 item_id = "baton_01"
 

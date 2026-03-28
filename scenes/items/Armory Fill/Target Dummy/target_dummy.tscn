@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://c7b0axyo0a1v3"]
+
+[ext_resource type="PackedScene" uid="uid://d4vegfu7clbo" path="res://scenes/items/Armory Fill/Target Dummy/dummy_target.glb" id="1_mbsq6"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_f0yem"]
+size = Vector3(0.7392578, 1.8395996, 0.7045288)
+
+[node name="target_dummy" type="StaticBody3D" unique_id=1647091789]
+
+[node name="Sketchfab_Scene" parent="." unique_id=1368249929 instance=ExtResource("1_mbsq6")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1068193845]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0041503906, 0.8951416, -0.0018005371)
+shape = SubResource("BoxShape3D_f0yem")
+debug_color = Color(0, 11.708403, 13.469126, 1)

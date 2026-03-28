@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://dsrc7a4m8itce"]
+
+[ext_resource type="PackedScene" uid="uid://ckqh8y140xep6" path="res://scenes/items/Armory Fill/Kit Bag/military_duffel_bag.glb" id="1_fycyt"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fycyt"]
+size = Vector3(0.5396118, 0.46636963, 1.3803711)
+
+[node name="kit_bag" type="StaticBody3D" unique_id=187025937]
+
+[node name="Sketchfab_Scene" parent="." unique_id=2135676883 instance=ExtResource("1_fycyt")]
+transform = Transform3D(-3.934025e-08, 0, 0.9, 0, 0.9, 0, -0.9, 0, -3.934025e-08, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=500243792]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.003753662, 0.04232788, -0.006591797)
+shape = SubResource("BoxShape3D_fycyt")
+debug_color = Color(0, 11.708403, 13.469126, 1)

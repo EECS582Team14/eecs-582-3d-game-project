@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://dv8byp512pwmc"]
+
+[ext_resource type="PackedScene" uid="uid://cukgf25wcb4u1" path="res://scenes/items/Armory Fill/Ammo Crate/military_ammo_crate.glb" id="1_00ub7"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3jqph"]
+size = Vector3(1.2429199, 0.40600586, 2.08078)
+
+[node name="ammo_crate" type="StaticBody3D" unique_id=661695395]
+
+[node name="Sketchfab_Scene" parent="." unique_id=1551903133 instance=ExtResource("1_00ub7")]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1201491624]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0008544922, 0.16174316, -0.00090026855)
+shape = SubResource("BoxShape3D_3jqph")
+debug_color = Color(0, 11.708403, 13.469126, 1)
