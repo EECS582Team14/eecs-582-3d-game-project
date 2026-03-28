@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dmapmbx6ymccv"]
 
 [ext_resource type="Script" uid="uid://ccje720xfacwd" path="res://scenes/levels/main_assets/elevator.gd" id="1_q2cks"]
-[ext_resource type="PackedScene" uid="uid://ivl57vnip4kx" path="res://scenes/levels/main_assets/elevatorDoor.tscn" id="2_7gpcc"]
+[ext_resource type="PackedScene" uid="uid://ivl57vnip4kx" path="res://scenes/levels/main_assets/elevatorDoors.tscn" id="2_7gpcc"]
 [ext_resource type="PackedScene" uid="uid://b1xa510ig5d86" path="res://scenes/levels/elevator_wall_button_model.glb" id="3_wall_btn"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_elevator_walls"]
@@ -12,24 +12,35 @@ roughness = 0.1
 [sub_resource type="BoxShape3D" id="BoxShape3D_7gpcc"]
 size = Vector3(0.25, 0.25, 0.25)
 
-[node name="AnimatedBody3D" type="AnimatableBody3D" unique_id=1904553526 node_paths=PackedStringArray("button_mesh")]
+[node name="Elevator" type="AnimatableBody3D" unique_id=1904553526 node_paths=PackedStringArray("button_mesh", "elevator_doors")]
 script = ExtResource("1_q2cks")
 button_mesh = NodePath("Button/WallButton")
+elevator_doors = NodePath("ElevatorDoors")
 
-[node name="CSGBoxParent" type="CSGBox3D" parent="." unique_id=1188355160 groups=["elevator_button"]]
+[node name="OuterShell" type="CSGBox3D" parent="." unique_id=1188355160 groups=["elevator_button"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.561, -0.599, 0)
 use_collision = true
 size = Vector3(2.6, 2, 3)
 material = SubResource("StandardMaterial3D_elevator_walls")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="CSGBoxParent" unique_id=478035072]
+[node name="InnerHole" type="CSGBox3D" parent="OuterShell" unique_id=478035072]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.098095775, 0, 0)
 operation = 2
-size = Vector3(2.5038085, 1.9, 2.5)
+size = Vector3(2.5, 1.9, 2.5)
 material = SubResource("StandardMaterial3D_elevator_walls")
 
-[node name="ElevatorDoors" parent="CSGBoxParent" unique_id=1458532385 instance=ExtResource("2_7gpcc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0, 0)
+[node name="AboveDoors" type="CSGBox3D" parent="OuterShell" unique_id=519248584]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0.975, 0)
+size = Vector3(0.2, 0.05, 3)
+material = SubResource("StandardMaterial3D_elevator_walls")
+
+[node name="BelowDoors" type="CSGBox3D" parent="OuterShell" unique_id=1084997551]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, -0.975, 0)
+size = Vector3(0.2, 0.05, 3)
+material = SubResource("StandardMaterial3D_elevator_walls")
+
+[node name="ElevatorDoors" parent="." unique_id=1458532385 instance=ExtResource("2_7gpcc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.16100001, -0.599, 0)
 
 [node name="Button" type="Area3D" parent="." unique_id=1232624501 groups=["elevator_button"]]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.25, 0.222, 1.135)

@@ -18,8 +18,6 @@ func activate() -> void:
 
 	var floor_name = "upper" if is_upper_floor else "lower"
 
-	if elevator.is_at_floor(floor_name):
-		return
 	_play_button_animation()
 	_waiting = true
 	# call_to_floor handles the network broadcast
