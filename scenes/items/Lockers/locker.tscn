@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://dbabn7rbmjax3"]
+
+[ext_resource type="Script" uid="uid://n6vx4v0x6r10" path="res://scenes/items/Lockers/locker.gd" id="1_m1nr7"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_70omg"]
+size = Vector3(2, 3, 0.8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m1nr7"]
+albedo_color = Color(0.98099595, 0.92361176, 0.92149115, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rb018"]
+size = Vector3(2.2, 3, 1.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_38tvn"]
+size = Vector3(1.9, 2.8, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hlibs"]
+albedo_color = Color(0.8389701, 0.9147914, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_3tdjl"]
+size = Vector3(0.1, 0.5, 0.15)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rb018"]
+albedo_color = Color(0.12955844, 0.12955847, 0.12955844, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3tdjl"]
+size = Vector3(2, 3, 1)
+
+[node name="Locker" type="StaticBody3D" unique_id=1646487477 groups=["hideable"]]
+script = ExtResource("1_m1nr7")
+
+[node name="Body" type="MeshInstance3D" parent="." unique_id=1087835962]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+mesh = SubResource("BoxMesh_70omg")
+surface_material_override/0 = SubResource("StandardMaterial3D_m1nr7")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=108039117]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1386296279]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0.6)
+shape = SubResource("BoxShape3D_rb018")
+
+[node name="HidePoint" type="Marker3D" parent="." unique_id=2131468289]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.2)
+
+[node name="DoorPivot" type="Node3D" parent="." unique_id=1897514990]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 0, 0.4)
+
+[node name="Door" type="MeshInstance3D" parent="DoorPivot" unique_id=12397025]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.5, 0)
+mesh = SubResource("BoxMesh_38tvn")
+surface_material_override/0 = SubResource("StandardMaterial3D_hlibs")
+
+[node name="Handle" type="MeshInstance3D" parent="DoorPivot" unique_id=203760959]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6999999, 1.6, 0)
+mesh = SubResource("BoxMesh_3tdjl")
+surface_material_override/0 = SubResource("StandardMaterial3D_rb018")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1059729058]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("BoxShape3D_3tdjl")

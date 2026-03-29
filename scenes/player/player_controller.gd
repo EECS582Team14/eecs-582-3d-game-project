@@ -14,7 +14,7 @@ extends CharacterBody3D
 ## Initial Player health
 @export var max_health: int = 100
 @export var jump_velocity: float = 5.0
-
+@export var can_move = true
 @onready var current_health: int = max_health
 @onready var nametag = $Label3D
 
@@ -32,6 +32,8 @@ var _held_baton: Node3D = null
 var _taser_pickup_scene: PackedScene = preload("res://scenes/weapons/taser/taser_pickup.tscn")
 var _baton_pickup_scene: PackedScene = preload("res://scenes/weapons/baton/baton.tscn")
 
+#Hiding
+var _hiding_in = null
 
 # Extra animation scenes
 var _dying_scene: PackedScene = preload("res://scenes/player/Dying.fbx")
@@ -741,13 +743,13 @@ func _process_local_movement(_delta: float) -> void:
 	var right: Vector3 = transform.basis.x
 
 	# Check for input and adjust the direction vector accordingly
-	if Input.is_action_pressed("move_forward"):
+	if Input.is_action_pressed("move_forward") and can_move:
 		direction += forward
-	if Input.is_action_pressed("move_backward"):
+	if Input.is_action_pressed("move_backward") and can_move:
 		direction += backward
-	if Input.is_action_pressed("move_left"):
+	if Input.is_action_pressed("move_left") and can_move:
 		direction += left
-	if Input.is_action_pressed("move_right"):
+	if Input.is_action_pressed("move_right") and can_move:
 		direction += right
 
 	# Normalize the direction vector to ensure consistent speed in all directions
@@ -855,7 +857,7 @@ func _on_health_update_received(sender_steam_id: int, health: int) -> void:
 
 # Apply gravity for local player
 func _apply_gravity(delta: float) -> void:
-	if not is_on_floor():
+	if not is_on_floor() and can_move:
 		velocity.y -= gravity * delta
 	else:
 		velocity.y = 0
@@ -867,6 +869,11 @@ func setup(player_steam_id: int, local: bool) -> void:
 	name = "Player_" + str(steam_id)
 
 func _update_interaction_look() -> void:
+	if _hiding_in:
+		_looking_at_interactable = _hiding_in
+		_interact_label.text = "Press E to leave hiding"
+		_interact_label.visible = true
+		return
 	var space_state = get_world_3d().direct_space_state
 	var from = camera.global_position
 	var to = from + (-camera.global_transform.basis.z * 3.0)
@@ -910,6 +917,12 @@ func _update_interaction_look() -> void:
 				_interact_label.text = "Hold E to press down"
 				_interact_label.visible = true
 				return
+		elif collider.is_in_group("hideable"):
+			_looking_at_interactable = _find_activatable(collider)
+			if _looking_at_interactable:
+				_interact_label.text = "Press E to hide"
+				_interact_label.visible = true
+				return
 	if _is_holding_task and not _is_looking_at_task_console():
 		_cancel_task_hold()
 	_interact_label.visible = false
@@ -940,6 +953,8 @@ func _try_interact() -> void:
 	elif _looking_at_interactable.is_in_group("button"):
 		_holding_button = true
 		_looking_at_interactable.activate()
+	elif _looking_at_interactable.is_in_group("hideable"):
+		_looking_at_interactable.activate(self)
 	else:
 		_looking_at_interactable.activate()
 

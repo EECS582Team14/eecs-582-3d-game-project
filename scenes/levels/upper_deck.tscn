@@ -8,11 +8,13 @@
 [ext_resource type="PackedScene" uid="uid://bkggral86i4ul" path="res://scenes/levels/walls/medium_wall.tscn" id="5_vucmy"]
 [ext_resource type="Script" uid="uid://dstw877g1im1g" path="res://scenes/tasks/Nexus_task_script.gd" id="6_4ertf"]
 [ext_resource type="Texture2D" uid="uid://c6mk0vnfi60hq" path="res://assets/room_symbols/nav_icon.png" id="6_ews0w"]
+[ext_resource type="PackedScene" uid="uid://mvshnnf633fd" path="res://scenes/items/Nexus Fill/nexus_server.tscn" id="7_8q6of"]
 [ext_resource type="PackedScene" uid="uid://bfqp2tl7ks4nx" path="res://scenes/levels/walls/small_wall.tscn" id="7_86pjy"]
 [ext_resource type="PackedScene" uid="uid://ci17faevvkdnc" path="res://scenes/weapons/taser/taser_pickup.tscn" id="7_rmbde"]
 [ext_resource type="Texture2D" uid="uid://p7qokbuyia0v" path="res://assets/room_symbols/cams_icon.png" id="8_0ffry"]
 [ext_resource type="Texture2D" uid="uid://dbu3lcyk5a8sq" path="res://assets/room_symbols/intercom_icon.png" id="8_185qh"]
 [ext_resource type="Texture2D" uid="uid://dkk3fp8xgkqxs" path="res://scenes/levels/main_assets/space_floor.jpg" id="8_floor_color"]
+[ext_resource type="PackedScene" uid="uid://dbabn7rbmjax3" path="res://scenes/items/Lockers/locker.tscn" id="8_h1yrm"]
 [ext_resource type="Script" uid="uid://bp3euv8oddh2m" path="res://scenes/tasks/Nav_task_script.gd" id="9_r35sg"]
 [ext_resource type="Texture2D" uid="uid://b1g55j3i0dfxx" path="res://assets/room_symbols/life_support_icon.png" id="11_uuep5"]
 [ext_resource type="Texture2D" uid="uid://ch68nhpym2hx8" path="res://assets/room_symbols/shielding_icon.png" id="12_1eu2h"]
@@ -152,6 +154,24 @@ distance_fade_length = 5.0
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0.5, 0)
 script = ExtResource("6_4ertf")
 task_id = "Nexus_task"
+
+[node name="Server1" parent="Nexus" unique_id=327241306 instance=ExtResource("7_8q6of")]
+transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.027, -7, 0, 4.7999983)
+
+[node name="Server2" parent="Nexus" unique_id=478261598 instance=ExtResource("7_8q6of")]
+transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.027, -7, 0, -4.800001)
+
+[node name="Server3" parent="Nexus" unique_id=778918091 instance=ExtResource("7_8q6of")]
+transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.027, 6.8999996, 0, 4.7999983)
+
+[node name="Server4" parent="Nexus" unique_id=1403400613 instance=ExtResource("7_8q6of")]
+transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.027, 6.8999996, 0, -4.800001)
+
+[node name="Locker" parent="Nexus" unique_id=228214010 instance=ExtResource("8_h1yrm")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -4, 0, -9.5)
+
+[node name="Locker2" parent="Nexus" unique_id=741008106 instance=ExtResource("8_h1yrm")]
+transform = Transform3D(0.8, 0, 1.4901163e-08, 0, 0.8, 0, -1.4901163e-08, 0, 0.8, 4.2, 0, -9.5)
 
 [node name="NavBridge" type="Node3D" parent="." unique_id=1363310021]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -22.5)
