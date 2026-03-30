@@ -26,7 +26,11 @@ func _on_role_assigned(impostor: bool) -> void:
 		# Wait for the role reveal delay before changing the panel color
 		var local_player = NetworkManager.get_player(Steam.getSteamID())
 		var delay = local_player.ROLE_REVEAL_DELAY if local_player else 30.0
+		if !is_inside_tree():
+			return
 		await get_tree().create_timer(delay).timeout
+		if !is_inside_tree():
+			return
 		var style = panel.get_theme_stylebox("panel").duplicate()
 		style.bg_color = Color(0.84, 0, 0, 0.5)
 		style.border_color = Color(0.78, 0.3, 0.3, 1)
@@ -45,7 +49,7 @@ func _new_message(text):
 	
 func type_text():
 	while current_index < full_text.length():
-		if !typing:
+		if !typing or !is_inside_tree():
 			return
 		text_label.text += full_text[current_index]
 		current_index += 1
