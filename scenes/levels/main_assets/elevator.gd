@@ -4,6 +4,7 @@ enum State { IDLE, MOVING_DOWN, MOVING_UP }
 
 const MOVE_AMOUNT: float = 2.43
 const MOVE_SPEED: float = 2.0
+const AUTOCLOSE_AMOUNT: float = 5.0
 
 @export var button_mesh: Node3D
 @export var elevator_doors: Node3D
@@ -72,19 +73,19 @@ func _physics_process(delta: float) -> void:
 		global_position.y = move_toward(global_position.y, lower_y, MOVE_SPEED * delta)
 		if abs(global_position.y - lower_y) < 0.01:
 			global_position.y = lower_y
-			state = State.IDLE
 			elevator_doors._open_doors()
 			lower_doors._open_doors()
 			start_autoclose_timer()
-			
+			state = State.IDLE
+
 	elif state == State.MOVING_UP:
 		global_position.y = move_toward(global_position.y, upper_y, MOVE_SPEED * delta)
 		if abs(global_position.y - upper_y) < 0.01:
 			global_position.y = upper_y
-			state = State.IDLE
 			elevator_doors._open_doors()
 			upper_doors._open_doors()
 			start_autoclose_timer()
+			state = State.IDLE
 
 func _on_elevator_used(action: String, floor_name: String):
 	if action == "activate":
@@ -101,7 +102,7 @@ func _on_elevator_used(action: String, floor_name: String):
 				state = State.MOVING_DOWN
 
 func start_autoclose_timer() -> void:
-	var current_timer = get_tree().create_timer(5.0)
+	var current_timer = get_tree().create_timer(AUTOCLOSE_AMOUNT)
 	_autoclose_timer = current_timer
 	await current_timer.timeout
 	if _autoclose_timer == current_timer:
