@@ -131,7 +131,7 @@ var _path_scene: PackedScene = preload("res://scenes/tasks/path_minigame.tscn")
 var _download_scene: PackedScene = preload("res://scenes/tasks/download_minigame.tscn")
 
 #Task Designations
-var integrity_tasks = ["Crew_task", "Fab_task", "Life_task", "Sheilding_task", "Trash_task"]
+var integrity_tasks = ["Crew_task", "Fab_task", "Life_task", "Sheilding_task", "Trash_task", "Lower_Reactor_task", "Electrical_task"]
 var TASK_DESCRIPTIONS := {
 	"Colonial_task": "Log preservation status. (Lower - Colonial)",
 	"Crew_task": "Verify ID badge scans. (Upper - Crew Quarters)",
