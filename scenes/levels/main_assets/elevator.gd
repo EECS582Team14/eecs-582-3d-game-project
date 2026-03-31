@@ -6,7 +6,6 @@ const MOVE_AMOUNT: float = 2.43
 const MOVE_SPEED: float = 2.0
 const AUTOCLOSE_AMOUNT: float = 5.0
 
-@export var button_mesh: Node3D
 @export var elevator_doors: Node3D
 @export var upper_doors: Node3D
 @export var lower_doors: Node3D
@@ -100,6 +99,15 @@ func _on_elevator_used(action: String, floor_name: String):
 				state = State.MOVING_UP
 			elif floor_name == "lower":
 				state = State.MOVING_DOWN
+
+func open_doors_manually() -> void:
+	if state == State.IDLE:
+		elevator_doors._open_doors()
+		if is_at_floor("upper"):
+			upper_doors._open_doors()
+		else:
+			lower_doors._open_doors()
+		start_autoclose_timer()
 
 func start_autoclose_timer() -> void:
 	var current_timer = get_tree().create_timer(AUTOCLOSE_AMOUNT)
