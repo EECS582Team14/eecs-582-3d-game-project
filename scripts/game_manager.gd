@@ -123,7 +123,8 @@ func _on_ship_integrity_update_received(sender_steam_id: int, integrity: float) 
 	UIState.ship_durability_changed.emit(ship_integrity)
 	
 func _reset_ship_integrity() -> void:
-	ship_integrity = max_ship_integrity
+	ship_integrity = 50
+	max_ship_integrity = 100
 	UIState.ship_durability_changed.emit(ship_integrity)
 	if LobbyManager.is_host():
 		NetworkManager.send_ship_integrity_update(ship_integrity)
@@ -381,6 +382,7 @@ func _on_game_started():
 	destination_progress = 0.0
 	progress_speed_modifier = 1.0
 	_progress_sync_timer = 0.0
+	_reset_ship_integrity()
 	_load_game_level()
 
 
