@@ -17,6 +17,8 @@ signal progress_update_received(progress: float, speed: float)
 signal game_over_received(impostor_won: bool)
 signal play_again_received()
 signal elevator_used(action: String, floor_name: String)
+signal elevator_door_opened(door_id: String)
+signal elevator_door_closed(door_id: String)
 signal emergency_meeting_called()
 signal timer_sync_received(arrival_time: float, speed: float)
 signal door_opened(door_id: String)
@@ -46,6 +48,7 @@ enum PacketType {
 	GAME_OVER,
 	PLAY_AGAIN,
 	ELEVATOR_USE,
+	ELEVATOR_DOOR_STATE_CHANGE,
 	EMERGENCY_MEETING,
 	TIMER_SYNC,
 	DOOR_STATE_CHANGE,
@@ -183,6 +186,14 @@ func send_play_again():
 
 func send_elevator_use(action: String, floor_name: String):
 	send_p2p_packet(0, {"type": PacketType.ELEVATOR_USE, "action": action, "floor": floor_name}, Steam.P2P_SEND_RELIABLE, 0)
+	elevator_used.emit(action, floor_name)
+
+func send_elevator_door_state_change(door_id: String, action: String):
+	send_p2p_packet(0, {"type": PacketType.ELEVATOR_DOOR_STATE_CHANGE, "door_id": door_id, "action": action}, Steam.P2P_SEND_RELIABLE, 0)
+	if action == "open":
+		elevator_door_opened.emit(door_id)
+	else:
+		elevator_door_closed.emit(door_id)
 
 func send_emergency_meeting():
 	send_p2p_packet(0, {"type": PacketType.EMERGENCY_MEETING}, Steam.P2P_SEND_RELIABLE, 0)
@@ -294,6 +305,12 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 
 		PacketType.ELEVATOR_USE:
 			elevator_used.emit(data.get("action", ""), data.get("floor", ""))
+
+		PacketType.ELEVATOR_DOOR_STATE_CHANGE:
+			if data.get("action") == "open":
+				elevator_door_opened.emit(data.get("door_id"))
+			elif data.get("action") == "close":
+				elevator_door_closed.emit(data.get("door_id"))
 
 		PacketType.EMERGENCY_MEETING:
 			emergency_meeting_called.emit()

@@ -1,53 +1,95 @@
-[gd_scene format=3 uid="uid://dmapmbx6ymccv"]
+[gd_scene format=4 uid="uid://dmapmbx6ymccv"]
 
 [ext_resource type="Script" uid="uid://ccje720xfacwd" path="res://scenes/levels/main_assets/elevator.gd" id="1_q2cks"]
 [ext_resource type="PackedScene" uid="uid://ivl57vnip4kx" path="res://scenes/levels/main_assets/elevatorDoors.tscn" id="2_7gpcc"]
+[ext_resource type="Script" uid="uid://dnpvqsk7mr5l3" path="res://scenes/levels/main_assets/elevator_button.gd" id="3_npcid"]
 [ext_resource type="PackedScene" uid="uid://b1xa510ig5d86" path="res://scenes/levels/elevator_wall_button_model.glb" id="3_wall_btn"]
+[ext_resource type="Script" uid="uid://d070hg1xbl5gj" path="res://scenes/levels/main_assets/elevator_door_button.gd" id="5_f374t"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_elevator_walls"]
 albedo_color = Color(0.75, 0.75, 0.78, 1)
 metallic = 0.9
 roughness = 0.1
 
+[sub_resource type="ArrayMesh" id="ArrayMesh_npcid"]
+_surfaces = [{
+"aabb": AABB(-1.3, -1, -1.5, 2.8, 2, 3),
+"attribute_data": PackedByteArray("AACAPwAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAAAAAAAAAAAAAADAzMw8mpl5P6uqaj/AzMw8AACAP5qZeT8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAAAAmpl5PwAAAAAAAIA/AACAPwAAgD8AAAAAwMzMPAAAAACamXk/mpl5P6uqqj2amXk/AAAAANDMzDyrqqo9AACAPwAAgD8AAAAAwMzMPAAAAACamXk/AACAPwAAgD8AAAAAmpl5PwAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAmpl5P6uqaj/QzMw8q6pqP8DMzDwAAIA/AACAPwAAgD8AAAAAAAAAAAAAAADAzMw80MzMPKuqqj2amXk/AAAAAMDMzDwAAAAAAACAPwAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AACAP7OZnTwAAAAAAACAPwAAAAAAAAAAMhN7PwAAAAAAAAAAAACAPwAAgD8AAAAAAACAPwAAgD+zmZ08AACAPwAAgD8AAAAAAACAPwAAAAAAAAAAAACAPwAAgD+zmZ08AAAAAAAAgD8AAAAAAACAPwAAAAAAAIA/MhN7PwAAAAAyE3s/AACAPwAAgD+zmZ08AACAP7OZnTwAAAAAAACAPwAAgD+zmZ08AACAP7OZnTwAAAAAAAAAAAAAgD8AAAAAs5mdPAAAgD+zmZ08AACAPwAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAKuqaj8AAAAAAACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/q6pqPwAAAACrqqo9AAAAAAAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/q6qqPQAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAAAAAAAAgD8AAIA/q6pqPwAAgD8AAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/q6pqPwAAgD8AAAAAAAAAAKuqqj0AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAP6uqqj0AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/"),
+"format": 34359738391,
+"material": SubResource("StandardMaterial3D_elevator_walls"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 156,
+"vertex_data": PackedByteArray("ZmamvwAAgL8AAMC/ZmamvwAAgD8AAMC/ZmamvwAAgL8AAMA/ZmamvwAAgL8AAMC/ZmamvwAAgL8AAMA/ZmamPwAAgL8AAMC/ZmamvwAAgL8AAMC/ZmamPwAAgL8AAMC/ZmamvwAAgD8AAMC/ZmamvwAAgL8AAMA/ZmamvwAAgD8AAMC/ZmamvwAAgD8AAMA/ZmamvwAAgL8AAMA/ZmamvwAAgD8AAMA/ZmamPwAAgD8AAMA/ZmamvwAAgD8AAMC/ZmamPwAAgD8AAMA/ZmamvwAAgD8AAMA/ZmamvwAAgD8AAMC/ZmamPwAAgL8AAMC/ZmamPzQzc78AAMC/ZmamPzMzc78AAKC/ZmamPzQzcz8AAMC/ZmamPzQzc78AAMC/ZmamvwAAgL8AAMA/ZmamPwAAgL8AAMA/ZmamPwAAgL8AAMC/ZmamvwAAgL8AAMA/ZmamPzQzc78AAMA/ZmamPwAAgL8AAMA/ZmamvwAAgL8AAMA/ZmamPzQzcz8AAMA/ZmamPzQzc78AAMA/ZmamPzMzc78AAKA/ZmamPzQzc78AAMA/ZmamPzMzcz8AAKA/ZmamvwAAgD8AAMC/ZmamPzQzc78AAMC/ZmamPzQzcz8AAMC/ZmamvwAAgD8AAMC/ZmamPzQzcz8AAMC/ZmamPwAAgD8AAMC/ZmamvwAAgD8AAMC/ZmamPwAAgD8AAMC/ZmamPwAAgD8AAMA/ZmamPzMzc78AAKC/ZmamPzMzcz8AAKC/ZmamPzQzcz8AAMC/ZmamvwAAgL8AAMA/ZmamPwAAgD8AAMA/ZmamPzQzcz8AAMA/ZmamPzMzcz8AAKA/ZmamPzQzc78AAMA/ZmamPzQzcz8AAMA/mXGTvzMzc78AAKC/mXGTvzMzc78AAKA/mXGTvzMzcz8AAKC/mXGTvzMzc78AAKC/mXGTvzMzcz8AAKC/ZmamPzMzc78AAKC/mXGTvzMzc78AAKC/ZmamPzMzc78AAKA/mXGTvzMzc78AAKA/mXGTvzMzcz8AAKC/mXGTvzMzcz8AAKA/ZmamPzMzcz8AAKC/mXGTvzMzc78AAKA/mXGTvzMzcz8AAKA/mXGTvzMzcz8AAKC/mXGTvzMzc78AAKA/ZmamPzMzcz8AAKA/mXGTvzMzcz8AAKA/mXGTvzMzc78AAKC/ZmamPzMzc78AAKC/ZmamPzMzc78AAKA/mXGTvzMzc78AAKA/ZmamPzMzc78AAKA/ZmamPzMzcz8AAKA/mXGTvzMzcz8AAKC/ZmamPzMzcz8AAKC/ZmamPzMzc78AAKC/mXGTvzMzcz8AAKA/ZmamPzMzcz8AAKA/ZmamPzMzcz8AAKC/ZmamPzQzcz8AAMC/AADAPzQzcz8AAMC/ZmamPwAAgD8AAMC/AADAPzQzcz8AAMC/ZmamPzQzcz8AAMC/ZmamPzMzcz8AAKC/ZmamPwAAgD8AAMC/AADAPzQzcz8AAMC/AADAPwAAgD8AAMC/ZmamPzMzcz8AAKC/ZmamPzMzcz8AAKA/AADAPzQzcz8AAMC/ZmamPwAAgD8AAMC/AADAPwAAgD8AAMC/AADAPwAAgD8AAMA/AADAPzQzcz8AAMC/AADAPwAAgD8AAMA/AADAPwAAgD8AAMC/ZmamPzMzcz8AAKA/ZmamPzQzcz8AAMA/AADAPzQzcz8AAMC/ZmamPwAAgD8AAMC/AADAPwAAgD8AAMA/ZmamPwAAgD8AAMA/ZmamPzQzcz8AAMA/AADAPzQzcz8AAMA/AADAPzQzcz8AAMC/AADAPzQzcz8AAMC/AADAPzQzcz8AAMA/AADAPwAAgD8AAMA/ZmamPzQzcz8AAMA/ZmamPwAAgD8AAMA/AADAPwAAgD8AAMA/ZmamPzQzcz8AAMA/AADAPwAAgD8AAMA/AADAPzQzcz8AAMA/ZmamPwAAgL8AAMC/AADAPwAAgL8AAMC/ZmamPzQzc78AAMC/ZmamPzQzc78AAMC/AADAPwAAgL8AAMC/AADAPzQzc78AAMC/ZmamPwAAgL8AAMC/ZmamPwAAgL8AAMA/AADAPwAAgL8AAMC/ZmamPzMzc78AAKC/ZmamPzQzc78AAMC/AADAPzQzc78AAMA/ZmamPzQzc78AAMC/AADAPzQzc78AAMC/AADAPzQzc78AAMA/AADAPwAAgL8AAMC/AADAPzQzc78AAMA/AADAPzQzc78AAMC/ZmamPzMzc78AAKC/AADAPzQzc78AAMA/ZmamPzMzc78AAKA/ZmamPwAAgL8AAMA/AADAPwAAgL8AAMA/AADAPwAAgL8AAMC/AADAPwAAgL8AAMC/AADAPwAAgL8AAMA/AADAPzQzc78AAMA/AADAPzQzc78AAMA/ZmamPzQzc78AAMA/ZmamPzMzc78AAKA/ZmamPwAAgL8AAMA/ZmamPzQzc78AAMA/AADAPzQzc78AAMA/ZmamPwAAgL8AAMA/AADAPzQzc78AAMA/AADAPwAAgL8AAMA/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/////wAA/z//////AAD/P/////8AAP8/////f/9//n////9//3/+f////3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8//3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8//////wAA/z//////AAD/P/////8AAP8//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5/////f/9/AID///9//38AgP///3//fwCA/3//fwAA/7//f/9/AAD/v/9//38AAP+//3//////////f/////////9//////////38AAP//////fwAA//////9/AAD/////////f/9/AID///9//38AgP///3//fwCA/////wAA/7//////AAD/v/////8AAP+//3//////////f/////////9//////////////wAA/7//////AAD/v/////8AAP+//3//fwAA/7//f/9/AAD/v/9//38AAP+//38AAP//////fwAA//////9/AAD//////////wAA/z//////AAD/P/////8AAP8//38AAP7/AAD/fwAA/v8AAP9/AAD+/wAA/////wAA/z//////AAD/P/////8AAP8//38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5//38AAP7//n//fwAA/v/+f/9/AAD+//5//3//////AAD/f/////8AAP9//////wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA////f/9//n////9//3/+f////3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//fwAA/z//f/9/AAD/P/9//38AAP8//////wAA/z//////AAD/P/////8AAP8//////wAA/z//////AAD/P/////8AAP8//38AAP//AAD/fwAA//8AAP9/AAD//wAA/3/+//7//n//f/7//v/+f/9//v/+//5//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5//3/+////AAD/f/7///8AAP9//v///wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA////f/9//n////9//3/+f////3//f/5//3/+//7/AAD/f/7//v8AAP9//v/+/wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8//3//fwAA/z//f/9/AAD/P/9//38AAP8/")
+}]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_f374t"]
+data = PackedVector3Array(-1.3, -1, -1.5, -1.3, 1, -1.5, -1.3, -1, 1.5, -1.3, -1, -1.5, -1.3, -1, 1.5, 1.3, -1, -1.5, -1.3, -1, -1.5, 1.3, -1, -1.5, -1.3, 1, -1.5, -1.3, -1, 1.5, -1.3, 1, -1.5, -1.3, 1, 1.5, -1.3, -1, 1.5, -1.3, 1, 1.5, 1.3, 1, 1.5, -1.3, 1, -1.5, 1.3, 1, 1.5, -1.3, 1, 1.5, -1.3, 1, -1.5, 1.3, -1, -1.5, 1.3, -0.95, -1.5, 1.3, -0.95, -1.25, 1.3, 0.95, -1.5, 1.3, -0.95, -1.5, -1.3, -1, 1.5, 1.3, -1, 1.5, 1.3, -1, -1.5, -1.3, -1, 1.5, 1.3, -0.95, 1.5, 1.3, -1, 1.5, -1.3, -1, 1.5, 1.3, 0.95, 1.5, 1.3, -0.95, 1.5, 1.3, -0.95, 1.25, 1.3, -0.95, 1.5, 1.3, 0.95, 1.25, -1.3, 1, -1.5, 1.3, -0.95, -1.5, 1.3, 0.95, -1.5, -1.3, 1, -1.5, 1.3, 0.95, -1.5, 1.3, 1, -1.5, -1.3, 1, -1.5, 1.3, 1, -1.5, 1.3, 1, 1.5, 1.3, -0.95, -1.25, 1.3, 0.95, -1.25, 1.3, 0.95, -1.5, -1.3, -1, 1.5, 1.3, 1, 1.5, 1.3, 0.95, 1.5, 1.3, 0.95, 1.25, 1.3, -0.95, 1.5, 1.3, 0.95, 1.5, -1.1518999, -0.95, -1.25, -1.1518999, -0.95, 1.25, -1.1518999, 0.95, -1.25, -1.1518999, -0.95, -1.25, -1.1518999, 0.95, -1.25, 1.3, -0.95, -1.25, -1.1518999, -0.95, -1.25, 1.3, -0.95, 1.25, -1.1518999, -0.95, 1.25, -1.1518999, 0.95, -1.25, -1.1518999, 0.95, 1.25, 1.3, 0.95, -1.25, -1.1518999, -0.95, 1.25, -1.1518999, 0.95, 1.25, -1.1518999, 0.95, -1.25, -1.1518999, -0.95, 1.25, 1.3, 0.95, 1.25, -1.1518999, 0.95, 1.25, -1.1518999, -0.95, -1.25, 1.3, -0.95, -1.25, 1.3, -0.95, 1.25, -1.1518999, -0.95, 1.25, 1.3, -0.95, 1.25, 1.3, 0.95, 1.25, -1.1518999, 0.95, -1.25, 1.3, 0.95, -1.25, 1.3, -0.95, -1.25, -1.1518999, 0.95, 1.25, 1.3, 0.95, 1.25, 1.3, 0.95, -1.25, 1.3, 0.95, -1.5, 1.5, 0.95, -1.5, 1.3, 1, -1.5, 1.5, 0.95, -1.5, 1.3, 0.95, -1.5, 1.3, 0.95, -1.25, 1.3, 1, -1.5, 1.5, 0.95, -1.5, 1.5, 1, -1.5, 1.3, 0.95, -1.25, 1.3, 0.95, 1.25, 1.5, 0.95, -1.5, 1.3, 1, -1.5, 1.5, 1, -1.5, 1.5, 1, 1.5, 1.5, 0.95, -1.5, 1.5, 1, 1.5, 1.5, 1, -1.5, 1.3, 0.95, 1.25, 1.3, 0.95, 1.5, 1.5, 0.95, -1.5, 1.3, 1, -1.5, 1.5, 1, 1.5, 1.3, 1, 1.5, 1.3, 0.95, 1.5, 1.5, 0.95, 1.5, 1.5, 0.95, -1.5, 1.5, 0.95, -1.5, 1.5, 0.95, 1.5, 1.5, 1, 1.5, 1.3, 0.95, 1.5, 1.3, 1, 1.5, 1.5, 1, 1.5, 1.3, 0.95, 1.5, 1.5, 1, 1.5, 1.5, 0.95, 1.5, 1.3, -1, -1.5, 1.5, -1, -1.5, 1.3, -0.95, -1.5, 1.3, -0.95, -1.5, 1.5, -1, -1.5, 1.5, -0.95, -1.5, 1.3, -1, -1.5, 1.3, -1, 1.5, 1.5, -1, -1.5, 1.3, -0.95, -1.25, 1.3, -0.95, -1.5, 1.5, -0.95, 1.5, 1.3, -0.95, -1.5, 1.5, -0.95, -1.5, 1.5, -0.95, 1.5, 1.5, -1, -1.5, 1.5, -0.95, 1.5, 1.5, -0.95, -1.5, 1.3, -0.95, -1.25, 1.5, -0.95, 1.5, 1.3, -0.95, 1.25, 1.3, -1, 1.5, 1.5, -1, 1.5, 1.5, -1, -1.5, 1.5, -1, -1.5, 1.5, -1, 1.5, 1.5, -0.95, 1.5, 1.5, -0.95, 1.5, 1.3, -0.95, 1.5, 1.3, -0.95, 1.25, 1.3, -1, 1.5, 1.3, -0.95, 1.5, 1.5, -0.95, 1.5, 1.3, -1, 1.5, 1.5, -0.95, 1.5, 1.5, -1, 1.5)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_7gpcc"]
 size = Vector3(0.25, 0.25, 0.25)
 
-[node name="Elevator" type="AnimatableBody3D" unique_id=1904553526 node_paths=PackedStringArray("button_mesh", "elevator_doors")]
+[sub_resource type="BoxShape3D" id="BoxShape3D_jxry8"]
+size = Vector3(0.25, 0.25, 0.25)
+
+[node name="Elevator" type="AnimatableBody3D" unique_id=1904553526 node_paths=PackedStringArray("elevator_doors")]
 script = ExtResource("1_q2cks")
-button_mesh = NodePath("Button/WallButton")
 elevator_doors = NodePath("ElevatorDoors")
 
-[node name="OuterShell" type="CSGBox3D" parent="." unique_id=1188355160 groups=["elevator_button"]]
+[node name="ElevatorCSG" type="CSGBox3D" parent="." unique_id=1188355160]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.561, -0.599, 0)
+visible = false
 use_collision = true
 size = Vector3(2.6, 2, 3)
 material = SubResource("StandardMaterial3D_elevator_walls")
 
-[node name="InnerHole" type="CSGBox3D" parent="OuterShell" unique_id=478035072]
+[node name="InnerHole" type="CSGBox3D" parent="ElevatorCSG" unique_id=478035072]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.098095775, 0, 0)
 operation = 2
 size = Vector3(2.5, 1.9, 2.5)
 material = SubResource("StandardMaterial3D_elevator_walls")
 
-[node name="AboveDoors" type="CSGBox3D" parent="OuterShell" unique_id=519248584]
+[node name="AboveDoors" type="CSGBox3D" parent="ElevatorCSG" unique_id=519248584]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0.975, 0)
 size = Vector3(0.2, 0.05, 3)
 material = SubResource("StandardMaterial3D_elevator_walls")
 
-[node name="BelowDoors" type="CSGBox3D" parent="OuterShell" unique_id=1084997551]
+[node name="BelowDoors" type="CSGBox3D" parent="ElevatorCSG" unique_id=1084997551]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, -0.975, 0)
 size = Vector3(0.2, 0.05, 3)
 material = SubResource("StandardMaterial3D_elevator_walls")
 
+[node name="ElevatorMesh" type="MeshInstance3D" parent="." unique_id=1189356268]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.561, -0.599, 0)
+mesh = SubResource("ArrayMesh_npcid")
+
+[node name="ElevatorCollision" type="CollisionShape3D" parent="." unique_id=1520798625]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.561, -0.599, 0)
+shape = SubResource("ConcavePolygonShape3D_f374t")
+
 [node name="ElevatorDoors" parent="." unique_id=1458532385 instance=ExtResource("2_7gpcc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.16100001, -0.599, 0)
 
-[node name="Button" type="Area3D" parent="." unique_id=1232624501 groups=["elevator_button"]]
+[node name="ElevatorButton" type="StaticBody3D" parent="." unique_id=837998745 node_paths=PackedStringArray("elevator") groups=["elevator_button"]]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.25, 0.222, 1.135)
+script = ExtResource("3_npcid")
+elevator = NodePath("..")
 
-[node name="WallButton" parent="Button" unique_id=1483348497 instance=ExtResource("3_wall_btn")]
+[node name="WallButton" parent="ElevatorButton" unique_id=1483348497 instance=ExtResource("3_wall_btn")]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -0.11441684, -0.81294453, -0.00086787844)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Button" unique_id=1984618170]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ElevatorButton" unique_id=1984618170]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.77058625, 0.020159602)
 shape = SubResource("BoxShape3D_7gpcc")
+
+[node name="DoorButton" type="StaticBody3D" parent="." unique_id=444948198 node_paths=PackedStringArray("elevator") groups=["elevator_door_button"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 0.222, -1.135)
+script = ExtResource("5_f374t")
+elevator = NodePath("..")
+
+[node name="WallButton" parent="DoorButton" unique_id=680677042 instance=ExtResource("3_wall_btn")]
+transform = Transform3D(4.7699524e-09, 0, -0.4, 0, 0.4, 0, 0.4, 0, 4.7699524e-09, 0, -0.81, -0.110000014)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DoorButton" unique_id=1579549914]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, 0, -0.771, 0)
+shape = SubResource("BoxShape3D_jxry8")

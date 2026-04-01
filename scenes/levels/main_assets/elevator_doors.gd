@@ -24,15 +24,21 @@ func _ready() -> void:
 	_west_closed_position = west_door.position
 	_east_open_position = _east_closed_position + Vector3(0, 0, SLIDE_DISTANCE)
 	_west_open_position = _west_closed_position - Vector3(0, 0, SLIDE_DISTANCE)
+	NetworkManager.elevator_door_opened.connect(_on_door_opened)
+	NetworkManager.elevator_door_closed.connect(_on_door_closed)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
-# Open doors
 func _open_doors() -> void:
 	if _is_open or _is_animating:
 		return
+	NetworkManager.send_elevator_door_state_change(str(get_path()), "open")
+
+func _close_doors() -> void:
+	if not _is_open or _is_animating:
+		return
+	NetworkManager.send_elevator_door_state_change(str(get_path()), "close")
+
+# Open doors
+func _open_doors_animation() -> void:
 	_is_open = true
 	_is_animating = true
 
@@ -42,9 +48,7 @@ func _open_doors() -> void:
 	tween.tween_callback(func(): _is_animating = false)
 
 # Close doors
-func _close_doors() -> void:
-	if not _is_open or _is_animating:
-		return
+func _close_doors_animation() -> void:
 	_is_open = false
 	_is_animating = true
 
@@ -52,3 +56,11 @@ func _close_doors() -> void:
 	tween.tween_property(east_door, "position", _east_closed_position, SLIDE_DURATION).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_QUAD)
 	tween.parallel().tween_property(west_door, "position", _west_closed_position, SLIDE_DURATION).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_QUAD)
 	tween.tween_callback(func(): _is_animating = false)
+
+func _on_door_opened(door_id: String) -> void:
+	if door_id == str(get_path()):
+		_open_doors_animation()
+
+func _on_door_closed(door_id: String) -> void:
+	if door_id == str(get_path()):
+		_close_doors_animation()

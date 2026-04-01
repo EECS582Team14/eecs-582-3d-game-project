@@ -893,7 +893,19 @@ func _update_interaction_look() -> void:
 		elif collider.is_in_group("elevator_button"):
 			_looking_at_interactable = _find_activatable(collider)
 			if _looking_at_interactable:
-				_interact_label.text = "Press E to interact"
+				_interact_label.text = "Press E to change floors"
+				_interact_label.visible = true
+				return
+		elif collider.is_in_group("elevator_call_button"):
+			_looking_at_interactable = _find_activatable(collider)
+			if _looking_at_interactable:
+				_interact_label.text = "Press E to call elevator"
+				_interact_label.visible = true
+				return
+		elif collider.is_in_group("elevator_door_button"):
+			_looking_at_interactable = _find_activatable(collider)
+			if _looking_at_interactable:
+				_interact_label.text = "Press E to open doors"
 				_interact_label.visible = true
 				return
 		elif collider.is_in_group("task_console"):
