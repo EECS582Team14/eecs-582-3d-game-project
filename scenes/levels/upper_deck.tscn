@@ -21,6 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://dqddsetl17cxi" path="res://assets/room_symbols/armory_icon.png" id="12_u5hsw"]
 [ext_resource type="PackedScene" uid="uid://bhnihej24hlrx" path="res://scenes/items/healthpack.tscn" id="15_bj8xs"]
 [ext_resource type="Script" uid="uid://djtnepb2xxgnx" path="res://scenes/tasks/Life_task_script.gd" id="18_sco87"]
+[ext_resource type="Texture2D" uid="uid://db75neienonkg" path="res://assets/room_symbols/humanResource_icon.png" id="19_53760"]
 [ext_resource type="Script" uid="uid://xrgl7inoxsg" path="res://scenes/tasks/Human_Resources_task_script.gd" id="19_a5xa1"]
 [ext_resource type="PackedScene" uid="uid://teatsvvq70xk" path="res://scenes/items/Armory Fill/Large Weapon Crate/large_weapon_crate.tscn" id="21_ydp2g"]
 [ext_resource type="PackedScene" uid="uid://c5rrxl1atxykp" path="res://scenes/items/Armory Fill/Personal Locker/personal_locker_wall.tscn" id="22_57p4a"]
@@ -49,6 +50,8 @@
 [ext_resource type="PackedScene" uid="uid://chgtivhv2h0my" path="res://scenes/levels/flooring/floor_path_edge.tscn" id="36_orgge"]
 [ext_resource type="PackedScene" uid="uid://cxy2cael0sox" path="res://scenes/levels/flooring/floor_path_3_way.tscn" id="37_brw7n"]
 [ext_resource type="PackedScene" uid="uid://cuhiojblllwvc" path="res://scenes/levels/flooring/floor_path_corner.tscn" id="38_efilq"]
+[ext_resource type="Texture2D" uid="uid://ohy3tncig073" path="res://assets/room_symbols/crewQuarters_icon.png" id="41_qhraa"]
+[ext_resource type="Texture2D" uid="uid://dt3p3k31bgb02" path="res://assets/room_symbols/supplyCloset_icon.png" id="41_vamc2"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]
 size = Vector2(60, 80)
@@ -346,6 +349,12 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3, 
 constant_linear_velocity = Vector3(0, 0.5, 0)
 script = ExtResource("19_a5xa1")
 task_id = "Human_Resources_task"
+
+[node name="HRIcon" type="Decal" parent="HumanResources" unique_id=697115100]
+transform = Transform3D(-4.371139e-08, 1, -4.371139e-08, 0, -4.371139e-08, -1, -1, -4.371139e-08, 1.9106855e-15, 5.961094, 1.4, -3.0279999)
+size = Vector3(4, 3, 3)
+texture_albedo = ExtResource("19_53760")
+lower_fade = 1e-05
 
 [node name="Armory" type="Node3D" parent="." unique_id=1952892335]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 0)
@@ -743,6 +752,11 @@ constant_linear_velocity = Vector3(0, 0.5, 0)
 script = ExtResource("24_0m6m5")
 task_id = "Supply_Closet_task"
 
+[node name="supplyClosetIcon" type="Decal" parent="SupplyCloset" unique_id=647433153]
+transform = Transform3D(-4.371139e-08, -1, 4.371139e-08, 0, -4.371139e-08, -1, 1, -4.371139e-08, 1.9106855e-15, 13.55, 1.4, 2.105)
+size = Vector3(5, 3, 3.5)
+texture_albedo = ExtResource("41_vamc2")
+
 [node name="Crew Quarters" type="Node3D" parent="." unique_id=1733845478]
 
 [node name="CrewLight" type="OmniLight3D" parent="Crew Quarters" unique_id=1459329939]
@@ -766,6 +780,11 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 22, 
 constant_linear_velocity = Vector3(0, 0.5, 0)
 script = ExtResource("25_efilq")
 task_id = "Crew_task"
+
+[node name="CrewIcon" type="Decal" parent="Crew Quarters" unique_id=1648129793]
+transform = Transform3D(-4.371139e-08, -1, 4.371139e-08, 0, -4.371139e-08, -1, 1, -4.371139e-08, 1.9106855e-15, 14.040088, 1.4, 15.978)
+texture_albedo = ExtResource("41_qhraa")
+lower_fade = 1e-05
 
 [node name="TaserPickup" parent="." unique_id=1416351404 instance=ExtResource("7_rmbde")]
 transform = Transform3D(3.3985966e-08, 0.77750814, -0.62887275, 1, -4.371139e-08, -1.6415074e-15, -2.7488898e-08, -0.62887275, -0.77750814, -18.964157, 0.7129056, 13.29552)
