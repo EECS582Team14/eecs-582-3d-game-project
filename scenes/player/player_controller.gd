@@ -40,7 +40,7 @@ var _dying_scene: PackedScene = preload("res://scenes/player/Dying.fbx")
 var _strafe_left_scene: PackedScene = preload("res://scenes/player/left_strafe_walk.fbx")
 var _idle_scene: PackedScene = preload("res://scenes/player/Idle.fbx")
 var _punch_scene: PackedScene = preload("res://scenes/player/hook_punch.fbx")
-var _jumping_scene: PackedScene = preload("res://scenes/player/jumping.fbx")
+var _jumping_scene: PackedScene = preload("res://scenes/player/Jumping.fbx")
 
 # Taser shooting
 const TASER_COOLDOWN: float = 0.5
