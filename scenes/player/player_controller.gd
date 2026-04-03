@@ -434,14 +434,19 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.key_label == KEY_ESCAPE and event.pressed:
 		if _minigame_active:
 			_on_minigame_cancelled()
+			get_viewport().set_input_as_handled()
 			return
 		if _is_paused:
 			_on_resume_game()
+			get_viewport().set_input_as_handled()
+			return
 		elif _is_mouse_captured:
 			_is_paused = true
 			_is_mouse_captured = false
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 			_pause_menu.show_menu()
-		return
+			get_viewport().set_input_as_handled()
+			return
 
 	# When paused or in minigame, don't process game input so UI buttons can receive clicks
 	if _is_paused or _minigame_active:

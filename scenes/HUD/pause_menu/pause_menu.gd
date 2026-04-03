@@ -27,13 +27,21 @@ func hide_menu() -> void:
 	if _crosshair:
 		_crosshair.visible = true
 
+func _input(event: InputEvent) -> void:
+	# Only handle input when pause menu is visible
+	if not visible:
+		return
+	
+	# Resume game when Escape is pressed in pause menu
+	if event is InputEventKey and event.pressed and event.key_label == KEY_ESCAPE:
+		_on_resume_pressed()
+		get_viewport().set_input_as_handled()
+
 func _on_resume_pressed() -> void:
 	resume_game.emit()
 
 func _on_settings_pressed() -> void:
 	settings_menu.emit()
-	
-
 
 func _on_quit_pressed() -> void:
 	quit_game.emit()
