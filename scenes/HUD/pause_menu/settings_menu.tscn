@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://psaplkrdbvwg"]
 
 [ext_resource type="Script" uid="uid://bssnfh3n2n6hs" path="res://scenes/HUD/pause_menu/settings_menu.gd" id="1_5515u"]
+[ext_resource type="Script" uid="uid://cr0tjw4pgfh1w" path="res://scenes/HUD/pause_menu/fullscreen_toggle.gd" id="2_h3cmw"]
 [ext_resource type="Script" uid="uid://l7i46r8botyo" path="res://scenes/HUD/pause_menu/rebindable_key.gd" id="3_h3cmw"]
 
 [node name="SettingsMenu" type="Control" unique_id=192674749]
@@ -58,17 +59,43 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="KeyRebinds" type="VBoxContainer" parent="ScrollableSettings" unique_id=1474282239]
-custom_minimum_size = Vector2(1000, 400)
+[node name="SettingsStack" type="VBoxContainer" parent="ScrollableSettings" unique_id=1474282239]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RebindableKey1" type="ColorRect" parent="ScrollableSettings/KeyRebinds" unique_id=1019921743]
+[node name="FullscreenToggle" type="ColorRect" parent="ScrollableSettings/SettingsStack" unique_id=304986261]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+color = Color(0.08235294, 0.25882354, 0.32156864, 1)
+script = ExtResource("2_h3cmw")
+
+[node name="HorizontalContainer" type="HBoxContainer" parent="ScrollableSettings/SettingsStack/FullscreenToggle" unique_id=894500047]
+custom_minimum_size = Vector2(1000, 50)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="FullscreenLabel" type="Label" parent="ScrollableSettings/SettingsStack/FullscreenToggle/HorizontalContainer" unique_id=2046052645]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+text = "Toggle Fullscreen"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="ScrollableSettings/SettingsStack/FullscreenToggle/HorizontalContainer" unique_id=921411348]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FullscreenToggle" type="Button" parent="ScrollableSettings/SettingsStack/FullscreenToggle/HorizontalContainer" unique_id=1028545571]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+
+[node name="RebindableKey1" type="ColorRect" parent="ScrollableSettings/SettingsStack" unique_id=1019921743]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 color = Color(0.08166055, 0.25961944, 0.32141393, 1)
 
-[node name="MoveForwardRebind" type="HBoxContainer" parent="ScrollableSettings/KeyRebinds/RebindableKey1" unique_id=1504864527]
+[node name="MoveForwardRebind" type="HBoxContainer" parent="ScrollableSettings/SettingsStack/RebindableKey1" unique_id=1504864527]
 custom_minimum_size = Vector2(1000, 50)
 layout_mode = 0
 offset_right = 1000.0
@@ -77,28 +104,28 @@ size_flags_vertical = 2
 script = ExtResource("3_h3cmw")
 action_name = "move_forward"
 
-[node name="ActionLabel" type="Label" parent="ScrollableSettings/KeyRebinds/RebindableKey1/MoveForwardRebind" unique_id=1350984248]
+[node name="ActionLabel" type="Label" parent="ScrollableSettings/SettingsStack/RebindableKey1/MoveForwardRebind" unique_id=1350984248]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 text = "Move Forward"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Spacer" type="Control" parent="ScrollableSettings/KeyRebinds/RebindableKey1/MoveForwardRebind" unique_id=904757119]
+[node name="Spacer" type="Control" parent="ScrollableSettings/SettingsStack/RebindableKey1/MoveForwardRebind" unique_id=904757119]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RemapButton" type="Button" parent="ScrollableSettings/KeyRebinds/RebindableKey1/MoveForwardRebind" unique_id=1987260693]
+[node name="RemapButton" type="Button" parent="ScrollableSettings/SettingsStack/RebindableKey1/MoveForwardRebind" unique_id=1987260693]
 custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 toggle_mode = true
 
-[node name="RebindableKey2" type="ColorRect" parent="ScrollableSettings/KeyRebinds" unique_id=1234227471]
+[node name="RebindableKey2" type="ColorRect" parent="ScrollableSettings/SettingsStack" unique_id=1234227471]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 color = Color(0.08166055, 0.25961944, 0.32141393, 1)
 
-[node name="MoveBackwardRebind" type="HBoxContainer" parent="ScrollableSettings/KeyRebinds/RebindableKey2" unique_id=1326612397]
+[node name="MoveBackwardRebind" type="HBoxContainer" parent="ScrollableSettings/SettingsStack/RebindableKey2" unique_id=1326612397]
 custom_minimum_size = Vector2(1000, 50)
 layout_mode = 0
 offset_right = 1000.0
@@ -107,28 +134,28 @@ size_flags_vertical = 2
 script = ExtResource("3_h3cmw")
 action_name = "move_backward"
 
-[node name="ActionLabel" type="Label" parent="ScrollableSettings/KeyRebinds/RebindableKey2/MoveBackwardRebind" unique_id=909667738]
+[node name="ActionLabel" type="Label" parent="ScrollableSettings/SettingsStack/RebindableKey2/MoveBackwardRebind" unique_id=909667738]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 text = "Move Backward"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Spacer" type="Control" parent="ScrollableSettings/KeyRebinds/RebindableKey2/MoveBackwardRebind" unique_id=98342539]
+[node name="Spacer" type="Control" parent="ScrollableSettings/SettingsStack/RebindableKey2/MoveBackwardRebind" unique_id=98342539]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RemapButton" type="Button" parent="ScrollableSettings/KeyRebinds/RebindableKey2/MoveBackwardRebind" unique_id=636954980]
+[node name="RemapButton" type="Button" parent="ScrollableSettings/SettingsStack/RebindableKey2/MoveBackwardRebind" unique_id=636954980]
 custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 toggle_mode = true
 
-[node name="RebindableKey3" type="ColorRect" parent="ScrollableSettings/KeyRebinds" unique_id=900872235]
+[node name="RebindableKey3" type="ColorRect" parent="ScrollableSettings/SettingsStack" unique_id=900872235]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 color = Color(0.08166055, 0.25961944, 0.32141393, 1)
 
-[node name="MoveBackwardRebind" type="HBoxContainer" parent="ScrollableSettings/KeyRebinds/RebindableKey3" unique_id=2021632240]
+[node name="MoveBackwardRebind" type="HBoxContainer" parent="ScrollableSettings/SettingsStack/RebindableKey3" unique_id=2021632240]
 custom_minimum_size = Vector2(1000, 50)
 layout_mode = 0
 offset_right = 1000.0
@@ -137,28 +164,28 @@ size_flags_vertical = 2
 script = ExtResource("3_h3cmw")
 action_name = "move_left"
 
-[node name="ActionLabel" type="Label" parent="ScrollableSettings/KeyRebinds/RebindableKey3/MoveBackwardRebind" unique_id=626652455]
+[node name="ActionLabel" type="Label" parent="ScrollableSettings/SettingsStack/RebindableKey3/MoveBackwardRebind" unique_id=626652455]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 text = "Strafe Left"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Spacer" type="Control" parent="ScrollableSettings/KeyRebinds/RebindableKey3/MoveBackwardRebind" unique_id=448632978]
+[node name="Spacer" type="Control" parent="ScrollableSettings/SettingsStack/RebindableKey3/MoveBackwardRebind" unique_id=448632978]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RemapButton" type="Button" parent="ScrollableSettings/KeyRebinds/RebindableKey3/MoveBackwardRebind" unique_id=2093849206]
+[node name="RemapButton" type="Button" parent="ScrollableSettings/SettingsStack/RebindableKey3/MoveBackwardRebind" unique_id=2093849206]
 custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 toggle_mode = true
 
-[node name="RebindableKey4" type="ColorRect" parent="ScrollableSettings/KeyRebinds" unique_id=1385775339]
+[node name="RebindableKey4" type="ColorRect" parent="ScrollableSettings/SettingsStack" unique_id=1385775339]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 color = Color(0.08166055, 0.25961944, 0.32141393, 1)
 
-[node name="MoveBackwardRebind" type="HBoxContainer" parent="ScrollableSettings/KeyRebinds/RebindableKey4" unique_id=1081023151]
+[node name="MoveBackwardRebind" type="HBoxContainer" parent="ScrollableSettings/SettingsStack/RebindableKey4" unique_id=1081023151]
 custom_minimum_size = Vector2(1000, 50)
 layout_mode = 0
 offset_right = 1000.0
@@ -167,28 +194,28 @@ size_flags_vertical = 2
 script = ExtResource("3_h3cmw")
 action_name = "move_right"
 
-[node name="ActionLabel" type="Label" parent="ScrollableSettings/KeyRebinds/RebindableKey4/MoveBackwardRebind" unique_id=33832639]
+[node name="ActionLabel" type="Label" parent="ScrollableSettings/SettingsStack/RebindableKey4/MoveBackwardRebind" unique_id=33832639]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 text = "Strafe Right"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Spacer" type="Control" parent="ScrollableSettings/KeyRebinds/RebindableKey4/MoveBackwardRebind" unique_id=1587114305]
+[node name="Spacer" type="Control" parent="ScrollableSettings/SettingsStack/RebindableKey4/MoveBackwardRebind" unique_id=1587114305]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RemapButton" type="Button" parent="ScrollableSettings/KeyRebinds/RebindableKey4/MoveBackwardRebind" unique_id=1688039942]
+[node name="RemapButton" type="Button" parent="ScrollableSettings/SettingsStack/RebindableKey4/MoveBackwardRebind" unique_id=1688039942]
 custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 toggle_mode = true
 
-[node name="RebindableKey5" type="ColorRect" parent="ScrollableSettings/KeyRebinds" unique_id=479445062]
+[node name="RebindableKey5" type="ColorRect" parent="ScrollableSettings/SettingsStack" unique_id=479445062]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 color = Color(0.08166055, 0.25961944, 0.32141393, 1)
 
-[node name="JumpRebind" type="HBoxContainer" parent="ScrollableSettings/KeyRebinds/RebindableKey5" unique_id=1480258278]
+[node name="JumpRebind" type="HBoxContainer" parent="ScrollableSettings/SettingsStack/RebindableKey5" unique_id=1480258278]
 custom_minimum_size = Vector2(1000, 50)
 layout_mode = 0
 offset_right = 1000.0
@@ -197,28 +224,28 @@ size_flags_vertical = 2
 script = ExtResource("3_h3cmw")
 action_name = "jump"
 
-[node name="ActionLabel" type="Label" parent="ScrollableSettings/KeyRebinds/RebindableKey5/JumpRebind" unique_id=1644098423]
+[node name="ActionLabel" type="Label" parent="ScrollableSettings/SettingsStack/RebindableKey5/JumpRebind" unique_id=1644098423]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 text = "Jump"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Spacer" type="Control" parent="ScrollableSettings/KeyRebinds/RebindableKey5/JumpRebind" unique_id=1245365415]
+[node name="Spacer" type="Control" parent="ScrollableSettings/SettingsStack/RebindableKey5/JumpRebind" unique_id=1245365415]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RemapButton" type="Button" parent="ScrollableSettings/KeyRebinds/RebindableKey5/JumpRebind" unique_id=1465589528]
+[node name="RemapButton" type="Button" parent="ScrollableSettings/SettingsStack/RebindableKey5/JumpRebind" unique_id=1465589528]
 custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 toggle_mode = true
 
-[node name="RebindableKey6" type="ColorRect" parent="ScrollableSettings/KeyRebinds" unique_id=1213927268]
+[node name="RebindableKey6" type="ColorRect" parent="ScrollableSettings/SettingsStack" unique_id=1213927268]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 color = Color(0.08166055, 0.25961944, 0.32141393, 1)
 
-[node name="JumpRebind" type="HBoxContainer" parent="ScrollableSettings/KeyRebinds/RebindableKey6" unique_id=1679127384]
+[node name="JumpRebind" type="HBoxContainer" parent="ScrollableSettings/SettingsStack/RebindableKey6" unique_id=1679127384]
 custom_minimum_size = Vector2(1000, 50)
 layout_mode = 0
 offset_right = 1000.0
@@ -227,18 +254,18 @@ size_flags_vertical = 2
 script = ExtResource("3_h3cmw")
 action_name = "interact"
 
-[node name="ActionLabel" type="Label" parent="ScrollableSettings/KeyRebinds/RebindableKey6/JumpRebind" unique_id=1691208423]
+[node name="ActionLabel" type="Label" parent="ScrollableSettings/SettingsStack/RebindableKey6/JumpRebind" unique_id=1691208423]
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 text = "Interact"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Spacer" type="Control" parent="ScrollableSettings/KeyRebinds/RebindableKey6/JumpRebind" unique_id=1003873622]
+[node name="Spacer" type="Control" parent="ScrollableSettings/SettingsStack/RebindableKey6/JumpRebind" unique_id=1003873622]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RemapButton" type="Button" parent="ScrollableSettings/KeyRebinds/RebindableKey6/JumpRebind" unique_id=1551380488]
+[node name="RemapButton" type="Button" parent="ScrollableSettings/SettingsStack/RebindableKey6/JumpRebind" unique_id=1551380488]
 custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 toggle_mode = true
