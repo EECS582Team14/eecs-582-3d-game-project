@@ -20,6 +20,7 @@
 [ext_resource type="Texture2D" uid="uid://ch68nhpym2hx8" path="res://assets/room_symbols/shielding_icon.png" id="12_1eu2h"]
 [ext_resource type="Texture2D" uid="uid://dqddsetl17cxi" path="res://assets/room_symbols/armory_icon.png" id="12_u5hsw"]
 [ext_resource type="PackedScene" uid="uid://bhnihej24hlrx" path="res://scenes/items/healthpack.tscn" id="15_bj8xs"]
+[ext_resource type="Texture2D" uid="uid://b8coimrlu3xx2" path="res://assets/room_symbols/reactor_icon.png" id="15_d0doh"]
 [ext_resource type="Script" uid="uid://djtnepb2xxgnx" path="res://scenes/tasks/Life_task_script.gd" id="18_sco87"]
 [ext_resource type="Texture2D" uid="uid://db75neienonkg" path="res://assets/room_symbols/humanResource_icon.png" id="19_53760"]
 [ext_resource type="Script" uid="uid://xrgl7inoxsg" path="res://scenes/tasks/Human_Resources_task_script.gd" id="19_a5xa1"]
@@ -293,6 +294,18 @@ omni_range = 15.0
 [node name="WestReactorLight" type="OmniLight3D" parent="Reactor" unique_id=1730973680]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.2, 0)
 omni_range = 15.0
+
+[node name="upReactIcon1" type="Decal" parent="Reactor" unique_id=1397305393]
+transform = Transform3D(-1, -8.742278e-08, 3.821371e-15, 0, -4.371139e-08, -1, 8.742278e-08, -1, 4.371139e-08, -10.852809, 1.4, -9.464188)
+size = Vector3(5, 4, 3)
+texture_albedo = ExtResource("15_d0doh")
+lower_fade = 1e-05
+
+[node name="upReactIcon2" type="Decal" parent="Reactor" unique_id=292771957]
+transform = Transform3D(-1, -8.742278e-08, 3.821371e-15, 0, -4.371139e-08, -1, 8.742278e-08, -1, 4.371139e-08, 10.716466, 1.4, -9.52079)
+size = Vector3(5, 4, 3)
+texture_albedo = ExtResource("15_d0doh")
+lower_fade = 1e-05
 
 [node name="LifeSupport" type="Node3D" parent="." unique_id=1989672344]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, -12.72)
@@ -753,9 +766,10 @@ script = ExtResource("24_0m6m5")
 task_id = "Supply_Closet_task"
 
 [node name="supplyClosetIcon" type="Decal" parent="SupplyCloset" unique_id=647433153]
-transform = Transform3D(-4.371139e-08, -1, 4.371139e-08, 0, -4.371139e-08, -1, 1, -4.371139e-08, 1.9106855e-15, 13.55, 1.4, 2.105)
+transform = Transform3D(-4.371139e-08, -1, 4.371139e-08, 0, -4.371139e-08, -1, 1, -4.371139e-08, 1.9106855e-15, 13.500323, 1.4, 2.1050005)
 size = Vector3(5, 3, 3.5)
 texture_albedo = ExtResource("41_vamc2")
+lower_fade = 1e-05
 
 [node name="Crew Quarters" type="Node3D" parent="." unique_id=1733845478]
 

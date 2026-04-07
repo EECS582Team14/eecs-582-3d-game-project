@@ -8,16 +8,23 @@
 [ext_resource type="Texture2D" uid="uid://bxo160j4ybh3u" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_Color.png" id="7_floor_color"]
 [ext_resource type="Texture2D" uid="uid://ddfrmlgf2is0b" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_NormalGL.png" id="8_floor_normal"]
 [ext_resource type="Texture2D" uid="uid://b85nfpxgd1lh" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_Roughness.png" id="9_floor_rough"]
+[ext_resource type="Texture2D" uid="uid://b8coimrlu3xx2" path="res://assets/room_symbols/reactor_icon.png" id="9_ttbe1"]
 [ext_resource type="Script" uid="uid://coxlejt6jx227" path="res://scenes/tasks/Electrical_task_script.gd" id="10_d2gx7"]
 [ext_resource type="Texture2D" uid="uid://c3e451lm0ue8r" path="res://scenes/levels/walls/DiamondPlate008C_1K-PNG/DiamondPlate008C_1K-PNG_Metalness.png" id="10_floor_metal"]
 [ext_resource type="PackedScene" uid="uid://bfqp2tl7ks4nx" path="res://scenes/levels/walls/small_wall.tscn" id="10_myntk"]
+[ext_resource type="Texture2D" uid="uid://bbc7l8r6x186i" path="res://assets/room_symbols/electrical_icon.png" id="11_3tbkn"]
 [ext_resource type="Script" uid="uid://bf5mvc3noeqqg" path="res://scenes/tasks/Trash_task_script.gd" id="11_hneab"]
 [ext_resource type="Script" uid="uid://dmlso17bxp0pt" path="res://scenes/tasks/Colonial_task_script.gd" id="12_r5xfg"]
 [ext_resource type="Script" uid="uid://d15ca5ap7kjyq" path="res://scenes/tasks/Supply_task_script.gd" id="13_bjwnh"]
+[ext_resource type="Texture2D" uid="uid://dphna36btyd0v" path="res://assets/room_symbols/trash_icon.png" id="13_m25je"]
 [ext_resource type="Script" uid="uid://djo2fr1vj2i2c" path="res://scenes/tasks/Personal_task_script.gd" id="14_3tbkn"]
+[ext_resource type="Texture2D" uid="uid://c7v1p8kouhhrk" path="res://assets/room_symbols/colonial_icon.png" id="15_f8vy1"]
 [ext_resource type="Script" uid="uid://om2cgiipkf6h" path="res://scenes/tasks/Fab_task_script.gd" id="15_m25je"]
 [ext_resource type="Texture2D" uid="uid://bg7owu4icm2pp" path="res://scenes/levels/main_assets/space_wall.jpg" id="17_hneab"]
+[ext_resource type="Texture2D" uid="uid://c07u6x0xdv0bm" path="res://assets/room_symbols/shipSupplies_icon.png" id="17_sd3od"]
+[ext_resource type="Texture2D" uid="uid://bxhrca3vs34xt" path="res://assets/room_symbols/fab_icon.png" id="18_m25je"]
 [ext_resource type="PackedScene" uid="uid://dkmlnl6gy54df" path="res://scenes/items/Healthpack Table/Healthpack1 Table.tscn" id="18_r5xfg"]
+[ext_resource type="Texture2D" uid="uid://ddgjgjsc26lln" path="res://assets/room_symbols/personalItems_icon.png" id="19_ttbe1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bjwnh"]
 albedo_texture = ExtResource("7_floor_color")
@@ -93,6 +100,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 7.55)
 [node name="LowerReactorTask" parent="Reactor" unique_id=539148425 instance=ExtResource("6_console")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 6)
 
+[node name="lowReactIcon1" type="Decal" parent="Reactor" unique_id=1605644003]
+transform = Transform3D(-1, 8.742278e-08, -3.821371e-15, 0, -4.371139e-08, -1, -8.742278e-08, -1, 4.371139e-08, 10.985, 1.4, -9.568497)
+size = Vector3(5, 4, 3)
+texture_albedo = ExtResource("9_ttbe1")
+lower_fade = 1e-05
+
+[node name="lowReactIcon2" type="Decal" parent="Reactor" unique_id=707873074]
+transform = Transform3D(-1, 8.742278e-08, -3.821371e-15, 0, -4.371139e-08, -1, -8.742278e-08, -1, 4.371139e-08, -10.725445, 1.4, -9.528225)
+size = Vector3(5, 4, 3)
+texture_albedo = ExtResource("9_ttbe1")
+lower_fade = 1e-05
+
 [node name="Electrical" type="Node3D" parent="." unique_id=156958614]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.63516, 0, 22)
 
@@ -119,6 +138,12 @@ omni_range = 15.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 5)
 script = ExtResource("10_d2gx7")
 task_id = "Electrical_task"
+
+[node name="ElectricalIcon" type="Decal" parent="Electrical" unique_id=2005928005]
+transform = Transform3D(-1, -8.742278e-08, 3.821371e-15, 0, -4.371139e-08, -1, 8.742278e-08, -1, 4.371139e-08, -1.7019348, 1.4, -9.0082245)
+size = Vector3(4, 3, 3)
+texture_albedo = ExtResource("11_3tbkn")
+lower_fade = 1e-05
 
 [node name="Trash" type="Node3D" parent="." unique_id=651322574]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.63516, 0, -22)
@@ -147,6 +172,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, -5)
 script = ExtResource("11_hneab")
 task_id = "Trash_task"
 
+[node name="TrashIcon" type="Decal" parent="Trash" unique_id=845980767]
+transform = Transform3D(1, -1.7484555e-07, -3.821371e-15, 3.821371e-15, 4.371139e-08, -1, 1.7484555e-07, 1, 4.371139e-08, -1.8955116, 1.4, 9.243904)
+size = Vector3(4, 3.51062, 3)
+texture_albedo = ExtResource("13_m25je")
+lower_fade = 1e-05
+
 [node name="ColonialSupplies" type="Node3D" parent="." unique_id=934844965]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.419, 0, 22)
 
@@ -170,6 +201,12 @@ omni_range = 15.0
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 0.5, 0)
 script = ExtResource("12_r5xfg")
 task_id = "Colonial_task"
+
+[node name="colonialIcon" type="Decal" parent="ColonialSupplies" unique_id=481965397]
+transform = Transform3D(-4.371139e-08, 1, -4.371139e-08, 0, -4.371139e-08, -1, -1, -4.371139e-08, 1.9106855e-15, 8.976854, 1.4, -1.701397)
+size = Vector3(3, 3, 3)
+texture_albedo = ExtResource("15_f8vy1")
+lower_fade = 1e-05
 
 [node name="ShipSupplies" type="Node3D" parent="." unique_id=1185466814]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.419, 0, 2.5)
@@ -195,6 +232,12 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 
 script = ExtResource("13_bjwnh")
 task_id = "Supply_task"
 
+[node name="shipSuppliesIcon" type="Decal" parent="ShipSupplies" unique_id=864893998]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 9.498759, 1.4, -0.7223959)
+size = Vector3(3, 3, 3)
+texture_albedo = ExtResource("17_sd3od")
+lower_fade = 1e-05
+
 [node name="PersonalItems" type="Node3D" parent="." unique_id=1044334352]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.419, 0, -17)
 
@@ -219,6 +262,12 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 
 script = ExtResource("14_3tbkn")
 task_id = "Personal_task"
 
+[node name="PIIcon" type="Decal" parent="PersonalItems" unique_id=129037861]
+transform = Transform3D(-4.371139e-08, 1, -4.371139e-08, 0, -4.371139e-08, -1, -1, -4.371139e-08, 1.9106855e-15, 9.007509, 1.4, 2.2519999)
+size = Vector3(3, 3, 3)
+texture_albedo = ExtResource("19_ttbe1")
+lower_fade = 1e-05
+
 [node name="FabManufacturing" type="Node3D" parent="." unique_id=1065997204]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0840979, 0, -19.476221)
 
@@ -242,6 +291,12 @@ omni_range = 15.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -7)
 script = ExtResource("15_m25je")
 task_id = "Fab_task"
+
+[node name="FabIcon" type="Decal" parent="FabManufacturing" unique_id=610956048]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 2.0550003, 1.4, 11.519301)
+size = Vector3(3, 3, 3)
+texture_albedo = ExtResource("18_m25je")
+lower_fade = 1e-05
 
 [node name="ClosingOffWalls" type="Node3D" parent="." unique_id=1931912096]
 
