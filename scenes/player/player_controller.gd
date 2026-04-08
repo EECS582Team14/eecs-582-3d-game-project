@@ -535,15 +535,11 @@ func _input(event: InputEvent) -> void:
 	if _is_paused or _minigame_active:
 		return
 
-	# While possessing, only allow mouse look (applied to target's view)
+	# While possessing, track mouse look in our own variables (not on the remote player node)
 	if _is_possessing:
 		if event is InputEventMouseMotion and _is_mouse_captured:
-			var target_player = NetworkManager.get_player(_possess_target_id)
-			if target_player:
-				target_player.rotation.y += deg_to_rad(-event.relative.x * mouse_sensitivity)
-				var cam_rot = target_player.camera.rotation_degrees
-				cam_rot.x = clamp(cam_rot.x - event.relative.y * mouse_sensitivity, -90, 90)
-				target_player.camera.rotation_degrees = cam_rot
+			_possess_rot_y += deg_to_rad(-event.relative.x * mouse_sensitivity)
+			_possess_cam_x = clamp(_possess_cam_x - event.relative.y * mouse_sensitivity, -90, 90)
 		return
 
 	# While being possessed, block normal input
@@ -1092,6 +1088,13 @@ func _find_activatable(node: Node) -> Node:
 
 func _try_interact() -> void:
 	if not _looking_at_interactable:
+		return
+	# Block task interaction during comms disable (crewmates only)
+	if not is_impostor and GameManager.is_sabotage_active("disable_comms") and _looking_at_interactable.is_in_group("task_console"):
+		if _notification_label:
+			_notification_label.text = "Comms offline - cannot access tasks!"
+			_notification_label.visible = true
+			get_tree().create_timer(2.0).timeout.connect(func(): _notification_label.visible = false)
 		return
 	if _looking_at_interactable.is_in_group("pickup"):
 		_looking_at_interactable.activate(steam_id)
@@ -1751,6 +1754,12 @@ func _start_possession(target_steam_id: int) -> void:
 	_possess_target_id = target_steam_id
 	_possess_timer = POSSESS_DURATION
 
+	# Initialize our tracked rotation from the target's current state
+	var target_player = NetworkManager.get_player(target_steam_id)
+	if target_player:
+		_possess_rot_y = target_player.rotation.y
+		_possess_cam_x = target_player.camera.rotation_degrees.x
+
 	# Tell the target they are possessed
 	NetworkManager.send_possess_start(target_steam_id)
 
@@ -1854,16 +1863,17 @@ func _process_possessing(delta: float) -> void:
 	if not camera.is_set_as_top_level():
 		camera.set_as_top_level(true)
 
-	# Follow the target's head position and use the target's camera rotation
+	# Build a basis from our tracked rotation to position the camera
+	var cam_basis = Basis(Vector3.UP, _possess_rot_y)
 	camera.global_position = target_player.global_position + Vector3(0, 1.6, 0)
-	camera.global_rotation = target_player.camera.global_rotation
+	camera.global_rotation = Vector3(deg_to_rad(_possess_cam_x), _possess_rot_y, 0)
 
-	# Gather our local input and send it to the target
+	# Gather movement input relative to our tracked rotation (not the remote player's)
 	var direction = Vector3.ZERO
-	var forward = -target_player.global_transform.basis.z
-	var backward = target_player.global_transform.basis.z
-	var left = -target_player.global_transform.basis.x
-	var right = target_player.global_transform.basis.x
+	var forward = -cam_basis.z
+	var backward = cam_basis.z
+	var left = -cam_basis.x
+	var right = cam_basis.x
 
 	if Input.is_action_pressed("move_forward"):
 		direction += forward
@@ -1876,11 +1886,12 @@ func _process_possessing(delta: float) -> void:
 
 	direction = direction.normalized()
 
+	# Send movement + our rotation to the target
 	NetworkManager.send_possess_move(
 		_possess_target_id,
 		direction,
-		target_player.rotation.y,
-		target_player.camera.rotation_degrees.x
+		_possess_rot_y,
+		_possess_cam_x
 	)
 
 	# Don't move our own body - just stand still
@@ -1956,6 +1967,9 @@ func _on_possess_move(move_dir: Vector3, rot_y: float, cam_rot_x: float) -> void
 	if not is_local_player or not _is_possessed:
 		return
 	_possess_move_dir = move_dir
+	# Apply rotation from the impostor
+	rotation.y = rot_y
+	camera.rotation_degrees.x = cam_rot_x
 
 func _on_possess_end() -> void:
 	if not is_local_player:
