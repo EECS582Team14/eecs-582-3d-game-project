@@ -36,6 +36,9 @@ var completed: Array[String] = []
 
 var is_impostor: bool = false
 
+var _comms_disabled: bool = false
+var _saved_text: String = ""
+
 func _ready():
 	panel.visible = false
 	randomize()
@@ -65,6 +68,10 @@ func _ready():
 	if NetworkManager.pending_role_received:
 		_on_role_assigned(NetworkManager.pending_role_impostor)
 	NetworkManager.role_assigned.connect(_on_role_assigned)
+
+	# Connect sabotage signals for comms disable
+	UIState.sabotage_triggered.connect(_on_sabotage_triggered)
+	UIState.sabotage_ended.connect(_on_sabotage_ended)
 
 	type_text()
 
@@ -106,6 +113,17 @@ func mark_task_completed(task_name: String) -> void:
 		else:
 			lines += t + "\n"
 	task_text.text = lines
+
+func _on_sabotage_triggered(sabotage_type: String) -> void:
+	if sabotage_type == "disable_comms" and not is_impostor:
+		_comms_disabled = true
+		_saved_text = task_text.text
+		task_text.text = "[color=red]== COMMS OFFLINE ==[/color]\n[color=gray]Directives unavailable...[/color]"
+
+func _on_sabotage_ended(sabotage_type: String) -> void:
+	if sabotage_type == "disable_comms" and _comms_disabled:
+		_comms_disabled = false
+		task_text.text = _saved_text
 
 func _input(event):
 	if event is InputEventMouseButton and event.pressed:

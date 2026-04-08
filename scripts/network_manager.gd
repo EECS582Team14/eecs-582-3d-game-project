@@ -29,6 +29,10 @@ signal armory_button_changed(button_id: String, pressed: bool)
 signal punch_received(steam_id: int)
 signal item_dropped_received(item_id: String, pos: Vector3, uses: int)
 signal taser_dead(steam_id: int)
+signal sabotage_received(sabotage_type: String)
+signal possess_start_received(impostor_steam_id: int)
+signal possess_move_received(move_dir: Vector3, rotation_y: float, cam_rotation_x: float)
+signal possess_end_received()
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -56,7 +60,11 @@ enum PacketType {
 	TASER_HIDE,
 	ARMORY_BUTTON,
 	PUNCH,
-	TASER_DEAD
+	TASER_DEAD,
+	SABOTAGE,
+	POSSESS_START,
+	POSSESS_MOVE,
+	POSSESS_END
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -219,6 +227,24 @@ func send_armory_button(button_id: String, pressed: bool):
 func send_taser_dead(target_id: int):
 	send_p2p_packet(0, {"type": PacketType.TASER_DEAD, "steam_id": target_id }, Steam.P2P_SEND_RELIABLE, 0)
 	taser_dead.emit(target_id)
+
+func send_sabotage(sabotage_type: String):
+	send_p2p_packet(0, {"type": PacketType.SABOTAGE, "sabotage_type": sabotage_type}, Steam.P2P_SEND_RELIABLE, 0)
+	sabotage_received.emit(sabotage_type)
+
+func send_possess_start(target_steam_id: int):
+	send_p2p_packet(target_steam_id, {"type": PacketType.POSSESS_START, "impostor_id": Steam.getSteamID()}, Steam.P2P_SEND_RELIABLE, 0)
+
+func send_possess_move(target_steam_id: int, move_dir: Vector3, rot_y: float, cam_rot_x: float):
+	var data = {
+		"type": PacketType.POSSESS_MOVE,
+		"mx": move_dir.x, "my": move_dir.y, "mz": move_dir.z,
+		"ry": rot_y, "cx": cam_rot_x
+	}
+	send_p2p_packet(target_steam_id, data, Steam.P2P_SEND_UNRELIABLE, 0)
+
+func send_possess_end(target_steam_id: int):
+	send_p2p_packet(target_steam_id, {"type": PacketType.POSSESS_END}, Steam.P2P_SEND_RELIABLE, 0)
 # ============ READ PACKETS ============
 
 func _read_all_p2p_packets(read_count: int = 0):
@@ -338,6 +364,15 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 
 		PacketType.TASER_DEAD:
 			taser_dead.emit(sender_steam_id)
+		PacketType.SABOTAGE:
+			sabotage_received.emit(data.get("sabotage_type", ""))
+		PacketType.POSSESS_START:
+			possess_start_received.emit(data.get("impostor_id", 0))
+		PacketType.POSSESS_MOVE:
+			var dir = Vector3(data.get("mx", 0), data.get("my", 0), data.get("mz", 0))
+			possess_move_received.emit(dir, data.get("ry", 0.0), data.get("cx", 0.0))
+		PacketType.POSSESS_END:
+			possess_end_received.emit()
 		_:
 			print("Unknown packet type: %s" % packet_type)
 

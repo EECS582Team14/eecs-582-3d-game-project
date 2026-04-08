@@ -96,9 +96,32 @@ var _network_update_timer: float = 0.0
 var is_impostor: bool = false
 var _role_received: bool = false
 var _role_timer: float = 0.0
-const ROLE_REVEAL_DELAY: float = 30.0
+const ROLE_REVEAL_DELAY: float = 0.0  # TODO: restore to 30.0
 var _role_label: Label = null
 var _timer_label: Label = null
+
+# Sabotage system (impostor only)
+var _sabotage_layer: CanvasLayer = null
+var _sabotage_panel: PanelContainer = null
+var _sabotage_menu_open: bool = false
+var _sabotage_cooldown: float = 0.0
+const SABOTAGE_COOLDOWN_TIME: float = 30.0
+var _sabotage_hint_label: Label = null
+var _sabotage_cooldown_label: Label = null
+var _lights_out_overlay: ColorRect = null
+
+# Possession system
+var _is_possessing: bool = false          # Impostor: currently controlling someone
+var _possess_target_id: int = 0           # Impostor: steam_id of possessed player
+var _possess_timer: float = 0.0
+const POSSESS_DURATION: float = 10.0
+var _possess_overlay: Control = null       # Red vignette border for impostor
+var _is_possessed: bool = false            # Target: being controlled by impostor
+var _possess_move_dir: Vector3 = Vector3.ZERO
+var _possess_rot_y: float = 0.0
+var _possess_cam_x: float = 0.0
+var _possessed_overlay: Control = null     # Glitch overlay for target
+var _player_select_layer: CanvasLayer = null
 
 # Inventory
 var has_taser: bool = false
@@ -412,6 +435,52 @@ func _ready() -> void:
 		# Connect destination progress updates
 		NetworkManager.progress_update_received.connect(_on_progress_update_received)
 
+		# Connect sabotage effects (for crewmate visual effects)
+		UIState.sabotage_triggered.connect(_on_sabotage_triggered)
+		UIState.sabotage_ended.connect(_on_sabotage_ended)
+
+		# Connect possession signals
+		NetworkManager.possess_start_received.connect(_on_possess_start)
+		NetworkManager.possess_move_received.connect(_on_possess_move)
+		NetworkManager.possess_end_received.connect(_on_possess_end)
+
+		# Create sabotage hint label (bottom-left, above health bar)
+		_sabotage_hint_label = Label.new()
+		_sabotage_hint_label.text = "Press Q to Sabotage"
+		_sabotage_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		_sabotage_hint_label.anchor_left = 0.0
+		_sabotage_hint_label.anchor_right = 0.0
+		_sabotage_hint_label.anchor_top = 1.0
+		_sabotage_hint_label.anchor_bottom = 1.0
+		_sabotage_hint_label.offset_left = 70
+		_sabotage_hint_label.offset_right = 330
+		_sabotage_hint_label.offset_top = -230
+		_sabotage_hint_label.offset_bottom = -200
+		_sabotage_hint_label.add_theme_font_size_override("font_size", 22)
+		_sabotage_hint_label.add_theme_color_override("font_color", Color.RED)
+		_sabotage_hint_label.visible = false
+		$HUD.add_child(_sabotage_hint_label)
+
+		# Create sabotage cooldown label (above hint)
+		_sabotage_cooldown_label = Label.new()
+		_sabotage_cooldown_label.text = ""
+		_sabotage_cooldown_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		_sabotage_cooldown_label.anchor_left = 0.0
+		_sabotage_cooldown_label.anchor_right = 0.0
+		_sabotage_cooldown_label.anchor_top = 1.0
+		_sabotage_cooldown_label.anchor_bottom = 1.0
+		_sabotage_cooldown_label.offset_left = 70
+		_sabotage_cooldown_label.offset_right = 330
+		_sabotage_cooldown_label.offset_top = -255
+		_sabotage_cooldown_label.offset_bottom = -230
+		_sabotage_cooldown_label.add_theme_font_size_override("font_size", 18)
+		_sabotage_cooldown_label.add_theme_color_override("font_color", Color.ORANGE)
+		_sabotage_cooldown_label.visible = false
+		$HUD.add_child(_sabotage_cooldown_label)
+
+		# Create sabotage selection panel (hidden by default)
+		_create_sabotage_panel()
+
 		# Check if role was already assigned before we loaded
 		if NetworkManager.pending_role_received:
 			_on_role_assigned(NetworkManager.pending_role_impostor)
@@ -448,8 +517,30 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
+	# Allow closing player select menu
+	if _player_select_layer:
+		if event is InputEventKey and (event.key_label == KEY_Q or event.key_label == KEY_ESCAPE) and event.pressed:
+			_close_player_select()
+			get_viewport().set_input_as_handled()
+		return
+
+	# Allow Q to close sabotage menu even while it's open
+	if _sabotage_menu_open:
+		if event is InputEventKey and event.key_label == KEY_Q and event.pressed:
+			_close_sabotage_menu()
+			get_viewport().set_input_as_handled()
+		return
+
 	# When paused or in minigame, don't process game input so UI buttons can receive clicks
 	if _is_paused or _minigame_active:
+		return
+
+	# While possessing, block normal input (camera follows target via _process_possessing)
+	if _is_possessing:
+		return
+
+	# While being possessed, block normal input
+	if _is_possessed:
 		return
 
 	# Handle mouse motion events for looking around
@@ -474,6 +565,9 @@ func _input(event: InputEvent) -> void:
 			GameManager.adjust_ship_integrity(-10.0)
 		elif event.key_label == KEY_L and event.pressed:
 			GameManager.adjust_ship_integrity(10.0)
+		elif event.key_label == KEY_Q and event.pressed and not is_dead:
+			if is_impostor and _role_timer <= 0.0:
+				_toggle_sabotage_menu()
 		elif event.key_label == KEY_F5 and event.pressed:
 			_toggle_third_person()
 		elif event.key_label == KEY_PERIOD and event.pressed and not is_dead:
@@ -582,18 +676,52 @@ func _process(delta: float) -> void:
 	if _role_timer > 0.0:
 		_role_timer -= delta
 		_timer_label.text = "Role reveal in: %d" % ceili(_role_timer)
-		if _role_timer <= 0.0:
-			_timer_label.text = ""
-			_reveal_role()
+	if _role_timer <= 0.0 and _role_label and not _role_label.visible and _role_label.text == "":
+		_timer_label.text = ""
+		_reveal_role()
+
+	# Sabotage cooldown tick
+	if is_impostor and _sabotage_cooldown > 0.0:
+		_sabotage_cooldown -= delta
+		if _sabotage_cooldown_label:
+			_sabotage_cooldown_label.text = "Sabotage cooldown: %ds" % ceili(_sabotage_cooldown)
+			_sabotage_cooldown_label.visible = true
+		if _sabotage_cooldown <= 0.0:
+			_sabotage_cooldown = 0.0
+			if _sabotage_cooldown_label:
+				_sabotage_cooldown_label.visible = false
+
+	# Possession timer tick (impostor side)
+	if _is_possessing:
+		_possess_timer -= delta
+		if _possess_timer <= 0.0:
+			_end_possession()
 
 func _physics_process(delta: float) -> void:
 	if is_local_player and GameManager.game_state == GameManager.GAME_STATE_GAME_OVER:
 		return
 	if is_local_player and _is_paused:
 		return
+	if is_local_player and _sabotage_menu_open:
+		return
 	if is_local_player and _minigame_active:
 		return
 	if is_local_player:
+		# If being possessed, apply remote movement instead of local input
+		if _is_possessed and not is_dead:
+			_process_possessed_movement(delta)
+			_apply_gravity(delta)
+			move_and_slide()
+			_update_walk_animation()
+			_send_network_update(delta)
+			return
+
+		# If possessing someone, send our input to the target instead
+		if _is_possessing and not is_dead:
+			_process_possessing(delta)
+			_send_network_update(delta)
+			return
+
 		if is_dead:
 			_process_ghost_movement(delta)
 			move_and_slide()
@@ -843,6 +971,10 @@ func _reveal_role() -> void:
 		_role_label.text = "CREWMATE"
 		_role_label.add_theme_color_override("font_color", Color.CYAN)
 	_role_label.visible = true
+
+	# Show sabotage hint for impostor
+	if is_impostor and _sabotage_hint_label:
+		_sabotage_hint_label.visible = true
 
 	# Hide the role text after 5 seconds
 	await get_tree().create_timer(5.0).timeout
@@ -1336,3 +1468,486 @@ func _close_minigame() -> void:
 	# Re-capture mouse
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	_is_mouse_captured = true
+
+# --- Sabotage System (Impostor only) ---
+
+func _create_sabotage_panel() -> void:
+	# Use a CanvasLayer so the panel renders above everything and receives input
+	_sabotage_layer = CanvasLayer.new()
+	_sabotage_layer.layer = 90
+	add_child(_sabotage_layer)
+
+	# Full-screen Control to catch input
+	var root_control = Control.new()
+	root_control.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root_control.mouse_filter = Control.MOUSE_FILTER_STOP
+	_sabotage_layer.add_child(root_control)
+
+	_sabotage_panel = PanelContainer.new()
+	_sabotage_panel.anchor_left = 0.5
+	_sabotage_panel.anchor_right = 0.5
+	_sabotage_panel.anchor_top = 0.5
+	_sabotage_panel.anchor_bottom = 0.5
+	_sabotage_panel.offset_left = -160
+	_sabotage_panel.offset_right = 160
+	_sabotage_panel.offset_top = -120
+	_sabotage_panel.offset_bottom = 120
+
+	# Dark red background style
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.15, 0.02, 0.02, 0.92)
+	style.border_color = Color(0.8, 0.1, 0.1, 1.0)
+	style.border_width_left = 2
+	style.border_width_right = 2
+	style.border_width_top = 2
+	style.border_width_bottom = 2
+	style.corner_radius_top_left = 8
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_left = 8
+	style.corner_radius_bottom_right = 8
+	style.content_margin_left = 12
+	style.content_margin_right = 12
+	style.content_margin_top = 12
+	style.content_margin_bottom = 12
+	_sabotage_panel.add_theme_stylebox_override("panel", style)
+
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 10)
+	_sabotage_panel.add_child(vbox)
+
+	# Title
+	var title = Label.new()
+	title.text = "-- SABOTAGE --"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
+	title.add_theme_color_override("font_color", Color.RED)
+	vbox.add_child(title)
+
+	# Sabotage buttons
+	var btn_lights = Button.new()
+	btn_lights.text = "Lights Out"
+	btn_lights.add_theme_font_size_override("font_size", 18)
+	btn_lights.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn_lights.pressed.connect(_on_sabotage_selected.bind("lights_out"))
+	vbox.add_child(btn_lights)
+
+	var btn_drain = Button.new()
+	btn_drain.text = "Drain Integrity"
+	btn_drain.add_theme_font_size_override("font_size", 18)
+	btn_drain.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn_drain.pressed.connect(_on_sabotage_selected.bind("drain_integrity"))
+	vbox.add_child(btn_drain)
+
+	var btn_comms = Button.new()
+	btn_comms.text = "Disable Comms"
+	btn_comms.add_theme_font_size_override("font_size", 18)
+	btn_comms.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn_comms.pressed.connect(_on_sabotage_selected.bind("disable_comms"))
+	vbox.add_child(btn_comms)
+
+	var btn_possess = Button.new()
+	btn_possess.text = "Possess Player"
+	btn_possess.add_theme_font_size_override("font_size", 18)
+	btn_possess.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn_possess.pressed.connect(_on_possess_selected)
+	vbox.add_child(btn_possess)
+
+	# Cancel label
+	var cancel = Label.new()
+	cancel.text = "Press Q to cancel"
+	cancel.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cancel.add_theme_font_size_override("font_size", 14)
+	cancel.add_theme_color_override("font_color", Color.GRAY)
+	vbox.add_child(cancel)
+
+	root_control.add_child(_sabotage_panel)
+	_sabotage_layer.visible = false
+
+func _toggle_sabotage_menu() -> void:
+	if _sabotage_menu_open:
+		_close_sabotage_menu()
+	else:
+		_open_sabotage_menu()
+
+func _open_sabotage_menu() -> void:
+	if _sabotage_cooldown > 0.0:
+		_notification_label.text = "Sabotage on cooldown: %ds" % ceili(_sabotage_cooldown)
+		_notification_label.visible = true
+		await get_tree().create_timer(2.0).timeout
+		_notification_label.visible = false
+		return
+	_sabotage_menu_open = true
+	_sabotage_layer.visible = true
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	_is_mouse_captured = false
+	# Hide crosshair
+	if GameManager.hud_instance:
+		var crosshair = GameManager.hud_instance.get_node_or_null("Crosshair")
+		if crosshair:
+			crosshair.visible = false
+
+func _close_sabotage_menu() -> void:
+	_sabotage_menu_open = false
+	_sabotage_layer.visible = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	_is_mouse_captured = true
+	# Restore crosshair
+	if GameManager.hud_instance:
+		var crosshair = GameManager.hud_instance.get_node_or_null("Crosshair")
+		if crosshair:
+			crosshair.visible = true
+
+func _on_sabotage_selected(sabotage_type: String) -> void:
+	_close_sabotage_menu()
+	_sabotage_cooldown = SABOTAGE_COOLDOWN_TIME
+	NetworkManager.send_sabotage(sabotage_type)
+
+func _on_sabotage_triggered(sabotage_type: String) -> void:
+	if not is_local_player:
+		return
+	if sabotage_type == "lights_out" and not is_impostor:
+		_show_lights_out()
+
+func _on_sabotage_ended(sabotage_type: String) -> void:
+	if not is_local_player:
+		return
+	if sabotage_type == "lights_out":
+		_hide_lights_out()
+
+func _show_lights_out() -> void:
+	if _lights_out_overlay:
+		return
+	_lights_out_overlay = ColorRect.new()
+	_lights_out_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_lights_out_overlay.color = Color(0, 0, 0, 0.85)
+	_lights_out_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	$HUD.add_child(_lights_out_overlay)
+
+func _hide_lights_out() -> void:
+	if _lights_out_overlay:
+		_lights_out_overlay.queue_free()
+		_lights_out_overlay = null
+
+# --- Possession System ---
+
+func _on_possess_selected() -> void:
+	_close_sabotage_menu()
+	_show_player_select()
+
+func _show_player_select() -> void:
+	# Build a list of alive crewmates to possess
+	if not GameManager.players_container:
+		return
+
+	_player_select_layer = CanvasLayer.new()
+	_player_select_layer.layer = 91
+	add_child(_player_select_layer)
+
+	var root = Control.new()
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_STOP
+	_player_select_layer.add_child(root)
+
+	# Semi-transparent backdrop
+	var bg = ColorRect.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.color = Color(0, 0, 0, 0.5)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(bg)
+
+	var panel = PanelContainer.new()
+	panel.anchor_left = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_bottom = 0.5
+	panel.offset_left = -150
+	panel.offset_right = 150
+	panel.offset_top = -120
+	panel.offset_bottom = 120
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.12, 0.0, 0.0, 0.95)
+	style.border_color = Color(0.8, 0.1, 0.1, 1.0)
+	style.border_width_left = 2
+	style.border_width_right = 2
+	style.border_width_top = 2
+	style.border_width_bottom = 2
+	style.corner_radius_top_left = 8
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_left = 8
+	style.corner_radius_bottom_right = 8
+	style.content_margin_left = 12
+	style.content_margin_right = 12
+	style.content_margin_top = 12
+	style.content_margin_bottom = 12
+	panel.add_theme_stylebox_override("panel", style)
+	root.add_child(panel)
+
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 8)
+	panel.add_child(vbox)
+
+	var title = Label.new()
+	title.text = "-- SELECT TARGET --"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 22)
+	title.add_theme_color_override("font_color", Color.RED)
+	vbox.add_child(title)
+
+	var found_targets := false
+	for player in GameManager.players_container.get_children():
+		if player == self or not ("is_impostor" in player) or player.is_impostor:
+			continue
+		if player.is_dead:
+			continue
+		found_targets = true
+		var btn = Button.new()
+		btn.text = Steam.getFriendPersonaName(player.steam_id)
+		btn.add_theme_font_size_override("font_size", 18)
+		btn.mouse_filter = Control.MOUSE_FILTER_STOP
+		btn.pressed.connect(_on_target_chosen.bind(player.steam_id))
+		vbox.add_child(btn)
+
+	if not found_targets:
+		var no_targets = Label.new()
+		no_targets.text = "No valid targets"
+		no_targets.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		no_targets.add_theme_font_size_override("font_size", 16)
+		no_targets.add_theme_color_override("font_color", Color.GRAY)
+		vbox.add_child(no_targets)
+
+	var cancel_btn = Button.new()
+	cancel_btn.text = "Cancel"
+	cancel_btn.add_theme_font_size_override("font_size", 16)
+	cancel_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	cancel_btn.pressed.connect(_close_player_select)
+	vbox.add_child(cancel_btn)
+
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	_is_mouse_captured = false
+
+func _close_player_select() -> void:
+	if _player_select_layer:
+		_player_select_layer.queue_free()
+		_player_select_layer = null
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	_is_mouse_captured = true
+
+func _on_target_chosen(target_steam_id: int) -> void:
+	_close_player_select()
+	_sabotage_cooldown = SABOTAGE_COOLDOWN_TIME
+	_start_possession(target_steam_id)
+
+# --- Impostor side: possessing ---
+
+func _start_possession(target_steam_id: int) -> void:
+	_is_possessing = true
+	_possess_target_id = target_steam_id
+	_possess_timer = POSSESS_DURATION
+
+	# Tell the target they are possessed
+	NetworkManager.send_possess_start(target_steam_id)
+
+	# Create red vignette border overlay
+	_possess_overlay = Control.new()
+	_possess_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_possess_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	$HUD.add_child(_possess_overlay)
+
+	var border_thickness := 6
+	# Top border
+	var top = ColorRect.new()
+	top.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	top.offset_bottom = border_thickness
+	top.color = Color(1, 0, 0, 0.8)
+	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_possess_overlay.add_child(top)
+	# Bottom border
+	var bottom = ColorRect.new()
+	bottom.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	bottom.offset_top = -border_thickness
+	bottom.color = Color(1, 0, 0, 0.8)
+	bottom.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_possess_overlay.add_child(bottom)
+	# Left border
+	var left = ColorRect.new()
+	left.set_anchors_preset(Control.PRESET_LEFT_WIDE)
+	left.offset_right = border_thickness
+	left.color = Color(1, 0, 0, 0.8)
+	left.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_possess_overlay.add_child(left)
+	# Right border
+	var right = ColorRect.new()
+	right.set_anchors_preset(Control.PRESET_RIGHT_WIDE)
+	right.offset_left = -border_thickness
+	right.color = Color(1, 0, 0, 0.8)
+	right.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_possess_overlay.add_child(right)
+
+	# Subtle red tint
+	var tint = ColorRect.new()
+	tint.set_anchors_preset(Control.PRESET_FULL_RECT)
+	tint.color = Color(1, 0, 0, 0.08)
+	tint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_possess_overlay.add_child(tint)
+
+	# "POSSESSING" label with timer
+	var lbl = Label.new()
+	lbl.name = "PossessTimer"
+	lbl.text = "POSSESSING - %.0fs" % _possess_timer
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.anchor_left = 0.5
+	lbl.anchor_right = 0.5
+	lbl.anchor_top = 0.0
+	lbl.anchor_bottom = 0.0
+	lbl.offset_left = -200
+	lbl.offset_right = 200
+	lbl.offset_top = 12
+	lbl.offset_bottom = 42
+	lbl.add_theme_font_size_override("font_size", 24)
+	lbl.add_theme_color_override("font_color", Color.RED)
+	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_possess_overlay.add_child(lbl)
+
+func _end_possession() -> void:
+	if not _is_possessing:
+		return
+	_is_possessing = false
+
+	# Tell target they are free
+	NetworkManager.send_possess_end(_possess_target_id)
+	_possess_target_id = 0
+
+	# Remove overlay
+	if _possess_overlay:
+		_possess_overlay.queue_free()
+		_possess_overlay = null
+
+func _process_possessing(delta: float) -> void:
+	# Update the timer label
+	if _possess_overlay:
+		var lbl = _possess_overlay.get_node_or_null("PossessTimer")
+		if lbl:
+			lbl.text = "POSSESSING - %.0fs" % maxf(_possess_timer, 0)
+
+	var target_player = NetworkManager.get_player(_possess_target_id)
+	if not target_player:
+		_end_possession()
+		return
+
+	# Move our camera to follow the target's head position
+	camera.global_position = target_player.global_position + Vector3(0, 1.6, 0)
+	camera.global_rotation = target_player.camera.global_rotation
+
+	# Gather our local input and send it to the target
+	var direction = Vector3.ZERO
+	var forward = -target_player.global_transform.basis.z
+	var backward = target_player.global_transform.basis.z
+	var left = -target_player.global_transform.basis.x
+	var right = target_player.global_transform.basis.x
+
+	if Input.is_action_pressed("move_forward"):
+		direction += forward
+	if Input.is_action_pressed("move_backward"):
+		direction += backward
+	if Input.is_action_pressed("move_left"):
+		direction += left
+	if Input.is_action_pressed("move_right"):
+		direction += right
+
+	direction = direction.normalized()
+
+	NetworkManager.send_possess_move(
+		_possess_target_id,
+		direction,
+		target_player.rotation.y,
+		target_player.camera.rotation_degrees.x
+	)
+
+	# Don't move our own body - just stand still
+	velocity = Vector3.ZERO
+
+# --- Target side: being possessed ---
+
+func _on_possess_start(impostor_steam_id: int) -> void:
+	if not is_local_player:
+		return
+	_is_possessed = true
+
+	# Show "SYSTEM COMPROMISED" overlay
+	_possessed_overlay = Control.new()
+	_possessed_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_possessed_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	$HUD.add_child(_possessed_overlay)
+
+	# Glitchy orange/yellow border
+	var border_thickness := 5
+	var border_color := Color(1.0, 0.4, 0.0, 0.75)
+	var t = ColorRect.new()
+	t.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	t.offset_bottom = border_thickness
+	t.color = border_color
+	t.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_possessed_overlay.add_child(t)
+	var b = ColorRect.new()
+	b.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	b.offset_top = -border_thickness
+	b.color = border_color
+	b.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_possessed_overlay.add_child(b)
+	var l = ColorRect.new()
+	l.set_anchors_preset(Control.PRESET_LEFT_WIDE)
+	l.offset_right = border_thickness
+	l.color = border_color
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_possessed_overlay.add_child(l)
+	var r = ColorRect.new()
+	r.set_anchors_preset(Control.PRESET_RIGHT_WIDE)
+	r.offset_left = -border_thickness
+	r.color = border_color
+	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_possessed_overlay.add_child(r)
+
+	# Warning text
+	var warning = Label.new()
+	warning.text = "SYSTEM COMPROMISED\nCONTROLS OVERRIDDEN"
+	warning.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	warning.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	warning.anchor_left = 0.5
+	warning.anchor_right = 0.5
+	warning.anchor_top = 0.0
+	warning.anchor_bottom = 0.0
+	warning.offset_left = -250
+	warning.offset_right = 250
+	warning.offset_top = 60
+	warning.offset_bottom = 130
+	warning.add_theme_font_size_override("font_size", 28)
+	warning.add_theme_color_override("font_color", Color(1.0, 0.3, 0.0, 1.0))
+	warning.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_possessed_overlay.add_child(warning)
+
+	# Subtle orange tint
+	var tint = ColorRect.new()
+	tint.set_anchors_preset(Control.PRESET_FULL_RECT)
+	tint.color = Color(1, 0.3, 0, 0.06)
+	tint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_possessed_overlay.add_child(tint)
+
+func _on_possess_move(move_dir: Vector3, rot_y: float, cam_rot_x: float) -> void:
+	if not is_local_player or not _is_possessed:
+		return
+	_possess_move_dir = move_dir
+
+func _on_possess_end() -> void:
+	if not is_local_player:
+		return
+	_is_possessed = false
+	_possess_move_dir = Vector3.ZERO
+
+	if _possessed_overlay:
+		_possessed_overlay.queue_free()
+		_possessed_overlay = null
+
+func _process_possessed_movement(delta: float) -> void:
+	# Apply the movement direction sent by the impostor
+	velocity.x = _possess_move_dir.x * speed
+	velocity.z = _possess_move_dir.z * speed

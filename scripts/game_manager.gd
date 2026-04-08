@@ -57,6 +57,12 @@ var ship_integrity: float = 50.0
 var game_state: int = 1
 const GAME_STATE_GAME_OVER: int = 3
 
+# Sabotage state
+var active_sabotages: Dictionary = {}  # sabotage_type -> remaining duration
+const SABOTAGE_DURATION: float = 20.0
+const SABOTAGE_COOLDOWN: float = 30.0
+const SABOTAGE_INTEGRITY_DRAIN: float = 15.0
+
 # End screen
 var _end_screen_layer: CanvasLayer = null
 var _end_screen: Control = null
@@ -69,9 +75,13 @@ func _ready():
 	NetworkManager.timer_sync_received.connect(_on_timer_sync_received)
 	LobbyManager.player_left.connect(_on_player_left)
 	NetworkManager.ship_integrity_update_received.connect(_on_ship_integrity_update_received)
+	NetworkManager.sabotage_received.connect(_on_sabotage_received)
 	UIState.ship_durability_changed.emit(ship_integrity)
 
 func _process(delta):
+	# Sabotage timers run on all clients
+	_update_sabotages(delta)
+
 	if not LobbyManager.is_host():
 		return
 	if players_container == null:
@@ -99,6 +109,36 @@ func _process(delta):
 			_progress_sync_timer = 0.0
 			NetworkManager.send_progress_update(true_destination_progress, progress_speed_modifier)
 			NetworkManager.progress_update_received.emit(true_destination_progress, progress_speed_modifier)
+
+# ============ SABOTAGE ============
+
+func _on_sabotage_received(sabotage_type: String) -> void:
+	if sabotage_type == "drain_integrity":
+		# Instant effect: drop ship integrity
+		adjust_ship_integrity(-SABOTAGE_INTEGRITY_DRAIN)
+		UIState.sabotage_triggered.emit(sabotage_type)
+		UIState.system_alert.emit("WARNING: Ship integrity compromised! Hull breach detected!")
+	elif sabotage_type in ["lights_out", "disable_comms"]:
+		# Timed effect
+		active_sabotages[sabotage_type] = SABOTAGE_DURATION
+		UIState.sabotage_triggered.emit(sabotage_type)
+		if sabotage_type == "lights_out":
+			UIState.system_alert.emit("WARNING: Electrical failure! Emergency lighting only!")
+		elif sabotage_type == "disable_comms":
+			UIState.system_alert.emit("WARNING: Communications array offline! Directives unavailable!")
+
+func _update_sabotages(delta: float) -> void:
+	var to_remove: Array[String] = []
+	for sabotage_type in active_sabotages:
+		active_sabotages[sabotage_type] -= delta
+		if active_sabotages[sabotage_type] <= 0.0:
+			to_remove.append(sabotage_type)
+	for sabotage_type in to_remove:
+		active_sabotages.erase(sabotage_type)
+		UIState.sabotage_ended.emit(sabotage_type)
+
+func is_sabotage_active(sabotage_type: String) -> bool:
+	return active_sabotages.has(sabotage_type)
 
 func adjust_progress_speed(amount: float):
 	progress_speed_modifier += amount
@@ -321,6 +361,7 @@ func _on_play_again():
 	progress_speed_modifier = 1.0
 	_progress_sync_timer = 0.0
 	timer_active = false
+	active_sabotages.clear()
 
 	# Clear buffered role
 	NetworkManager.pending_role_received = false
