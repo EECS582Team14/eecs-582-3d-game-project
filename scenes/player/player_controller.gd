@@ -535,8 +535,15 @@ func _input(event: InputEvent) -> void:
 	if _is_paused or _minigame_active:
 		return
 
-	# While possessing, block normal input (camera follows target via _process_possessing)
+	# While possessing, only allow mouse look (applied to target's view)
 	if _is_possessing:
+		if event is InputEventMouseMotion and _is_mouse_captured:
+			var target_player = NetworkManager.get_player(_possess_target_id)
+			if target_player:
+				target_player.rotation.y += deg_to_rad(-event.relative.x * mouse_sensitivity)
+				var cam_rot = target_player.camera.rotation_degrees
+				cam_rot.x = clamp(cam_rot.x - event.relative.y * mouse_sensitivity, -90, 90)
+				target_player.camera.rotation_degrees = cam_rot
 		return
 
 	# While being possessed, block normal input
@@ -1822,6 +1829,15 @@ func _end_possession() -> void:
 		_possess_overlay.queue_free()
 		_possess_overlay = null
 
+	# Restore camera back to first-person on our own body
+	camera.set_as_top_level(false)
+	camera.position = _first_person_camera_pos
+	camera.rotation_degrees = Vector3.ZERO
+
+	# Make sure mouse is captured and input works
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	_is_mouse_captured = true
+
 func _process_possessing(delta: float) -> void:
 	# Update the timer label
 	if _possess_overlay:
@@ -1834,7 +1850,11 @@ func _process_possessing(delta: float) -> void:
 		_end_possession()
 		return
 
-	# Move our camera to follow the target's head position
+	# Make camera top-level so it's not affected by our body position
+	if not camera.is_set_as_top_level():
+		camera.set_as_top_level(true)
+
+	# Follow the target's head position and use the target's camera rotation
 	camera.global_position = target_player.global_position + Vector3(0, 1.6, 0)
 	camera.global_rotation = target_player.camera.global_rotation
 

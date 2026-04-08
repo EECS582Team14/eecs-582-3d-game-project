@@ -115,10 +115,11 @@ func mark_task_completed(task_name: String) -> void:
 	task_text.text = lines
 
 func _on_sabotage_triggered(sabotage_type: String) -> void:
-	if sabotage_type == "disable_comms" and not is_impostor:
+	if sabotage_type == "disable_comms":
 		_comms_disabled = true
 		_saved_text = task_text.text
 		task_text.text = "[color=red]== COMMS OFFLINE ==[/color]\n[color=gray]Directives unavailable...[/color]"
+		panel.visible = true
 
 func _on_sabotage_ended(sabotage_type: String) -> void:
 	if sabotage_type == "disable_comms" and _comms_disabled:
