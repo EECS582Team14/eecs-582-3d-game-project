@@ -214,7 +214,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -20)
 
 [node name="CamsDoor" parent="Cams" unique_id=1087523963 instance=ExtResource("5_fjw4p")]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, -0.3000002, 0, 5)
-is_locked = true
+is_locked = false
 
 [node name="NorthCamWall" parent="Cams" unique_id=1747157587 instance=ExtResource("5_vucmy")]
 transform = Transform3D(0.7431331, 0, -0.66914356, 0, 1, 0, 0.66914356, 0, 0.7431331, 3.1434593, -4.7683716e-07, 0)

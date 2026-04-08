@@ -10,6 +10,7 @@ const TaserPickupScene = preload("res://scenes/weapons/taser/taser_pickup.tscn")
 const BatonPickupScene = preload("res://scenes/weapons/baton/baton.tscn")
 const GAME_LEVEL = "res://scenes/levels/main.tscn"
 const LOBBY_SCENE = preload("res://scenes/lobby/lobby_ui.tscn.tscn")
+const SecurityCamerasScene = preload("res://scenes/levels/cams/security_cameras.tscn")
 const TASER_SPAWN_POS = Vector3(-19.66497, 0.45656508, 16.686378)
 const BATON01_SPAWN_POS = Vector3(-19.932, 0.0, 21.235)
 const BATON02_SPAWN_POS = Vector3(-19.932, 0.0, 23.177)
@@ -441,6 +442,7 @@ func _load_game_level():
 	
 	_spawn_all_players()
 	_spawn_local_hud()
+	_spawn_security_cameras()
 	if LobbyManager.is_host():
 		# emit initial timer now that HUD exists
 		var now = Time.get_unix_time_from_system()
@@ -523,6 +525,10 @@ func _spawn_local_hud():
 
 	# Make sure it's visible and top-level
 	hud_instance.owner = get_tree().current_scene
+
+func _spawn_security_cameras():
+	var cams = SecurityCamerasScene.instantiate()
+	get_tree().current_scene.add_child(cams)
 
 func _capture_initial_weapon_states():
 	_initial_weapon_data.clear()
