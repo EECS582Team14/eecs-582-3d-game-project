@@ -32,6 +32,7 @@ func _ready() -> void:
 	_lock_closed_position = lock_icon.position
 	NetworkManager.door_opened.connect(_on_door_opened)
 	NetworkManager.door_closed.connect(_on_door_closed)
+	NetworkManager.door_lock_received.connect(_on_door_lock_received)
 
 func _process(_delta: float) -> void:
 	# Update the door's mesh based on its locked state
@@ -91,3 +92,9 @@ func _on_door_opened(door_id: String) -> void:
 func _on_door_closed(door_id: String) -> void:
 	if door_id == str(get_path()):
 		_close_door()
+
+func _on_door_lock_received(door_id: String, locked: bool) -> void:
+	if door_id == str(get_path()):
+		is_locked = locked
+		if locked and _is_open:
+			_close_door()

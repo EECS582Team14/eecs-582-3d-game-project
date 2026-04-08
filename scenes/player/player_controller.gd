@@ -122,6 +122,9 @@ var _possess_rot_y: float = 0.0
 var _possess_cam_x: float = 0.0
 var _possessed_overlay: Control = null     # Glitch overlay for target
 var _player_select_layer: CanvasLayer = null
+var _door_map_layer: CanvasLayer = null
+var _locked_doors: Dictionary = {}  # door_id -> true
+const DOOR_LOCK_DURATION: float = 15.0
 
 # Inventory
 var has_taser: bool = false
@@ -525,6 +528,13 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 		return
 
+	# Allow closing door map
+	if _door_map_layer:
+		if event is InputEventKey and (event.key_label == KEY_Q or event.key_label == KEY_ESCAPE) and event.pressed:
+			_close_door_map()
+			get_viewport().set_input_as_handled()
+		return
+
 	# Allow Q to close sabotage menu even while it's open
 	if _sabotage_menu_open:
 		if event is InputEventKey and event.key_label == KEY_Q and event.pressed:
@@ -713,6 +723,8 @@ func _physics_process(delta: float) -> void:
 	if is_local_player and _is_paused:
 		return
 	if is_local_player and _sabotage_menu_open:
+		return
+	if is_local_player and _door_map_layer:
 		return
 	if is_local_player and _minigame_active:
 		return
@@ -1576,6 +1588,13 @@ func _create_sabotage_panel() -> void:
 	btn_anon.pressed.connect(_on_sabotage_selected.bind("anonymous"))
 	vbox.add_child(btn_anon)
 
+	var btn_doors = Button.new()
+	btn_doors.text = "Lock Doors"
+	btn_doors.add_theme_font_size_override("font_size", 18)
+	btn_doors.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn_doors.pressed.connect(_on_lock_doors_selected)
+	vbox.add_child(btn_doors)
+
 	# Cancel label
 	var cancel = Label.new()
 	cancel.text = "Press Q to cancel"
@@ -2050,3 +2069,261 @@ func _process_possessed_movement(delta: float) -> void:
 	if _is_jumping and is_on_floor() and velocity.y <= 0:
 		_is_jumping = false
 		_current_anim_state = ""
+
+# --- Lock Doors Sabotage ---
+
+# Door data: display name -> { path patterns to match, map position }
+# Positions are approximate on a 600x400 schematic map
+const UPPER_DOORS = {
+	"Nexus North": {"pattern": "NorthNexusDoor", "x": 300, "y": 60},
+	"Nexus South": {"pattern": "SouthNexusDoor", "x": 300, "y": 180},
+	"Nav Bridge": {"pattern": "NavDoor", "x": 300, "y": 30},
+	"Cams": {"pattern": "CamsDoor", "x": 250, "y": 120},
+	"Intercom": {"pattern": "IntercomDoor", "x": 350, "y": 120},
+	"NW Reactor": {"pattern": "NorthwestReactorDoor", "x": 120, "y": 60},
+	"NE Reactor": {"pattern": "NortheastReactorDoor", "x": 480, "y": 60},
+	"Armory East": {"pattern": "EastDoor", "x": 480, "y": 260},
+	"Shielding": {"pattern": "ShieldingDoor", "x": 520, "y": 100},
+	"Supply Closet": {"pattern": "SupplyDoor", "x": 520, "y": 160},
+	"Crew Quarters": {"pattern": "CrewDoor", "x": 520, "y": 260},
+}
+
+const LOWER_DOORS = {
+	"NW Reactor": {"pattern": "NorthwestReactorDoor", "x": 120, "y": 60},
+	"NE Reactor": {"pattern": "NortheastReactorDoor", "x": 480, "y": 60},
+	"Electrical": {"pattern": "NorthwestElectricalDoor", "x": 300, "y": 60},
+	"Trash": {"pattern": "SouthwestTrashDoor", "x": 300, "y": 180},
+	"Colonial Supplies": {"pattern": "EastCSDoor", "x": 420, "y": 100},
+	"Ship Supplies": {"pattern": "EastSSDoor", "x": 420, "y": 160},
+	"Personal Items": {"pattern": "EastPIDoor", "x": 420, "y": 220},
+	"Fab Lab": {"pattern": "SouthFabDoor", "x": 300, "y": 280},
+	"Elevator Control": {"pattern": "ElevatorControlDoor", "x": 420, "y": 340},
+}
+
+func _on_lock_doors_selected() -> void:
+	_close_sabotage_menu()
+	_show_door_map()
+
+func _show_door_map() -> void:
+	_door_map_layer = CanvasLayer.new()
+	_door_map_layer.layer = 91
+	add_child(_door_map_layer)
+
+	var root = Control.new()
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_STOP
+	_door_map_layer.add_child(root)
+
+	# Dark backdrop
+	var bg = ColorRect.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.color = Color(0, 0, 0, 0.7)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(bg)
+
+	# Main container centered
+	var container = Control.new()
+	container.anchor_left = 0.5
+	container.anchor_right = 0.5
+	container.anchor_top = 0.5
+	container.anchor_bottom = 0.5
+	container.offset_left = -350
+	container.offset_right = 350
+	container.offset_top = -250
+	container.offset_bottom = 250
+	root.add_child(container)
+
+	# Title
+	var title = Label.new()
+	title.text = "SHIP MAP - Click doors to lock/unlock (locks last %ds)" % int(DOOR_LOCK_DURATION)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.anchor_left = 0.0
+	title.anchor_right = 1.0
+	title.offset_top = -30
+	title.offset_bottom = 0
+	title.add_theme_font_size_override("font_size", 18)
+	title.add_theme_color_override("font_color", Color.RED)
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	container.add_child(title)
+
+	# Tab buttons for deck switching
+	var tab_bar = HBoxContainer.new()
+	tab_bar.anchor_left = 0.5
+	tab_bar.anchor_right = 0.5
+	tab_bar.offset_left = -100
+	tab_bar.offset_right = 100
+	tab_bar.offset_top = 0
+	tab_bar.offset_bottom = 30
+	tab_bar.alignment = BoxContainer.ALIGNMENT_CENTER
+	tab_bar.add_theme_constant_override("separation", 10)
+	container.add_child(tab_bar)
+
+	var upper_btn = Button.new()
+	upper_btn.text = "Upper Deck"
+	upper_btn.add_theme_font_size_override("font_size", 14)
+	upper_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	tab_bar.add_child(upper_btn)
+
+	var lower_btn = Button.new()
+	lower_btn.text = "Lower Deck"
+	lower_btn.add_theme_font_size_override("font_size", 14)
+	lower_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	tab_bar.add_child(lower_btn)
+
+	# Map panel background
+	var map_panel = PanelContainer.new()
+	map_panel.anchor_left = 0.0
+	map_panel.anchor_right = 1.0
+	map_panel.offset_top = 35
+	map_panel.offset_bottom = 460
+	var map_style = StyleBoxFlat.new()
+	map_style.bg_color = Color(0.05, 0.05, 0.12, 0.95)
+	map_style.border_color = Color(0.3, 0.3, 0.5, 1.0)
+	map_style.border_width_left = 2
+	map_style.border_width_right = 2
+	map_style.border_width_top = 2
+	map_style.border_width_bottom = 2
+	map_style.corner_radius_top_left = 4
+	map_style.corner_radius_top_right = 4
+	map_style.corner_radius_bottom_left = 4
+	map_style.corner_radius_bottom_right = 4
+	map_panel.add_theme_stylebox_override("panel", map_style)
+	container.add_child(map_panel)
+
+	var map_content = Control.new()
+	map_content.name = "MapContent"
+	map_content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	map_panel.add_child(map_content)
+
+	# Populate upper deck by default
+	_populate_door_map(map_content, UPPER_DOORS, "UpperDeck")
+
+	# Tab switching
+	upper_btn.pressed.connect(func():
+		_clear_map_content(map_content)
+		_populate_door_map(map_content, UPPER_DOORS, "UpperDeck")
+	)
+	lower_btn.pressed.connect(func():
+		_clear_map_content(map_content)
+		_populate_door_map(map_content, LOWER_DOORS, "LowerDeck")
+	)
+
+	# Close button
+	var close_btn = Button.new()
+	close_btn.text = "Close (Q)"
+	close_btn.anchor_left = 0.5
+	close_btn.anchor_right = 0.5
+	close_btn.offset_left = -50
+	close_btn.offset_right = 50
+	close_btn.offset_top = 465
+	close_btn.offset_bottom = 490
+	close_btn.add_theme_font_size_override("font_size", 14)
+	close_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	close_btn.pressed.connect(_close_door_map)
+	container.add_child(close_btn)
+
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	_is_mouse_captured = false
+
+func _clear_map_content(map_content: Control) -> void:
+	for child in map_content.get_children():
+		child.queue_free()
+
+func _populate_door_map(map_content: Control, doors: Dictionary, deck_prefix: String) -> void:
+	# Find all door nodes in the scene to get their actual paths
+	var all_doors = get_tree().get_nodes_in_group("door") if get_tree() else []
+	# Also search by class
+	if all_doors.is_empty():
+		var scene = get_tree().current_scene
+		if scene:
+			_find_doors_recursive(scene, all_doors)
+
+	for door_name in doors:
+		var door_info = doors[door_name]
+		var pattern = door_info["pattern"]
+
+		# Find the matching door node path
+		var matched_path = ""
+		for door_node in all_doors:
+			var path_str = str(door_node.get_path())
+			if pattern in path_str and deck_prefix in path_str:
+				matched_path = path_str
+				break
+
+		# If no deck-specific match, try without deck filter
+		if matched_path == "":
+			for door_node in all_doors:
+				var path_str = str(door_node.get_path())
+				if pattern in path_str:
+					matched_path = path_str
+					break
+
+		var btn = Button.new()
+		btn.text = door_name
+		btn.position = Vector2(door_info["x"] - 55, door_info["y"])
+		btn.custom_minimum_size = Vector2(110, 28)
+		btn.add_theme_font_size_override("font_size", 12)
+		btn.mouse_filter = Control.MOUSE_FILTER_STOP
+
+		# Color based on lock state
+		var is_locked = _locked_doors.has(matched_path)
+		if is_locked:
+			var locked_style = StyleBoxFlat.new()
+			locked_style.bg_color = Color(0.6, 0.1, 0.1, 1.0)
+			locked_style.corner_radius_top_left = 3
+			locked_style.corner_radius_top_right = 3
+			locked_style.corner_radius_bottom_left = 3
+			locked_style.corner_radius_bottom_right = 3
+			btn.add_theme_stylebox_override("normal", locked_style)
+			btn.text = door_name + " [LOCKED]"
+
+		if matched_path != "":
+			btn.pressed.connect(_on_door_map_toggle.bind(matched_path, btn, door_name))
+		else:
+			btn.disabled = true
+			btn.tooltip_text = "Door not found"
+
+		map_content.add_child(btn)
+
+func _find_doors_recursive(node: Node, result: Array) -> void:
+	if node.has_method("_open_door") and node.has_method("_close_door"):
+		result.append(node)
+	for child in node.get_children():
+		_find_doors_recursive(child, result)
+
+func _on_door_map_toggle(door_path: String, btn: Button, door_name: String) -> void:
+	if _locked_doors.has(door_path):
+		# Unlock
+		_locked_doors.erase(door_path)
+		NetworkManager.send_door_lock(door_path, false)
+		btn.text = door_name
+		btn.remove_theme_stylebox_override("normal")
+	else:
+		# Lock
+		_locked_doors[door_path] = true
+		NetworkManager.send_door_lock(door_path, true)
+		btn.text = door_name + " [LOCKED]"
+		var locked_style = StyleBoxFlat.new()
+		locked_style.bg_color = Color(0.6, 0.1, 0.1, 1.0)
+		locked_style.corner_radius_top_left = 3
+		locked_style.corner_radius_top_right = 3
+		locked_style.corner_radius_bottom_left = 3
+		locked_style.corner_radius_bottom_right = 3
+		btn.add_theme_stylebox_override("normal", locked_style)
+
+		# Auto-unlock after duration
+		get_tree().create_timer(DOOR_LOCK_DURATION).timeout.connect(
+			_auto_unlock_door.bind(door_path)
+		)
+
+func _auto_unlock_door(door_path: String) -> void:
+	if _locked_doors.has(door_path):
+		_locked_doors.erase(door_path)
+		NetworkManager.send_door_lock(door_path, false)
+
+func _close_door_map() -> void:
+	if _door_map_layer:
+		_door_map_layer.queue_free()
+		_door_map_layer = null
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	_is_mouse_captured = true
