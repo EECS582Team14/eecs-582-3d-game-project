@@ -19,31 +19,36 @@ var voice_playbacks: Dictionary = {}
 # AudioStreamPlayer3D nodes per remote player: steam_id -> AudioStreamPlayer3D
 var voice_players: Dictionary = {}
 
-# Voice scramble state
+# Voice scramble — uses a dedicated audio bus with AudioEffectPitchShift
 var voice_scrambled: bool = false
-const SCRAMBLE_PITCH: float = 1.6  # pitch up to make voices indiscernible
-
-func set_voice_scramble(enabled: bool) -> void:
-	voice_scrambled = enabled
-	# Change the mix rate on the stream itself — Godot's audio engine handles the
-	# resampling natively, so the pitch shift is clean with zero artifacts.
-	# Lower mix rate = audio engine plays samples faster relative to output = higher pitch.
-	var new_rate = float(sample_rate) / SCRAMBLE_PITCH if enabled else float(sample_rate)
-	for steam_id in voice_players:
-		var vp = voice_players[steam_id]
-		if not is_instance_valid(vp):
-			continue
-		var was_playing = vp.playing
-		vp.stop()
-		vp.stream.mix_rate = new_rate
-		if was_playing:
-			vp.play()
-		voice_playbacks[steam_id] = vp.get_stream_playback()
+const SCRAMBLE_PITCH: float = 1.6
+const VOICE_BUS_NAME: String = "VoiceChat"
+var _voice_bus_idx: int = -1
 
 func _ready():
 	NetworkManager.voice_data_received.connect(_on_voice_data_received)
 	UIState.sabotage_triggered.connect(_on_sabotage_triggered)
 	UIState.sabotage_ended.connect(_on_sabotage_ended)
+	_setup_voice_bus()
+
+func _setup_voice_bus() -> void:
+	# Create a dedicated audio bus for voice chat
+	var bus_count = AudioServer.bus_count
+	AudioServer.add_bus(bus_count)
+	_voice_bus_idx = bus_count
+	AudioServer.set_bus_name(_voice_bus_idx, VOICE_BUS_NAME)
+	AudioServer.set_bus_send(_voice_bus_idx, "Master")
+
+	# Add a pitch shift effect (disabled by default)
+	var pitch_effect = AudioEffectPitchShift.new()
+	pitch_effect.pitch_scale = SCRAMBLE_PITCH
+	AudioServer.add_bus_effect(_voice_bus_idx, pitch_effect)
+	AudioServer.set_bus_effect_enabled(_voice_bus_idx, 0, false)
+
+func set_voice_scramble(enabled: bool) -> void:
+	voice_scrambled = enabled
+	if _voice_bus_idx >= 0:
+		AudioServer.set_bus_effect_enabled(_voice_bus_idx, 0, enabled)
 
 func _on_sabotage_triggered(sabotage_type: String) -> void:
 	if sabotage_type == "anonymous":
@@ -105,7 +110,6 @@ func _on_voice_data_received(sender_steam_id: int, compressed_audio: PackedByteA
 	var playback: AudioStreamGeneratorPlayback = voice_playbacks[sender_steam_id]
 
 	# Convert 16-bit signed PCM samples to float frames and push to audio stream
-	# Pitch shifting is handled by the stream's mix_rate, not here
 	for i in range(num_samples):
 		if playback.can_push_buffer(1):
 			var sample_value = pcm_data.decode_s16(i * 2) / 32768.0
@@ -125,6 +129,7 @@ func setup_player_voice(steam_id: int, player_node: Node):
 	stream.buffer_length = 0.5  # 500ms buffer to absorb network jitter
 
 	voice_player.stream = stream
+	voice_player.bus = VOICE_BUS_NAME
 
 	# Proximity settings — voices fade with distance
 	voice_player.max_distance = 20.0
@@ -152,6 +157,7 @@ func disable_proximity():
 		stream.mix_rate = float(sample_rate)
 		stream.buffer_length = 0.5
 		new_vp.stream = stream
+		new_vp.bus = VOICE_BUS_NAME
 
 		# Add to scene root so it's not tied to any player node
 		old_vp.get_tree().root.add_child(new_vp)
