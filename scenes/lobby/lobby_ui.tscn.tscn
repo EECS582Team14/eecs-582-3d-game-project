@@ -183,3 +183,63 @@ offset_bottom = 72.0
 texture_normal = ExtResource("12_riw86")
 ignore_texture_size = true
 stretch_mode = 5
+
+[node name="PickImposters" type="Panel" parent="." unique_id=623040696]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -272.0
+offset_top = -178.0
+offset_right = -40.0
+offset_bottom = -41.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="1Imposter" type="CheckBox" parent="PickImposters" unique_id=953886158]
+modulate = Color(5.912981, 5.912981, 5.912981, 1)
+layout_mode = 0
+offset_left = 17.0
+offset_top = 83.0
+offset_right = 55.0
+offset_bottom = 114.0
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "1"
+
+[node name="2Imposter" type="CheckBox" parent="PickImposters" unique_id=697756210]
+modulate = Color(5.912981, 5.912981, 5.912981, 1)
+layout_mode = 0
+offset_left = 96.0
+offset_top = 84.0
+offset_right = 134.0
+offset_bottom = 115.0
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "2"
+
+[node name="3Imposter" type="CheckBox" parent="PickImposters" unique_id=275720146]
+modulate = Color(5.912981, 5.912981, 5.912981, 1)
+layout_mode = 0
+offset_left = 175.0
+offset_top = 83.0
+offset_right = 213.0
+offset_bottom = 114.0
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "3"
+
+[node name="ImposterText" type="RichTextLabel" parent="PickImposters" unique_id=502437191]
+layout_mode = 0
+offset_left = -1.0
+offset_top = -27.0
+offset_right = 231.0
+offset_bottom = 83.0
+bbcode_enabled = true
+text = "[center]
+[font_size=20][color=#ffffff]
+Number of Imposters[/color]
+[/font_size]
+[/center]"

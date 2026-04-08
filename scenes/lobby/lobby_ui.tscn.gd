@@ -8,6 +8,10 @@ extends Control
 @onready var lobby_list = $LobbyList
 @onready var leave_lobby = $LeaveLobbyButton
 @onready var close_lobby = $CloseLobbyButton
+@onready var imposter1 = $"PickImposters/1Imposter"
+@onready var imposter2 = $"PickImposters/2Imposter"
+@onready var imposter3 = $"PickImposters/3Imposter"
+@onready var pickImposters = $"PickImposters"
 
 var available_lobbies: Array = []
 var dot_blue = preload("res://scenes/lobby/lobby_assets/BlueIcon.png")
@@ -15,6 +19,8 @@ var dot_red = preload("res://scenes/lobby/lobby_assets/RedIcon.png")
 var dot_purple = preload("res://scenes/lobby/lobby_assets/PurpleIcon.png")
 var dot_host = preload("res://scenes/lobby/lobby_assets/HostIcon.png")
 var lobby_password: String = ""
+var imposter_group = ButtonGroup.new()
+var imposter_count = 1
 
 func _ready():
 	#SAFE SIGNAL CONNECTIONS (prevents duplicates)
@@ -47,6 +53,16 @@ func _ready():
 		LobbyManager.host_changed.connect(_on_host_changed)
 	if not LobbyManager.lobby_join_failed.is_connected(_on_lobby_join_failed):
 		LobbyManager.lobby_join_failed.connect(_on_lobby_join_failed)
+		
+	imposter1.button_group = imposter_group
+	imposter2.button_group = imposter_group
+	imposter3.button_group = imposter_group
+	# Default selection
+	imposter1.button_pressed = true
+	
+	imposter1.pressed.connect(_on_imposter_selected)
+	imposter2.pressed.connect(_on_imposter_selected)
+	imposter3.pressed.connect(_on_imposter_selected)
 
 	#RESET DEFAULT UI
 	status_label.text = "Not in lobby"
@@ -54,6 +70,7 @@ func _ready():
 	player_list.visible = false
 	leave_lobby.visible = false
 	close_lobby.visible = false
+	pickImposters.visible = false
 	
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	await get_tree().process_frame
@@ -72,6 +89,15 @@ func _ready():
 
 func _on_lobby_join_failed(reason: String):
 	status_label.text = "Failed to join lobby: %s" % reason
+	
+func _on_imposter_selected():
+	if not LobbyManager.is_host():
+		return  # only host can change this
+
+	for button in imposter_group.get_buttons():
+		if button.button_pressed:
+			imposter_count = int(button.text)
+			print("Imposters set to:", imposter_count)
 
 # ============ HOST ============
 
@@ -124,10 +150,12 @@ func _update_lobby_buttons():
 		close_lobby.visible = true
 		leave_lobby.visible = false
 		start_btn.visible = true
+		pickImposters.visible = true
 		#start_btn.disabled = LobbyManager.lobby_members.size() < 2
 	else:
 		close_lobby.visible = false
 		leave_lobby.visible = true
+		pickImposters.visible = false
 
 # ============ BROWSE / JOIN ============
 
@@ -244,6 +272,20 @@ func _refresh_players():
 		if member["steam_id"] == LobbyManager.get_host_steam_id():
 			icon = dot_host
 		player_list.add_item(member["name"], icon)
+	update_imposter_options()
+	
+func update_imposter_options():
+	var count = LobbyManager.lobby_members.size()
+
+	imposter1.disabled = count < 3
+	imposter2.disabled = count < 5
+	imposter3.disabled = count < 7
+
+	# Force valid selection if current one becomes invalid
+	if imposter_count == 3 and count < 7:
+		imposter2.button_pressed = true
+	elif imposter_count == 2 and count < 5:
+		imposter1.button_pressed = true
 
 # ============ LEAVING ============
 
