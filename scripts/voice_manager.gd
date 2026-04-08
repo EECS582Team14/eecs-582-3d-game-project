@@ -23,6 +23,14 @@ var voice_players: Dictionary = {}
 var voice_scrambled: bool = false
 const SCRAMBLE_PITCH: float = 1.6  # pitch up to make voices indiscernible
 
+func set_voice_scramble(enabled: bool) -> void:
+	voice_scrambled = enabled
+	var pitch = SCRAMBLE_PITCH if enabled else 1.0
+	for steam_id in voice_players:
+		var vp = voice_players[steam_id]
+		if is_instance_valid(vp):
+			vp.pitch_scale = pitch
+
 func _ready():
 	NetworkManager.voice_data_received.connect(_on_voice_data_received)
 	UIState.sabotage_triggered.connect(_on_sabotage_triggered)
@@ -30,11 +38,11 @@ func _ready():
 
 func _on_sabotage_triggered(sabotage_type: String) -> void:
 	if sabotage_type == "scramble_voices":
-		voice_scrambled = true
+		set_voice_scramble(true)
 
 func _on_sabotage_ended(sabotage_type: String) -> void:
 	if sabotage_type == "scramble_voices":
-		voice_scrambled = false
+		set_voice_scramble(false)
 
 func _process(_delta):
 	if not is_active:
@@ -88,21 +96,10 @@ func _on_voice_data_received(sender_steam_id: int, compressed_audio: PackedByteA
 	var playback: AudioStreamGeneratorPlayback = voice_playbacks[sender_steam_id]
 
 	# Convert 16-bit signed PCM samples to float frames and push to audio stream
-	if voice_scrambled:
-		# Pitch shift by resampling — read samples at a different rate
-		var out_samples = int(num_samples / SCRAMBLE_PITCH)
-		for i in range(out_samples):
-			if playback.can_push_buffer(1):
-				var src_idx = int(i * SCRAMBLE_PITCH)
-				if src_idx >= num_samples:
-					break
-				var sample_value = pcm_data.decode_s16(src_idx * 2) / 32768.0
-				playback.push_frame(Vector2(sample_value, sample_value))
-	else:
-		for i in range(num_samples):
-			if playback.can_push_buffer(1):
-				var sample_value = pcm_data.decode_s16(i * 2) / 32768.0
-				playback.push_frame(Vector2(sample_value, sample_value))
+	for i in range(num_samples):
+		if playback.can_push_buffer(1):
+			var sample_value = pcm_data.decode_s16(i * 2) / 32768.0
+			playback.push_frame(Vector2(sample_value, sample_value))
 
 # ============ PLAYER SETUP ============
 
