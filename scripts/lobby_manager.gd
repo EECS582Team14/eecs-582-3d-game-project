@@ -14,6 +14,7 @@ var lobby_id: int = 0
 var lobby_members: Array = []
 var current_host_id: int = 0
 signal host_changed(new_host_id)
+var _pending_password: String = ""
 
 func _ready():
 	print("LobbyManager starting...")
@@ -51,8 +52,9 @@ func is_in_lobby() -> bool:
 
 # ============ CREATE ============
 
-func create_lobby(max_players: int = 4):
+func create_lobby(max_players: int = 4, password: String = ""):
 	print("Creating lobby...")
+	_pending_password = password
 	Steam.createLobby(Steam.LOBBY_TYPE_PUBLIC, max_players)
 
 func _on_lobby_created(result: int, new_lobby_id: int):
@@ -63,6 +65,13 @@ func _on_lobby_created(result: int, new_lobby_id: int):
 		Steam.setLobbyData(lobby_id, "name", Steam.getPersonaName() + "'s Game")
 		Steam.setLobbyData(lobby_id, "game_tag", GAME_TAG)
 		Steam.setLobbyData(lobby_id, "original_host", str(Steam.getSteamID()))
+		#set password
+		if _pending_password != "":
+			Steam.setLobbyData(lobby_id, "has_password", "1")
+			Steam.setLobbyData(lobby_id, "password", _pending_password)
+		else:
+			Steam.setLobbyData(lobby_id, "has_password", "0")
+		_pending_password = ""
 		# Allow Steam relay as fallback for P2P
 		Steam.allowP2PPacketRelay(true)
 		_refresh_lobby_members()
@@ -93,13 +102,33 @@ func _on_lobby_match_list(lobbies: Array):
 			"id": lob_id,
 			"name": Steam.getLobbyData(lob_id, "name"),
 			"player_count": player_count,
-			"max_players": Steam.getLobbyMemberLimit(lob_id)
+			"max_players": Steam.getLobbyMemberLimit(lob_id),
+			"has_password": Steam.getLobbyData(lob_id, "has_password") == "1"
 		})
 	lobby_list_received.emit(lobby_data)
 
 # ============ JOIN ============
 
 func join_lobby(target_lobby_id: int):
+	var has_password = Steam.getLobbyData(target_lobby_id, "has_password") == "1"
+
+	if has_password:
+		print("Blocked: password required")
+		lobby_join_failed.emit("Password required")
+		return
+		
+	print("Joining lobby: ", target_lobby_id)
+	Steam.joinLobby(target_lobby_id)
+	
+func join_lobby_with_password(target_lobby_id: int, entered_password: String):
+	var actual_password = Steam.getLobbyData(target_lobby_id, "password")
+	var has_password = Steam.getLobbyData(target_lobby_id, "has_password") == "1"
+
+	if has_password and entered_password != actual_password:
+		print("Incorrect password")
+		lobby_join_failed.emit("Incorrect password")
+		return
+
 	print("Joining lobby: ", target_lobby_id)
 	Steam.joinLobby(target_lobby_id)
 

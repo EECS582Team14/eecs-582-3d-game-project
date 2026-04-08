@@ -14,6 +14,7 @@ var dot_blue = preload("res://scenes/lobby/lobby_assets/BlueIcon.png")
 var dot_red = preload("res://scenes/lobby/lobby_assets/RedIcon.png")
 var dot_purple = preload("res://scenes/lobby/lobby_assets/PurpleIcon.png")
 var dot_host = preload("res://scenes/lobby/lobby_assets/HostIcon.png")
+var lobby_password: String = ""
 
 func _ready():
 	#SAFE SIGNAL CONNECTIONS (prevents duplicates)
@@ -44,6 +45,8 @@ func _ready():
 		NetworkManager.game_started.connect(_on_game_started)
 	if not LobbyManager.host_changed.is_connected(_on_host_changed):
 		LobbyManager.host_changed.connect(_on_host_changed)
+	if not LobbyManager.lobby_join_failed.is_connected(_on_lobby_join_failed):
+		LobbyManager.lobby_join_failed.connect(_on_lobby_join_failed)
 
 	#RESET DEFAULT UI
 	status_label.text = "Not in lobby"
@@ -67,6 +70,9 @@ func _ready():
 	else:
 		_on_refresh_pressed()
 
+func _on_lobby_join_failed(reason: String):
+	status_label.text = "Failed to join lobby: %s" % reason
+
 # ============ HOST ============
 
 func _on_host_changed(_new_host_id):
@@ -79,10 +85,33 @@ func _on_host_changed(_new_host_id):
 		status_label.text = "Host changed."
 
 func _on_host_pressed():
-	status_label.text = "Creating lobby..."
-	player_list.visible = true
-	lobby_list.visible = false
-	LobbyManager.create_lobby(8)
+	var popup = AcceptDialog.new()
+	popup.title = "Host New Lobby"
+	popup.size = Vector2i(300, 150)
+	
+	var vbox = VBoxContainer.new()
+	
+	var label = Label.new()
+	label.text = "Set a lobby password\n(Leave blank for public):"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(label)
+	
+	var line_edit = LineEdit.new()
+	line_edit.placeholder_text = "Optional password..."
+	line_edit.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(line_edit)
+	
+	popup.add_child(vbox)
+	add_child(popup)
+	popup.popup_centered()
+	
+	# Focus the line edit immediately so the user can just start typing
+	line_edit.grab_focus()
+
+	# Connect signals
+	popup.confirmed.connect(_create_lobby_with_password.bind(line_edit, popup))
+	line_edit.text_submitted.connect(func(_text): _create_lobby_with_password(line_edit, popup))
+	popup.canceled.connect(popup.queue_free)
 
 func _on_lobby_created(_lobby_id: int):
 	start_btn.visible = true
@@ -95,6 +124,7 @@ func _update_lobby_buttons():
 		close_lobby.visible = true
 		leave_lobby.visible = false
 		start_btn.visible = true
+		#start_btn.disabled = LobbyManager.lobby_members.size() < 2
 	else:
 		close_lobby.visible = false
 		leave_lobby.visible = true
@@ -118,7 +148,10 @@ func _on_lobby_list_received(lobbies: Array):
 		var text = "%s  (%d/%d)" % [lobby.name, lobby.player_count, lobby.max_players]
 		var icon = dot_purple
 		var ratio = float(lobby.player_count) / lobby.max_players
-		icon = dot_blue if ratio >= 0.75 else dot_red
+		if ratio >= 0.75:
+			icon = dot_blue
+		elif ratio > 0:
+			icon = dot_red
 		lobby_list.add_item(text, icon)
 
 	status_label.text = "Found %d lobby(s). Double-click to join." % lobbies.size()
@@ -127,11 +160,70 @@ func _on_lobby_selected(index: int):
 	if index < 0 or index >= available_lobbies.size():
 		return
 	var lobby = available_lobbies[index]
-	status_label.text = "Joining %s..." % lobby.name
-	LobbyManager.join_lobby(lobby.id)
+	if lobby.has_password:
+		lobby_password = ""  # reset
+		_show_password_prompt(lobby)  # call your popup UI
+	else:
+		status_label.text = "Joining %s..." % lobby.name
+		LobbyManager.join_lobby(lobby.id)
+		
+# ============ PASSWORD ============
+func _submit_password(lobby_id: int, entered_password: String):
+	status_label.text = "Joining lobby..."
+	LobbyManager.join_lobby_with_password(lobby_id, entered_password)
+	
+func _show_password_prompt(lobby):
+	var popup = AcceptDialog.new()
+	popup.title = "Join Lobby: %s" % lobby.name
+	popup.size = Vector2i(300, 120)
+	
+	# Container for vertical layout
+	var vbox = VBoxContainer.new()
+	
+	# Add a descriptive label
+	var label = Label.new()
+	label.text = "Enter a password or leave blank\nfor a public lobby:"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(label)
+	
+	# Add the input field
+	var line_edit = LineEdit.new()
+	line_edit.placeholder_text = "Password..."
+	line_edit.secret = true # Masks the password characters
+	vbox.add_child(line_edit)
+	
+	popup.add_child(vbox)
+	add_child(popup)
+	popup.popup_centered()
 
-# ============ JOINED ============
-
+	# Handle the 'OK' button or pressing 'Enter' in the LineEdit
+	popup.confirmed.connect(_on_password_entered.bind(lobby.id, line_edit, popup))
+	line_edit.text_submitted.connect(func(_text): popup.hide(); _on_password_entered(lobby.id, line_edit, popup))
+	
+	# Cleanup on close
+	popup.canceled.connect(popup.queue_free)
+	
+func _on_password_entered(lobby_id: int, line_edit: LineEdit, popup:AcceptDialog):
+	var entered_password = line_edit.text.strip_edges()
+	_submit_password(lobby_id, entered_password)
+	
+	# Close the popup after submitting
+	popup.queue_free()
+	
+func _create_lobby_with_password(line_edit: LineEdit, popup: AcceptDialog):
+	lobby_password = line_edit.text.strip_edges()
+	status_label.text = "Creating lobby..."
+	
+	# Transition UI
+	player_list.visible = true
+	lobby_list.visible = false
+	
+	LobbyManager.create_lobby(8, lobby_password)
+	
+	if is_instance_valid(popup):
+		popup.queue_free()
+	
+# ============ JOINED ============	
 func _on_lobby_joined(_lobby_id: int):
 	status_label.text = "Joined lobby!"
 	lobby_list.visible = false
