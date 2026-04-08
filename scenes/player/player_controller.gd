@@ -443,6 +443,7 @@ func _ready() -> void:
 		NetworkManager.possess_start_received.connect(_on_possess_start)
 		NetworkManager.possess_move_received.connect(_on_possess_move)
 		NetworkManager.possess_end_received.connect(_on_possess_end)
+		NetworkManager.possess_action_received.connect(_on_possess_action)
 
 		# Create sabotage hint label (bottom-left, above health bar)
 		_sabotage_hint_label = Label.new()
@@ -535,11 +536,17 @@ func _input(event: InputEvent) -> void:
 	if _is_paused or _minigame_active:
 		return
 
-	# While possessing, track mouse look in our own variables (not on the remote player node)
+	# While possessing, handle mouse look + forward actions to the target
 	if _is_possessing:
 		if event is InputEventMouseMotion and _is_mouse_captured:
 			_possess_rot_y += deg_to_rad(-event.relative.x * mouse_sensitivity)
 			_possess_cam_x = clamp(_possess_cam_x - event.relative.y * mouse_sensitivity, -90, 90)
+		# Forward action keys to the possessed player
+		if event is InputEventKey and event.pressed:
+			if event.key_label == KEY_SPACE or Input.is_action_just_pressed("jump"):
+				NetworkManager.send_possess_action(_possess_target_id, "jump")
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			NetworkManager.send_possess_action(_possess_target_id, "attack")
 		return
 
 	# While being possessed, block normal input
@@ -1562,6 +1569,20 @@ func _create_sabotage_panel() -> void:
 	btn_possess.pressed.connect(_on_possess_selected)
 	vbox.add_child(btn_possess)
 
+	var btn_mask = Button.new()
+	btn_mask.text = "Mask Nametags"
+	btn_mask.add_theme_font_size_override("font_size", 18)
+	btn_mask.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn_mask.pressed.connect(_on_sabotage_selected.bind("mask_names"))
+	vbox.add_child(btn_mask)
+
+	var btn_scramble = Button.new()
+	btn_scramble.text = "Scramble Voices"
+	btn_scramble.add_theme_font_size_override("font_size", 18)
+	btn_scramble.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn_scramble.pressed.connect(_on_sabotage_selected.bind("scramble_voices"))
+	vbox.add_child(btn_scramble)
+
 	# Cancel label
 	var cancel = Label.new()
 	cancel.text = "Press Q to cancel"
@@ -1617,12 +1638,16 @@ func _on_sabotage_triggered(sabotage_type: String) -> void:
 		return
 	if sabotage_type == "lights_out" and not is_impostor:
 		_show_lights_out()
+	elif sabotage_type == "mask_names":
+		_mask_all_nametags()
 
 func _on_sabotage_ended(sabotage_type: String) -> void:
 	if not is_local_player:
 		return
 	if sabotage_type == "lights_out":
 		_hide_lights_out()
+	elif sabotage_type == "mask_names":
+		_restore_all_nametags()
 
 func _show_lights_out() -> void:
 	if _lights_out_overlay:
@@ -1637,6 +1662,30 @@ func _hide_lights_out() -> void:
 	if _lights_out_overlay:
 		_lights_out_overlay.queue_free()
 		_lights_out_overlay = null
+
+func _mask_all_nametags() -> void:
+	if not GameManager.players_container:
+		return
+	for player in GameManager.players_container.get_children():
+		if player == self:
+			continue
+		if player.has_node("Label3D"):
+			var tag = player.get_node("Label3D")
+			tag.set_meta("real_name", tag.text)
+			tag.text = "???"
+			tag.modulate = Color(1, 0.3, 0.3, 1)
+
+func _restore_all_nametags() -> void:
+	if not GameManager.players_container:
+		return
+	for player in GameManager.players_container.get_children():
+		if player == self:
+			continue
+		if player.has_node("Label3D"):
+			var tag = player.get_node("Label3D")
+			if tag.has_meta("real_name"):
+				tag.text = tag.get_meta("real_name")
+			tag.modulate = Color(1, 1, 1, 1)
 
 # --- Possession System ---
 
@@ -1863,9 +1912,9 @@ func _process_possessing(delta: float) -> void:
 	if not camera.is_set_as_top_level():
 		camera.set_as_top_level(true)
 
-	# Build a basis from our tracked rotation to position the camera
+	# Position camera at the target's eye level (same as first-person camera offset)
 	var cam_basis = Basis(Vector3.UP, _possess_rot_y)
-	camera.global_position = target_player.global_position + Vector3(0, 1.6, 0)
+	camera.global_position = target_player.global_position + Vector3(0, 1.0, 0) + cam_basis * Vector3(0, 0, -0.3)
 	camera.global_rotation = Vector3(deg_to_rad(_possess_cam_x), _possess_rot_y, 0)
 
 	# Gather movement input relative to our tracked rotation (not the remote player's)
@@ -1971,6 +2020,23 @@ func _on_possess_move(move_dir: Vector3, rot_y: float, cam_rot_x: float) -> void
 	rotation.y = rot_y
 	camera.rotation_degrees.x = cam_rot_x
 
+func _on_possess_action(action: String) -> void:
+	if not is_local_player or not _is_possessed:
+		return
+	match action:
+		"jump":
+			if is_on_floor():
+				velocity.y = jump_velocity
+				_play_jump()
+		"attack":
+			if has_taser and not _taser_hidden:
+				_shoot_taser()
+			elif has_baton and not _baton_hidden and not _is_swinging:
+				if baton_uses > 0:
+					_swing_baton()
+			elif not _is_punching:
+				_play_punch()
+
 func _on_possess_end() -> void:
 	if not is_local_player:
 		return
@@ -1985,3 +2051,9 @@ func _process_possessed_movement(delta: float) -> void:
 	# Apply the movement direction sent by the impostor
 	velocity.x = _possess_move_dir.x * speed
 	velocity.z = _possess_move_dir.z * speed
+	# Apply gravity so jumping works
+	if not is_on_floor():
+		velocity.y -= gravity * delta
+	if _is_jumping and is_on_floor() and velocity.y <= 0:
+		_is_jumping = false
+		_current_anim_state = ""

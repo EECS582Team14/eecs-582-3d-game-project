@@ -33,6 +33,7 @@ signal sabotage_received(sabotage_type: String)
 signal possess_start_received(impostor_steam_id: int)
 signal possess_move_received(move_dir: Vector3, rotation_y: float, cam_rotation_x: float)
 signal possess_end_received()
+signal possess_action_received(action: String)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -64,7 +65,8 @@ enum PacketType {
 	SABOTAGE,
 	POSSESS_START,
 	POSSESS_MOVE,
-	POSSESS_END
+	POSSESS_END,
+	POSSESS_ACTION
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -245,6 +247,9 @@ func send_possess_move(target_steam_id: int, move_dir: Vector3, rot_y: float, ca
 
 func send_possess_end(target_steam_id: int):
 	send_p2p_packet(target_steam_id, {"type": PacketType.POSSESS_END}, Steam.P2P_SEND_RELIABLE, 0)
+
+func send_possess_action(target_steam_id: int, action: String):
+	send_p2p_packet(target_steam_id, {"type": PacketType.POSSESS_ACTION, "action": action}, Steam.P2P_SEND_RELIABLE, 0)
 # ============ READ PACKETS ============
 
 func _read_all_p2p_packets(read_count: int = 0):
@@ -373,6 +378,8 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 			possess_move_received.emit(dir, data.get("ry", 0.0), data.get("cx", 0.0))
 		PacketType.POSSESS_END:
 			possess_end_received.emit()
+		PacketType.POSSESS_ACTION:
+			possess_action_received.emit(data.get("action", ""))
 		_:
 			print("Unknown packet type: %s" % packet_type)
 
