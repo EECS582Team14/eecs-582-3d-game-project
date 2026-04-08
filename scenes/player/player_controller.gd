@@ -2230,13 +2230,11 @@ func _clear_map_content(map_content: Control) -> void:
 		child.queue_free()
 
 func _populate_door_map(map_content: Control, doors: Dictionary, deck_prefix: String) -> void:
-	# Find all door nodes in the scene to get their actual paths
-	var all_doors = get_tree().get_nodes_in_group("door") if get_tree() else []
-	# Also search by class
-	if all_doors.is_empty():
-		var scene = get_tree().current_scene
-		if scene:
-			_find_doors_recursive(scene, all_doors)
+	# Find all door script nodes in the scene
+	var all_doors: Array = []
+	var scene = get_tree().current_scene
+	if scene:
+		_find_doors_recursive(scene, all_doors)
 
 	for door_name in doors:
 		var door_info = doors[door_name]

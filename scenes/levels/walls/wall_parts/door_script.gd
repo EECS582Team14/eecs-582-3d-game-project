@@ -94,7 +94,11 @@ func _on_door_closed(door_id: String) -> void:
 		_close_door()
 
 func _on_door_lock_received(door_id: String, locked: bool) -> void:
-	if door_id == str(get_path()):
+	var my_path = str(get_path())
+	if door_id == my_path or door_id == str(get_parent().get_path()):
 		is_locked = locked
+		# Also set on the parent controller so it doesn't overwrite us
+		if get_parent() and "is_locked" in get_parent():
+			get_parent().is_locked = locked
 		if locked and _is_open:
 			_close_door()
