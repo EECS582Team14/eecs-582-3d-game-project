@@ -125,6 +125,8 @@ var _player_select_layer: CanvasLayer = null
 var _door_map_layer: CanvasLayer = null
 var _locked_doors: Dictionary = {}  # door_id -> true
 const DOOR_LOCK_DURATION: float = 15.0
+const MAX_DOOR_LOCKS: int = 2
+var _door_locks_used: int = 0
 
 # Inventory
 var has_taser: bool = false
@@ -2102,6 +2104,7 @@ const LOWER_DOORS = {
 
 func _on_lock_doors_selected() -> void:
 	_close_sabotage_menu()
+	_door_locks_used = 0
 	_show_door_map()
 
 func _show_door_map() -> void:
@@ -2135,7 +2138,7 @@ func _show_door_map() -> void:
 
 	# Title
 	var title = Label.new()
-	title.text = "SHIP MAP - Click doors to lock/unlock (locks last %ds)" % int(DOOR_LOCK_DURATION)
+	title.text = "SHIP MAP - Lock up to %d doors (locks last %ds)" % [MAX_DOOR_LOCKS, int(DOOR_LOCK_DURATION)]
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.anchor_left = 0.0
 	title.anchor_right = 1.0
@@ -2291,14 +2294,19 @@ func _find_doors_recursive(node: Node, result: Array) -> void:
 
 func _on_door_map_toggle(door_path: String, btn: Button, door_name: String) -> void:
 	if _locked_doors.has(door_path):
-		# Unlock
+		# Unlock (give the lock back)
 		_locked_doors.erase(door_path)
+		_door_locks_used -= 1
 		NetworkManager.send_door_lock(door_path, false)
 		btn.text = door_name
 		btn.remove_theme_stylebox_override("normal")
 	else:
+		# Check limit
+		if _door_locks_used >= MAX_DOOR_LOCKS:
+			return
 		# Lock
 		_locked_doors[door_path] = true
+		_door_locks_used += 1
 		NetworkManager.send_door_lock(door_path, true)
 		btn.text = door_name + " [LOCKED]"
 		var locked_style = StyleBoxFlat.new()
@@ -2313,6 +2321,11 @@ func _on_door_map_toggle(door_path: String, btn: Button, door_name: String) -> v
 		get_tree().create_timer(DOOR_LOCK_DURATION).timeout.connect(
 			_auto_unlock_door.bind(door_path)
 		)
+
+		# If max locks reached, close map and start cooldown
+		if _door_locks_used >= MAX_DOOR_LOCKS:
+			_close_door_map()
+			_sabotage_cooldown = SABOTAGE_COOLDOWN_TIME
 
 func _auto_unlock_door(door_path: String) -> void:
 	if _locked_doors.has(door_path):
