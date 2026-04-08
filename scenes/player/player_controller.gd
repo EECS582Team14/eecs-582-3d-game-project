@@ -1569,19 +1569,12 @@ func _create_sabotage_panel() -> void:
 	btn_possess.pressed.connect(_on_possess_selected)
 	vbox.add_child(btn_possess)
 
-	var btn_mask = Button.new()
-	btn_mask.text = "Mask Nametags"
-	btn_mask.add_theme_font_size_override("font_size", 18)
-	btn_mask.mouse_filter = Control.MOUSE_FILTER_STOP
-	btn_mask.pressed.connect(_on_sabotage_selected.bind("mask_names"))
-	vbox.add_child(btn_mask)
-
-	var btn_scramble = Button.new()
-	btn_scramble.text = "Scramble Voices"
-	btn_scramble.add_theme_font_size_override("font_size", 18)
-	btn_scramble.mouse_filter = Control.MOUSE_FILTER_STOP
-	btn_scramble.pressed.connect(_on_sabotage_selected.bind("scramble_voices"))
-	vbox.add_child(btn_scramble)
+	var btn_anon = Button.new()
+	btn_anon.text = "Anonymous Mode"
+	btn_anon.add_theme_font_size_override("font_size", 18)
+	btn_anon.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn_anon.pressed.connect(_on_sabotage_selected.bind("anonymous"))
+	vbox.add_child(btn_anon)
 
 	# Cancel label
 	var cancel = Label.new()
@@ -1638,7 +1631,7 @@ func _on_sabotage_triggered(sabotage_type: String) -> void:
 		return
 	if sabotage_type == "lights_out" and not is_impostor:
 		_show_lights_out()
-	elif sabotage_type == "mask_names":
+	elif sabotage_type == "anonymous":
 		_mask_all_nametags()
 
 func _on_sabotage_ended(sabotage_type: String) -> void:
@@ -1646,7 +1639,7 @@ func _on_sabotage_ended(sabotage_type: String) -> void:
 		return
 	if sabotage_type == "lights_out":
 		_hide_lights_out()
-	elif sabotage_type == "mask_names":
+	elif sabotage_type == "anonymous":
 		_restore_all_nametags()
 
 func _show_lights_out() -> void:

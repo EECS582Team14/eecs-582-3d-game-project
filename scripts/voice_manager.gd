@@ -25,11 +25,6 @@ const SCRAMBLE_PITCH: float = 1.6  # pitch up to make voices indiscernible
 
 func set_voice_scramble(enabled: bool) -> void:
 	voice_scrambled = enabled
-	var pitch = SCRAMBLE_PITCH if enabled else 1.0
-	for steam_id in voice_players:
-		var vp = voice_players[steam_id]
-		if is_instance_valid(vp):
-			vp.pitch_scale = pitch
 
 func _ready():
 	NetworkManager.voice_data_received.connect(_on_voice_data_received)
@@ -37,11 +32,11 @@ func _ready():
 	UIState.sabotage_ended.connect(_on_sabotage_ended)
 
 func _on_sabotage_triggered(sabotage_type: String) -> void:
-	if sabotage_type == "scramble_voices":
+	if sabotage_type == "anonymous":
 		set_voice_scramble(true)
 
 func _on_sabotage_ended(sabotage_type: String) -> void:
-	if sabotage_type == "scramble_voices":
+	if sabotage_type == "anonymous":
 		set_voice_scramble(false)
 
 func _process(_delta):
@@ -95,11 +90,26 @@ func _on_voice_data_received(sender_steam_id: int, compressed_audio: PackedByteA
 	var num_samples: int = actual_byte_size / 2
 	var playback: AudioStreamGeneratorPlayback = voice_playbacks[sender_steam_id]
 
-	# Convert 16-bit signed PCM samples to float frames and push to audio stream
-	for i in range(num_samples):
-		if playback.can_push_buffer(1):
-			var sample_value = pcm_data.decode_s16(i * 2) / 32768.0
+	if voice_scrambled and num_samples > 1:
+		# Pitch shift: push the SAME number of frames (keeps buffer full, no underruns)
+		# but read from source at a faster rate with linear interpolation
+		for i in range(num_samples):
+			if not playback.can_push_buffer(1):
+				break
+			var src_pos = fmod(i * SCRAMBLE_PITCH, float(num_samples))
+			var idx_a = int(src_pos)
+			var idx_b = (idx_a + 1) % num_samples
+			var frac = src_pos - idx_a
+			var a = pcm_data.decode_s16(idx_a * 2) / 32768.0
+			var b = pcm_data.decode_s16(idx_b * 2) / 32768.0
+			var sample_value = a + (b - a) * frac
 			playback.push_frame(Vector2(sample_value, sample_value))
+	else:
+		# Normal playback
+		for i in range(num_samples):
+			if playback.can_push_buffer(1):
+				var sample_value = pcm_data.decode_s16(i * 2) / 32768.0
+				playback.push_frame(Vector2(sample_value, sample_value))
 
 # ============ PLAYER SETUP ============
 

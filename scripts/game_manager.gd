@@ -118,7 +118,7 @@ func _on_sabotage_received(sabotage_type: String) -> void:
 		adjust_ship_integrity(-SABOTAGE_INTEGRITY_DRAIN)
 		UIState.sabotage_triggered.emit(sabotage_type)
 		UIState.system_alert.emit("WARNING: Ship integrity compromised! Hull breach detected!")
-	elif sabotage_type in ["lights_out", "disable_comms", "mask_names", "scramble_voices"]:
+	elif sabotage_type in ["lights_out", "disable_comms", "anonymous"]:
 		# Timed effect
 		active_sabotages[sabotage_type] = SABOTAGE_DURATION
 		UIState.sabotage_triggered.emit(sabotage_type)
@@ -126,10 +126,8 @@ func _on_sabotage_received(sabotage_type: String) -> void:
 			UIState.system_alert.emit("WARNING: Electrical failure! Emergency lighting only!")
 		elif sabotage_type == "disable_comms":
 			UIState.system_alert.emit("WARNING: Communications array offline! Directives unavailable!")
-		elif sabotage_type == "mask_names":
-			UIState.system_alert.emit("WARNING: IFF transponder failure! Unable to identify crew!")
-		elif sabotage_type == "scramble_voices":
-			UIState.system_alert.emit("WARNING: Audio system corrupted! Voice channels distorted!")
+		elif sabotage_type == "anonymous":
+			UIState.system_alert.emit("WARNING: IFF and audio systems compromised! Crew identity unknown!")
 
 func _update_sabotages(delta: float) -> void:
 	var to_remove: Array[String] = []
