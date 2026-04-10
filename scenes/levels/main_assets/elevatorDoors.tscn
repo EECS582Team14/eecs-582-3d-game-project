@@ -1,6 +1,8 @@
 [gd_scene format=4 uid="uid://ivl57vnip4kx"]
 
 [ext_resource type="Script" uid="uid://borsfq2doi42v" path="res://scenes/levels/main_assets/elevator_doors.gd" id="1_1b1fq"]
+[ext_resource type="AudioStream" uid="uid://dcdf7yb5jqt0e" path="res://sounds/elevator_door_close.wav" id="2_umw74"]
+[ext_resource type="AudioStream" uid="uid://dbg4ce0uemcyw" path="res://sounds/elevator_door_open.wav" id="3_5sfw3"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cxua1"]
 albedo_color = Color(0.75, 0.75, 0.78, 1)
@@ -115,3 +117,13 @@ mesh = SubResource("ArrayMesh_5sfw3")
 
 [node name="WestDoorCollision" type="CollisionShape3D" parent="WestDoor" unique_id=1860528103]
 shape = SubResource("ConcavePolygonShape3D_umw74")
+
+[node name="CloseDoorsSound" type="AudioStreamPlayer3D" parent="." unique_id=883580484]
+stream = ExtResource("2_umw74")
+max_distance = 3.0
+panning_strength = 0.0
+
+[node name="OpenDoorsSound" type="AudioStreamPlayer3D" parent="." unique_id=1515379949]
+stream = ExtResource("3_5sfw3")
+max_distance = 3.0
+panning_strength = 0.0

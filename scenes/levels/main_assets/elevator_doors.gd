@@ -3,6 +3,8 @@ extends Node3D
 # Initialize child nodes
 @onready var east_door = $EastDoor
 @onready var west_door = $WestDoor
+@onready var closed_sound = $CloseDoorsSound
+@onready var open_sound = $OpenDoorsSound
 
 # Internal state variables
 var _is_open: bool = false
@@ -60,7 +62,9 @@ func _close_doors_animation() -> void:
 func _on_door_opened(door_id: String) -> void:
 	if door_id == str(get_path()):
 		_open_doors_animation()
+		open_sound.play()
 
 func _on_door_closed(door_id: String) -> void:
 	if door_id == str(get_path()):
 		_close_doors_animation()
+		closed_sound.play()
