@@ -5,6 +5,7 @@ extends StaticBody3D
 @export var button_mesh: Node3D
 # Check this box if this button is on the UPPER floor. Leave unchecked for the lower floor.
 @export var is_upper_floor: bool = false
+@onready var sound_player = $AudioStreamPlayer3D
 
 var _waiting: bool = false
 var _anim_player: AnimationPlayer
@@ -18,6 +19,7 @@ func activate() -> void:
 
 	var floor_name = "upper" if is_upper_floor else "lower"
 
+	sound_player.play()
 	_play_button_animation()
 	_waiting = true
 	# call_to_floor handles the network broadcast

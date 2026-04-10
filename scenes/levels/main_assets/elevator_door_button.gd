@@ -1,6 +1,10 @@
 extends StaticBody3D
 
 @export var elevator: AnimatableBody3D
+@onready var sound_player = $AudioStreamPlayer3D
+
+func _ready() -> void:
+	pass
 
 func activate() -> void:
 	print("DoorButton activate() called!")
@@ -9,4 +13,5 @@ func activate() -> void:
 		push_warning("DoorButton: elevator reference not set!")
 		return
 	
+	sound_player.play()
 	elevator.open_doors_manually()

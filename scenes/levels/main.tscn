@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://jhrb64rmtkho" path="res://scenes/levels/main_assets/call_button.gd" id="5_u81e1"]
 [ext_resource type="PackedScene" uid="uid://ivl57vnip4kx" path="res://scenes/levels/main_assets/elevatorDoors.tscn" id="5_vkq25"]
 [ext_resource type="PackedScene" uid="uid://ckods7tupa2e8" path="res://scenes/levels/main_assets/ladder.tscn" id="6_b6bv0"]
+[ext_resource type="AudioStream" uid="uid://bsbxxh204lrgs" path="res://sounds/elevator_button_press.wav" id="8_7lrji"]
 [ext_resource type="PackedScene" uid="uid://bnsi3ojfq1xff" path="res://scenes/levels/scifi_button.glb" id="8_scifi_btn"]
 
 [sub_resource type="Environment" id="Environment_y0acb"]
@@ -127,6 +128,9 @@ transform = Transform3D(-0.4, 0, 0, 0, 0.4, 0, 0, 0, -0.4, 0, -0.5, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.017210245, 0)
 shape = SubResource("CylinderShape3D_u81e1")
 
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="ElevatorShaft/LowerFloorCallButton" unique_id=1649708118]
+stream = ExtResource("8_7lrji")
+
 [node name="UpperFloorCallButton" type="StaticBody3D" parent="ElevatorShaft" unique_id=1217978986 node_paths=PackedStringArray("elevator", "button_mesh") groups=["elevator_call_button"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.636, -2, -1.8)
 script = ExtResource("5_u81e1")
@@ -140,6 +144,9 @@ shape = SubResource("CylinderShape3D_u81e1")
 
 [node name="CallButton2" parent="ElevatorShaft/UpperFloorCallButton" unique_id=505492471 groups=["elevator_call_button"] instance=ExtResource("8_scifi_btn")]
 transform = Transform3D(-0.4, 0, 0, 0, 0.4, 0, 0, 0, -0.4, 0, 2.0525913, 0)
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="ElevatorShaft/UpperFloorCallButton" unique_id=837090972]
+stream = ExtResource("8_7lrji")
 
 [node name="EastLadder" parent="." unique_id=1563259296 instance=ExtResource("6_b6bv0")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 10, -2.444, 36)
