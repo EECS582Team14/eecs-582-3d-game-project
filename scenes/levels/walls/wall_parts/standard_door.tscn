@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c78tlccltqjwd" path="res://scenes/levels/walls/wall_parts/door_script.gd" id="1_xd7ro"]
 [ext_resource type="Texture2D" uid="uid://bolgtv2b8euy8" path="res://scenes/levels/walls/wall_parts/space_door.jpg" id="2_door"]
 [ext_resource type="Texture2D" uid="uid://dn245varmhgwq" path="res://scenes/levels/walls/wall_parts/lock_icon.png" id="3_lock"]
+[ext_resource type="AudioStream" uid="uid://yowsfki4jym8" path="res://sounds/sliding_door.wav" id="4_3sffh"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xd7ro"]
 cull_mode = 2
@@ -50,11 +51,18 @@ material_override = SubResource("StandardMaterial3D_lock_overlay")
 mesh = SubResource("QuadMesh_lock")
 
 [node name="DoorDetectionRange" type="Area3D" parent="." unique_id=1520436003]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18457985, 0)
 collision_mask = 2
 
 [node name="RangeCollisionShape" type="CollisionShape3D" parent="DoorDetectionRange" unique_id=394874340]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
 shape = SubResource("BoxShape3D_xd7ro")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=268516247]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+stream = ExtResource("4_3sffh")
+max_distance = 3.0
+panning_strength = 0.0
 
 [connection signal="body_entered" from="DoorDetectionRange" to="." method="_on_door_detection_range_body_entered"]
 [connection signal="body_exited" from="DoorDetectionRange" to="." method="_on_door_detection_range_body_exited"]

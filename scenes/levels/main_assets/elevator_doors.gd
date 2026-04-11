@@ -3,8 +3,8 @@ extends Node3D
 # Initialize child nodes
 @onready var east_door = $EastDoor
 @onready var west_door = $WestDoor
-@onready var closed_sound = $CloseDoorsSound
-@onready var open_sound = $OpenDoorsSound
+@onready var closed_sound: AudioStreamPlayer3D = $CloseDoorsSound
+@onready var open_sound: AudioStreamPlayer3D = $OpenDoorsSound
 
 # Internal state variables
 var _is_open: bool = false

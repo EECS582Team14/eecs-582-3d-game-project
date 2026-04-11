@@ -6,6 +6,7 @@ extends StaticBody3D
 @onready var collider: CollisionShape3D = $DoorCollision
 @onready var door_mesh: MeshInstance3D = $DoorMesh
 @onready var lock_icon: MeshInstance3D = $LockIcon
+@onready var sound_player: AudioStreamPlayer3D = $AudioStreamPlayer3D
 
 # Internal state variables
 var is_locked: bool = false
@@ -76,6 +77,7 @@ func _on_door_detection_range_body_entered(_body: Node3D) -> void:
 	_bodies_in_range += 1
 	if not is_locked and _bodies_in_range == 1:
 		_open_door()
+		sound_player.play()
 		NetworkManager.send_door_state_change(str(get_path()), "open")
 
 ## SIGNAL CALLBACK FOR WHEN A BODY EXITS THE DOOR'S DETECTION RANGE
@@ -83,15 +85,18 @@ func _on_door_detection_range_body_exited(_body: Node3D) -> void:
 	_bodies_in_range = max(_bodies_in_range - 1, 0)
 	if _bodies_in_range == 0:
 		_close_door()
+		sound_player.play()
 		NetworkManager.send_door_state_change(str(get_path()), "close")
 
 func _on_door_opened(door_id: String) -> void:
 	if door_id == str(get_path()):
 		_open_door()
+		sound_player.play()
 
 func _on_door_closed(door_id: String) -> void:
 	if door_id == str(get_path()):
 		_close_door()
+		sound_player.play()
 
 func _on_door_lock_received(door_id: String, locked: bool) -> void:
 	var my_path = str(get_path())

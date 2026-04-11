@@ -1,7 +1,7 @@
 extends StaticBody3D
 
 @export var elevator: AnimatableBody3D
-@onready var sound_player = $AudioStreamPlayer3D
+@onready var sound_player: AudioStreamPlayer3D = $AudioStreamPlayer3D
 
 func _ready() -> void:
 	pass

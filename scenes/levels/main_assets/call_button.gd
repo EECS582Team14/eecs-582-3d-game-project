@@ -5,7 +5,7 @@ extends StaticBody3D
 @export var button_mesh: Node3D
 # Check this box if this button is on the UPPER floor. Leave unchecked for the lower floor.
 @export var is_upper_floor: bool = false
-@onready var sound_player = $AudioStreamPlayer3D
+@onready var sound_player: AudioStreamPlayer3D = $AudioStreamPlayer3D
 
 var _waiting: bool = false
 var _anim_player: AnimationPlayer
