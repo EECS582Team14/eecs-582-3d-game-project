@@ -21,6 +21,7 @@ extends CharacterBody3D
 # Load child nodes
 @onready var camera: Camera3D = $PlayerCamera
 @onready var weapon_holder: Node3D = $PlayerCamera/WeaponHolder
+@onready var flashlight: SpotLight3D = $PlayerCamera/PlayerFlashlight
 
 # Weapon scenes
 var _taser_scene: PackedScene = preload("res://scenes/weapons/taser/gun_model.glb") #preload("res://scenes/weapons/taser/heavy_assault_rifle.glb")
@@ -1650,8 +1651,8 @@ func _on_sabotage_selected(sabotage_type: String) -> void:
 func _on_sabotage_triggered(sabotage_type: String) -> void:
 	if not is_local_player:
 		return
-	if sabotage_type == "lights_out" and not is_impostor:
-		_show_lights_out()
+	if sabotage_type == "lights_out":
+		flashlight.visible = true
 	elif sabotage_type == "anonymous":
 		_mask_all_nametags()
 
@@ -1659,7 +1660,7 @@ func _on_sabotage_ended(sabotage_type: String) -> void:
 	if not is_local_player:
 		return
 	if sabotage_type == "lights_out":
-		_hide_lights_out()
+		flashlight.visible = false
 	elif sabotage_type == "anonymous":
 		_restore_all_nametags()
 

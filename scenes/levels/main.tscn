@@ -13,9 +13,10 @@
 [sub_resource type="Environment" id="Environment_y0acb"]
 background_mode = 1
 background_color = Color(0.05, 0.05, 0.07, 1)
-ambient_light_source = 1
-ambient_light_color = Color(0.9, 0.89, 0.9, 1)
-ambient_light_energy = 0.85
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.33
+reflected_light_source = 1
 tonemap_mode = 3
 tonemap_white = 6.0
 ssr_enabled = true
@@ -24,10 +25,10 @@ ssao_enabled = true
 ssao_radius = 2.0
 ssao_intensity = 3.0
 ssil_enabled = true
-glow_enabled = true
 glow_intensity = 0.8
 glow_strength = 1.2
 glow_bloom = 0.1
+adjustment_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7lrji"]
 albedo_color = Color(0.75, 0.75, 0.78, 1)
@@ -58,9 +59,6 @@ script = ExtResource("1_y0acb")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=494983248]
 environment = SubResource("Environment_y0acb")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1107601667]
-transform = Transform3D(-0.57666874, 0.79389215, -0.19284254, 0.38048655, 0.46986175, 0.7965299, 0.7229682, 0.38595992, -0.5730199, 0, 5.635, 0)
 
 [node name="UpperDeck" parent="." unique_id=1269834158 instance=ExtResource("1_72ix8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.061081886, 0.008000374, -0.026069641)

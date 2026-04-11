@@ -33,6 +33,7 @@ const PLAYER_COLORS: Array[Color] = [
 
 var players_container: Node3D = null
 var hud_instance: Control = null  # hold reference to local HUD
+var world_env: WorldEnvironment = null # For changing the environment lighting
 # Destination progress
 const time_to_dest: float = 600
 
@@ -64,6 +65,13 @@ const SABOTAGE_DURATION: float = 20.0
 const SABOTAGE_COOLDOWN: float = 30.0
 const SABOTAGE_INTEGRITY_DRAIN: float = 15.0
 
+# Lights out effect
+var _original_ambient_light_energy: float = 1.0
+var _lights_out_flicker_tween: Tween = null
+var _lights_out_dim_tween: Tween = null
+const LIGHTS_OUT_FLICKER_DURATION: float = 2.0
+const LIGHTS_OUT_DIM_DURATION: float = 3.0
+
 # End screen
 var _end_screen_layer: CanvasLayer = null
 var _end_screen: Control = null
@@ -78,6 +86,7 @@ func _ready():
 	NetworkManager.ship_integrity_update_received.connect(_on_ship_integrity_update_received)
 	NetworkManager.sabotage_received.connect(_on_sabotage_received)
 	UIState.ship_durability_changed.emit(ship_integrity)
+
 
 func _process(delta):
 	# Sabotage timers run on all clients
@@ -124,6 +133,7 @@ func _on_sabotage_received(sabotage_type: String) -> void:
 		active_sabotages[sabotage_type] = SABOTAGE_DURATION
 		UIState.sabotage_triggered.emit(sabotage_type)
 		if sabotage_type == "lights_out":
+			_start_lights_out_effect()
 			UIState.system_alert.emit("WARNING: Electrical failure! Emergency lighting only!")
 		elif sabotage_type == "disable_comms":
 			UIState.system_alert.emit("WARNING: Communications array offline! Directives unavailable!")
@@ -138,10 +148,42 @@ func _update_sabotages(delta: float) -> void:
 			to_remove.append(sabotage_type)
 	for sabotage_type in to_remove:
 		active_sabotages.erase(sabotage_type)
+		if sabotage_type == "lights_out":
+			_restore_lights()
 		UIState.sabotage_ended.emit(sabotage_type)
 
 func is_sabotage_active(sabotage_type: String) -> bool:
 	return active_sabotages.has(sabotage_type)
+
+func _start_lights_out_effect() -> void:
+	if not world_env or not world_env.environment:
+		return
+	
+	# Kill any existing tweens
+	if _lights_out_dim_tween:
+		_lights_out_dim_tween.kill()
+	
+	var env = world_env.environment
+	
+	# Dim the lights
+	_lights_out_dim_tween = create_tween()
+	_lights_out_dim_tween.set_trans(Tween.TRANS_CUBIC)
+	_lights_out_dim_tween.tween_property(env, "ambient_light_energy", 0.0, LIGHTS_OUT_DIM_DURATION)
+
+func _restore_lights() -> void:
+	if not world_env or not world_env.environment:
+		return
+	
+	# Kill any existing tweens
+	if _lights_out_dim_tween:
+		_lights_out_dim_tween.kill()
+	
+	var env = world_env.environment
+	
+	# Smoothly restore to original energy
+	var restore_tween = create_tween()
+	restore_tween.set_trans(Tween.TRANS_CUBIC)
+	restore_tween.tween_property(env, "ambient_light_energy", _original_ambient_light_energy, 1.0)
 
 func adjust_progress_speed(amount: float):
 	progress_speed_modifier += amount
@@ -436,6 +478,11 @@ func _load_game_level():
 	# Wait for scene to load, then spawn players
 	await get_tree().process_frame
 	await get_tree().process_frame
+	
+	# Get reference to WorldEnvironment
+	world_env = get_tree().current_scene.find_child("WorldEnvironment", true, false)
+	if world_env and world_env.environment:
+		_original_ambient_light_energy = world_env.environment.ambient_light_energy
 	
 	if LobbyManager.is_host():
 		_capture_initial_weapon_states()

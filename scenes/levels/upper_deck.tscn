@@ -55,10 +55,10 @@
 [ext_resource type="Texture2D" uid="uid://dt3p3k31bgb02" path="res://assets/room_symbols/supplyCloset_icon.png" id="41_vamc2"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]
-size = Vector2(60, 80)
+size = Vector2(60, 101.77)
 
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_185qh"]
-data = PackedVector3Array(30, 0, 40, -30, 0, 40, 30, 0, -40, -30, 0, 40, -30, 0, -40, 30, 0, -40)
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_d0doh"]
+data = PackedVector3Array(30, 0, 50.885, -30, 0, 50.885, 30, 0, -50.885, -30, 0, 50.885, -30, 0, -50.885, 30, 0, -50.885)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_efilq"]
 albedo_texture = ExtResource("8_floor_color")
@@ -98,14 +98,15 @@ albedo_color = Color(0.10932005, 0.09097696, 0.033233657, 1)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6176357, -0.017402649, 11.463994)
 
 [node name="Ceiling" type="StaticBody3D" parent="." unique_id=1243012629]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, 0)
 
 [node name="PlaneMesh" type="MeshInstance3D" parent="Ceiling" unique_id=2110469671]
-transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, -3.0683956, 2.4389405, 10.01401)
+transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0)
 mesh = SubResource("PlaneMesh_mgbrt")
 
-[node name="PlaneCollision" type="CollisionShape3D" parent="Ceiling" unique_id=1216043302]
-transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, -0.068395704, 2.4389405, 10.014011)
-shape = SubResource("ConcavePolygonShape3D_185qh")
+[node name="PlaneCollision" type="CollisionShape3D" parent="Ceiling" unique_id=820894526]
+transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_d0doh")
 
 [node name="BakedFloor" type="StaticBody3D" parent="." unique_id=344446775]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 10)
@@ -129,14 +130,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9.95)
 
 [node name="SouthNexusDoor" parent="Nexus" unique_id=1172177340 instance=ExtResource("3_1pv2h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9.9)
-
-[node name="NorthNexusLight" type="OmniLight3D" parent="Nexus" unique_id=1487368810]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, -5)
-omni_range = 15.0
-
-[node name="SouthNexusLight" type="OmniLight3D" parent="Nexus" unique_id=1385001034]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 5)
-omni_range = 15.0
 
 [node name="SouthNexusIcon" type="Decal" parent="Nexus" unique_id=15177332]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.6, 1.5, 10.025)
@@ -192,10 +185,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.55)
 [node name="WestNavWall" parent="NavBridge" unique_id=1088394398 instance=ExtResource("5_vucmy")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.55, 0, 0)
 
-[node name="NavLight" type="OmniLight3D" parent="NavBridge" unique_id=395456338]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
-omni_range = 15.0
-
 [node name="NavIcon" type="Decal" parent="NavBridge" unique_id=1569706013]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.795, 1.5, 7.685)
 size = Vector3(2, 0.3, 2)
@@ -214,17 +203,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -20)
 
 [node name="CamsDoor" parent="Cams" unique_id=1087523963 instance=ExtResource("5_fjw4p")]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, -0.3000002, 0, 5)
-is_locked = false
 
 [node name="NorthCamWall" parent="Cams" unique_id=1747157587 instance=ExtResource("5_vucmy")]
 transform = Transform3D(0.7431331, 0, -0.66914356, 0, 1, 0, 0.66914356, 0, 0.7431331, 3.1434593, -4.7683716e-07, 0)
 
 [node name="WestCamWall" parent="Cams" unique_id=1472808536 instance=ExtResource("5_vucmy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.45, 0, 5)
-
-[node name="CamsLight" type="OmniLight3D" parent="Cams" unique_id=507472300]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2.3, 2)
-omni_range = 6.0
 
 [node name="CamsIcon" type="Decal" parent="Cams" unique_id=1253076122]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.545, 1.5, 5.185)
@@ -246,10 +230,6 @@ transform = Transform3D(0.7431448, 0, 0.6691306, 0, 1, 0, -0.6691306, 0, 0.74314
 
 [node name="WestIntercomWall" parent="Intercom" unique_id=843526226 instance=ExtResource("5_vucmy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.45, 0, 5)
-
-[node name="IntercomLight" type="OmniLight3D" parent="Intercom" unique_id=424525013]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 2.3, 2)
-omni_range = 6.0
 
 [node name="IntercomIcon" type="Decal" parent="Intercom" unique_id=1542963400]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 2.03, 1.5, 5.185)
@@ -282,18 +262,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 7.55)
 
 [node name="SouthwestReactorWall" parent="Reactor" unique_id=1422650762 instance=ExtResource("2_0llye")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 7.55)
-
-[node name="CenterReactorLight" type="OmniLight3D" parent="Reactor" unique_id=2069581870]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
-omni_range = 15.0
-
-[node name="EastReactorLight" type="OmniLight3D" parent="Reactor" unique_id=184673557]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.2, 0)
-omni_range = 15.0
-
-[node name="WestReactorLight" type="OmniLight3D" parent="Reactor" unique_id=1730973680]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.2, 0)
-omni_range = 15.0
 
 [node name="upReactIcon1" type="Decal" parent="Reactor" unique_id=1397305393]
 transform = Transform3D(-1, -8.742278e-08, 3.821371e-15, 0, -4.371139e-08, -1, 8.742278e-08, -1, 4.371139e-08, -10.852809, 1.4, -9.464188)
@@ -353,10 +321,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.49, 0, 9.985)
 [node name="EasternHRWall" parent="HumanResources" unique_id=441032082 instance=ExtResource("5_vucmy")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0, 4.74)
 
-[node name="HRLight" type="OmniLight3D" parent="HumanResources" unique_id=1695436889]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
-omni_range = 15.0
-
 [node name="HumanResourcesTask" parent="HumanResources" unique_id=891591943 instance=ExtResource("5_iah82")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3, 0.5, 0)
 constant_linear_velocity = Vector3(0, 0.5, 0)
@@ -371,10 +335,6 @@ lower_fade = 1e-05
 
 [node name="Armory" type="Node3D" parent="." unique_id=1952892335]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 0)
-
-[node name="ArmLight" type="OmniLight3D" parent="Armory" unique_id=2138975103]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 18)
-omni_range = 15.0
 
 [node name="EastDoor" parent="Armory" unique_id=1229734003 instance=ExtResource("3_1pv2h")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0, 19.7)
@@ -711,10 +671,6 @@ transform = Transform3D(-0.75, 0, -1.13246855e-07, 0, 0.75, 0, 1.13246855e-07, 0
 
 [node name="Shielding" type="Node3D" parent="." unique_id=1596150144]
 
-[node name="ShieldingLight" type="OmniLight3D" parent="Shielding" unique_id=639666854]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 2.2, -5)
-omni_range = 15.0
-
 [node name="ShieldingConnectingWall2" parent="Shielding" unique_id=296027351 instance=ExtResource("7_86pjy")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15, 0, -9.5)
 
@@ -749,10 +705,6 @@ task_id = "Shielding_task"
 
 [node name="SupplyCloset" type="Node3D" parent="." unique_id=1232075518]
 
-[node name="SupplyLight" type="OmniLight3D" parent="SupplyCloset" unique_id=141139108]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 2.2, 4)
-omni_range = 15.0
-
 [node name="SouthSupplyWall" parent="SupplyCloset" unique_id=2044504798 instance=ExtResource("5_vucmy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0, 6)
 
@@ -772,10 +724,6 @@ texture_albedo = ExtResource("41_vamc2")
 lower_fade = 1e-05
 
 [node name="Crew Quarters" type="Node3D" parent="." unique_id=1733845478]
-
-[node name="CrewLight" type="OmniLight3D" parent="Crew Quarters" unique_id=1459329939]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 2.2, 14)
-omni_range = 15.0
 
 [node name="CrewConnectingWall" parent="Crew Quarters" unique_id=1578145410 instance=ExtResource("7_86pjy")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15, 0, 8)

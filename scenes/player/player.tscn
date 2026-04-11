@@ -26,6 +26,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -0.3)
 [node name="WeaponHolder" type="Node3D" parent="PlayerCamera" unique_id=879075673]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.25, -0.5)
 
+[node name="PlayerFlashlight" type="SpotLight3D" parent="PlayerCamera" unique_id=1858628568]
+visible = false
+shadow_enabled = true
+spot_range = 20.0
+spot_angle = 25.0
+
 [node name="HUD" type="Control" parent="." unique_id=145645730]
 layout_mode = 3
 anchors_preset = 15
