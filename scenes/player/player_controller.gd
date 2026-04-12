@@ -1213,6 +1213,8 @@ func give_taser() -> void:
 	drop_current_weapon()
 	has_taser = true
 	_attach_taser_model()
+	if is_local_player and not _third_person:
+		$PlayerModel.visible = false
 	if is_local_player:
 		_notification_label.text = "Taser Acquired!"
 		_notification_label.visible = true
@@ -1263,17 +1265,19 @@ func _on_baton_hide_received(sender_steam_id: int, hidden: bool) -> void:
 	if player and player != self and player._held_baton:
 		player._held_baton.visible = not hidden
 		
-func drop_current_weapon() -> void:	
+func drop_current_weapon() -> void:
 	var saved_id = player_weapon_id
 	var uses = baton_uses
 	var pickup_to_spawn: PackedScene = null
-	
+
 	if has_taser:
 		pickup_to_spawn = _taser_pickup_scene
 		has_taser = false
 		if _held_taser:
 			_held_taser.queue_free()
 			_held_taser = null
+		if is_local_player and not _third_person:
+			$PlayerModel.visible = true
 	elif has_baton:
 		pickup_to_spawn = _baton_pickup_scene
 		has_baton = false
@@ -1412,7 +1416,7 @@ func _toggle_third_person() -> void:
 	else:
 		camera.position = _first_person_camera_pos
 		camera.rotation_degrees.x = 0.0
-		$PlayerModel.visible = false
+		$PlayerModel.visible = not has_taser
 		weapon_holder.visible = true
 
 func _enter_dead_state() -> void:
