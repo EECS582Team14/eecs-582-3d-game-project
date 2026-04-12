@@ -642,6 +642,8 @@ func _input(event: InputEvent) -> void:
 		elif event.keycode == KEY_CTRL and event.pressed and not is_dead:
 			_is_crouching = not _is_crouching
 			_current_anim_state = ""  # Force animation update
+			if is_local_player and not _third_person:
+				$PlayerModel.visible = not _is_crouching
 		elif event.key_label == KEY_B and event.pressed and not is_dead:
 			_toggle_emote_wheel()
 		elif _emote_wheel_visible and event.pressed:
