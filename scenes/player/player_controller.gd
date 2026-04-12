@@ -53,6 +53,7 @@ var _crouch_taser_idle_scene: PackedScene = preload("res://scenes/player/idle_cr
 var _crouch_taser_walk_scene: PackedScene = preload("res://scenes/player/crouch_run_taser.fbx")
 var _crouch_taser_strafe_right_scene: PackedScene = preload("res://scenes/player/strafe_right_crouch_taser.fbx")
 var _crouch_taser_strafe_left_scene: PackedScene = preload("res://scenes/player/strafe_left_crouch_taser.fbx")
+var _rifle_idle_scene: PackedScene = preload("res://scenes/player/Rifle Aiming Idle.fbx")
 var _breakdance_scene: PackedScene = preload("res://scenes/player/Hip Hop Dancing.fbx")
 var _thriller_scene: PackedScene = preload("res://scenes/player/Thriller Part 2.fbx")
 
@@ -278,6 +279,7 @@ func _ready() -> void:
 		_import_animation(_crouch_taser_walk_scene, "crouch_taser_walk", true)
 		_import_animation(_crouch_taser_strafe_right_scene, "crouch_taser_strafe_right", true)
 		_import_animation(_crouch_taser_strafe_left_scene, "crouch_taser_strafe_left", true)
+		_import_animation(_rifle_idle_scene, "rifle_idle", true)
 		_import_animation(_breakdance_scene, "breakdance", true)
 		_import_animation(_thriller_scene, "thriller", true)
 
@@ -296,6 +298,7 @@ func _ready() -> void:
 		_set_anim_looping("crouch_taser_walk", true)
 		_set_anim_looping("crouch_taser_strafe_right", true)
 		_set_anim_looping("crouch_taser_strafe_left", true)
+		_set_anim_looping("rifle_idle", true)
 		_set_anim_looping("rifle_walk_back", true)
 		_set_anim_looping("rifle_strafe", true)
 		_set_anim_looping("rifle_strafe_mirror", true)
@@ -642,8 +645,13 @@ func _input(event: InputEvent) -> void:
 		elif event.keycode == KEY_CTRL and event.pressed and not is_dead:
 			_is_crouching = not _is_crouching
 			_current_anim_state = ""  # Force animation update
+			if not _is_crouching:
+				$PlayerModel.position.y = 0.0  # Snap model back up immediately
 			if is_local_player and not _third_person:
-				$PlayerModel.visible = not _is_crouching
+				if _is_crouching:
+					$PlayerModel.visible = false
+				else:
+					$PlayerModel.visible = not has_taser
 		elif event.key_label == KEY_B and event.pressed and not is_dead:
 			_toggle_emote_wheel()
 		elif _emote_wheel_visible and event.pressed:
@@ -994,15 +1002,10 @@ func _update_walk_animation() -> void:
 				_anim_player.play(_anim_player.current_animation, ANIM_BLEND)
 		else:
 			_reset_model_mirror()
-			if _current_anim_state != "shoot_rifle_idle":
-				_current_anim_state = "shoot_rifle_idle"
-				_anim_player.play(_anim("shoot_rifle"), ANIM_BLEND)
+			if _current_anim_state != "rifle_idle":
+				_current_anim_state = "rifle_idle"
+				_anim_player.play(_anim("rifle_idle"), ANIM_BLEND)
 				_anim_player.speed_scale = 1.0
-				# Pause after a short time to freeze on current frame
-				await get_tree().create_timer(0.1).timeout
-				_anim_player.pause()
-			elif _anim_player.is_playing():
-				_anim_player.pause()
 		# Keep model facing forward when holding taser so aim matches shot direction
 		_set_model_diagonal_rotation(0.0)
 		return
@@ -1071,14 +1074,10 @@ func _set_remote_moving(moving: bool, moving_backward: bool = false) -> void:
 				_anim_player.play(_anim("shoot_rifle"), ANIM_BLEND)
 				_anim_player.speed_scale = 1.0
 		else:
-			if _current_anim_state != "shoot_rifle_idle":
-				_current_anim_state = "shoot_rifle_idle"
-				_anim_player.play(_anim("shoot_rifle"), ANIM_BLEND)
+			if _current_anim_state != "rifle_idle":
+				_current_anim_state = "rifle_idle"
+				_anim_player.play(_anim("rifle_idle"), ANIM_BLEND)
 				_anim_player.speed_scale = 1.0
-				await get_tree().create_timer(0.1).timeout
-				_anim_player.pause()
-			elif _anim_player.is_playing():
-				_anim_player.pause()
 		return
 	if moving:
 		if moving_backward:
