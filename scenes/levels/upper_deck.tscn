@@ -24,12 +24,14 @@
 [ext_resource type="Script" uid="uid://djtnepb2xxgnx" path="res://scenes/tasks/Life_task_script.gd" id="18_sco87"]
 [ext_resource type="Texture2D" uid="uid://db75neienonkg" path="res://assets/room_symbols/humanResource_icon.png" id="19_53760"]
 [ext_resource type="Script" uid="uid://xrgl7inoxsg" path="res://scenes/tasks/Human_Resources_task_script.gd" id="19_a5xa1"]
+[ext_resource type="PackedScene" uid="uid://bffdty813j86l" path="res://scenes/items/Human Resources Fill/Stasis Pod/stasis_pod.tscn" id="21_oiys3"]
 [ext_resource type="PackedScene" uid="uid://teatsvvq70xk" path="res://scenes/items/Armory Fill/Large Weapon Crate/large_weapon_crate.tscn" id="21_ydp2g"]
 [ext_resource type="PackedScene" uid="uid://c5rrxl1atxykp" path="res://scenes/items/Armory Fill/Personal Locker/personal_locker_wall.tscn" id="22_57p4a"]
 [ext_resource type="PackedScene" uid="uid://db1mrpytrj148" path="res://scenes/buttons/button.tscn" id="22_r35sg"]
 [ext_resource type="PackedScene" uid="uid://dnb0mheryqfrt" path="res://scenes/items/Armory Fill/Armory Bench/armory_bench.tscn" id="23_0m6m5"]
 [ext_resource type="Script" uid="uid://dxiyilrrregsc" path="res://scenes/tasks/Shielding_task_script.gd" id="23_57p4a"]
 [ext_resource type="Script" uid="uid://6tr2eiwi5bfw" path="res://scenes/buttons/Button_right.gd" id="23_eofsf"]
+[ext_resource type="PackedScene" uid="uid://cjjc7i71ymd2v" path="res://scenes/items/Human Resources Fill/Locker w back/locker_w_back.tscn" id="23_xuoj0"]
 [ext_resource type="Script" uid="uid://dy8t20vmm7jdp" path="res://scenes/tasks/Supply_Closet_task_script.gd" id="24_0m6m5"]
 [ext_resource type="Script" uid="uid://cg87m34jjco5u" path="res://scenes/buttons/Button_left.gd" id="24_4clrc"]
 [ext_resource type="PackedScene" uid="uid://ilqnvmrks6hl" path="res://scenes/items/Armory Fill/Ammo Locker/ammo_locker.tscn" id="24_efilq"]
@@ -322,7 +324,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.49, 0, 9.985)
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0, 4.74)
 
 [node name="HumanResourcesTask" parent="HumanResources" unique_id=891591943 instance=ExtResource("5_iah82")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3, 0.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -1)
 constant_linear_velocity = Vector3(0, 0.5, 0)
 script = ExtResource("19_a5xa1")
 task_id = "Human_Resources_task"
@@ -332,6 +334,126 @@ transform = Transform3D(-4.371139e-08, 1, -4.371139e-08, 0, -4.371139e-08, -1, -
 size = Vector3(4, 3, 3)
 texture_albedo = ExtResource("19_53760")
 lower_fade = 1e-05
+
+[node name="stasis_pod" parent="HumanResources" unique_id=1066507213 instance=ExtResource("21_oiys3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.07, 0, 8)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod" unique_id=762682541 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.853, 0, 1)
+
+[node name="stasis_pod2" parent="HumanResources" unique_id=448814321 instance=ExtResource("21_oiys3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.07, 0, 6)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod2" unique_id=731188786 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.853, 0, 1)
+
+[node name="stasis_pod3" parent="HumanResources" unique_id=607838300 instance=ExtResource("21_oiys3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.07, 0, 4)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod3" unique_id=113109397 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.853, 0, 1)
+
+[node name="stasis_pod4" parent="HumanResources" unique_id=519732443 instance=ExtResource("21_oiys3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.07, 0, 2)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod4" unique_id=935820350 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.853, 0, 1)
+
+[node name="stasis_pod5" parent="HumanResources" unique_id=1765780041 instance=ExtResource("21_oiys3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.07, 0, 0)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod5" unique_id=121140613 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.853, 0, 1)
+
+[node name="stasis_pod6" parent="HumanResources" unique_id=171882541 instance=ExtResource("21_oiys3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 8)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod6" unique_id=435167607 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.13323021, 0, 1)
+
+[node name="stasis_pod7" parent="HumanResources" unique_id=2095708628 instance=ExtResource("21_oiys3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 6)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod7" unique_id=136773128 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.13323021, 0, 1)
+
+[node name="stasis_pod8" parent="HumanResources" unique_id=706143198 instance=ExtResource("21_oiys3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 4)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod8" unique_id=933740680 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.13323021, 0, 1)
+
+[node name="stasis_pod9" parent="HumanResources" unique_id=784770780 instance=ExtResource("21_oiys3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 2)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod9" unique_id=128475384 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.13323021, 0, 1)
+
+[node name="stasis_pod10" parent="HumanResources" unique_id=1637602742 instance=ExtResource("21_oiys3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod10" unique_id=36537559 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.13323021, 0, 1)
+
+[node name="stasis_pod11" parent="HumanResources" unique_id=283449183 instance=ExtResource("21_oiys3")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.5, 0, 9)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod11" unique_id=57290587 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.13323021, 0, 1)
+
+[node name="stasis_pod12" parent="HumanResources" unique_id=560139625 instance=ExtResource("21_oiys3")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.5, 0, 7)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod12" unique_id=707548607 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.13323021, 0, 1)
+
+[node name="stasis_pod13" parent="HumanResources" unique_id=946415713 instance=ExtResource("21_oiys3")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.5, 0, 5)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod13" unique_id=1487216902 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.13323021, 0, 1)
+
+[node name="stasis_pod14" parent="HumanResources" unique_id=1444979856 instance=ExtResource("21_oiys3")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.5, 0, 3)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod14" unique_id=1554148586 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.13323021, 0, 1)
+
+[node name="stasis_pod15" parent="HumanResources" unique_id=44267092 instance=ExtResource("21_oiys3")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.5, 0, 1)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod15" unique_id=1595694927 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.13323021, 0, 1)
+
+[node name="stasis_pod16" parent="HumanResources" unique_id=1947283673 instance=ExtResource("21_oiys3")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 4.07, 0, 9)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod16" unique_id=2115956806 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.853, 0, 1)
+
+[node name="stasis_pod17" parent="HumanResources" unique_id=965378628 instance=ExtResource("21_oiys3")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 4.07, 0, 7)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod17" unique_id=606956949 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.853, 0, 1)
+
+[node name="stasis_pod18" parent="HumanResources" unique_id=375892740 instance=ExtResource("21_oiys3")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 4.07, 0, 5)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod18" unique_id=516228297 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.853, 0, 1)
+
+[node name="stasis_pod19" parent="HumanResources" unique_id=406287796 instance=ExtResource("21_oiys3")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 4.07, 0, 3)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod19" unique_id=1384965763 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.853, 0, 1)
+
+[node name="stasis_pod20" parent="HumanResources" unique_id=225663943 instance=ExtResource("21_oiys3")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 4.07, 0, 1)
+
+[node name="personal_locker" parent="HumanResources/stasis_pod20" unique_id=1852072436 instance=ExtResource("23_xuoj0")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.853, 0, 1)
 
 [node name="Armory" type="Node3D" parent="." unique_id=1952892335]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 0)
