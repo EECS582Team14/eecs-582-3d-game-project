@@ -43,6 +43,9 @@ var _idle_scene: PackedScene = preload("res://scenes/player/Idle.fbx")
 var _punch_scene: PackedScene = preload("res://scenes/player/hook_punch.fbx")
 var _jumping_scene: PackedScene = preload("res://scenes/player/jumping.fbx")
 var _shoot_rifle_scene: PackedScene = preload("res://scenes/player/Shoot Rifle.fbx")
+var _rifle_walk_back_scene: PackedScene = preload("res://scenes/player/Backwards Rifle Walk.fbx")
+var _rifle_strafe_scene: PackedScene = preload("res://scenes/player/Strafe.fbx")
+var _rifle_strafe_mirror_scene: PackedScene = preload("res://scenes/player/Strafe_mirror.fbx")
 
 # Taser shooting
 const TASER_COOLDOWN: float = 0.5
@@ -245,6 +248,9 @@ func _ready() -> void:
 		_import_animation(_punch_scene, "punch")
 		_import_animation(_jumping_scene, "jumping")
 		_import_animation(_shoot_rifle_scene, "shoot_rifle", true)
+		_import_animation(_rifle_walk_back_scene, "rifle_walk_back", true)
+		_import_animation(_rifle_strafe_scene, "rifle_strafe", true)
+		_import_animation(_rifle_strafe_mirror_scene, "rifle_strafe_mirror", true)
 
 		# Debug: print all animations in the library
 		if main_lib:
@@ -255,6 +261,9 @@ func _ready() -> void:
 		_set_anim_looping("strafe_left", true)
 		_set_anim_looping("idle", true)
 		_set_anim_looping("shoot_rifle", true)
+		_set_anim_looping("rifle_walk_back", true)
+		_set_anim_looping("rifle_strafe", true)
+		_set_anim_looping("rifle_strafe_mirror", true)
 
 	NetworkManager.punch_received.connect(_on_punch_received)
 
@@ -830,18 +839,47 @@ func _update_walk_animation() -> void:
 		return
 	var is_moving = Vector2(velocity.x, velocity.z).length() > 0.1
 
-	# When holding taser, use shoot_rifle animation for all movement
+	# When holding taser, use rifle animations for all movement
 	if has_taser and not _taser_hidden and _anim_player.has_animation(_anim("shoot_rifle")):
 		if is_moving:
-			if _current_anim_state != "shoot_rifle_move":
-				_current_anim_state = "shoot_rifle_move"
-				_anim_player.play(_anim("shoot_rifle"), ANIM_BLEND)
-				_anim_player.speed_scale = 1.0
-			# Ensure animation is playing (in case it was paused)
+			var forward = -transform.basis.z
+			var right = transform.basis.x
+			var move_dir = Vector3(velocity.x, 0, velocity.z).normalized()
+			var dot = forward.dot(move_dir)
+			var side_dot = right.dot(move_dir)
+			var going_backward = dot < -0.1 and abs(side_dot) < 0.3
+			var has_sideways = abs(side_dot) > 0.3
+
+			if has_sideways:
+				# Any sideways component (pure strafe or diagonal) uses strafe animation
+				_reset_model_mirror()
+				if side_dot < 0:
+					if _current_anim_state != "rifle_strafe_left":
+						_current_anim_state = "rifle_strafe_left"
+						_anim_player.play(_anim("rifle_strafe_mirror"), ANIM_BLEND)
+						_anim_player.speed_scale = 1.0
+				else:
+					if _current_anim_state != "rifle_strafe_right":
+						_current_anim_state = "rifle_strafe_right"
+						_anim_player.play(_anim("rifle_strafe"), ANIM_BLEND)
+						_anim_player.speed_scale = 1.0
+			elif going_backward:
+				if _current_anim_state != "rifle_walk_back":
+					_current_anim_state = "rifle_walk_back"
+					_reset_model_mirror()
+					_anim_player.play(_anim("rifle_walk_back"), ANIM_BLEND)
+					_anim_player.speed_scale = 1.5
+			else:
+				if _current_anim_state != "shoot_rifle_move":
+					_current_anim_state = "shoot_rifle_move"
+					_reset_model_mirror()
+					_anim_player.play(_anim("shoot_rifle"), ANIM_BLEND)
+					_anim_player.speed_scale = 1.5
+			# Ensure animation is playing (in case it was paused from idle)
 			if not _anim_player.is_playing():
-				_anim_player.play(_anim("shoot_rifle"), ANIM_BLEND)
-				_anim_player.speed_scale = 1.0
+				_anim_player.play(_anim_player.current_animation, ANIM_BLEND)
 		else:
+			_reset_model_mirror()
 			if _current_anim_state != "shoot_rifle_idle":
 				_current_anim_state = "shoot_rifle_idle"
 				_anim_player.play(_anim("shoot_rifle"), ANIM_BLEND)
@@ -851,22 +889,8 @@ func _update_walk_animation() -> void:
 				_anim_player.pause()
 			elif _anim_player.is_playing():
 				_anim_player.pause()
-		# Handle model mirroring/rotation for direction
-		if is_moving:
-			var forward = -transform.basis.z
-			var right = transform.basis.x
-			var move_dir = Vector3(velocity.x, 0, velocity.z).normalized()
-			var side_dot = right.dot(move_dir)
-			var dot = forward.dot(move_dir)
-			if dot < -0.1:
-				_reset_model_mirror()
-				_set_model_diagonal_rotation(side_dot * -25.0)
-			else:
-				_reset_model_mirror()
-				_set_model_diagonal_rotation(side_dot * 25.0)
-		else:
-			_reset_model_mirror()
-			_set_model_diagonal_rotation(0.0)
+		# Keep model facing forward when holding taser so aim matches shot direction
+		_set_model_diagonal_rotation(0.0)
 		return
 
 	if is_moving:
