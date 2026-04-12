@@ -47,6 +47,12 @@ var _rifle_walk_back_scene: PackedScene = preload("res://scenes/player/Backwards
 var _rifle_strafe_scene: PackedScene = preload("res://scenes/player/Strafe.fbx")
 var _rifle_strafe_mirror_scene: PackedScene = preload("res://scenes/player/Strafe_mirror.fbx")
 var _flair_scene: PackedScene = preload("res://scenes/player/Flair.fbx")
+var _crouch_walk_scene: PackedScene = preload("res://scenes/player/Crouched Walking.fbx")
+var _crouch_idle_scene: PackedScene = preload("res://scenes/player/Crouching Idle.fbx")
+var _crouch_taser_idle_scene: PackedScene = preload("res://scenes/player/idle_crouch_taser.fbx")
+var _crouch_taser_walk_scene: PackedScene = preload("res://scenes/player/crouch_run_taser.fbx")
+var _crouch_taser_strafe_right_scene: PackedScene = preload("res://scenes/player/strafe_right_crouch_taser.fbx")
+var _crouch_taser_strafe_left_scene: PackedScene = preload("res://scenes/player/strafe_left_crouch_taser.fbx")
 var _breakdance_scene: PackedScene = preload("res://scenes/player/Hip Hop Dancing.fbx")
 var _thriller_scene: PackedScene = preload("res://scenes/player/Thriller Part 2.fbx")
 
@@ -90,6 +96,8 @@ var _is_punching: bool = false
 var _is_swinging: bool = false
 var _is_jumping: bool = false
 var _is_emoting: bool = false
+var _is_crouching: bool = false
+const CROUCH_CAMERA_OFFSET: float = -0.45
 var _emote_wheel: PanelContainer = null
 var _emote_wheel_visible: bool = false
 var _emote_music: AudioStreamPlayer3D = null
@@ -264,6 +272,12 @@ func _ready() -> void:
 		_import_animation(_rifle_strafe_scene, "rifle_strafe", true)
 		_import_animation(_rifle_strafe_mirror_scene, "rifle_strafe_mirror", true)
 		_import_animation(_flair_scene, "flair", true)
+		_import_animation(_crouch_walk_scene, "crouch_walk", true)
+		_import_animation(_crouch_idle_scene, "crouch_idle", true)
+		_import_animation(_crouch_taser_idle_scene, "crouch_taser_idle", true)
+		_import_animation(_crouch_taser_walk_scene, "crouch_taser_walk", true)
+		_import_animation(_crouch_taser_strafe_right_scene, "crouch_taser_strafe_right", true)
+		_import_animation(_crouch_taser_strafe_left_scene, "crouch_taser_strafe_left", true)
 		_import_animation(_breakdance_scene, "breakdance", true)
 		_import_animation(_thriller_scene, "thriller", true)
 
@@ -276,6 +290,12 @@ func _ready() -> void:
 		_set_anim_looping("strafe_left", true)
 		_set_anim_looping("idle", true)
 		_set_anim_looping("shoot_rifle", true)
+		_set_anim_looping("crouch_walk", true)
+		_set_anim_looping("crouch_idle", true)
+		_set_anim_looping("crouch_taser_idle", true)
+		_set_anim_looping("crouch_taser_walk", true)
+		_set_anim_looping("crouch_taser_strafe_right", true)
+		_set_anim_looping("crouch_taser_strafe_left", true)
 		_set_anim_looping("rifle_walk_back", true)
 		_set_anim_looping("rifle_strafe", true)
 		_set_anim_looping("rifle_strafe_mirror", true)
@@ -619,6 +639,9 @@ func _input(event: InputEvent) -> void:
 		elif event.key_label == KEY_Q and event.pressed and not is_dead:
 			if is_impostor and _role_timer <= 0.0:
 				_toggle_sabotage_menu()
+		elif event.keycode == KEY_CTRL and event.pressed and not is_dead:
+			_is_crouching = not _is_crouching
+			_current_anim_state = ""  # Force animation update
 		elif event.key_label == KEY_B and event.pressed and not is_dead:
 			_toggle_emote_wheel()
 		elif _emote_wheel_visible and event.pressed:
@@ -791,9 +814,10 @@ func _physics_process(delta: float) -> void:
 			move_and_slide()
 			_send_network_update(delta)
 		else:
+			_update_crouch_state()
 			_process_local_movement(delta)
 			_apply_gravity(delta)
-			if is_on_floor() and Input.is_action_just_pressed("jump"):
+			if is_on_floor() and Input.is_action_just_pressed("jump") and not _is_crouching:
 				velocity.y = jump_velocity
 				_play_jump()
 			if _is_jumping and is_on_floor() and velocity.y <= 0:
@@ -865,6 +889,67 @@ func _update_walk_animation() -> void:
 	if not _anim_player or _is_punching or _is_jumping or _is_swinging or _is_emoting:
 		return
 	var is_moving = Vector2(velocity.x, velocity.z).length() > 0.1
+
+	# When crouching with taser, use taser-specific crouch animations
+	if _is_crouching and has_taser and not _taser_hidden:
+		if is_moving:
+			var forward = -transform.basis.z
+			var right = transform.basis.x
+			var move_dir = Vector3(velocity.x, 0, velocity.z).normalized()
+			var dot = forward.dot(move_dir)
+			var side_dot = right.dot(move_dir)
+			var has_sideways = abs(side_dot) > 0.3
+
+			if has_sideways:
+				if side_dot < 0:
+					if _current_anim_state != "crouch_taser_strafe_left":
+						_current_anim_state = "crouch_taser_strafe_left"
+						_reset_model_mirror()
+						_anim_player.play(_anim("crouch_taser_strafe_left"), ANIM_BLEND)
+						_anim_player.speed_scale = 1.0
+				else:
+					if _current_anim_state != "crouch_taser_strafe_right":
+						_current_anim_state = "crouch_taser_strafe_right"
+						_reset_model_mirror()
+						_anim_player.play(_anim("crouch_taser_strafe_right"), ANIM_BLEND)
+						_anim_player.speed_scale = 1.0
+			else:
+				if _current_anim_state != "crouch_taser_walk":
+					_current_anim_state = "crouch_taser_walk"
+					_reset_model_mirror()
+					_anim_player.play(_anim("crouch_taser_walk"), ANIM_BLEND)
+					_anim_player.speed_scale = 1.5
+			if not _anim_player.is_playing():
+				_anim_player.play(_anim_player.current_animation, ANIM_BLEND)
+		else:
+			if _current_anim_state != "crouch_taser_idle":
+				_current_anim_state = "crouch_taser_idle"
+				_reset_model_mirror()
+				_set_model_diagonal_rotation(0.0)
+				_anim_player.play(_anim("crouch_taser_idle"), ANIM_BLEND)
+				_anim_player.speed_scale = 1.0
+		_set_model_diagonal_rotation(0.0)
+		return
+
+	# When crouching without taser, use regular crouch animations
+	if _is_crouching and _anim_player.has_animation(_anim("crouch_walk")):
+		if is_moving:
+			if _current_anim_state != "crouch_walk":
+				_current_anim_state = "crouch_walk"
+				_reset_model_mirror()
+				_anim_player.play(_anim("crouch_walk"), ANIM_BLEND)
+				_anim_player.speed_scale = 1.0
+			if not _anim_player.is_playing():
+				_anim_player.play(_anim("crouch_walk"), ANIM_BLEND)
+				_anim_player.speed_scale = 1.0
+		else:
+			if _current_anim_state != "crouch_idle":
+				_current_anim_state = "crouch_idle"
+				_reset_model_mirror()
+				_set_model_diagonal_rotation(0.0)
+				_anim_player.play(_anim("crouch_idle"), ANIM_BLEND)
+				_anim_player.speed_scale = 1.0
+		return
 
 	# When holding taser, use rifle animations for all movement
 	if has_taser and not _taser_hidden and _anim_player.has_animation(_anim("shoot_rifle")):
@@ -1033,8 +1118,12 @@ func _process_local_movement(_delta: float) -> void:
 	# Normalize the direction vector to ensure consistent speed in all directions
 	var input_direction = direction.normalized()
 
-	# Slow down movement while punching or swinging
-	var move_speed = speed * 0.3 if (_is_punching) else speed
+	# Slow down movement while punching, swinging, or crouching
+	var move_speed = speed
+	if _is_punching:
+		move_speed = speed * 0.3
+	elif _is_crouching:
+		move_speed = speed * 0.5
 	# Only set horizontal velocity — preserve velocity.y for gravity and jumping
 	velocity.x = input_direction.x * move_speed
 	velocity.z = input_direction.z * move_speed
@@ -2463,6 +2552,19 @@ func _close_door_map() -> void:
 		_door_map_layer = null
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	_is_mouse_captured = true
+
+# ============ CROUCH SYSTEM ============
+
+const CROUCH_MODEL_OFFSET: float = -0.3
+
+func _update_crouch_state() -> void:
+	# Smoothly interpolate camera to target crouch height
+	var target_y = _first_person_camera_pos.y + CROUCH_CAMERA_OFFSET if _is_crouching else _first_person_camera_pos.y
+	if not _third_person:
+		camera.position.y = lerp(camera.position.y, target_y, 0.15)
+	# Lower the player model when crouching idle so it doesn't float
+	var model_target_y = CROUCH_MODEL_OFFSET if (_is_crouching and _current_anim_state in ["crouch_idle", "crouch_taser_idle"]) else 0.0
+	$PlayerModel.position.y = lerp($PlayerModel.position.y, model_target_y, 0.15)
 
 # ============ EMOTE SYSTEM ============
 
