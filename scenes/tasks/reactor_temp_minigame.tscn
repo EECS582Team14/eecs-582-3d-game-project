@@ -1,8 +1,9 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://dc7rjedkp87l2"]
 
-[ext_resource type="Script" path="res://scenes/tasks/reactor_temp_minigame.gd" id="1"]
+[ext_resource type="Script" uid="uid://ydvbdma7ef7j" path="res://scenes/tasks/reactor_temp_minigame.gd" id="1"]
+[ext_resource type="AudioStream" uid="uid://bgl1e6qa2if35" path="res://sounds/select_granted.wav" id="2_lb21h"]
 
-[node name="ReactorTempMinigame" type="Control"]
+[node name="ReactorTempMinigame" type="Control" unique_id=1473322510]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,3 +11,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+
+[node name="SelectGranted" type="AudioStreamPlayer" parent="." unique_id=80339588]
+stream = ExtResource("2_lb21h")

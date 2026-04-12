@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://bycu7hld4w0uu"]
 
-[ext_resource type="Script" path="res://scenes/tasks/simon_says_minigame.gd" id="1"]
+[ext_resource type="Script" uid="uid://dhfpvlmdgvd0b" path="res://scenes/tasks/simon_says_minigame.gd" id="1"]
+[ext_resource type="AudioStream" uid="uid://bgl1e6qa2if35" path="res://sounds/select_granted.wav" id="2_ro7q5"]
+[ext_resource type="AudioStream" uid="uid://2wq4xfdgb20d" path="res://sounds/access_denied.wav" id="3_n0e0q"]
 
-[node name="SimonSaysMinigame" type="Control"]
+[node name="SimonSaysMinigame" type="Control" unique_id=2037883080]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,3 +12,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+
+[node name="SelectGranted" type="AudioStreamPlayer" parent="." unique_id=1800819834]
+stream = ExtResource("2_ro7q5")
+
+[node name="AccessDenied" type="AudioStreamPlayer" parent="." unique_id=2046612442]
+stream = ExtResource("3_n0e0q")

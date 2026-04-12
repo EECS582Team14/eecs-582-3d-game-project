@@ -16,6 +16,9 @@ var game_panel: Panel
 var is_downloading = false
 var game_active = false
 
+# Sound effects
+@onready var complete_sound: AudioStreamPlayer = $SelectGranted
+
 func start_game():
 	create_ui()
 	game_active = true
@@ -119,6 +122,7 @@ func _process(delta):
 
 func finish_game():
 	game_active = false
+	complete_sound.play()
 	var l = Label.new()
 	l.text = "DECRYPTION COMPLETE"
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

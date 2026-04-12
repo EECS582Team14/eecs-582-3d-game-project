@@ -35,6 +35,10 @@ var _flash_colors: Array[Color] = [
 	Color(1.0, 0.9, 0.2),   # yellow bright
 ]
 
+# Sound effects
+@onready var complete_sound: AudioStreamPlayer = $SelectGranted
+@onready var denied_sound: AudioStreamPlayer = $AccessDenied
+
 func _ready() -> void:
 	_build_ui()
 
@@ -193,6 +197,7 @@ func _on_button_pressed(index: int) -> void:
 			# Round complete
 			_accepting_input = false
 			if _current_round >= TOTAL_ROUNDS:
+				complete_sound.play()
 				_status_label.text = "Calibration complete!"
 				_status_label.add_theme_color_override("font_color", Color(0.2, 1.0, 0.4))
 				await get_tree().create_timer(0.8).timeout
@@ -205,6 +210,7 @@ func _on_button_pressed(index: int) -> void:
 	else:
 		# Wrong - replay current round
 		_accepting_input = false
+		denied_sound.play()
 		_status_label.text = "Wrong! Watch again..."
 		_status_label.add_theme_color_override("font_color", Color(1.0, 0.3, 0.3))
 		await get_tree().create_timer(1.0).timeout

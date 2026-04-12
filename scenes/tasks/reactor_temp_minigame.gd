@@ -40,6 +40,9 @@ var _progress_label: Label = null
 var _progress_bar: ProgressBar = null
 var _gauge_container: Control = null
 
+# Sound effects
+@onready var complete_sound: AudioStreamPlayer = $SelectGranted
+
 func _ready() -> void:
 	_build_ui()
 	# Randomize starting temp
@@ -343,6 +346,7 @@ func _process(delta: float) -> void:
 	# Check completion
 	if _in_zone_timer >= HOLD_DURATION:
 		_completed = true
+		complete_sound.play()
 		_status_label.text = "Reactor stabilized!"
 		_status_label.add_theme_color_override("font_color", Color(0.2, 1.0, 0.4))
 		_progress_label.text = "Stability: 100%"

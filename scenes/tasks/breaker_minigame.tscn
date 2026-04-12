@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://dboobytgxwun0"]
 
 [ext_resource type="Script" uid="uid://ddqqjhsoyfjlj" path="res://scenes/tasks/breaker_minigame.gd" id="1"]
+[ext_resource type="AudioStream" uid="uid://bgl1e6qa2if35" path="res://sounds/select_granted.wav" id="2_ychll"]
+[ext_resource type="AudioStream" uid="uid://2wq4xfdgb20d" path="res://sounds/access_denied.wav" id="3_6xdxa"]
 
 [node name="BreakerMinigame" type="Control" unique_id=486929193]
 layout_mode = 3
@@ -10,3 +12,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+
+[node name="SelectGranted" type="AudioStreamPlayer" parent="." unique_id=950166704]
+stream = ExtResource("2_ychll")
+
+[node name="AccessDenied" type="AudioStreamPlayer" parent="." unique_id=1112523181]
+stream = ExtResource("3_6xdxa")

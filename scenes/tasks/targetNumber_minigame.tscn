@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b1e274ed0h8vp"]
 
 [ext_resource type="Script" uid="uid://cbn5ds3p0u0dm" path="res://scenes/tasks/targetNumber_minigame.gd" id="1_khgmy"]
+[ext_resource type="AudioStream" uid="uid://bgl1e6qa2if35" path="res://sounds/select_granted.wav" id="2_bumt6"]
 
 [node name="targetNumber" type="Control" unique_id=682189137]
 layout_mode = 3
@@ -10,3 +11,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_khgmy")
+
+[node name="SelectGranted" type="AudioStreamPlayer" parent="." unique_id=2104946510]
+stream = ExtResource("2_bumt6")

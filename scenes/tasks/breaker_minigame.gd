@@ -28,6 +28,10 @@ var _on_style: StyleBoxFlat
 var _hint_style: StyleBoxFlat
 var _wrong_style: StyleBoxFlat
 
+# Sound effects
+@onready var complete_sound: AudioStreamPlayer = $SelectGranted
+@onready var denied_sound: AudioStreamPlayer = $AccessDenied
+
 func _ready() -> void:
 	_create_styles()
 	_build_ui()
@@ -254,6 +258,7 @@ func _on_breaker_pressed(index: int) -> void:
 			# All done!
 			_completed = true
 			_accepting_input = false
+			complete_sound.play()
 			_status_label.text = "Breakers reset! Power restored!"
 			_status_label.add_theme_color_override("font_color", Color(0.2, 1.0, 0.4))
 			_hint_label.text = ""
@@ -262,6 +267,7 @@ func _on_breaker_pressed(index: int) -> void:
 	else:
 		# Wrong! Flash all red and reset
 		_accepting_input = false
+		denied_sound.play()
 		_status_label.text = "Wrong breaker! Resetting..."
 		_status_label.add_theme_color_override("font_color", Color(1.0, 0.3, 0.2))
 		_hint_label.text = ""

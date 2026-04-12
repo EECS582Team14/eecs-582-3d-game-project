@@ -11,6 +11,9 @@ var switches = []
 var target_label : Label
 var current_label : Label
 
+# Sound effects
+@onready var complete_sound: AudioStreamPlayer = $SelectGranted
+
 func start_game():
 	create_ui()
 	spawn_switches()
@@ -142,7 +145,7 @@ func calculate_total():
 func finish_game():
 	for s in switches:
 		s.button.disabled = true
-		
+	complete_sound.play()
 	var win_msg = Label.new()
 	win_msg.text = "SYSTEM NOMINAL"
 	win_msg.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

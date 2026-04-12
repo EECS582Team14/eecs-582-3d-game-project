@@ -1,8 +1,9 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://p1l85101vuet"]
 
-[ext_resource type="Script" path="res://scenes/tasks/wiring_minigame.gd" id="1"]
+[ext_resource type="Script" uid="uid://31pwn6dw8srj" path="res://scenes/tasks/wiring_minigame.gd" id="1"]
+[ext_resource type="AudioStream" uid="uid://bgl1e6qa2if35" path="res://sounds/select_granted.wav" id="2_1pdky"]
 
-[node name="WiringMinigame" type="Control"]
+[node name="WiringMinigame" type="Control" unique_id=1188739584]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,3 +11,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+
+[node name="SelectGranted" type="AudioStreamPlayer" parent="." unique_id=658738551]
+stream = ExtResource("2_1pdky")

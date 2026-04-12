@@ -1,8 +1,12 @@
 [gd_scene format=3 uid="uid://dc5afc4lre2r6"]
 
 [ext_resource type="Script" uid="uid://c0nk8cjrbyrr6" path="res://scenes/tasks/signal_minigame.gd" id="1_o4swu"]
+[ext_resource type="AudioStream" uid="uid://bgl1e6qa2if35" path="res://sounds/select_granted.wav" id="2_ov7ux"]
 
 [node name="SignalMinigame" type="Control" unique_id=938113941]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_o4swu")
+
+[node name="SelectGranted" type="AudioStreamPlayer" parent="." unique_id=1618983184]
+stream = ExtResource("2_ov7ux")

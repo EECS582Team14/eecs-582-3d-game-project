@@ -8,6 +8,9 @@ var items = []
 var completed_count = 0
 var total_items = 6
 
+# Sound effects
+@onready var complete_sound: AudioStreamPlayer = $SelectGranted
+
 func start_game():
 	create_ui()
 	spawn_items()
@@ -112,6 +115,7 @@ func check_drop(data):
 		tween.tween_property(data.node, "position", Vector2(randf_range(50, 400), 80), 0.3)
 
 func finish_game():
+	complete_sound.play()
 	var l = Label.new()
 	l.text = "MATERIALS SECURED"
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

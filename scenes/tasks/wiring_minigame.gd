@@ -39,6 +39,9 @@ var _draw_layer: Control = null
 # Panel for layout reference
 var _panel: PanelContainer = null
 
+# Sound effects
+@onready var complete_sound: AudioStreamPlayer = $SelectGranted
+
 func _ready() -> void:
 	_build_ui()
 
@@ -222,6 +225,7 @@ func _check_complete() -> void:
 		if _connections[left_idx] != left_idx:
 			return
 	# All correct!
+	complete_sound.play()
 	await get_tree().create_timer(0.5).timeout
 	minigame_completed.emit()
 

@@ -1,8 +1,16 @@
 [gd_scene format=3 uid="uid://cekqhrurl6456"]
 
 [ext_resource type="Script" uid="uid://b4hnro1byw0k1" path="res://scenes/tasks/path_minigame.gd" id="1_pqjma"]
+[ext_resource type="AudioStream" uid="uid://bgl1e6qa2if35" path="res://sounds/select_granted.wav" id="2_8swgs"]
+[ext_resource type="AudioStream" uid="uid://2wq4xfdgb20d" path="res://sounds/access_denied.wav" id="3_y13yy"]
 
 [node name="PathMinigame" type="Control" unique_id=627286275]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_pqjma")
+
+[node name="SelectGranted" type="AudioStreamPlayer" parent="." unique_id=916499728]
+stream = ExtResource("2_8swgs")
+
+[node name="AccessDenied" type="AudioStreamPlayer" parent="." unique_id=1300225163]
+stream = ExtResource("3_y13yy")

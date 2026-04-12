@@ -1,8 +1,12 @@
 [gd_scene format=3 uid="uid://ceg0l110ln70g"]
 
 [ext_resource type="Script" uid="uid://bn7fa0c1qlmcx" path="res://scenes/tasks/sorting_minigame.gd" id="1_s5vcv"]
+[ext_resource type="AudioStream" uid="uid://bgl1e6qa2if35" path="res://sounds/select_granted.wav" id="2_7mvd2"]
 
 [node name="SortingMinigame" type="Control" unique_id=1100117538]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_s5vcv")
+
+[node name="SelectGranted" type="AudioStreamPlayer" parent="." unique_id=1276551126]
+stream = ExtResource("2_7mvd2")

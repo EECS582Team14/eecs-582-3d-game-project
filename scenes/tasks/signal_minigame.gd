@@ -12,6 +12,9 @@ var wave_line: Line2D
 var goal_line: Line2D
 var game_panel: Panel
 
+# Sound effects
+@onready var complete_sound: AudioStreamPlayer = $SelectGranted
+
 func start_game():
 	# Randomize the target wave
 	goal_freq = randf_range(2.0, 5.0)
@@ -115,7 +118,7 @@ func draw_wave(line: Line2D, freq: float, amp: float):
 func finish_game():
 	set_process(false)
 	wave_line.default_color = Color.WHITE
-	
+	complete_sound.play()
 	var l = Label.new()
 	l.text = "SIGNAL LOCKED"
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

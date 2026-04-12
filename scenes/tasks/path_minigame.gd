@@ -9,6 +9,10 @@ var current_step = 0
 var buttons = []
 var game_panel: Panel
 
+# Sound effects
+@onready var complete_sound: AudioStreamPlayer = $SelectGranted
+@onready var denied_sound: AudioStreamPlayer = $AccessDenied
+
 func start_game():
 	create_ui()
 	generate_random_path()
@@ -108,9 +112,11 @@ func _on_node_clicked(index):
 		current_step += 1
 		
 		if current_step == path_indices.size():
+			complete_sound.play()
 			finish_game()
 	else:
 		# Wrong step! Reset with a penalty flash
+		denied_sound.play()
 		reset_game_state()
 
 func reset_game_state():
