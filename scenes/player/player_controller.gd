@@ -2546,14 +2546,17 @@ func _play_emote(emote_name: String) -> void:
 	_is_emoting = true
 	_current_anim_state = "emote"
 	_anim_player.play(_anim(emote_name), ANIM_BLEND)
-	# Flair plays at half speed to make it double length
-	if emote_name == "flair":
-		_anim_player.speed_scale = 0.5
-	else:
-		_anim_player.speed_scale = 1.0
+	_anim_player.speed_scale = 1.0
 	# Play dance music as 3D spatial audio so nearby players can hear it
 	_start_emote_music()
-	await _anim_player.animation_finished
+	# Flair loops 10 times
+	if emote_name == "flair":
+		for i in range(10):
+			await _anim_player.animation_finished
+			if i < 9:
+				_anim_player.play(_anim("flair"), 0.0)
+	else:
+		await _anim_player.animation_finished
 	_stop_emote_music()
 	_is_emoting = false
 	_current_anim_state = ""
