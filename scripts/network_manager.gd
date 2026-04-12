@@ -36,6 +36,7 @@ signal possess_end_received()
 signal possess_action_received(action: String)
 signal door_lock_received(door_id: String, locked: bool)
 signal hide_update_recieved(locker_id: String, io: bool, steam_id: int)
+signal emote_received(steam_id: int, emote_name: String)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -70,7 +71,8 @@ enum PacketType {
 	POSSESS_END,
 	POSSESS_ACTION,
 	DOOR_LOCK,
-	HIDE_UPDATE
+	HIDE_UPDATE,
+	EMOTE
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -259,6 +261,9 @@ func send_door_lock(door_id: String, locked: bool):
 	send_p2p_packet(0, {"type": PacketType.DOOR_LOCK, "door_id": door_id, "locked": locked}, Steam.P2P_SEND_RELIABLE, 0)
 	door_lock_received.emit(door_id, locked)
 	
+func send_emote(emote_name: String):
+	send_p2p_packet(0, {"type": PacketType.EMOTE, "emote_name": emote_name}, Steam.P2P_SEND_RELIABLE, 0)
+
 func send_hide_update(cabinet_id: String, io: bool, steam_id: int):
 	send_p2p_packet(0, {"type": PacketType.HIDE_UPDATE, "cabinet_id": cabinet_id, "io": io, "target": steam_id})
 	hide_update_recieved.emit(cabinet_id,io,steam_id)
@@ -396,6 +401,8 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 			door_lock_received.emit(data.get("door_id", ""), data.get("locked", false))
 		PacketType.HIDE_UPDATE:
 			hide_update_recieved.emit(data.get("locker_id", ""), data.get("io", false), data.get("target", 0))
+		PacketType.EMOTE:
+			emote_received.emit(sender_steam_id, data.get("emote_name", ""))
 		_:
 			print("Unknown packet type: %s" % packet_type)
 

@@ -46,6 +46,9 @@ var _shoot_rifle_scene: PackedScene = preload("res://scenes/player/Shoot Rifle.f
 var _rifle_walk_back_scene: PackedScene = preload("res://scenes/player/Backwards Rifle Walk.fbx")
 var _rifle_strafe_scene: PackedScene = preload("res://scenes/player/Strafe.fbx")
 var _rifle_strafe_mirror_scene: PackedScene = preload("res://scenes/player/Strafe_mirror.fbx")
+var _flair_scene: PackedScene = preload("res://scenes/player/Flair.fbx")
+var _breakdance_scene: PackedScene = preload("res://scenes/player/Hip Hop Dancing.fbx")
+var _thriller_scene: PackedScene = preload("res://scenes/player/Thriller Part 2.fbx")
 
 # Taser shooting
 const TASER_COOLDOWN: float = 0.5
@@ -86,6 +89,15 @@ var _current_anim_state: String = ""
 var _is_punching: bool = false
 var _is_swinging: bool = false
 var _is_jumping: bool = false
+var _is_emoting: bool = false
+var _emote_wheel: PanelContainer = null
+var _emote_wheel_visible: bool = false
+var _emote_music: AudioStreamPlayer3D = null
+var _dance_song: AudioStream = preload("res://scenes/player/dance.mp3")
+
+# Emote definitions: name -> scene
+var _emote_scenes: Dictionary = {}
+var _emote_names: Array[String] = ["Flair", "Breakdance", "Thriller"]
 
 # Third-person camera
 var _third_person: bool = false
@@ -251,6 +263,9 @@ func _ready() -> void:
 		_import_animation(_rifle_walk_back_scene, "rifle_walk_back", true)
 		_import_animation(_rifle_strafe_scene, "rifle_strafe", true)
 		_import_animation(_rifle_strafe_mirror_scene, "rifle_strafe_mirror", true)
+		_import_animation(_flair_scene, "flair", true)
+		_import_animation(_breakdance_scene, "breakdance", true)
+		_import_animation(_thriller_scene, "thriller", true)
 
 		# Debug: print all animations in the library
 		if main_lib:
@@ -285,6 +300,7 @@ func _ready() -> void:
 		NetworkManager.taser_hide_received.connect(_on_taser_hide_received)
 		NetworkManager.item_dropped_received.connect(_on_item_dropped_received)
 		NetworkManager.taser_dead.connect(_on_taser_dead)
+		NetworkManager.emote_received.connect(_on_emote_received)
 		# Create pause menu on a CanvasLayer so it renders on top and receives input
 		_pause_layer = CanvasLayer.new()
 		_pause_layer.layer = 100
@@ -603,6 +619,17 @@ func _input(event: InputEvent) -> void:
 		elif event.key_label == KEY_Q and event.pressed and not is_dead:
 			if is_impostor and _role_timer <= 0.0:
 				_toggle_sabotage_menu()
+		elif event.key_label == KEY_B and event.pressed and not is_dead:
+			_toggle_emote_wheel()
+		elif _emote_wheel_visible and event.pressed:
+			if event.key_label == KEY_1 and _emote_names.size() >= 1:
+				_on_emote_selected(_emote_names[0].to_lower())
+			elif event.key_label == KEY_2 and _emote_names.size() >= 2:
+				_on_emote_selected(_emote_names[1].to_lower())
+			elif event.key_label == KEY_3 and _emote_names.size() >= 3:
+				_on_emote_selected(_emote_names[2].to_lower())
+			elif event.key_label == KEY_4:
+				_close_emote_wheel()
 		elif event.key_label == KEY_F5 and event.pressed:
 			_toggle_third_person()
 		elif event.key_label == KEY_PERIOD and event.pressed and not is_dead:
@@ -835,7 +862,7 @@ func _set_model_diagonal_rotation(angle_deg: float) -> void:
 	$PlayerModel.transform.basis.z = Vector3(65 * s, 0, -65 * c)
 
 func _update_walk_animation() -> void:
-	if not _anim_player or _is_punching or _is_jumping or _is_swinging:
+	if not _anim_player or _is_punching or _is_jumping or _is_swinging or _is_emoting:
 		return
 	var is_moving = Vector2(velocity.x, velocity.z).length() > 0.1
 
@@ -944,7 +971,7 @@ func _update_walk_animation() -> void:
 func _set_remote_moving(moving: bool, moving_backward: bool = false) -> void:
 	if not _anim_player:
 		return
-	if _is_punching or _is_swinging:
+	if _is_punching or _is_swinging or _is_emoting:
 		return
 	# Remote players holding taser use shoot_rifle animation
 	if has_taser and not _taser_hidden and _anim_player.has_animation(_anim("shoot_rifle")):
@@ -2436,3 +2463,118 @@ func _close_door_map() -> void:
 		_door_map_layer = null
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	_is_mouse_captured = true
+
+# ============ EMOTE SYSTEM ============
+
+func _toggle_emote_wheel() -> void:
+	if _is_emoting:
+		return
+	if _emote_wheel_visible:
+		_close_emote_wheel()
+		return
+	_emote_wheel_visible = true
+
+	# Build the emote wheel UI
+	var layer = CanvasLayer.new()
+	layer.layer = 90
+	layer.name = "EmoteLayer"
+	add_child(layer)
+
+	_emote_wheel = PanelContainer.new()
+	_emote_wheel.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
+	_emote_wheel.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	_emote_wheel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	_emote_wheel.offset_left = -20
+	_emote_wheel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.1, 0.1, 0.1, 0.85)
+	style.corner_radius_top_left = 12
+	style.corner_radius_top_right = 12
+	style.corner_radius_bottom_left = 12
+	style.corner_radius_bottom_right = 12
+	style.content_margin_left = 20
+	style.content_margin_right = 20
+	style.content_margin_top = 15
+	style.content_margin_bottom = 15
+	_emote_wheel.add_theme_stylebox_override("panel", style)
+
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 6)
+
+	var title = Label.new()
+	title.text = "Emotes"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 22)
+	vbox.add_child(title)
+
+	var sep = HSeparator.new()
+	vbox.add_child(sep)
+
+	for i in range(_emote_names.size()):
+		var label = Label.new()
+		label.text = "[%d]  %s" % [i + 1, _emote_names[i]]
+		label.add_theme_font_size_override("font_size", 18)
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(label)
+
+	var dismiss = Label.new()
+	dismiss.text = "[4]  Dismiss"
+	dismiss.add_theme_font_size_override("font_size", 18)
+	dismiss.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	dismiss.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(dismiss)
+
+	_emote_wheel.add_child(vbox)
+	layer.add_child(_emote_wheel)
+
+func _close_emote_wheel() -> void:
+	_emote_wheel_visible = false
+	var layer = get_node_or_null("EmoteLayer")
+	if layer:
+		layer.queue_free()
+	_emote_wheel = null
+
+func _on_emote_selected(emote_name: String) -> void:
+	_close_emote_wheel()
+	_play_emote(emote_name)
+	NetworkManager.send_emote(emote_name)
+
+func _play_emote(emote_name: String) -> void:
+	if not _anim_player or not _anim_player.has_animation(_anim(emote_name)):
+		return
+	_is_emoting = true
+	_current_anim_state = "emote"
+	_anim_player.play(_anim(emote_name), ANIM_BLEND)
+	# Flair plays at half speed to make it double length
+	if emote_name == "flair":
+		_anim_player.speed_scale = 0.5
+	else:
+		_anim_player.speed_scale = 1.0
+	# Play dance music as 3D spatial audio so nearby players can hear it
+	_start_emote_music()
+	await _anim_player.animation_finished
+	_stop_emote_music()
+	_is_emoting = false
+	_current_anim_state = ""
+
+func _start_emote_music() -> void:
+	if not _emote_music:
+		_emote_music = AudioStreamPlayer3D.new()
+		_emote_music.stream = _dance_song
+		_emote_music.unit_size = 5.0
+		_emote_music.max_distance = 20.0
+		_emote_music.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
+		add_child(_emote_music)
+	_emote_music.play()
+
+func _stop_emote_music() -> void:
+	if _emote_music and _emote_music.playing:
+		_emote_music.stop()
+
+func _on_emote_received(sender_steam_id: int, emote_name: String) -> void:
+	if sender_steam_id == steam_id:
+		return
+	var player = NetworkManager.get_player(sender_steam_id)
+	if player:
+		player._play_emote(emote_name)
