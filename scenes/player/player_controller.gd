@@ -42,6 +42,7 @@ var _strafe_left_scene: PackedScene = preload("res://scenes/player/left_strafe_w
 var _idle_scene: PackedScene = preload("res://scenes/player/Idle.fbx")
 var _punch_scene: PackedScene = preload("res://scenes/player/hook_punch.fbx")
 var _jumping_scene: PackedScene = preload("res://scenes/player/jumping.fbx")
+var _shoot_rifle_scene: PackedScene = preload("res://scenes/player/Shoot Rifle.fbx")
 
 # Taser shooting
 const TASER_COOLDOWN: float = 0.5
@@ -243,6 +244,7 @@ func _ready() -> void:
 		_import_animation(_idle_scene, "idle")
 		_import_animation(_punch_scene, "punch")
 		_import_animation(_jumping_scene, "jumping")
+		_import_animation(_shoot_rifle_scene, "shoot_rifle", true)
 
 		# Debug: print all animations in the library
 		if main_lib:
@@ -252,6 +254,7 @@ func _ready() -> void:
 		_set_anim_looping("walk", true)
 		_set_anim_looping("strafe_left", true)
 		_set_anim_looping("idle", true)
+		_set_anim_looping("shoot_rifle", true)
 
 	NetworkManager.punch_received.connect(_on_punch_received)
 
@@ -773,7 +776,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		_process_remote_movement(delta)
 
-func _import_animation(scene: PackedScene, anim_name: String) -> void:
+func _import_animation(scene: PackedScene, anim_name: String, strip_root_position: bool = false) -> void:
 	var temp = scene.instantiate()
 	for child in temp.get_children():
 		if child is AnimationPlayer:
@@ -785,6 +788,12 @@ func _import_animation(scene: PackedScene, anim_name: String) -> void:
 					var anim_list = lib.get_animation_list()
 					if anim_list.size() > 0:
 						var anim = lib.get_animation(anim_list[0])
+						# Remove root bone position tracks that teleport the model
+						if strip_root_position:
+							for i in range(anim.get_track_count() - 1, -1, -1):
+								var path = str(anim.track_get_path(i))
+								if "Hips" in path and anim.track_get_type(i) == Animation.TYPE_POSITION_3D:
+									anim.remove_track(i)
 						var main_lib_names = _anim_player.get_animation_library_list()
 						var main_lib = _anim_player.get_animation_library(main_lib_names[0]) if main_lib_names.size() > 0 else null
 						if main_lib and not main_lib.has_animation(anim_name):
@@ -820,6 +829,46 @@ func _update_walk_animation() -> void:
 	if not _anim_player or _is_punching or _is_jumping or _is_swinging:
 		return
 	var is_moving = Vector2(velocity.x, velocity.z).length() > 0.1
+
+	# When holding taser, use shoot_rifle animation for all movement
+	if has_taser and not _taser_hidden and _anim_player.has_animation(_anim("shoot_rifle")):
+		if is_moving:
+			if _current_anim_state != "shoot_rifle_move":
+				_current_anim_state = "shoot_rifle_move"
+				_anim_player.play(_anim("shoot_rifle"), ANIM_BLEND)
+				_anim_player.speed_scale = 1.0
+			# Ensure animation is playing (in case it was paused)
+			if not _anim_player.is_playing():
+				_anim_player.play(_anim("shoot_rifle"), ANIM_BLEND)
+				_anim_player.speed_scale = 1.0
+		else:
+			if _current_anim_state != "shoot_rifle_idle":
+				_current_anim_state = "shoot_rifle_idle"
+				_anim_player.play(_anim("shoot_rifle"), ANIM_BLEND)
+				_anim_player.speed_scale = 1.0
+				# Pause after a short time to freeze on current frame
+				await get_tree().create_timer(0.1).timeout
+				_anim_player.pause()
+			elif _anim_player.is_playing():
+				_anim_player.pause()
+		# Handle model mirroring/rotation for direction
+		if is_moving:
+			var forward = -transform.basis.z
+			var right = transform.basis.x
+			var move_dir = Vector3(velocity.x, 0, velocity.z).normalized()
+			var side_dot = right.dot(move_dir)
+			var dot = forward.dot(move_dir)
+			if dot < -0.1:
+				_reset_model_mirror()
+				_set_model_diagonal_rotation(side_dot * -25.0)
+			else:
+				_reset_model_mirror()
+				_set_model_diagonal_rotation(side_dot * 25.0)
+		else:
+			_reset_model_mirror()
+			_set_model_diagonal_rotation(0.0)
+		return
+
 	if is_moving:
 		var forward = -transform.basis.z
 		var right = transform.basis.x
@@ -872,6 +921,26 @@ func _set_remote_moving(moving: bool, moving_backward: bool = false) -> void:
 	if not _anim_player:
 		return
 	if _is_punching or _is_swinging:
+		return
+	# Remote players holding taser use shoot_rifle animation
+	if has_taser and not _taser_hidden and _anim_player.has_animation(_anim("shoot_rifle")):
+		if moving:
+			if _current_anim_state != "shoot_rifle_move":
+				_current_anim_state = "shoot_rifle_move"
+				_anim_player.play(_anim("shoot_rifle"), ANIM_BLEND)
+				_anim_player.speed_scale = 1.0
+			if not _anim_player.is_playing():
+				_anim_player.play(_anim("shoot_rifle"), ANIM_BLEND)
+				_anim_player.speed_scale = 1.0
+		else:
+			if _current_anim_state != "shoot_rifle_idle":
+				_current_anim_state = "shoot_rifle_idle"
+				_anim_player.play(_anim("shoot_rifle"), ANIM_BLEND)
+				_anim_player.speed_scale = 1.0
+				await get_tree().create_timer(0.1).timeout
+				_anim_player.pause()
+			elif _anim_player.is_playing():
+				_anim_player.pause()
 		return
 	if moving:
 		if moving_backward:
