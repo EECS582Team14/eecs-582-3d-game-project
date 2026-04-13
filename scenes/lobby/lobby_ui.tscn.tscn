@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://d4mebvdghs2yf" path="res://scenes/lobby/lobby_assets/LeaveLobbyButton.png" id="9_2gg2j"]
 [ext_resource type="Texture2D" uid="uid://bwpqfqjmxuc3k" path="res://scenes/lobby/lobby_assets/CloseLobbyButton.png" id="10_riw86"]
 [ext_resource type="Texture2D" uid="uid://bxt1e0ykxl5qx" path="res://scenes/lobby/lobby_assets/CreditsButton.png" id="12_riw86"]
+[ext_resource type="AudioStream" uid="uid://bvy28ixuswuax" path="res://sounds/universe_space_sounds.ogg" id="13_8hmdx"]
 
 [node name="LobbyUI" type="Control" unique_id=474558022]
 layout_mode = 3
@@ -243,3 +244,8 @@ text = "[center]
 Number of Imposters[/color]
 [/font_size]
 [/center]"
+
+[node name="UniverseSpaceSounds" type="AudioStreamPlayer" parent="." unique_id=291766488]
+stream = ExtResource("13_8hmdx")
+autoplay = true
+parameters/looping = true
