@@ -64,8 +64,8 @@ func _build_room():
 	env.background_mode = Environment.BG_COLOR
 	env.background_color = Color(0.01, 0.01, 0.03)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.3, 0.35, 0.5)
-	env.ambient_light_energy = 0.4
+	env.ambient_light_color = Color(0.4, 0.45, 0.6)
+	env.ambient_light_energy = 0.7
 	world_env.environment = env
 	add_child(world_env)
 
@@ -82,20 +82,27 @@ func _build_room():
 	# Directional light
 	var dir_light = DirectionalLight3D.new()
 	dir_light.rotation_degrees = Vector3(-50, 25, 0)
-	dir_light.light_energy = 0.6
-	dir_light.light_color = Color(0.85, 0.85, 1.0)
+	dir_light.light_energy = 1.2
+	dir_light.light_color = Color(0.9, 0.9, 1.0)
 	dir_light.shadow_enabled = true
 	add_child(dir_light)
 
 	# Central overhead light
-	_create_point_light(Vector3(0, 3.5, 0), Color(0.6, 0.7, 1.0), 2.5, 12.0)
+	_create_point_light(Vector3(0, 3.5, 0), Color(0.7, 0.8, 1.0), 4.0, 14.0)
 	# Console accent lights
-	_create_point_light(Vector3(-2.5, 2.5, -6.5), Color(0.2, 0.5, 1.0), 1.5, 5.0)
-	_create_point_light(Vector3(2.5, 2.5, -6.5), Color(0.2, 1.0, 0.4), 1.5, 5.0)
+	_create_point_light(Vector3(-2.5, 2.5, -6.5), Color(0.3, 0.6, 1.0), 2.5, 6.0)
+	_create_point_light(Vector3(2.5, 2.5, -6.5), Color(0.3, 1.0, 0.5), 2.5, 6.0)
+	# Corner fill lights
+	_create_point_light(Vector3(-6, 3.0, -6), Color(0.5, 0.5, 0.7), 1.5, 8.0)
+	_create_point_light(Vector3(6, 3.0, -6), Color(0.5, 0.5, 0.7), 1.5, 8.0)
+	_create_point_light(Vector3(-6, 3.0, 6), Color(0.5, 0.5, 0.7), 1.5, 8.0)
+	_create_point_light(Vector3(6, 3.0, 6), Color(0.5, 0.5, 0.7), 1.5, 8.0)
+	# Leave console light
+	_create_point_light(Vector3(7, 2.5, -3), Color(1.0, 0.3, 0.2), 1.5, 5.0)
 
-	# Floor guide stripes
-	_create_surface(Vector3(0, 0.01, -5.5), Vector3(14, 0.02, 0.05), Color(0.2, 0.4, 0.8))
-	_create_surface(Vector3(0, 0.01, -3), Vector3(14, 0.02, 0.05), Color(0.15, 0.25, 0.5))
+	# Floor guide stripes (mesh only, no collision)
+	_create_decal(Vector3(0, 0.01, -5.5), Vector3(14, 0.02, 0.05), Color(0.2, 0.4, 0.8))
+	_create_decal(Vector3(0, 0.01, -3), Vector3(14, 0.02, 0.05), Color(0.15, 0.25, 0.5))
 
 	# Room title
 	var title = Label3D.new()
@@ -130,6 +137,20 @@ func _create_surface(pos: Vector3, size: Vector3, color: Color) -> void:
 	body.add_child(mesh_inst)
 	body.add_child(col)
 	add_child(body)
+
+func _create_decal(pos: Vector3, size: Vector3, color: Color) -> void:
+	var mesh_inst = MeshInstance3D.new()
+	mesh_inst.position = pos
+	var box = BoxMesh.new()
+	box.size = size
+	mesh_inst.mesh = box
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color = color
+	mat.emission_enabled = true
+	mat.emission = color
+	mat.emission_energy_multiplier = 2.0
+	mesh_inst.material_override = mat
+	add_child(mesh_inst)
 
 func _create_point_light(pos: Vector3, color: Color, energy: float, light_range: float) -> void:
 	var light = OmniLight3D.new()

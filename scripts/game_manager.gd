@@ -402,17 +402,25 @@ func _on_play_again():
 	# Despawn all players
 	despawn_all_players()
 
-	# Reset game state
+	# Reset ALL game state
 	game_state = 1
 	destination_progress = 0.0
 	progress_speed_modifier = 1.0
 	_progress_sync_timer = 0.0
 	timer_active = false
 	active_sabotages.clear()
+	ship_integrity = 50.0
+	_local_player_is_impostor = false
 
-	# Clear buffered role
+	# Clear buffered role so stale impostor status doesn't carry over
 	NetworkManager.pending_role_received = false
 	NetworkManager.pending_role_impostor = false
+
+	# Reset imposter count to default
+	imposter_count = 1
+
+	# Stop voice recording
+	VoiceManager.stop()
 
 	# Re-capture mouse
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
