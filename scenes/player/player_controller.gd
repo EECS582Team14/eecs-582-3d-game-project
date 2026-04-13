@@ -1906,6 +1906,7 @@ func _on_sabotage_triggered(sabotage_type: String) -> void:
 		return
 	if sabotage_type == "lights_out":
 		flashlight.visible = true
+		flashlight.light_color = Color.GREEN
 	elif sabotage_type == "anonymous":
 		_mask_all_nametags()
 
