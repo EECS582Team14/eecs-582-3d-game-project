@@ -9,7 +9,7 @@ const PlayerScene = preload("res://scenes/player/player.tscn")
 const TaserPickupScene = preload("res://scenes/weapons/taser/taser_pickup.tscn")
 const BatonPickupScene = preload("res://scenes/weapons/baton/baton.tscn")
 const GAME_LEVEL = "res://scenes/levels/main.tscn"
-const LOBBY_SCENE = preload("res://scenes/lobby/lobby_ui.tscn.tscn")
+const LOBBY_SCENE_PATH = "res://scenes/lobby/lobby_room.tscn"
 const SecurityCamerasScene = preload("res://scenes/levels/cams/security_cameras.tscn")
 const TASER_SPAWN_POS = Vector3(-19.66497, 0.45656508, 16.686378)
 const BATON01_SPAWN_POS = Vector3(-19.932, 0.0, 21.235)
@@ -23,6 +23,8 @@ var _initial_weapon_data: Array = []	# Stores lists of [item_id, global_position
 	Vector3(-3, 1, 0),
 	Vector3(0, 1, 3),
 ]
+
+var imposter_count: int = 1
 
 const PLAYER_COLORS: Array[Color] = [
 	Color.GREEN,
@@ -415,15 +417,8 @@ func _on_play_again():
 	# Re-capture mouse
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-	# Re-spawn players, HUD, and pickups, and reset ship integrity in the same level
-	await get_tree().process_frame
-	_spawn_all_players()
-	_spawn_local_hud()
-	_respawn_taser_pickup()
-	_reset_ship_integrity()
-
-	#Go back to lobby scene
-	get_tree().call_deferred("change_scene_to_packed", LOBBY_SCENE)
+	# Go back to lobby room
+	get_tree().call_deferred("change_scene_to_file", LOBBY_SCENE_PATH)
 
 func _respawn_taser_pickup():
 	# The taser pickup calls queue_free() when picked up, so re-instantiate it on play again
@@ -590,14 +585,17 @@ func _capture_initial_weapon_states():
 	print("Weapon state captured: ", _initial_weapon_data.size(), " weapons found")
 
 func _assign_roles():
-	# Pick one random player as the impostor
-	var impostor_index = randi() % LobbyManager.lobby_members.size()
-	var my_steam_id = Steam.getSteamID()
-	var impostor_steam_id: int = LobbyManager.lobby_members[impostor_index].steam_id
+	# Shuffle members and pick impostor(s) based on imposter_count setting
+	var members = LobbyManager.lobby_members.duplicate()
+	members.shuffle()
+	var actual_count = mini(imposter_count, members.size() - 1)
+	actual_count = maxi(actual_count, 1)
 
-	for i in range(LobbyManager.lobby_members.size()):
-		var member_steam_id = LobbyManager.lobby_members[i].steam_id
-		var is_impostor = (i == impostor_index)
+	var my_steam_id = Steam.getSteamID()
+
+	for i in range(members.size()):
+		var member_steam_id = members[i].steam_id
+		var is_impostor = (i < actual_count)
 
 		# Set is_impostor on the player node so the host can check win conditions
 		var player_node = NetworkManager.get_player(member_steam_id)
@@ -613,11 +611,7 @@ func _assign_roles():
 			# Send role to remote player privately
 			NetworkManager.send_role_assignment(member_steam_id, is_impostor)
 
-	# Give the impostor the taser after the role reveal delay
-	#_give_impostor_taser_after_reveal(impostor_steam_id)
-
-	var impostor_name = LobbyManager.lobby_members[impostor_index].name
-	print("Impostor assigned: ", impostor_name)
+	print("Impostors assigned: ", actual_count)
 
 func _give_impostor_taser_after_reveal(impostor_steam_id: int):
 	await get_tree().create_timer(30.0).timeout

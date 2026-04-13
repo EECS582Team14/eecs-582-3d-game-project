@@ -1307,6 +1307,15 @@ func _update_interaction_look() -> void:
 				_interact_label.text = "Press E to hide"
 				_interact_label.visible = true
 				return
+		elif collider.is_in_group("lobby_console"):
+			_looking_at_interactable = _find_activatable(collider)
+			if _looking_at_interactable:
+				if _looking_at_interactable.has_method("get_prompt_text"):
+					_interact_label.text = _looking_at_interactable.get_prompt_text()
+				else:
+					_interact_label.text = "Press E to interact"
+				_interact_label.visible = true
+				return
 	if _is_holding_task and not _is_looking_at_task_console():
 		_cancel_task_hold()
 	_interact_label.visible = false

@@ -76,14 +76,9 @@ func _ready():
 	await get_tree().process_frame
 	#HANDLE RETURNING FROM GAME
 	if LobbyManager.is_in_lobby():
-		status_label.text = "Returned to lobby"
-		lobby_list.visible = false
-		refresh_btn.visible = false
-		host_btn.visible = false
-		player_list.visible = true
-
-		_update_lobby_buttons()
-		_refresh_players()
+		# Already in a lobby, go straight to physical lobby room
+		get_tree().change_scene_to_file("res://scenes/lobby/lobby_room.tscn")
+		return
 	else:
 		_on_refresh_pressed()
 
@@ -140,10 +135,9 @@ func _on_host_pressed():
 	popup.canceled.connect(popup.queue_free)
 
 func _on_lobby_created(_lobby_id: int):
-	start_btn.visible = true
-	close_lobby.visible = true
-	status_label.text = "Lobby created! Waiting for players..."
-	_refresh_players()
+	# Transition to physical lobby room
+	if is_inside_tree():
+		get_tree().change_scene_to_file("res://scenes/lobby/lobby_room.tscn")
 
 func _update_lobby_buttons():
 	if LobbyManager.is_host():
@@ -253,13 +247,9 @@ func _create_lobby_with_password(line_edit: LineEdit, popup: AcceptDialog):
 	
 # ============ JOINED ============	
 func _on_lobby_joined(_lobby_id: int):
-	status_label.text = "Joined lobby!"
-	lobby_list.visible = false
-	refresh_btn.visible = false
-	host_btn.visible = false
-	player_list.visible = true
-	_update_lobby_buttons()
-	_refresh_players()
+	# Transition to physical lobby room
+	if is_inside_tree():
+		get_tree().change_scene_to_file("res://scenes/lobby/lobby_room.tscn")
 
 func _on_player_update(_steam_id: int):
 	_refresh_players()
