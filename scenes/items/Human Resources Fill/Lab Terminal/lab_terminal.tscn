@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://c37sab6c1lx7q"]
+
+[ext_resource type="PackedScene" uid="uid://bb17t4l6chfq7" path="res://scenes/items/Human Resources Fill/Lab Terminal/scifi_terminal_2.glb" id="1_ecqqg"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nwhh0"]
+size = Vector3(0.60717773, 1.5170898, 0.6647949)
+
+[node name="lab_terminal" type="StaticBody3D" unique_id=293832614]
+
+[node name="Sketchfab_Scene" parent="." unique_id=1847254370 instance=ExtResource("1_ecqqg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4419634, 1.0327941, 0.07651198)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1792874614]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.053344727, 0.7746582, -0.009643555)
+shape = SubResource("BoxShape3D_nwhh0")
+debug_color = Color(0, 11.708403, 13.469126, 1)

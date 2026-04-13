@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://byo5wafkjjiw1"]
+
+[ext_resource type="PackedScene" uid="uid://14wxmirfwh6a" path="res://scenes/items/Human Resources Fill/Med Table/med_bay_table.glb" id="1_ikw5w"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ikw5w"]
+size = Vector3(1.2750244, 2.1356506, 0.83703613)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_oin6a"]
+size = Vector3(0.6977539, 0.43075562, 2.77359)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dg2vq"]
+size = Vector3(1.3393555, 0.30285645, 3.0565186)
+
+[node name="med_table" type="StaticBody3D" unique_id=2127605886]
+
+[node name="Sketchfab_Scene" parent="." unique_id=141465798 instance=ExtResource("1_ikw5w")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1965745813]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.019348145, 1.0667572, -0.08148193)
+shape = SubResource("BoxShape3D_ikw5w")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=1182438871]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016845703, 0.67762756, 0.88679504)
+shape = SubResource("BoxShape3D_oin6a")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="." unique_id=1927784515]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.007080078, 1.9603882, 1.0282593)
+shape = SubResource("BoxShape3D_dg2vq")
+debug_color = Color(0, 11.708403, 13.469126, 1)

@@ -31,13 +31,17 @@
 [ext_resource type="PackedScene" uid="uid://dnb0mheryqfrt" path="res://scenes/items/Armory Fill/Armory Bench/armory_bench.tscn" id="23_0m6m5"]
 [ext_resource type="Script" uid="uid://dxiyilrrregsc" path="res://scenes/tasks/Shielding_task_script.gd" id="23_57p4a"]
 [ext_resource type="Script" uid="uid://6tr2eiwi5bfw" path="res://scenes/buttons/Button_right.gd" id="23_eofsf"]
+[ext_resource type="PackedScene" uid="uid://byo5wafkjjiw1" path="res://scenes/items/Human Resources Fill/Med Table/med_table.tscn" id="23_g03in"]
 [ext_resource type="PackedScene" uid="uid://cjjc7i71ymd2v" path="res://scenes/items/Human Resources Fill/Locker w back/locker_w_back.tscn" id="23_xuoj0"]
 [ext_resource type="Script" uid="uid://dy8t20vmm7jdp" path="res://scenes/tasks/Supply_Closet_task_script.gd" id="24_0m6m5"]
 [ext_resource type="Script" uid="uid://cg87m34jjco5u" path="res://scenes/buttons/Button_left.gd" id="24_4clrc"]
 [ext_resource type="PackedScene" uid="uid://ilqnvmrks6hl" path="res://scenes/items/Armory Fill/Ammo Locker/ammo_locker.tscn" id="24_efilq"]
+[ext_resource type="PackedScene" uid="uid://78avc7p04cok" path="res://scenes/items/Human Resources Fill/Lab Tank/lab_tank.tscn" id="24_g03in"]
 [ext_resource type="Script" uid="uid://cvsghl2twbfdu" path="res://scenes/tasks/Crew_task_script.gd" id="25_efilq"]
+[ext_resource type="PackedScene" uid="uid://c37sab6c1lx7q" path="res://scenes/items/Human Resources Fill/Lab Terminal/lab_terminal.tscn" id="25_i5plh"]
 [ext_resource type="PackedScene" uid="uid://bvuehs8r77do5" path="res://scenes/items/Armory Fill/armory_personnel_table/armory_personnel_table.tscn" id="25_orgge"]
 [ext_resource type="PackedScene" uid="uid://bngmfl0csp70c" path="res://scenes/items/Armory Fill/Workbench/workbench.tscn" id="26_brw7n"]
+[ext_resource type="PackedScene" uid="uid://bcep7vri8mi0q" path="res://scenes/items/Human Resources Fill/Lab Table/lab_table.tscn" id="26_h83ro"]
 [ext_resource type="PackedScene" uid="uid://b6gb7jdttl0e1" path="res://scenes/items/Armory Fill/Small Weapon Crate/small_weapon_crate.tscn" id="27_dw7al"]
 [ext_resource type="PackedScene" uid="uid://dvs4h8evm00ev" path="res://scenes/items/Armory Fill/Shelf/shelf.tscn" id="28_3j6qi"]
 [ext_resource type="PackedScene" uid="uid://dkmlnl6gy54df" path="res://scenes/items/Healthpack Table/Healthpack1 Table.tscn" id="28_4ertf"]
@@ -454,6 +458,18 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 4.07
 
 [node name="personal_locker" parent="HumanResources/stasis_pod20" unique_id=1852072436 instance=ExtResource("23_xuoj0")]
 transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, -0.853, 0, 1)
+
+[node name="med_table" parent="HumanResources" unique_id=2127605886 instance=ExtResource("23_g03in")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.1310043, 0, -6.7695756)
+
+[node name="lab_tank" parent="HumanResources" unique_id=2043491790 instance=ExtResource("24_g03in")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -4.437771, 0, -2.5727024)
+
+[node name="lab_terminal" parent="HumanResources" unique_id=293832614 instance=ExtResource("25_i5plh")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -1.2553673, 0, -6.9028006)
+
+[node name="lab_table" parent="HumanResources" unique_id=2136807922 instance=ExtResource("26_h83ro")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.144779, 0, -2.38583)
 
 [node name="Armory" type="Node3D" parent="." unique_id=1952892335]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 0)
@@ -946,7 +962,7 @@ transform = Transform3D(-0.5, -4.371139e-08, 1.9106855e-15, 0, -2.1855694e-08, -
 transform = Transform3D(-0.5, -4.371139e-08, 1.9106855e-15, 0, -2.1855694e-08, -0.5, 4.371139e-08, -0.5, 2.1855694e-08, -11, 1, -15.151)
 
 [node name="Healthpack8" parent="." unique_id=806748227 instance=ExtResource("15_bj8xs")]
-transform = Transform3D(5.9624403e-09, -0.5, 2.1855694e-08, 0, -2.1855694e-08, -0.5, 0.5, 5.9624403e-09, -2.6062653e-16, -15.178999, 1, -3.6689487)
+transform = Transform3D(-2.1855694e-08, 0, -0.5, 0, 0.5, 0, 0.5, 0, -2.1855694e-08, -15.941557, 0.533462, -3.5279517)
 
 [node name="Healthpack9" parent="." unique_id=1591003850 instance=ExtResource("15_bj8xs")]
 transform = Transform3D(5.9624403e-09, -0.5, 2.1855694e-08, 0, -2.1855694e-08, -0.5, 0.5, 5.9624403e-09, -2.6062653e-16, -15.178999, 1, 18.281452)

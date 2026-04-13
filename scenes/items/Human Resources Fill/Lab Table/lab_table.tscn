@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://bcep7vri8mi0q"]
+
+[ext_resource type="PackedScene" uid="uid://clurwd5vi22fv" path="res://scenes/items/Human Resources Fill/Lab Table/lumen_hologram_table.glb" id="2_5jddk"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ulfnu"]
+size = Vector3(1.3348389, 0.88038635, 2.922638)
+
+[node name="lab_table" type="StaticBody3D" unique_id=2136807922]
+
+[node name="Sketchfab_Scene" parent="." unique_id=671424251 instance=ExtResource("2_5jddk")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1480001745]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.089904785, 0.0901413, 0.0021209717)
+shape = SubResource("BoxShape3D_ulfnu")
