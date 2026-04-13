@@ -697,9 +697,12 @@ func _input(event: InputEvent) -> void:
 		if _minigame_active:
 			return
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			if not _is_mouse_captured:
+			# Don't re-capture mouse if a UI overlay is consuming input (e.g. lobby settings)
+			if not _is_mouse_captured and Input.get_mouse_mode() != Input.MOUSE_MODE_VISIBLE:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 				_is_mouse_captured = true
+			elif not _is_mouse_captured:
+				pass  # UI is open, ignore click
 			elif has_taser and not is_dead and not _taser_hidden:
 				_shoot_taser()
 			elif has_baton and not is_dead and not _baton_hidden and not _is_swinging:
