@@ -154,7 +154,7 @@ distance_fade_begin = 0.0
 distance_fade_length = 5.0
 
 [node name="NexusTask" parent="Nexus" unique_id=803413272 instance=ExtResource("5_iah82")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0.5, 0)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 6, 0.5, 0)
 script = ExtResource("6_4ertf")
 task_id = "Nexus_task"
 
@@ -170,11 +170,17 @@ transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.027, 6.8999996, 0, 4.799
 [node name="Server4" parent="Nexus" unique_id=1403400613 instance=ExtResource("7_8q6of")]
 transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.027, 6.8999996, 0, -4.800001)
 
-[node name="Locker" parent="Nexus" unique_id=228214010 instance=ExtResource("8_h1yrm")]
+[node name="NexusLocker" parent="Nexus" unique_id=228214010 instance=ExtResource("8_h1yrm")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -4, 0, -9.5)
 
-[node name="Locker2" parent="Nexus" unique_id=741008106 instance=ExtResource("8_h1yrm")]
+[node name="NexusLocker2" parent="Nexus" unique_id=741008106 instance=ExtResource("8_h1yrm")]
 transform = Transform3D(0.8, 0, 1.4901163e-08, 0, 0.8, 0, -1.4901163e-08, 0, 0.8, 4.2, 0, -9.5)
+
+[node name="Server5" parent="Nexus" unique_id=1643862793 instance=ExtResource("7_8q6of")]
+transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.027, -4.1000004, 0, 0.19999886)
+
+[node name="Server6" parent="Nexus" unique_id=1763979540 instance=ExtResource("7_8q6of")]
+transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.027, 3.8999996, 0, 0.19999886)
 
 [node name="NavBridge" type="Node3D" parent="." unique_id=1363310021]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -22.5)
@@ -203,6 +209,12 @@ distance_fade_length = 5.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -4)
 script = ExtResource("9_r35sg")
 task_id = "Nav_task"
+
+[node name="NavLocker" parent="NavBridge" unique_id=1646487477 instance=ExtResource("8_h1yrm")]
+transform = Transform3D(-0.8, 0, 6.9938224e-08, 0, 0.8, 0, -6.9938224e-08, 0, -0.8, -4, 0, 7)
+
+[node name="NavLocker2" parent="NavBridge" unique_id=1808734934 instance=ExtResource("8_h1yrm")]
+transform = Transform3D(-0.8, 0, 6.9938224e-08, 0, 0.8, 0, -6.9938224e-08, 0, -0.8, 4, 0, 7)
 
 [node name="Cams" type="Node3D" parent="." unique_id=682191193]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -20)
@@ -305,6 +317,9 @@ distance_fade_length = 5.0
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3, 0.5, 0)
 script = ExtResource("18_sco87")
 task_id = "Life_task"
+
+[node name="LifeLocker" parent="LifeSupport" unique_id=907761229 instance=ExtResource("8_h1yrm")]
+transform = Transform3D(-0.8, 0, 6.9938224e-08, 0, 0.8, 0, -6.9938224e-08, 0, -0.8, 0, 0, 1.9)
 
 [node name="HumanResources" type="Node3D" parent="." unique_id=645411416]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 0)
@@ -470,6 +485,9 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -1.2
 
 [node name="lab_table" parent="HumanResources" unique_id=2136807922 instance=ExtResource("26_h83ro")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.144779, 0, -2.38583)
+
+[node name="LabLocker" parent="HumanResources" unique_id=273384694 instance=ExtResource("8_h1yrm")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 2.8999996, 0, -6.9000006)
 
 [node name="Armory" type="Node3D" parent="." unique_id=1952892335]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 0)
@@ -1455,3 +1473,6 @@ item_id = "baton_11"
 [node name="baton_pickup12" parent="." unique_id=2028520216 instance=ExtResource("32_4clrc")]
 transform = Transform3D(-3.562374e-08, -0.8149761, -0.57949466, 1, -4.371139e-08, -9.64614e-16, -2.533052e-08, -0.57949466, 0.8149761, -16.966074, 0.7144527, 13.408841)
 item_id = "baton_12"
+
+[node name="LifeLocker" parent="." unique_id=1727066536 instance=ExtResource("8_h1yrm")]
+transform = Transform3D(-3.4969112e-08, 0, 0.8, 0, 0.8, 0, -0.8, 0, -3.4969112e-08, -24.6, 0, 13.099999)
