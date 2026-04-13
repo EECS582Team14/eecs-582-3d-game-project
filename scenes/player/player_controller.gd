@@ -215,6 +215,9 @@ var _completed_tasks: Array[String] = []
 var _destination_bar: ProgressBar = null
 var _destination_label: Label = null
 
+# Taser cooldown HUD
+var _taser_timer_circle: TextureProgressBar = null
+
 # Signals
 signal health_changed(new_health)
 
@@ -488,6 +491,26 @@ func _ready() -> void:
 		_task_progress_bar.add_theme_stylebox_override("background", task_bg)
 		_task_progress_bar.visible = false
 		$HUD.add_child(_task_progress_bar)
+
+		# Taser cooldown bar
+		_taser_timer_circle = TextureProgressBar.new()
+		_taser_timer_circle.min_value = 0
+		_taser_timer_circle.max_value = TASER_COOLDOWN
+		_taser_timer_circle.step = 0.01
+		_taser_timer_circle.visible = false
+		_taser_timer_circle.set_anchors_preset(Control.PRESET_CENTER)
+		_taser_timer_circle.offset_left = -32
+		_taser_timer_circle.offset_right = 32
+		_taser_timer_circle.offset_top = -32
+		_taser_timer_circle.offset_bottom = 32
+		_taser_timer_circle.scale = Vector2(0.5, 0.5)
+		_taser_timer_circle.pivot_offset = Vector2(32, 32)
+		_taser_timer_circle.fill_mode = TextureProgressBar.FILL_CLOCKWISE
+		_taser_timer_circle.texture_progress = preload("res://scenes/HUD/taser_cooldown/vecteezy_minimalist-white-circle-border_60512381.png")
+		_taser_timer_circle.tint_progress = Color.DARK_RED
+		_taser_timer_circle.texture_under = _taser_timer_circle.texture_progress
+		_taser_timer_circle.tint_under = Color(0.1, 0.1, 0.1, 0.5)
+		$HUD.add_child(_taser_timer_circle)
 
 		# Connect destination progress updates
 		NetworkManager.progress_update_received.connect(_on_progress_update_received)
@@ -839,6 +862,10 @@ func _physics_process(delta: float) -> void:
 			_update_interaction_look()
 			if _taser_cooldown_timer > 0.0:
 				_taser_cooldown_timer -= delta
+				_taser_timer_circle.value = TASER_COOLDOWN - _taser_cooldown_timer
+				_taser_timer_circle.visible = (has_taser and not _taser_hidden)
+			else:
+				_taser_timer_circle.visible = false
 			if Input.is_action_just_pressed("interact") and _looking_at_interactable:
 				_try_interact()
 			_update_task_hold(delta)

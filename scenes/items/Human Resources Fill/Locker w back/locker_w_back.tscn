@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://cjjc7i71ymd2v"]
+
+[ext_resource type="PackedScene" uid="uid://ivbh8f4lg3qx" path="res://scenes/items/Armory Fill/Personal Locker/locker_scifi_type_va.glb" id="1_gtx7e"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2tasm"]
+size = Vector3(0.6209717, 2.0527954, 0.31030273)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ix242"]
+albedo_color = Color(0.07450981, 0.09803922, 0.11764706, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_4rpmt"]
+size = Vector3(0.6, 2, 0.1)
+
+[node name="locker_w_back" type="StaticBody3D" unique_id=762682541]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, 0, 0, 0)
+
+[node name="Sketchfab_Scene" parent="." unique_id=1975413553 instance=ExtResource("1_gtx7e")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=89406211]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.003967285, 0.9825134, -0.15197754)
+visible = false
+shape = SubResource("BoxShape3D_2tasm")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=991465438]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.924658e-10, 1.0054, -0.05806899)
+material_override = SubResource("StandardMaterial3D_ix242")
+mesh = SubResource("BoxMesh_4rpmt")

@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://78avc7p04cok"]
+
+[ext_resource type="PackedScene" uid="uid://du4emmkilqvi5" path="res://scenes/items/Human Resources Fill/Lab Tank/sci_fi_lab.glb" id="2_8ym10"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wed1j"]
+size = Vector3(1.6777344, 2.302002, 0.4857788)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_0vald"]
+height = 2.0441895
+
+[node name="lab_tank" type="StaticBody3D" unique_id=2043491790]
+
+[node name="Sketchfab_Scene" parent="." unique_id=1280855129 instance=ExtResource("2_8ym10")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=119631690]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3388672, 1.1434326, 0.0050354004)
+shape = SubResource("BoxShape3D_wed1j")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=1698692439]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.74382734, 1.001831, 0.0018333793)
+shape = SubResource("CylinderShape3D_0vald")
+debug_color = Color(0, 11.708403, 13.469126, 1)
