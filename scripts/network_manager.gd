@@ -27,7 +27,7 @@ signal ship_integrity_update_received(sender_steam_id: int, integrity: float)
 signal taser_hide_received(steam_id: int, hidden: bool)
 signal armory_button_changed(button_id: String, pressed: bool)
 signal punch_received(steam_id: int)
-signal item_dropped_received(item_id: String, pos: Vector3, uses: int)
+signal item_dropped_received(item_id: String, tranform: Transform3D, uses: int)
 signal taser_dead(steam_id: int)
 signal sabotage_received(sabotage_type: String)
 signal possess_start_received(impostor_steam_id: int)
@@ -173,11 +173,15 @@ func send_item_pickup(item_id: String):
 	send_p2p_packet(0, {"type": PacketType.ITEM_PICKUP, "item_id": item_id, "picker": Steam.getSteamID()}, Steam.P2P_SEND_RELIABLE, 0)
 	item_picked_up.emit(Steam.getSteamID(), item_id)
 
-func send_item_dropped(item_id: String, pos: Vector3, uses: int = 0) -> void:
+func send_item_dropped(item_id: String, transform: Transform3D, uses: int = 0) -> void:
+	var pos = transform.origin
+	var rot = transform.basis.get_euler()
+	
 	var data = {
 		"type": PacketType.ITEM_DROP,
 		"item_id": item_id,
 		"position": { "x": pos.x, "y": pos.y, "z": pos.z},
+		"rotation": {"x": rot.x, "y": rot.y, "z": rot.z},
 		"uses": uses
 	}
 	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE)
@@ -331,8 +335,10 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 		PacketType.ITEM_DROP:
 			var id = data.item_id
 			var pos = Vector3(data.position.x, data.position.y, data.position.z)
+			var rot = Vector3(data.rotation.x, data.rotation.y, data.rotation.z)
+			var transform = Transform3D(Basis.from_euler(rot), pos)
 			var uses = data.get("uses", 0)
-			item_dropped_received.emit(id, pos, uses)
+			item_dropped_received.emit(id, transform, uses)
 
 		PacketType.TASER_SHOT:
 			var origin = Vector3(data.get("ox", 0), data.get("oy", 0), data.get("oz", 0))

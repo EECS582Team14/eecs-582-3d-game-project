@@ -465,9 +465,9 @@ func _reset_weapon_pickups():
 			
 			if new_weapon:
 				new_weapon.item_id = weapon.id
-				new_weapon.position = weapon.pos
+				new_weapon.transform = weapon.transform
 				parent.add_child(new_weapon)
-				NetworkManager.send_item_dropped(weapon.id, weapon.pos)
+				NetworkManager.send_item_dropped(weapon.id, weapon.transform)
 	
 
 # ============ GAME START ============
@@ -603,7 +603,7 @@ func _capture_initial_weapon_states():
 		if not p.item_id.contains("Healthpack") and p.item_id != "":
 			_initial_weapon_data.append({
 				"id": p.item_id,
-				"pos": p.global_position
+				"transform" : p.global_transform
 			})
 	print("Weapon state captured: ", _initial_weapon_data.size(), " weapons found")
 

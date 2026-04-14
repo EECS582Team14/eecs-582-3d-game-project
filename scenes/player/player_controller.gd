@@ -1467,6 +1467,7 @@ func drop_current_weapon() -> void:
 			
 	if is_local_player and pickup_to_spawn:
 		var pickup = pickup_to_spawn.instantiate()
+		#pickup.global_transform = global_transform
 		pickup.scale = Vector3(0.5, 0.5, 0.5)
 		pickup.global_position = global_position + (-global_transform.basis.z * 1.5) + Vector3(0, 0.5, 0)
 		pickup.item_id = player_weapon_id
@@ -1474,7 +1475,7 @@ func drop_current_weapon() -> void:
 		if "current_uses" in pickup:
 			pickup.current_uses = uses
 		get_tree().current_scene.add_child(pickup)
-		NetworkManager.send_item_dropped(saved_id, pickup.global_position, uses)
+		NetworkManager.send_item_dropped(saved_id, pickup.global_transform, uses)
 		player_weapon_id = ""
 
 func _on_item_dropped_received(item_id: String, pos: Vector3, uses: int) -> void:
