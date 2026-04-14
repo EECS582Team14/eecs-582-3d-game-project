@@ -23,6 +23,8 @@ extends CharacterBody3D
 @onready var weapon_holder: Node3D = $PlayerCamera/WeaponHolder
 @onready var flashlight: SpotLight3D = $PlayerCamera/PlayerFlashlight
 
+@onready var directives_panel = get_tree().get_first_node_in_group("directives_panel")
+
 # Weapon scenes
 var _taser_scene: PackedScene = preload("res://scenes/weapons/taser/gun_model.glb") #preload("res://scenes/weapons/taser/heavy_assault_rifle.glb")
 var _held_taser: Node3D = null
@@ -1650,7 +1652,13 @@ func _update_task_hold(delta: float) -> void:
 	_task_progress_bar.value = _task_hold_timer
 	if _task_hold_timer >= TASK_HOLD_DURATION:
 		var tid = _looking_at_interactable.task_id
-		_complete_task(tid)
+		if not _can_start_task(tid):
+			_cancel_task_hold()
+			return
+		if _can_player_complete_task(tid):
+			_complete_task(tid)
+		else:
+			_cancel_task_hold()
 
 func _cancel_task_hold() -> void:
 	_is_holding_task = false
@@ -1690,12 +1698,38 @@ func _complete_task(task_id: String) -> void:
 
 	for panel in panels:
 		if panel.has_method("mark_task_completed"):
-			panel.mark_task_completed(description)
+			panel.mark_task_completed(task_id)
+
+func _can_player_complete_task(task_id: String) -> bool:
+	var panels = get_tree().get_nodes_in_group("directives_panel")
+
+	for panel in panels:
+		if panel.has_method("can_complete_task"):
+			return panel.can_complete_task(task_id)
+
+	return false
+	
+func _can_start_task(task_id: String) -> bool:
+	var panels = get_tree().get_nodes_in_group("directives_panel")
+
+	for panel in panels:
+		if panel.has_method("can_complete_task"):
+			return panel.can_complete_task(task_id)
+
+	return false
 
 # --- Task Minigames ---
-
+func _show_ui_message(msg: String) -> void:
+	for panel in get_tree().get_nodes_in_group("directives_panel"):
+		if panel.has_method("show_message"):
+			panel.show_message(msg)
+			
 func _open_minigame(task_id: String, minigame_type: String) -> void:
 	if _minigame_active:
+		return
+	if not _can_start_task(task_id):
+		print("Task not assigned — blocking minigame")
+		_show_ui_message("Task not assigned")
 		return
 	_minigame_active = true
 
@@ -1739,7 +1773,8 @@ func _open_minigame(task_id: String, minigame_type: String) -> void:
 
 func _on_minigame_completed(task_id: String) -> void:
 	_close_minigame()
-	_complete_task(task_id)
+	if _can_player_complete_task(task_id):
+		_complete_task(task_id)
 
 func _on_minigame_cancelled() -> void:
 	_close_minigame()
