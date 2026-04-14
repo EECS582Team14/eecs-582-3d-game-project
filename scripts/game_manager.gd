@@ -15,6 +15,8 @@ const TASER_SPAWN_POS = Vector3(-19.66497, 0.45656508, 16.686378)
 const BATON01_SPAWN_POS = Vector3(-19.932, 0.0, 21.235)
 const BATON02_SPAWN_POS = Vector3(-19.932, 0.0, 23.177)
 
+const BATON_SPAWN_CHANCE = 0.75
+
 var _initial_weapon_data: Array = []	# Stores lists of [item_id, global_position] for each weapon spawn
 
 @export var spawn_points: Array[Vector3] = [
@@ -442,18 +444,30 @@ func _reset_weapon_pickups():
 	if parent == null:
 		parent = get_tree().current_scene
 	
+	var existing_pickups = get_tree().get_nodes_in_group("pickup")
+	for pickup in existing_pickups:
+		if pickup.item_id.begins_with("baton") or pickup.item_id.begins_with("taser"):
+			pickup.queue_free()
+	
 	for weapon in _initial_weapon_data:
-		var new_weapon = null
-		if weapon.id.begins_with("taser"):
-			new_weapon = TaserPickupScene.instantiate()
-		elif weapon.id.begins_with("baton"):
-			new_weapon = BatonPickupScene.instantiate()
+		var should_spawn = true
+		
+		if weapon.id.begins_with("baton"):
+			if randf() > BATON_SPAWN_CHANCE:
+				should_spawn = false
+				
+		if should_spawn:
+			var new_weapon = null
+			if weapon.id.begins_with("taser"):
+				new_weapon = TaserPickupScene.instantiate()
+			elif weapon.id.begins_with("baton"):
+				new_weapon = BatonPickupScene.instantiate()
 			
-		if new_weapon:
-			new_weapon.item_id = weapon.id
-			new_weapon.position = weapon.pos
-			parent.add_child(new_weapon)
-			NetworkManager.send_item_dropped(weapon.id, weapon.pos)
+			if new_weapon:
+				new_weapon.item_id = weapon.id
+				new_weapon.position = weapon.pos
+				parent.add_child(new_weapon)
+				NetworkManager.send_item_dropped(weapon.id, weapon.pos)
 	
 
 # ============ GAME START ============
@@ -489,6 +503,7 @@ func _load_game_level():
 	
 	if LobbyManager.is_host():
 		_capture_initial_weapon_states()
+		_reset_weapon_pickups()
 	
 	_spawn_all_players()
 	_spawn_local_hud()
