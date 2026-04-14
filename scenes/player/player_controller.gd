@@ -1467,9 +1467,22 @@ func drop_current_weapon() -> void:
 			
 	if is_local_player and pickup_to_spawn:
 		var pickup = pickup_to_spawn.instantiate()
-		#pickup.global_transform = global_transform
-		pickup.scale = Vector3(0.5, 0.5, 0.5)
-		pickup.global_position = global_position + (-global_transform.basis.z * 1.5) + Vector3(0, 0.5, 0)
+		var drop_origin = global_position + Vector3(0, 1.0, 0)
+		var drop_direction = -global_transform.basis.z * 1.5
+		var target_pos = drop_origin + drop_direction
+		var space_state = get_world_3d().direct_space_state
+		var query = PhysicsRayQueryParameters3D.create(target_pos, target_pos + Vector3.DOWN * 2.0)
+		query.exclude = [self]
+		var result = space_state.intersect_ray(query)
+		var final_transform = Transform3D()
+		if result:
+			final_transform.origin = result.position
+			final_transform = final_transform.looking_at(result.position + global_transform.basis.z, result.normal)
+		else:
+			final_transform.origin = global_position
+			final_transform.basis = global_transform.basis
+		final_transform = final_transform.rotated_local(Vector3.FORWARD, deg_to_rad(90))
+		pickup.global_transform = final_transform
 		pickup.item_id = player_weapon_id
 		pickup.add_to_group("pickup")
 		if "current_uses" in pickup:
