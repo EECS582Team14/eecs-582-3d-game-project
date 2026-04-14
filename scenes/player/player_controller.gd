@@ -1473,7 +1473,7 @@ func drop_current_weapon() -> void:
 		pickup.add_to_group("pickup")
 		if "current_uses" in pickup:
 			pickup.current_uses = uses
-		get_tree().root.add_child(pickup)
+		get_tree().current_scene.add_child(pickup)
 		NetworkManager.send_item_dropped(saved_id, pickup.global_position, uses)
 		player_weapon_id = ""
 
@@ -1493,7 +1493,7 @@ func _spawn_pickup_in_world(id: String, scene: PackedScene, pos: Vector3, uses: 
 	if "current_uses" in pickup:
 		pickup.current_uses = uses
 	pickup.add_to_group("pickup")
-	get_tree().root.add_child(pickup)
+	get_tree().current_scene.add_child(pickup)
 	print(id, pickup.item_id)
 
 func _on_item_picked_up(picker_steam_id: int, item_id: String) -> void:

@@ -440,7 +440,7 @@ func _respawn_taser_pickup():
 	parent.add_child(taser)
 
 func _reset_weapon_pickups():
-	var parent = get_tree().current_scene.get_node_or_null("UpperDeck")
+	var parent = get_tree().current_scene.get_node_or_null("MainTestScene")
 	if parent == null:
 		parent = get_tree().current_scene
 	
