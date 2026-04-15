@@ -172,6 +172,7 @@ var _looking_at_interactable: Node = null
 var _interact_label: Label = null
 var _notification_label: Label = null
 var _holding_button: bool = false
+var _last_held_button = null
 
 # Minigame system
 var _minigame_active: bool = false
@@ -1384,7 +1385,9 @@ func _try_interact() -> void:
 				_task_progress_bar.visible = true
 	elif _looking_at_interactable.is_in_group("button"):
 		_holding_button = true
+		_last_held_button = _looking_at_interactable
 		_looking_at_interactable.activate()
+		
 	elif _looking_at_interactable.is_in_group("hideable"):
 		_looking_at_interactable.activate(self)
 	else:
@@ -1692,6 +1695,9 @@ func _update_button_hold() -> void:
 func cancel_button_hold() -> void:
 	if _looking_at_interactable and _looking_at_interactable.has_method("deactivate"):
 		_looking_at_interactable.deactivate()
+	elif _last_held_button and _last_held_button.has_method("deactivate"):
+		_last_held_button.deactivate()
+		_last_held_button = null
 	_holding_button = false
 
 func _complete_task(task_id: String) -> void:

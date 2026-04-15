@@ -12,21 +12,19 @@ func _ready() -> void:
 	NetworkManager.armory_button_changed.connect(_on_armory_button_changed)
 
 func activate() -> void:
-	_is_pressed = true
-	_set_color(Color.GREEN)
 	NetworkManager.send_armory_button(button_id, true)
 	_check_unlock()
 
 func deactivate() -> void:
-	_is_pressed = false
-	_set_color(Color.RED)
 	NetworkManager.send_armory_button(button_id, false)
 	_check_unlock()
 
 func _on_armory_button_changed(changed_button_id: String, pressed: bool) -> void:
 	if changed_button_id == button_id:
-		return
-	_other_pressed = pressed
+		_is_pressed = pressed
+		_set_color(Color.GREEN if pressed else Color.RED)
+	else:
+		_other_pressed = pressed
 	_check_unlock()
 
 func _check_unlock() -> void:

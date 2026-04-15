@@ -10,7 +10,7 @@ extends StaticBody3D
 @onready var door: Node3D = $Door
 
 func _process(_delta: float) -> void:
-    if is_locked:
-        door.is_locked = true
-    else:
-        door.is_locked = false
+	if is_locked:
+		door.is_locked = true
+	else:
+		door.is_locked = false
