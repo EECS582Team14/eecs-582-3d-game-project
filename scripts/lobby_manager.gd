@@ -7,6 +7,7 @@ signal player_joined(steam_id)
 signal player_left(steam_id)
 signal lobby_list_received(lobbies)
 signal lobby_closed
+signal member_names_updated
 
 const GAME_TAG: String = "outliar"
 
@@ -30,6 +31,7 @@ func _ready():
 	Steam.lobby_joined.connect(_on_lobby_joined)
 	Steam.lobby_match_list.connect(_on_lobby_match_list)
 	Steam.lobby_chat_update.connect(_on_lobby_chat_update)
+	Steam.persona_state_change.connect(_on_persona_state_change)
 
 func _process(_delta):
 	Steam.run_callbacks()
@@ -181,11 +183,28 @@ func _refresh_lobby_members():
 	var count = Steam.getNumLobbyMembers(lobby_id)
 	for i in range(count):
 		var member_id = Steam.getLobbyMemberByIndex(lobby_id, i)
+		var member_name = Steam.getFriendPersonaName(member_id)
+		# If Steam hasn't cached this player's name yet, request it
+		if member_name == "":
+			Steam.requestUserInformation(member_id, true)
 		lobby_members.append({
 			"steam_id": member_id,
-			"name": Steam.getFriendPersonaName(member_id)
+			"name": member_name
 		})
 	print("Members: ", lobby_members)
+
+func _on_persona_state_change(steam_id: int, _flags: int):
+	if lobby_id == 0:
+		return
+	# Update the name in our member list if this player is in our lobby
+	var updated = false
+	for member in lobby_members:
+		if member.steam_id == steam_id and member.name == "":
+			member.name = Steam.getFriendPersonaName(steam_id)
+			if member.name != "":
+				updated = true
+	if updated:
+		member_names_updated.emit()
 
 # ============ LEAVE ============
 

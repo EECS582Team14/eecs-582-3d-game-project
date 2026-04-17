@@ -234,6 +234,10 @@ func _ready() -> void:
 	
 	if steam_id != 0:
 		nametag.text = Steam.getFriendPersonaName(steam_id)
+		# If Steam hasn't cached this player's name yet, request it and listen for updates
+		if nametag.text == "":
+			Steam.requestUserInformation(steam_id, true)
+			LobbyManager.member_names_updated.connect(_update_nametag)
 	else:
 		nametag.text = Steam.getPersonaName()
 	# Find AnimationPlayer inside the FBX model
@@ -1280,6 +1284,14 @@ func _reveal_role() -> void:
 	_role_label.visible = false
 	if _allies_label:
 		_allies_label.visible = false
+
+func _update_nametag() -> void:
+	var resolved_name = Steam.getFriendPersonaName(steam_id)
+	if resolved_name != "":
+		nametag.text = resolved_name
+		# Disconnect once we have the name
+		if LobbyManager.member_names_updated.is_connected(_update_nametag):
+			LobbyManager.member_names_updated.disconnect(_update_nametag)
 
 func _on_health_update_received(sender_steam_id: int, health: int) -> void:
 	var player = NetworkManager.get_player(sender_steam_id)

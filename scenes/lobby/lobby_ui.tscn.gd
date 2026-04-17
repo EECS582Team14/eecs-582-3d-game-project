@@ -56,6 +56,8 @@ func _ready():
 		LobbyManager.host_changed.connect(_on_host_changed)
 	if not LobbyManager.lobby_join_failed.is_connected(_on_lobby_join_failed):
 		LobbyManager.lobby_join_failed.connect(_on_lobby_join_failed)
+	if not LobbyManager.member_names_updated.is_connected(_on_player_update_names):
+		LobbyManager.member_names_updated.connect(_on_player_update_names)
 		
 	imposter1.button_group = imposter_group
 	imposter2.button_group = imposter_group
@@ -282,6 +284,9 @@ func _on_lobby_joined(_lobby_id: int):
 func _on_player_update(_steam_id: int):
 	_refresh_players()
 	_update_lobby_buttons()
+
+func _on_player_update_names():
+	_refresh_players()
 
 func _refresh_players():
 	player_list.clear()

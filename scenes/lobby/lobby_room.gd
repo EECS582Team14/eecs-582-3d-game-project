@@ -48,6 +48,7 @@ func _ready():
 	LobbyManager.player_left.connect(_on_player_left)
 	LobbyManager.host_changed.connect(_on_host_changed)
 	LobbyManager.lobby_closed.connect(_on_lobby_closed)
+	LobbyManager.member_names_updated.connect(_on_member_names_updated)
 	NetworkManager.game_started.connect(_on_game_started)
 
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -560,6 +561,9 @@ func _on_player_left(steam_id: int):
 	if player:
 		NetworkManager.unregister_player(steam_id)
 		player.queue_free()
+	_refresh_player_list()
+
+func _on_member_names_updated():
 	_refresh_player_list()
 
 func _on_host_changed(_new_host_id: int):
