@@ -427,6 +427,10 @@ func _on_play_again():
 	# Re-capture mouse
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
+	# Re-open the lobby so new players can join again
+	if LobbyManager.lobby_id != 0:
+		Steam.setLobbyJoinable(LobbyManager.lobby_id, true)
+
 	# Go back to lobby room
 	get_tree().call_deferred("change_scene_to_file", LOBBY_SCENE_PATH)
 
@@ -482,6 +486,9 @@ func start_game():
 		print("Only the host can start the game")
 
 func _on_game_started():
+	# Prevent new players from joining while the game is in progress
+	if LobbyManager.lobby_id != 0:
+		Steam.setLobbyJoinable(LobbyManager.lobby_id, false)
 	destination_progress = 0.0
 	progress_speed_modifier = 1.0
 	_progress_sync_timer = 0.0
