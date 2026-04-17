@@ -149,8 +149,8 @@ func send_player_state(position: Vector3, rotation_y: float, camera_rotation_x: 
 	}
 	send_p2p_packet(0, data, Steam.P2P_SEND_UNRELIABLE, 0)
 
-func send_role_assignment(target_steam_id: int, is_impostor: bool, impostor_ids: Array = []):
-	send_p2p_packet(target_steam_id, {"type": PacketType.ROLE_ASSIGNMENT, "impostor": is_impostor, "impostor_ids": impostor_ids}, Steam.P2P_SEND_RELIABLE, 0)
+func send_role_assignment(target_steam_id: int, is_impostor: bool, impostor_ids: Array = [], anon_impostors: bool = false):
+	send_p2p_packet(target_steam_id, {"type": PacketType.ROLE_ASSIGNMENT, "impostor": is_impostor, "impostor_ids": impostor_ids, "anon_imp": anon_impostors}, Steam.P2P_SEND_RELIABLE, 0)
 
 func send_health_update(health: int):
 	send_p2p_packet(0, {"type": PacketType.HEALTH_UPDATE, "hp": health}, Steam.P2P_SEND_RELIABLE, 0)
@@ -330,6 +330,8 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 			var imp_ids = data.get("impostor_ids", [])
 			pending_role_received = true
 			pending_role_impostor = is_imp
+			# Sync anonymous impostors setting from host
+			GameManager.anonymous_impostors = data.get("anon_imp", false)
 			# Mark impostor flags on player nodes so clients know who is who
 			for imp_id in imp_ids:
 				var p = get_player(imp_id)

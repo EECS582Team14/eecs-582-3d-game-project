@@ -15,7 +15,7 @@ const TASER_SPAWN_POS = Vector3(-19.66497, 0.45656508, 16.686378)
 const BATON01_SPAWN_POS = Vector3(-19.932, 0.0, 21.235)
 const BATON02_SPAWN_POS = Vector3(-19.932, 0.0, 23.177)
 
-const BATON_SPAWN_CHANCE = 0.75
+var baton_spawn_chance: float = 0.75
 
 var _initial_weapon_data: Array = []	# Stores lists of [item_id, global_position] for each weapon spawn
 
@@ -27,6 +27,7 @@ var _initial_weapon_data: Array = []	# Stores lists of [item_id, global_position
 ]
 
 var imposter_count: int = 1
+var anonymous_impostors: bool = false
 
 const PLAYER_COLORS: Array[Color] = [
 	Color.GREEN,
@@ -420,6 +421,8 @@ func _on_play_again():
 
 	# Reset imposter count to default
 	imposter_count = 1
+	anonymous_impostors = false
+	baton_spawn_chance = 0.75
 
 	# Stop voice recording
 	VoiceManager.stop()
@@ -457,7 +460,7 @@ func _reset_weapon_pickups():
 		var should_spawn = true
 		
 		if weapon.id.begins_with("baton"):
-			if randf() > BATON_SPAWN_CHANCE:
+			if randf() > baton_spawn_chance:
 				should_spawn = false
 				
 		if should_spawn:
@@ -643,8 +646,8 @@ func _assign_roles():
 			NetworkManager.pending_role_impostor = is_impostor
 			NetworkManager.role_assigned.emit(is_impostor)
 		else:
-			# Send role to remote player privately, include impostor list
-			NetworkManager.send_role_assignment(member_steam_id, is_impostor, impostor_ids)
+			# Send role to remote player privately, include impostor list and settings
+			NetworkManager.send_role_assignment(member_steam_id, is_impostor, impostor_ids, anonymous_impostors)
 
 	print("Impostors assigned: ", actual_count)
 

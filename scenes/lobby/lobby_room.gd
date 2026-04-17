@@ -340,21 +340,35 @@ func _refresh_player_list():
 
 # ============ SETTINGS UI ============
 
+func _get_local_player():
+	if not players_container:
+		return null
+	for player in players_container.get_children():
+		if player.is_local_player:
+			return player
+	return null
+
 func _open_settings_ui():
 	if _settings_open:
 		return
 	_settings_open = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
+	# Tell the local player to stop processing mouse/input
+	var local_player = _get_local_player()
+	if local_player:
+		local_player._is_mouse_captured = false
+
 	_settings_layer = CanvasLayer.new()
 	_settings_layer.layer = 50
 	add_child(_settings_layer)
 
-	# Dim background
+	# Dim background — clicking it closes the menu
 	var bg = ColorRect.new()
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg.color = Color(0, 0, 0, 0.5)
 	bg.mouse_filter = Control.MOUSE_FILTER_STOP
+	bg.gui_input.connect(_on_settings_bg_clicked)
 	_settings_layer.add_child(bg)
 
 	# Settings panel
@@ -365,8 +379,8 @@ func _open_settings_ui():
 	panel.anchor_bottom = 0.5
 	panel.offset_left = -200
 	panel.offset_right = 200
-	panel.offset_top = -160
-	panel.offset_bottom = 160
+	panel.offset_top = -240
+	panel.offset_bottom = 240
 
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0.08, 0.08, 0.15, 0.95)
@@ -436,6 +450,57 @@ func _open_settings_ui():
 	var sep2 = HSeparator.new()
 	vbox.add_child(sep2)
 
+	# Anonymous impostors toggle
+	var anon_container = HBoxContainer.new()
+	anon_container.alignment = BoxContainer.ALIGNMENT_CENTER
+	anon_container.add_theme_constant_override("separation", 10)
+	vbox.add_child(anon_container)
+
+	var anon_label = Label.new()
+	anon_label.text = "Anonymous Impostors"
+	anon_label.add_theme_font_size_override("font_size", 20)
+	anon_container.add_child(anon_label)
+
+	var anon_toggle = CheckButton.new()
+	anon_toggle.button_pressed = GameManager.anonymous_impostors
+	anon_toggle.toggled.connect(_on_anonymous_impostors_toggled)
+	anon_container.add_child(anon_toggle)
+
+	var sep3 = HSeparator.new()
+	vbox.add_child(sep3)
+
+	# Baton spawn rate
+	var baton_label = Label.new()
+	baton_label.text = "Baton Spawn Rate"
+	baton_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	baton_label.add_theme_font_size_override("font_size", 20)
+	vbox.add_child(baton_label)
+
+	var baton_row = HBoxContainer.new()
+	baton_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	baton_row.add_theme_constant_override("separation", 10)
+	vbox.add_child(baton_row)
+
+	var baton_slider = HSlider.new()
+	baton_slider.min_value = 0.0
+	baton_slider.max_value = 1.0
+	baton_slider.step = 0.05
+	baton_slider.value = GameManager.baton_spawn_chance
+	baton_slider.custom_minimum_size = Vector2(200, 20)
+	baton_row.add_child(baton_slider)
+
+	var baton_value_label = Label.new()
+	baton_value_label.text = "%d%%" % int(GameManager.baton_spawn_chance * 100)
+	baton_value_label.add_theme_font_size_override("font_size", 18)
+	baton_value_label.add_theme_color_override("font_color", Color(0.7, 0.8, 1.0))
+	baton_value_label.custom_minimum_size = Vector2(50, 0)
+	baton_row.add_child(baton_value_label)
+
+	baton_slider.value_changed.connect(_on_baton_spawn_changed.bind(baton_value_label))
+
+	var sep4 = HSeparator.new()
+	vbox.add_child(sep4)
+
 	# Close button
 	var close_container = HBoxContainer.new()
 	close_container.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -450,13 +515,28 @@ func _open_settings_ui():
 
 func _close_settings_ui():
 	_settings_open = false
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	if _settings_layer:
 		_settings_layer.queue_free()
 		_settings_layer = null
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	# Restore player input
+	var local_player = _get_local_player()
+	if local_player:
+		local_player._is_mouse_captured = true
+
+func _on_settings_bg_clicked(event: InputEvent):
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		_close_settings_ui()
 
 func _on_imposter_count_changed(count: int):
 	GameManager.imposter_count = count
+
+func _on_anonymous_impostors_toggled(enabled: bool):
+	GameManager.anonymous_impostors = enabled
+
+func _on_baton_spawn_changed(value: float, value_label: Label):
+	GameManager.baton_spawn_chance = value
+	value_label.text = "%d%%" % int(value * 100)
 
 # ============ NOTIFICATIONS ============
 
@@ -582,6 +662,7 @@ func _on_game_started():
 	_cleanup_players()
 
 func _input(event):
-	if _settings_open and event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
-		_close_settings_ui()
-		get_viewport().set_input_as_handled()
+	if _settings_open and event is InputEventKey and event.pressed:
+		if event.keycode == KEY_ESCAPE or event.keycode == KEY_E:
+			_close_settings_ui()
+			get_viewport().set_input_as_handled()

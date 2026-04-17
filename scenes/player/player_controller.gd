@@ -1261,8 +1261,8 @@ func _reveal_role() -> void:
 		_role_label.text = "IMPOSTOR"
 		_role_label.add_theme_color_override("font_color", Color.RED)
 
-		# Show fellow impostors if there are any
-		if _allies_label and GameManager.players_container:
+		# Show fellow impostors if there are any (unless anonymous impostors is on)
+		if _allies_label and GameManager.players_container and not GameManager.anonymous_impostors:
 			var ally_names: Array[String] = []
 			for player in GameManager.players_container.get_children():
 				if player == self:
