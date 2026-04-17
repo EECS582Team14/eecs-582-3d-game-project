@@ -970,7 +970,7 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15, 
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15, 0, 31.685)
 
 [node name="WestReactorCloseOffWall1" parent="ClosingOffWalls" unique_id=1177083323 instance=ExtResource("7_86pjy")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -15, 0, 29.43)
+transform = Transform3D(-2.2110013e-08, 0, 1, 0, 1, 0, -0.5058181, 0, -4.371139e-08, -15, -0.021799445, 28.352875)
 
 [node name="WestReactorCloseOffWall2" parent="ClosingOffWalls" unique_id=1972197099 instance=ExtResource("7_86pjy")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -15, 0, 31.755)
