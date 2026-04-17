@@ -342,7 +342,7 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5, 0, 0)
 
 [node name="LifeSupportConnectingWall" parent="HumanResources" unique_id=1957851992 instance=ExtResource("7_86pjy")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0, -8.48)
+transform = Transform3D(-3.0954237e-08, 0, 1, 0, 1, 0, -0.7081504, 0, -4.371139e-08, 5, 0, -8.864754)
 
 [node name="NorthernHRWall" parent="HumanResources" unique_id=1721600752 instance=ExtResource("5_vucmy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.49, 0, -7.23)
@@ -854,7 +854,7 @@ transform = Transform3D(-0.75, 0, -1.13246855e-07, 0, 0.75, 0, 1.13246855e-07, 0
 [node name="Shielding" type="Node3D" parent="." unique_id=1596150144]
 
 [node name="ShieldingConnectingWall2" parent="Shielding" unique_id=296027351 instance=ExtResource("7_86pjy")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15, 0, -9.5)
+transform = Transform3D(-3.174234e-08, 0, 1, 0, 1, 0, -0.72618, 0, -4.371139e-08, 15, 0, -8.836182)
 
 [node name="ShieldingConnectingWall" parent="Shielding" unique_id=345006618 instance=ExtResource("7_86pjy")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15, 0, -0.5)
