@@ -22,6 +22,9 @@ var lobby_password: String = ""
 var imposter_group = ButtonGroup.new()
 var imposter_count = 1
 
+const AUTO_REFRESH_INTERVAL: float = 3.0
+var _auto_refresh_timer: float = 0.0
+
 func _ready():
 	#SAFE SIGNAL CONNECTIONS (prevents duplicates)
 	if not host_btn.pressed.is_connected(_on_host_pressed):
@@ -81,6 +84,14 @@ func _ready():
 		return
 	else:
 		_on_refresh_pressed()
+
+func _process(delta):
+	# Auto-refresh lobby list while browsing (lobby_list visible and not in a lobby)
+	if lobby_list.visible and not LobbyManager.is_in_lobby():
+		_auto_refresh_timer += delta
+		if _auto_refresh_timer >= AUTO_REFRESH_INTERVAL:
+			_auto_refresh_timer = 0.0
+			LobbyManager.find_lobbies()
 
 func _on_lobby_join_failed(reason: String):
 	status_label.text = "Failed to join lobby: %s" % reason
@@ -154,11 +165,20 @@ func _update_lobby_buttons():
 # ============ BROWSE / JOIN ============
 
 func _on_refresh_pressed():
+	_auto_refresh_timer = 0.0
 	status_label.text = "Searching for lobbies..."
 	lobby_list.clear()
 	LobbyManager.find_lobbies()
 
 func _on_lobby_list_received(lobbies: Array):
+	# Remember which lobby was selected so we can restore it after refresh
+	var selected_lobby_id: int = -1
+	var selected_indices = lobby_list.get_selected_items()
+	if selected_indices.size() > 0:
+		var sel_idx = selected_indices[0]
+		if sel_idx < available_lobbies.size():
+			selected_lobby_id = available_lobbies[sel_idx].id
+
 	available_lobbies = lobbies
 	lobby_list.clear()
 
@@ -166,7 +186,9 @@ func _on_lobby_list_received(lobbies: Array):
 		status_label.text = "No lobbies found. Host one or refresh."
 		return
 
-	for lobby in lobbies:
+	var new_selected_index: int = -1
+	for i in range(lobbies.size()):
+		var lobby = lobbies[i]
 		var text = "%s  (%d/%d)" % [lobby.name, lobby.player_count, lobby.max_players]
 		var icon = dot_purple
 		var ratio = float(lobby.player_count) / lobby.max_players
@@ -175,6 +197,12 @@ func _on_lobby_list_received(lobbies: Array):
 		elif ratio > 0:
 			icon = dot_red
 		lobby_list.add_item(text, icon)
+		if lobby.id == selected_lobby_id:
+			new_selected_index = i
+
+	# Restore previous selection
+	if new_selected_index >= 0:
+		lobby_list.select(new_selected_index)
 
 	status_label.text = "Found %d lobby(s). Double-click to join." % lobbies.size()
 
