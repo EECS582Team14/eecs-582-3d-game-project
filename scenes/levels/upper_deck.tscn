@@ -908,7 +908,7 @@ lower_fade = 1e-05
 [node name="Crew Quarters" type="Node3D" parent="." unique_id=1733845478]
 
 [node name="CrewConnectingWall" parent="Crew Quarters" unique_id=1578145410 instance=ExtResource("7_86pjy")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15, 0, 8)
+transform = Transform3D(-3.63487e-08, 0, 1, 0, 1, 0, -0.83156127, 0, -4.371139e-08, 15, 0, 8.135993)
 
 [node name="CrewDoor" parent="Crew Quarters" unique_id=1133908751 instance=ExtResource("3_1pv2h")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15, 0, 17.5)
