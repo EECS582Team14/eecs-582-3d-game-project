@@ -2333,9 +2333,33 @@ func _process_possessing(delta: float) -> void:
 
 # --- Target side: being possessed ---
 
+func _force_close_all_ui() -> void:
+	# Close pause menu
+	if _is_paused:
+		_on_resume_game()
+	# Close active minigame
+	if _minigame_active:
+		_close_minigame()
+	# Cancel task hold
+	if _is_holding_task:
+		_cancel_task_hold()
+	# Close emote wheel
+	if _emote_wheel_visible:
+		_close_emote_wheel()
+	# Close sabotage menu (impostors can't be possessed, but just in case)
+	if _sabotage_menu_open:
+		_close_sabotage_menu()
+	# Ensure mouse is captured and input works
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	_is_mouse_captured = true
+
 func _on_possess_start(impostor_steam_id: int, target_steam_id: int) -> void:
 	if not is_local_player or target_steam_id != steam_id:
 		return
+
+	# Force-close any open menus/tasks so the impostor can control us
+	_force_close_all_ui()
+
 	_is_possessed = true
 
 	# Show "SYSTEM COMPROMISED" overlay
