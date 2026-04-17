@@ -134,6 +134,8 @@ var _sabotage_layer: CanvasLayer = null
 var _sabotage_panel: PanelContainer = null
 var _sabotage_menu_open: bool = false
 var _sabotage_cooldown: float = 0.0
+var _last_sabotage: String = ""
+var _sabotage_buttons: Dictionary = {}  # sabotage_type -> Button
 const SABOTAGE_COOLDOWN_TIME: float = 30.0
 var _sabotage_hint_label: Label = null
 var _sabotage_cooldown_label: Label = null
@@ -1915,6 +1917,7 @@ func _create_sabotage_panel() -> void:
 	btn_lights.mouse_filter = Control.MOUSE_FILTER_STOP
 	btn_lights.pressed.connect(_on_sabotage_selected.bind("lights_out"))
 	vbox.add_child(btn_lights)
+	_sabotage_buttons["lights_out"] = btn_lights
 
 	var btn_drain = Button.new()
 	btn_drain.text = "Drain Integrity"
@@ -1922,6 +1925,7 @@ func _create_sabotage_panel() -> void:
 	btn_drain.mouse_filter = Control.MOUSE_FILTER_STOP
 	btn_drain.pressed.connect(_on_sabotage_selected.bind("drain_integrity"))
 	vbox.add_child(btn_drain)
+	_sabotage_buttons["drain_integrity"] = btn_drain
 
 	var btn_comms = Button.new()
 	btn_comms.text = "Disable Comms"
@@ -1929,6 +1933,7 @@ func _create_sabotage_panel() -> void:
 	btn_comms.mouse_filter = Control.MOUSE_FILTER_STOP
 	btn_comms.pressed.connect(_on_sabotage_selected.bind("disable_comms"))
 	vbox.add_child(btn_comms)
+	_sabotage_buttons["disable_comms"] = btn_comms
 
 	var btn_possess = Button.new()
 	btn_possess.text = "Possess Player"
@@ -1936,6 +1941,7 @@ func _create_sabotage_panel() -> void:
 	btn_possess.mouse_filter = Control.MOUSE_FILTER_STOP
 	btn_possess.pressed.connect(_on_possess_selected)
 	vbox.add_child(btn_possess)
+	_sabotage_buttons["possess"] = btn_possess
 
 	var btn_anon = Button.new()
 	btn_anon.text = "Anonymous Mode"
@@ -1943,6 +1949,7 @@ func _create_sabotage_panel() -> void:
 	btn_anon.mouse_filter = Control.MOUSE_FILTER_STOP
 	btn_anon.pressed.connect(_on_sabotage_selected.bind("anonymous"))
 	vbox.add_child(btn_anon)
+	_sabotage_buttons["anonymous"] = btn_anon
 
 	var btn_doors = Button.new()
 	btn_doors.text = "Lock Doors"
@@ -1950,6 +1957,7 @@ func _create_sabotage_panel() -> void:
 	btn_doors.mouse_filter = Control.MOUSE_FILTER_STOP
 	btn_doors.pressed.connect(_on_lock_doors_selected)
 	vbox.add_child(btn_doors)
+	_sabotage_buttons["lock_doors"] = btn_doors
 
 	# Cancel label
 	var cancel = Label.new()
@@ -1975,6 +1983,9 @@ func _open_sabotage_menu() -> void:
 		await get_tree().create_timer(2.0).timeout
 		_notification_label.visible = false
 		return
+	# Disable the last-used sabotage, enable all others
+	for sab_type in _sabotage_buttons:
+		_sabotage_buttons[sab_type].disabled = (sab_type == _last_sabotage)
 	_sabotage_menu_open = true
 	_sabotage_layer.visible = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
@@ -1999,6 +2010,7 @@ func _close_sabotage_menu() -> void:
 func _on_sabotage_selected(sabotage_type: String) -> void:
 	_close_sabotage_menu()
 	_sabotage_cooldown = SABOTAGE_COOLDOWN_TIME
+	_last_sabotage = sabotage_type
 	NetworkManager.send_sabotage(sabotage_type)
 
 func _on_sabotage_triggered(sabotage_type: String) -> void:
@@ -2166,6 +2178,7 @@ func _close_player_select() -> void:
 func _on_target_chosen(target_steam_id: int) -> void:
 	_close_player_select()
 	_sabotage_cooldown = SABOTAGE_COOLDOWN_TIME
+	_last_sabotage = "possess"
 	_start_possession(target_steam_id)
 
 # --- Impostor side: possessing ---
@@ -2684,6 +2697,7 @@ func _on_door_map_toggle(door_path: String, btn: Button, door_name: String) -> v
 		if _door_locks_used >= MAX_DOOR_LOCKS:
 			_close_door_map()
 			_sabotage_cooldown = SABOTAGE_COOLDOWN_TIME
+			_last_sabotage = "lock_doors"
 
 func _auto_unlock_door(door_path: String) -> void:
 	if _locked_doors.has(door_path):
