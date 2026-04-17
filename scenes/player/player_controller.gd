@@ -2082,6 +2082,9 @@ func _show_player_select() -> void:
 			continue
 		if player.is_dead:
 			continue
+		# Skip players already being possessed by another impostor
+		if NetworkManager.possessed_players.has(player.steam_id):
+			continue
 		found_targets = true
 		var btn = Button.new()
 		btn.text = Steam.getFriendPersonaName(player.steam_id)
@@ -2272,8 +2275,8 @@ func _process_possessing(delta: float) -> void:
 
 # --- Target side: being possessed ---
 
-func _on_possess_start(impostor_steam_id: int) -> void:
-	if not is_local_player:
+func _on_possess_start(impostor_steam_id: int, target_steam_id: int) -> void:
+	if not is_local_player or target_steam_id != steam_id:
 		return
 	_is_possessed = true
 
@@ -2336,7 +2339,7 @@ func _on_possess_start(impostor_steam_id: int) -> void:
 	tint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_possessed_overlay.add_child(tint)
 
-func _on_possess_move(move_dir: Vector3, rot_y: float, cam_rot_x: float) -> void:
+func _on_possess_move(_target_steam_id: int, move_dir: Vector3, rot_y: float, cam_rot_x: float) -> void:
 	if not is_local_player or not _is_possessed:
 		return
 	_possess_move_dir = move_dir
@@ -2344,7 +2347,7 @@ func _on_possess_move(move_dir: Vector3, rot_y: float, cam_rot_x: float) -> void
 	rotation.y = rot_y
 	camera.rotation_degrees.x = cam_rot_x
 
-func _on_possess_action(action: String) -> void:
+func _on_possess_action(_target_steam_id: int, action: String) -> void:
 	if not is_local_player or not _is_possessed:
 		return
 	match action:
@@ -2361,8 +2364,8 @@ func _on_possess_action(action: String) -> void:
 			elif not _is_punching:
 				_play_punch()
 
-func _on_possess_end() -> void:
-	if not is_local_player:
+func _on_possess_end(target_steam_id: int) -> void:
+	if not is_local_player or target_steam_id != steam_id:
 		return
 	_is_possessed = false
 	_possess_move_dir = Vector3.ZERO

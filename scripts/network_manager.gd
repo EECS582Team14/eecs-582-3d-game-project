@@ -30,10 +30,10 @@ signal punch_received(steam_id: int)
 signal item_dropped_received(item_id: String, tranform: Transform3D, uses: int)
 signal taser_dead(steam_id: int)
 signal sabotage_received(sabotage_type: String)
-signal possess_start_received(impostor_steam_id: int)
-signal possess_move_received(move_dir: Vector3, rotation_y: float, cam_rotation_x: float)
-signal possess_end_received()
-signal possess_action_received(action: String)
+signal possess_start_received(impostor_steam_id: int, target_steam_id: int)
+signal possess_move_received(target_steam_id: int, move_dir: Vector3, rotation_y: float, cam_rotation_x: float)
+signal possess_end_received(target_steam_id: int)
+signal possess_action_received(target_steam_id: int, action: String)
 signal door_lock_received(door_id: String, locked: bool)
 signal hide_update_recieved(locker_id: String, io: bool, steam_id: int)
 signal emote_received(steam_id: int, emote_name: String)
@@ -76,6 +76,7 @@ enum PacketType {
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
+var possessed_players: Dictionary = {}  # target_steam_id -> impostor_steam_id
 
 # Buffered role assignment (in case packet arrives before player scene loads)
 var pending_role_received: bool = false
@@ -245,21 +246,24 @@ func send_sabotage(sabotage_type: String):
 	sabotage_received.emit(sabotage_type)
 
 func send_possess_start(target_steam_id: int):
-	send_p2p_packet(target_steam_id, {"type": PacketType.POSSESS_START, "impostor_id": Steam.getSteamID()}, Steam.P2P_SEND_RELIABLE, 0)
+	possessed_players[target_steam_id] = Steam.getSteamID()
+	send_p2p_packet(0, {"type": PacketType.POSSESS_START, "impostor_id": Steam.getSteamID(), "target": target_steam_id}, Steam.P2P_SEND_RELIABLE, 0)
 
 func send_possess_move(target_steam_id: int, move_dir: Vector3, rot_y: float, cam_rot_x: float):
 	var data = {
 		"type": PacketType.POSSESS_MOVE,
+		"target": target_steam_id,
 		"mx": move_dir.x, "my": move_dir.y, "mz": move_dir.z,
 		"ry": rot_y, "cx": cam_rot_x
 	}
 	send_p2p_packet(target_steam_id, data, Steam.P2P_SEND_UNRELIABLE, 0)
 
 func send_possess_end(target_steam_id: int):
-	send_p2p_packet(target_steam_id, {"type": PacketType.POSSESS_END}, Steam.P2P_SEND_RELIABLE, 0)
+	possessed_players.erase(target_steam_id)
+	send_p2p_packet(0, {"type": PacketType.POSSESS_END, "target": target_steam_id}, Steam.P2P_SEND_RELIABLE, 0)
 
 func send_possess_action(target_steam_id: int, action: String):
-	send_p2p_packet(target_steam_id, {"type": PacketType.POSSESS_ACTION, "action": action}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(target_steam_id, {"type": PacketType.POSSESS_ACTION, "target": target_steam_id, "action": action}, Steam.P2P_SEND_RELIABLE, 0)
 
 func send_door_lock(door_id: String, locked: bool):
 	send_p2p_packet(0, {"type": PacketType.DOOR_LOCK, "door_id": door_id, "locked": locked}, Steam.P2P_SEND_RELIABLE, 0)
@@ -395,14 +399,18 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 		PacketType.SABOTAGE:
 			sabotage_received.emit(data.get("sabotage_type", ""))
 		PacketType.POSSESS_START:
-			possess_start_received.emit(data.get("impostor_id", 0))
+			var target_id = data.get("target", 0)
+			possessed_players[target_id] = data.get("impostor_id", 0)
+			possess_start_received.emit(data.get("impostor_id", 0), target_id)
 		PacketType.POSSESS_MOVE:
 			var dir = Vector3(data.get("mx", 0), data.get("my", 0), data.get("mz", 0))
-			possess_move_received.emit(dir, data.get("ry", 0.0), data.get("cx", 0.0))
+			possess_move_received.emit(data.get("target", 0), dir, data.get("ry", 0.0), data.get("cx", 0.0))
 		PacketType.POSSESS_END:
-			possess_end_received.emit()
+			var end_target_id = data.get("target", 0)
+			possessed_players.erase(end_target_id)
+			possess_end_received.emit(end_target_id)
 		PacketType.POSSESS_ACTION:
-			possess_action_received.emit(data.get("action", ""))
+			possess_action_received.emit(data.get("target", 0), data.get("action", ""))
 		PacketType.DOOR_LOCK:
 			door_lock_received.emit(data.get("door_id", ""), data.get("locked", false))
 		PacketType.HIDE_UPDATE:
@@ -429,5 +437,6 @@ func close_all_sessions():
 		if member['steam_id'] != Steam.getSteamID():
 			Steam.closeP2PSessionWithUser(member['steam_id'])
 	players_in_game.clear()
+	possessed_players.clear()
 	pending_role_received = false
 	pending_role_impostor = false
