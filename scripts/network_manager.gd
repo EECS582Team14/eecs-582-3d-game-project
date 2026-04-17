@@ -149,8 +149,8 @@ func send_player_state(position: Vector3, rotation_y: float, camera_rotation_x: 
 	}
 	send_p2p_packet(0, data, Steam.P2P_SEND_UNRELIABLE, 0)
 
-func send_role_assignment(target_steam_id: int, is_impostor: bool):
-	send_p2p_packet(target_steam_id, {"type": PacketType.ROLE_ASSIGNMENT, "impostor": is_impostor}, Steam.P2P_SEND_RELIABLE, 0)
+func send_role_assignment(target_steam_id: int, is_impostor: bool, impostor_ids: Array = []):
+	send_p2p_packet(target_steam_id, {"type": PacketType.ROLE_ASSIGNMENT, "impostor": is_impostor, "impostor_ids": impostor_ids}, Steam.P2P_SEND_RELIABLE, 0)
 
 func send_health_update(health: int):
 	send_p2p_packet(0, {"type": PacketType.HEALTH_UPDATE, "hp": health}, Steam.P2P_SEND_RELIABLE, 0)
@@ -327,8 +327,14 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 
 		PacketType.ROLE_ASSIGNMENT:
 			var is_imp = data.get("impostor", false)
+			var imp_ids = data.get("impostor_ids", [])
 			pending_role_received = true
 			pending_role_impostor = is_imp
+			# Mark impostor flags on player nodes so clients know who is who
+			for imp_id in imp_ids:
+				var p = get_player(imp_id)
+				if p and "is_impostor" in p:
+					p.is_impostor = true
 			role_assigned.emit(is_imp)
 
 		PacketType.ITEM_PICKUP:

@@ -126,6 +126,7 @@ var _role_received: bool = false
 var _role_timer: float = 0.0
 const ROLE_REVEAL_DELAY: float = 0.0  # TODO: restore to 30.0
 var _role_label: Label = null
+var _allies_label: Label = null
 var _timer_label: Label = null
 
 # Sabotage system (impostor only)
@@ -383,6 +384,24 @@ func _ready() -> void:
 		_role_label.text = ""
 		_role_label.visible = false
 		$HUD.add_child(_role_label)
+
+		# Create allies label (below role label, shows fellow impostors)
+		_allies_label = Label.new()
+		_allies_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_allies_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		_allies_label.anchor_left = 0.5
+		_allies_label.anchor_right = 0.5
+		_allies_label.anchor_top = 0.5
+		_allies_label.anchor_bottom = 0.5
+		_allies_label.offset_left = -300
+		_allies_label.offset_right = 300
+		_allies_label.offset_top = 35
+		_allies_label.offset_bottom = 75
+		_allies_label.add_theme_font_size_override("font_size", 22)
+		_allies_label.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4))
+		_allies_label.text = ""
+		_allies_label.visible = false
+		$HUD.add_child(_allies_label)
 
 		# Create interaction prompt label (bottom center)
 		_interact_label = Label.new()
@@ -1235,6 +1254,18 @@ func _reveal_role() -> void:
 	if is_impostor:
 		_role_label.text = "IMPOSTOR"
 		_role_label.add_theme_color_override("font_color", Color.RED)
+
+		# Show fellow impostors if there are any
+		if _allies_label and GameManager.players_container:
+			var ally_names: Array[String] = []
+			for player in GameManager.players_container.get_children():
+				if player == self:
+					continue
+				if "is_impostor" in player and player.is_impostor:
+					ally_names.append(Steam.getFriendPersonaName(player.steam_id))
+			if ally_names.size() > 0:
+				_allies_label.text = "Fellow Impostors: " + ", ".join(ally_names)
+				_allies_label.visible = true
 	else:
 		_role_label.text = "CREWMATE"
 		_role_label.add_theme_color_override("font_color", Color.CYAN)
@@ -1247,6 +1278,8 @@ func _reveal_role() -> void:
 	# Hide the role text after 5 seconds
 	await get_tree().create_timer(5.0).timeout
 	_role_label.visible = false
+	if _allies_label:
+		_allies_label.visible = false
 
 func _on_health_update_received(sender_steam_id: int, health: int) -> void:
 	var player = NetworkManager.get_player(sender_steam_id)

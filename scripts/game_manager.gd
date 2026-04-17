@@ -621,6 +621,11 @@ func _assign_roles():
 	var actual_count = mini(imposter_count, members.size() - 1)
 	actual_count = maxi(actual_count, 1)
 
+	# Collect impostor steam IDs first
+	var impostor_ids: Array = []
+	for i in range(actual_count):
+		impostor_ids.append(members[i].steam_id)
+
 	var my_steam_id = Steam.getSteamID()
 
 	for i in range(members.size()):
@@ -638,8 +643,8 @@ func _assign_roles():
 			NetworkManager.pending_role_impostor = is_impostor
 			NetworkManager.role_assigned.emit(is_impostor)
 		else:
-			# Send role to remote player privately
-			NetworkManager.send_role_assignment(member_steam_id, is_impostor)
+			# Send role to remote player privately, include impostor list
+			NetworkManager.send_role_assignment(member_steam_id, is_impostor, impostor_ids)
 
 	print("Impostors assigned: ", actual_count)
 
