@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c6n04dpp1btgn" path="res://scenes/player/player_controller.gd" id="1_dovo2"]
 [ext_resource type="PackedScene" uid="uid://ckqknkquj1prp" path="res://scenes/player/Walking.fbx" id="2_walking"]
+[ext_resource type="AudioStream" uid="uid://cctjpvgjjmo1a" path="res://sounds/steps.wav" id="3_gmlin"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_x7p2l"]
 size = Vector3(0.4, 1.2, 0.55)
@@ -45,3 +46,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2727273, 0)
 billboard = 1
 text = "
 "
+
+[node name="StepsSound" type="AudioStreamPlayer3D" parent="." unique_id=745389472]
+transform = Transform3D(0.9090909, 0, 0, 0, 0.9090909, 0, 0, 0, 0.9090909, 0, 0.8443237, 0)
+stream = ExtResource("3_gmlin")
+pitch_scale = 1.1
+max_distance = 1.0

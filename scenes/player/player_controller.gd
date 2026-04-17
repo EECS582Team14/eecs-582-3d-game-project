@@ -22,7 +22,7 @@ extends CharacterBody3D
 @onready var camera: Camera3D = $PlayerCamera
 @onready var weapon_holder: Node3D = $PlayerCamera/WeaponHolder
 @onready var flashlight: SpotLight3D = $PlayerCamera/PlayerFlashlight
-
+@onready var steps_sound: AudioStreamPlayer3D = $StepsSound
 @onready var directives_panel = get_tree().get_first_node_in_group("directives_panel")
 
 # Weapon scenes
@@ -857,6 +857,14 @@ func _physics_process(delta: float) -> void:
 		return
 	if is_local_player and _minigame_active:
 		return
+	
+	# Footsteps
+	if velocity.x != 0 and is_on_floor():
+		if !steps_sound.playing:
+			steps_sound.play()
+	elif steps_sound.playing:
+		steps_sound.stop()
+		
 	if is_local_player:
 		# If being possessed, apply remote movement instead of local input
 		if _is_possessed and not is_dead:
