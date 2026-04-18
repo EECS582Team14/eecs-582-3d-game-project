@@ -4,6 +4,10 @@
 [ext_resource type="PackedScene" uid="uid://ckqknkquj1prp" path="res://scenes/player/Walking.fbx" id="2_walking"]
 [ext_resource type="AudioStream" uid="uid://cctjpvgjjmo1a" path="res://sounds/steps.wav" id="3_gmlin"]
 [ext_resource type="AudioStream" uid="uid://2wq4xfdgb20d" path="res://sounds/access_denied.wav" id="4_lvxji"]
+[ext_resource type="AudioStream" uid="uid://cjn144a4jxlin" path="res://sounds/taser_pickup.wav" id="5_75vfm"]
+[ext_resource type="AudioStream" uid="uid://bpewbsp5ytcj3" path="res://sounds/taser_shot.wav" id="5_p47bc"]
+[ext_resource type="AudioStream" uid="uid://b72nvrgmis5pb" path="res://sounds/baton_pickup.wav" id="7_0owmy"]
+[ext_resource type="AudioStream" uid="uid://cs25i36hq7aw5" path="res://sounds/baton_use.wav" id="8_qek5x"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_x7p2l"]
 size = Vector3(0.4, 1.2, 0.55)
@@ -49,10 +53,30 @@ text = "
 "
 
 [node name="StepsSound" type="AudioStreamPlayer3D" parent="." unique_id=745389472]
-transform = Transform3D(0.9090909, 0, 0, 0, 0.9090909, 0, 0, 0, 0.9090909, 0, 0.8443237, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8443237, 0)
 stream = ExtResource("3_gmlin")
 pitch_scale = 1.1
 max_distance = 1.0
 
 [node name="AccessDenied" type="AudioStreamPlayer" parent="." unique_id=1245637298]
 stream = ExtResource("4_lvxji")
+
+[node name="TaserPickup" type="AudioStreamPlayer3D" parent="." unique_id=360288943]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.844, 0)
+stream = ExtResource("5_75vfm")
+max_distance = 1.0
+
+[node name="TaserShot" type="AudioStreamPlayer3D" parent="." unique_id=1035928257]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.844, 0)
+stream = ExtResource("5_p47bc")
+max_distance = 1.0
+
+[node name="BatonPickup" type="AudioStreamPlayer3D" parent="." unique_id=100520853]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.844, 0)
+stream = ExtResource("7_0owmy")
+max_distance = 1.0
+
+[node name="BatonUse" type="AudioStreamPlayer3D" parent="." unique_id=158539965]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.844, 0)
+stream = ExtResource("8_qek5x")
+max_distance = 1.0

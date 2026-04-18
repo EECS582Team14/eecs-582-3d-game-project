@@ -24,6 +24,10 @@ extends CharacterBody3D
 @onready var flashlight: SpotLight3D = $PlayerCamera/PlayerFlashlight
 @onready var steps_sound: AudioStreamPlayer3D = $StepsSound
 @onready var denied_sound: AudioStreamPlayer = $AccessDenied
+@onready var taser_pickup_sound: AudioStreamPlayer3D = $TaserPickup
+@onready var taser_shot_sound: AudioStreamPlayer3D = $TaserShot
+@onready var baton_pickup_sound: AudioStreamPlayer3D = $BatonPickup
+@onready var baton_use_sound: AudioStreamPlayer3D = $BatonUse
 @onready var directives_panel = get_tree().get_first_node_in_group("directives_panel")
 
 # Weapon scenes
@@ -1454,6 +1458,7 @@ func give_taser() -> void:
 	drop_current_weapon()
 	has_taser = true
 	_attach_taser_model()
+	taser_pickup_sound.play()
 	if is_local_player and not _third_person:
 		$PlayerModel.visible = false
 	if is_local_player:
@@ -1481,6 +1486,7 @@ func give_baton(current_uses: int = MAX_BATON_USES) -> void:
 	has_baton = true
 	baton_uses = current_uses
 	_attach_baton_model()
+	baton_pickup_sound.play()
 	if is_local_player:
 		_notification_label.text = "Baton Acquired (Power Level: %s%%)!" % (baton_uses * 100 / MAX_BATON_USES)
 		_notification_label.visible = true
@@ -1594,6 +1600,7 @@ func _shoot_taser() -> void:
 		origin = camera.global_position
 		direction = -camera.global_transform.basis.z
 	_spawn_projectile(origin, direction, steam_id)
+	taser_shot_sound.play()
 	NetworkManager.send_taser_shot(origin, direction)
 
 func _spawn_projectile(origin: Vector3, direction: Vector3, shooter_id: int) -> void:
@@ -1611,6 +1618,7 @@ func _swing_baton() -> void:
 	if _is_swinging:
 		return
 	_is_swinging = true
+	baton_use_sound.play()
 	_current_anim_state = "punch"
 	_anim_player.play(_anim("punch"), 0.2)
 	
