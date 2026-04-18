@@ -23,6 +23,7 @@ extends CharacterBody3D
 @onready var weapon_holder: Node3D = $PlayerCamera/WeaponHolder
 @onready var flashlight: SpotLight3D = $PlayerCamera/PlayerFlashlight
 @onready var steps_sound: AudioStreamPlayer3D = $StepsSound
+@onready var denied_sound: AudioStreamPlayer = $AccessDenied
 @onready var directives_panel = get_tree().get_first_node_in_group("directives_panel")
 
 # Weapon scenes
@@ -1803,6 +1804,7 @@ func _open_minigame(task_id: String, minigame_type: String) -> void:
 	if _minigame_active:
 		return
 	if not _can_start_task(task_id):
+		denied_sound.play()
 		print("Task not assigned — blocking minigame")
 		_show_ui_message("Task not assigned")
 		return

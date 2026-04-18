@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c6n04dpp1btgn" path="res://scenes/player/player_controller.gd" id="1_dovo2"]
 [ext_resource type="PackedScene" uid="uid://ckqknkquj1prp" path="res://scenes/player/Walking.fbx" id="2_walking"]
 [ext_resource type="AudioStream" uid="uid://cctjpvgjjmo1a" path="res://sounds/steps.wav" id="3_gmlin"]
+[ext_resource type="AudioStream" uid="uid://2wq4xfdgb20d" path="res://sounds/access_denied.wav" id="4_lvxji"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_x7p2l"]
 size = Vector3(0.4, 1.2, 0.55)
@@ -52,3 +53,6 @@ transform = Transform3D(0.9090909, 0, 0, 0, 0.9090909, 0, 0, 0, 0.9090909, 0, 0.
 stream = ExtResource("3_gmlin")
 pitch_scale = 1.1
 max_distance = 1.0
+
+[node name="AccessDenied" type="AudioStreamPlayer" parent="." unique_id=1245637298]
+stream = ExtResource("4_lvxji")
