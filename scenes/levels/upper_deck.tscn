@@ -361,7 +361,7 @@ task_id = "Human_Resources_task"
 
 [node name="HRIcon" type="Decal" parent="HumanResources" unique_id=697115100]
 transform = Transform3D(-4.371139e-08, 1, -4.371139e-08, 0, -4.371139e-08, -1, -1, -4.371139e-08, 1.9106855e-15, 5.961094, 1.4, -3.0279999)
-size = Vector3(4, 3, 3)
+size = Vector3(4, 2.01, 3)
 texture_albedo = ExtResource("19_53760")
 lower_fade = 1e-05
 
