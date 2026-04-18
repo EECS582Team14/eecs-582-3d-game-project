@@ -10,6 +10,8 @@ const AUTOCLOSE_AMOUNT: float = 5.0
 @export var upper_doors: Node3D
 @export var lower_doors: Node3D
 
+@onready var ding: AudioStreamPlayer3D = $ElevatorDing
+
 var state: State = State.IDLE
 var upper_y: float
 var lower_y: float
@@ -40,8 +42,10 @@ func open_doors_manually() -> void:
 		elevator_doors._open_doors()
 		if is_at_floor("upper"):
 			upper_doors._open_doors()
+			play_ding(2)
 		else:
 			lower_doors._open_doors()
+			play_ding(1)
 		start_autoclose_timer()
 
 func _on_elevator_used(action: String, floor_name: String):
@@ -86,8 +90,10 @@ func _finish_arrival(floor_name: String) -> void:
 	elevator_doors._open_doors()
 	if floor_name == "upper":
 		upper_doors._open_doors()
+		play_ding(2)
 	else:
 		lower_doors._open_doors()
+		play_ding(1)
 	start_autoclose_timer()
 
 func start_autoclose_timer() -> void:
@@ -98,3 +104,10 @@ func start_autoclose_timer() -> void:
 		elevator_doors._close_doors()
 		upper_doors._close_doors()
 		lower_doors._close_doors()
+
+func play_ding(count: int) -> void:
+	await get_tree().create_timer(0.6).timeout
+	for i in range(count):
+		ding.play()
+		if i < count - 1:
+			await get_tree().create_timer(1.0).timeout
