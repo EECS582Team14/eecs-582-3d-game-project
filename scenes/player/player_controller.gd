@@ -860,7 +860,7 @@ func _physics_process(delta: float) -> void:
 		return
 	
 	# Footsteps
-	if velocity.x != 0 and is_on_floor():
+	if velocity.x != 0 and is_on_floor() and not _is_crouching:
 		if !steps_sound.playing:
 			steps_sound.play()
 	elif steps_sound.playing:
