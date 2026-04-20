@@ -23,6 +23,10 @@ GameManager="*res://scripts/game_manager.gd"
 VoiceManager="*res://scripts/voice_manager.gd"
 UIState="*uid://cki7nqxlanwyh"
 
+[audio]
+
+buses/default_bus_layout="res://default_bus_layout.tres"
+
 [display]
 
 window/stretch/mode="canvas_items"
