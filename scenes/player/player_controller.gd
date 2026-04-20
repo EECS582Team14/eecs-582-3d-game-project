@@ -22,13 +22,23 @@ extends CharacterBody3D
 @onready var camera: Camera3D = $PlayerCamera
 @onready var weapon_holder: Node3D = $PlayerCamera/WeaponHolder
 @onready var flashlight: SpotLight3D = $PlayerCamera/PlayerFlashlight
+@onready var directives_panel = get_tree().get_first_node_in_group("directives_panel")
+
+# Sound effects
 @onready var steps_sound: AudioStreamPlayer3D = $StepsSound
 @onready var denied_sound: AudioStreamPlayer = $AccessDenied
 @onready var taser_pickup_sound: AudioStreamPlayer3D = $TaserPickup
 @onready var taser_shot_sound: AudioStreamPlayer3D = $TaserShot
 @onready var baton_pickup_sound: AudioStreamPlayer3D = $BatonPickup
 @onready var baton_use_sound: AudioStreamPlayer3D = $BatonUse
-@onready var directives_panel = get_tree().get_first_node_in_group("directives_panel")
+@onready var anomaly_detected: AudioStreamPlayer = $AnomalyDetected
+@onready var emergency_measures_activated: AudioStreamPlayer = $EmergencyMeasuresActivated
+@onready var hostiles_detected: AudioStreamPlayer = $HostilesDetected
+@onready var rebooting_systems: AudioStreamPlayer = $RebootingSystems
+@onready var structural_integrity_compromised: AudioStreamPlayer = $StructuralIntegrityCompromised
+@onready var systems_operational: AudioStreamPlayer = $SystemsOperational
+@onready var warning_malfunction: AudioStreamPlayer = $WarningMalfunction
+@onready var welcome_operator: AudioStreamPlayer = $WelcomeOperator
 
 # Weapon scenes
 var _taser_scene: PackedScene = preload("res://scenes/weapons/taser/gun_model.glb") #preload("res://scenes/weapons/taser/heavy_assault_rifle.glb")
@@ -129,7 +139,7 @@ var _network_update_timer: float = 0.0
 var is_impostor: bool = false
 var _role_received: bool = false
 var _role_timer: float = 0.0
-const ROLE_REVEAL_DELAY: float = 0.0  # TODO: restore to 30.0
+const ROLE_REVEAL_DELAY: float = 30.0  # TODO: restore to 30.0
 var _role_label: Label = null
 var _allies_label: Label = null
 var _timer_label: Label = null
@@ -1265,11 +1275,13 @@ func _on_player_state_received(sender_steam_id: int, state: Dictionary) -> void:
 		player._set_remote_moving(state.get("is_moving", false), state.get("is_moving_backward", false))
 
 func _on_role_assigned(impostor: bool) -> void:
+	welcome_operator.play()
 	is_impostor = impostor
 	_role_received = true
 	_role_timer = ROLE_REVEAL_DELAY
 
 func _reveal_role() -> void:
+	hostiles_detected.play()
 	if is_impostor:
 		_role_label.text = "IMPOSTOR"
 		_role_label.add_theme_color_override("font_color", Color.RED)
@@ -2035,14 +2047,21 @@ func _on_sabotage_triggered(sabotage_type: String) -> void:
 	if not is_local_player:
 		return
 	if sabotage_type == "lights_out":
+		emergency_measures_activated.play()
 		flashlight.visible = true
 		flashlight.light_color = Color.GREEN
+	elif sabotage_type == "drain_integrity":
+		structural_integrity_compromised.play()
+	elif sabotage_type == "disable_comms":
+		rebooting_systems.play()
 	elif sabotage_type == "anonymous":
+		warning_malfunction.play()
 		_mask_all_nametags()
 
 func _on_sabotage_ended(sabotage_type: String) -> void:
 	if not is_local_player:
 		return
+	systems_operational.play()
 	if sabotage_type == "lights_out":
 		flashlight.visible = false
 	elif sabotage_type == "anonymous":
@@ -2209,6 +2228,7 @@ func _start_possession(target_steam_id: int) -> void:
 	# Initialize our tracked rotation from the target's current state
 	var target_player = NetworkManager.get_player(target_steam_id)
 	if target_player:
+		anomaly_detected.play()
 		_possess_rot_y = target_player.rotation.y
 		_possess_cam_x = target_player.camera.rotation_degrees.x
 

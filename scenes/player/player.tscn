@@ -8,6 +8,14 @@
 [ext_resource type="AudioStream" uid="uid://bpewbsp5ytcj3" path="res://sounds/taser_shot.wav" id="5_p47bc"]
 [ext_resource type="AudioStream" uid="uid://b72nvrgmis5pb" path="res://sounds/baton_pickup.wav" id="7_0owmy"]
 [ext_resource type="AudioStream" uid="uid://cs25i36hq7aw5" path="res://sounds/baton_use.wav" id="8_qek5x"]
+[ext_resource type="AudioStream" uid="uid://konsitoosyxg" path="res://sounds/anomaly_detected.wav" id="9_myrg7"]
+[ext_resource type="AudioStream" uid="uid://b7gn5v8lh1orh" path="res://sounds/emergency_measures_activated.wav" id="10_kvlxm"]
+[ext_resource type="AudioStream" uid="uid://dsx4usbu1vr1h" path="res://sounds/hostiles_detected.wav" id="11_uf5tr"]
+[ext_resource type="AudioStream" uid="uid://co16ps2stffkh" path="res://sounds/rebooting_systems.wav" id="12_lgqa7"]
+[ext_resource type="AudioStream" uid="uid://daht8fcoammib" path="res://sounds/structural_integrity_compromised.wav" id="13_8ydkj"]
+[ext_resource type="AudioStream" uid="uid://202vm60j31en" path="res://sounds/systems_operational.wav" id="14_3j4b4"]
+[ext_resource type="AudioStream" uid="uid://bilybh720d4sa" path="res://sounds/warning_malfunction.wav" id="15_yj68g"]
+[ext_resource type="AudioStream" uid="uid://ysqhfovk1172" path="res://sounds/welcome_operator.wav" id="16_ioxgp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_x7p2l"]
 size = Vector3(0.4, 1.2, 0.55)
@@ -80,3 +88,27 @@ max_distance = 1.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.844, 0)
 stream = ExtResource("8_qek5x")
 max_distance = 1.0
+
+[node name="AnomalyDetected" type="AudioStreamPlayer" parent="." unique_id=1574522685]
+stream = ExtResource("9_myrg7")
+
+[node name="EmergencyMeasuresActivated" type="AudioStreamPlayer" parent="." unique_id=274216594]
+stream = ExtResource("10_kvlxm")
+
+[node name="HostilesDetected" type="AudioStreamPlayer" parent="." unique_id=198252639]
+stream = ExtResource("11_uf5tr")
+
+[node name="RebootingSystems" type="AudioStreamPlayer" parent="." unique_id=540495096]
+stream = ExtResource("12_lgqa7")
+
+[node name="StructuralIntegrityCompromised" type="AudioStreamPlayer" parent="." unique_id=1573358177]
+stream = ExtResource("13_8ydkj")
+
+[node name="SystemsOperational" type="AudioStreamPlayer" parent="." unique_id=434351403]
+stream = ExtResource("14_3j4b4")
+
+[node name="WarningMalfunction" type="AudioStreamPlayer" parent="." unique_id=1708146382]
+stream = ExtResource("15_yj68g")
+
+[node name="WelcomeOperator" type="AudioStreamPlayer" parent="." unique_id=662369141]
+stream = ExtResource("16_ioxgp")
