@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://61dswtmam352"]
+
+[ext_resource type="PackedScene" uid="uid://bbipsvt078d0a" path="res://scenes/items/TrashFill/fnaf_sb_trash_compactor.glb" id="1_wr7mc"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jd3e6"]
+size = Vector3(6.5, 4.6, 6.5)
+
+[node name="Sketchfab_Scene" unique_id=1573028351 instance=ExtResource("1_wr7mc")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Sketchfab_model" parent_id_path=PackedInt32Array(459117373) index="1" unique_id=608762661]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Sketchfab_model/StaticBody3D" index="0" unique_id=2080156364]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 3)
+shape = SubResource("BoxShape3D_jd3e6")
