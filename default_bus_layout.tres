@@ -1,16 +1,10 @@
-[gd_resource type="AudioBusLayout" format=3]
+[gd_resource type="AudioBusLayout" format=3 uid="uid://bxcflory0lyqa"]
 
 [sub_resource type="AudioEffectLowPassFilter" id="AudioEffectLowPassFilter_steps"]
 cutoff_hz = 2800.0
 resonance = 0.3
 
 [resource]
-bus/0/name = &"Master"
-bus/0/solo = false
-bus/0/mute = false
-bus/0/bypass_fx = false
-bus/0/volume_db = 0.0
-bus/0/send = &""
 bus/1/name = &"Footsteps"
 bus/1/solo = false
 bus/1/mute = false
