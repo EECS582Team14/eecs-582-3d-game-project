@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bbn3lr5anxeqd"]
+
+[ext_resource type="PackedScene" uid="uid://dj74t4xn8xl1y" path="res://scenes/items/ColonialFill/hydroponic_tower_free_download.glb" id="1_8th1t"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mwpsf"]
+size = Vector3(450, 600, 400)
+
+[node name="Sketchfab_Scene" unique_id=1334157557 instance=ExtResource("1_8th1t")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Sketchfab_model/root/GLTF_SceneRootNode" parent_id_path=PackedInt32Array(745716482) index="6" unique_id=1313546022]
+transform = Transform3D(0.0045618997, 0, 0, 0, 0.0045619006, 0, 0, 0, 0.0045619006, -0.029848568, 0, 0.033206463)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Sketchfab_model/root/GLTF_SceneRootNode/StaticBody3D" index="0" unique_id=1727278124]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 300, -10)
+shape = SubResource("BoxShape3D_mwpsf")

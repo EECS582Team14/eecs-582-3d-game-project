@@ -2,4 +2,14 @@
 
 [ext_resource type="PackedScene" uid="uid://bhlljeda5tb27" path="res://scenes/items/ColonialFill/hydroponics_system.glb" id="1_feela"]
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_feela"]
+size = Vector3(2, 2.8, 4)
+
 [node name="Sketchfab_Scene" unique_id=483460589 instance=ExtResource("1_feela")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Sketchfab_model/root/GLTF_SceneRootNode" parent_id_path=PackedInt32Array(1141066553) index="4" unique_id=913950755]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.21375552, 0.14779213, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Sketchfab_model/root/GLTF_SceneRootNode/StaticBody3D" index="0" unique_id=1418119551]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0)
+shape = SubResource("BoxShape3D_feela")

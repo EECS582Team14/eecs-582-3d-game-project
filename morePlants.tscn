@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://2yc2sisvt3gj"]
+
+[ext_resource type="PackedScene" uid="uid://bhlljeda5tb27" path="res://scenes/items/ColonialFill/hydroponics_system.glb" id="1_cxq51"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_koaia"]
+size = Vector3(2, 2.8, 4)
+
+[node name="Sketchfab_Scene" unique_id=483460589 instance=ExtResource("1_cxq51")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Sketchfab_model/root/GLTF_SceneRootNode/Hydro RIg_0" parent_id_path=PackedInt32Array(499680500) index="3" unique_id=1839268521]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Sketchfab_model/root/GLTF_SceneRootNode/Hydro RIg_0/StaticBody3D" index="0" unique_id=815441929]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0)
+shape = SubResource("BoxShape3D_koaia")

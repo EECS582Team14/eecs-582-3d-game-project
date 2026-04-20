@@ -23,10 +23,10 @@
 [ext_resource type="Texture2D" uid="uid://bg7owu4icm2pp" path="res://scenes/levels/main_assets/space_wall.jpg" id="17_hneab"]
 [ext_resource type="PackedScene" uid="uid://xkjk0yurhs3l" path="res://scenes/items/ColonialFill/planterBox.tscn" id="17_it2j4"]
 [ext_resource type="Texture2D" uid="uid://c07u6x0xdv0bm" path="res://assets/room_symbols/shipSupplies_icon.png" id="17_sd3od"]
-[ext_resource type="PackedScene" uid="uid://bhlljeda5tb27" path="res://scenes/items/ColonialFill/hydroponics_system.glb" id="18_eawh0"]
+[ext_resource type="PackedScene" uid="uid://2yc2sisvt3gj" path="res://morePlants.tscn" id="18_2hslu"]
 [ext_resource type="Texture2D" uid="uid://bxhrca3vs34xt" path="res://assets/room_symbols/fab_icon.png" id="18_m25je"]
 [ext_resource type="PackedScene" uid="uid://dkmlnl6gy54df" path="res://scenes/items/Healthpack Table/Healthpack1 Table.tscn" id="18_r5xfg"]
-[ext_resource type="PackedScene" uid="uid://dj74t4xn8xl1y" path="res://scenes/items/ColonialFill/hydroponic_tower_free_download.glb" id="19_7idiv"]
+[ext_resource type="PackedScene" uid="uid://bbn3lr5anxeqd" path="res://plantTower.tscn" id="19_7idiv"]
 [ext_resource type="Texture2D" uid="uid://ddgjgjsc26lln" path="res://assets/room_symbols/personalItems_icon.png" id="19_ttbe1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bjwnh"]
@@ -259,40 +259,40 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.15, 0, -1.45)
 [node name="planterBox20" parent="ColonialSupplies" unique_id=561734761 instance=ExtResource("17_it2j4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.15, 0, -3.45)
 
-[node name="morePlants1" parent="ColonialSupplies" unique_id=483460589 instance=ExtResource("18_eawh0")]
+[node name="morePlant1" parent="ColonialSupplies" unique_id=483460589 instance=ExtResource("18_2hslu")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -2, 1, 3)
 
-[node name="morePlants2" parent="ColonialSupplies" unique_id=1316628541 instance=ExtResource("18_eawh0")]
+[node name="morePlant2" parent="ColonialSupplies" unique_id=1578764245 instance=ExtResource("18_2hslu")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -2, 1, -3)
 
-[node name="morePlants3" parent="ColonialSupplies" unique_id=1472295250 instance=ExtResource("18_eawh0")]
+[node name="morePlant3" parent="ColonialSupplies" unique_id=89899144 instance=ExtResource("18_2hslu")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 2, 1, -3)
 
-[node name="morePlants4" parent="ColonialSupplies" unique_id=1808616801 instance=ExtResource("18_eawh0")]
+[node name="morePlant4" parent="ColonialSupplies" unique_id=1861833685 instance=ExtResource("18_2hslu")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 2, 1, 3)
 
-[node name="morePlants5" parent="ColonialSupplies" unique_id=1184033820 instance=ExtResource("18_eawh0")]
+[node name="morePlant5" parent="ColonialSupplies" unique_id=229252427 instance=ExtResource("18_2hslu")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 3.7, 1, 3)
 
-[node name="morePlants6" parent="ColonialSupplies" unique_id=907279986 instance=ExtResource("18_eawh0")]
+[node name="morePlant6" parent="ColonialSupplies" unique_id=951065203 instance=ExtResource("18_2hslu")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 3.7, 1, -3)
 
-[node name="morePlants7" parent="ColonialSupplies" unique_id=445517774 instance=ExtResource("18_eawh0")]
+[node name="morePlant7" parent="ColonialSupplies" unique_id=1184870540 instance=ExtResource("18_2hslu")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -6.5, 1, -4.8)
 
-[node name="morePlants8" parent="ColonialSupplies" unique_id=745677758 instance=ExtResource("18_eawh0")]
+[node name="morePlant8" parent="ColonialSupplies" unique_id=690338030 instance=ExtResource("18_2hslu")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -6.5, 1, -1.6)
 
-[node name="morePlants9" parent="ColonialSupplies" unique_id=105319654 instance=ExtResource("18_eawh0")]
+[node name="morePlant9" parent="ColonialSupplies" unique_id=1303626806 instance=ExtResource("18_2hslu")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -6.5, 1, 1.8)
 
-[node name="morePlants10" parent="ColonialSupplies" unique_id=664165696 instance=ExtResource("18_eawh0")]
+[node name="morePlant10" parent="ColonialSupplies" unique_id=839601430 instance=ExtResource("18_2hslu")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -6.5, 1, 5)
 
 [node name="plantTower1" parent="ColonialSupplies" unique_id=1334157557 instance=ExtResource("19_7idiv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3, 0, 0.138)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3000002, 0, 0.13800049)
 
-[node name="plantTower2" parent="ColonialSupplies" unique_id=686317155 instance=ExtResource("19_7idiv")]
+[node name="plantTower2" parent="ColonialSupplies" unique_id=194313600 instance=ExtResource("19_7idiv")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0.138)
 
 [node name="ShipSupplies" type="Node3D" parent="." unique_id=1185466814]

@@ -2,16 +2,26 @@
 
 [ext_resource type="PackedScene" uid="uid://c4lj8xdsip1si" path="res://scenes/items/ColonialFill/sci-fi_plant_rack__pot_free.glb" id="1_ij8wp"]
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_ij8wp"]
+size = Vector3(2, 6.5, 11.5)
+
 [node name="Sketchfab_Scene" unique_id=1120837974 instance=ExtResource("1_ij8wp")]
 
-[node name="plantpot_base6_ground_06_04_Mat_0" parent="Sketchfab_model/4ac1c85aad37446080942f051e91c3ef_fbx/RootNode/plantpot_base6" parent_id_path=PackedInt32Array(1098946483) index="3" unique_id=1940332604]
+[node name="StaticBody3D" type="StaticBody3D" parent="Sketchfab_model/4ac1c85aad37446080942f051e91c3ef_fbx/RootNode/plantpot_base6/plantpot_base6_pot_0" parent_id_path=PackedInt32Array(1758601713) index="0" unique_id=1905596835]
+transform = Transform3D(3, 0, 0, 0, 3, -1.0587912e-22, 0, 1.0587912e-22, 3, 100, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Sketchfab_model/4ac1c85aad37446080942f051e91c3ef_fbx/RootNode/plantpot_base6/plantpot_base6_pot_0/StaticBody3D" index="0" unique_id=1507096625]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 355, 19, -117)
+shape = SubResource("BoxShape3D_ij8wp")
+
+[node name="plantpot_base6_ground_06_04_Mat_0" parent="Sketchfab_model/4ac1c85aad37446080942f051e91c3ef_fbx/RootNode/plantpot_base6" parent_id_path=PackedInt32Array(1021367620) index="3" unique_id=763079696]
 visible = false
 
-[node name="plantpot_base6_rack_0" parent="Sketchfab_model/4ac1c85aad37446080942f051e91c3ef_fbx/RootNode/plantpot_base6" parent_id_path=PackedInt32Array(1098946483) index="4" unique_id=102647246]
+[node name="plantpot_base6_rack_0" parent="Sketchfab_model/4ac1c85aad37446080942f051e91c3ef_fbx/RootNode/plantpot_base6" parent_id_path=PackedInt32Array(1021367620) index="4" unique_id=1984430422]
 visible = false
 
-[node name="plantpot_base6_ground_06_02_Mat_0" parent="Sketchfab_model/4ac1c85aad37446080942f051e91c3ef_fbx/RootNode/plantpot_base6" parent_id_path=PackedInt32Array(1098946483) index="5" unique_id=180326340]
+[node name="plantpot_base6_ground_06_02_Mat_0" parent="Sketchfab_model/4ac1c85aad37446080942f051e91c3ef_fbx/RootNode/plantpot_base6" parent_id_path=PackedInt32Array(1021367620) index="5" unique_id=11100784]
 visible = false
 
-[node name="plantpot_base6_ground_06_03_Mat_0" parent="Sketchfab_model/4ac1c85aad37446080942f051e91c3ef_fbx/RootNode/plantpot_base6" parent_id_path=PackedInt32Array(1098946483) index="6" unique_id=463966693]
+[node name="plantpot_base6_ground_06_03_Mat_0" parent="Sketchfab_model/4ac1c85aad37446080942f051e91c3ef_fbx/RootNode/plantpot_base6" parent_id_path=PackedInt32Array(1021367620) index="6" unique_id=897091518]
 visible = false
