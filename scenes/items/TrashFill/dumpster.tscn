@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://bj8e5mj86qkxh"]
+
+[ext_resource type="PackedScene" uid="uid://duvo03jfqysj4" path="res://scenes/items/TrashFill/pluralsight_-_dumpster.glb" id="1_l387e"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_iud5q"]
+size = Vector3(35, 60, 85)
+
+[node name="Sketchfab_Scene" unique_id=1307493044 instance=ExtResource("1_l387e")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Sketchfab_model/a23ee367db9f4e86b039b470655a4f70_fbx" parent_id_path=PackedInt32Array(199003733) index="1" unique_id=724018781]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Sketchfab_model/a23ee367db9f4e86b039b470655a4f70_fbx/StaticBody3D" index="0" unique_id=704239544]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 25, 0)
+shape = SubResource("BoxShape3D_iud5q")

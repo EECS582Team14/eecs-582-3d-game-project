@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://cfv7eebsn6dc2"]
+
+[ext_resource type="PackedScene" uid="uid://v6tpdbcmvoyv" path="res://scenes/items/TrashFill/trash_can_actual.glb" id="1_dpe4c"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_88hab"]
+size = Vector3(300, 530, 300)
+
+[node name="Sketchfab_Scene" unique_id=1290227289 instance=ExtResource("1_dpe4c")]
+
+[node name="RootNode" parent="Sketchfab_model/dfe209694cf24acdb68e52bf8e6f108b_fbx" parent_id_path=PackedInt32Array(1084493176) index="0" unique_id=1520842424]
+transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Sketchfab_model/dfe209694cf24acdb68e52bf8e6f108b_fbx/RootNode" index="1" unique_id=1526047900]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Sketchfab_model/dfe209694cf24acdb68e52bf8e6f108b_fbx/RootNode/StaticBody3D" index="0" unique_id=1559384193]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 260, 0)
+shape = SubResource("BoxShape3D_88hab")
