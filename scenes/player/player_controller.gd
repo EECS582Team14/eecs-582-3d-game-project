@@ -187,6 +187,7 @@ var is_dead: bool = false
 
 # Interaction
 var _looking_at_interactable: Node = null
+var _looking_at_corpse: Node = null
 var _interact_label: Label = null
 var _notification_label: Label = null
 var _holding_button: bool = false
@@ -700,7 +701,7 @@ func _input(event: InputEvent) -> void:
 				_held_taser.visible = not _taser_hidden
 				NetworkManager.send_taser_hide(_taser_hidden)
 		elif event.key_label == KEY_F and event.pressed:
-			NetworkManager.send_emergency_meeting()
+			_try_report_body()
 		elif event.key_label == KEY_K and event.pressed:
 			GameManager.adjust_ship_integrity(-10.0)
 		elif event.key_label == KEY_L and event.pressed:
@@ -1354,8 +1355,15 @@ func _update_interaction_look() -> void:
 	var result = space_state.intersect_ray(query)
 
 	_looking_at_interactable = null
+	_looking_at_corpse = null
 	if result:
 		var collider = result.collider
+		if collider.is_in_group("corpse"):
+			_looking_at_corpse = _find_corpse_root(collider)
+			if _looking_at_corpse:
+				_interact_label.text = "Press F to report body"
+				_interact_label.visible = true
+				return
 		if collider.is_in_group("pickup"):
 			_looking_at_interactable = _find_activatable(collider)
 			if _looking_at_interactable:
@@ -1426,6 +1434,26 @@ func _find_activatable(node: Node) -> Node:
 			return node
 		node = node.get_parent()
 	return null
+
+func _find_corpse_root(node: Node) -> Node:
+	while node != null:
+		if node.is_in_group("corpse") and node.has_meta("victim_name"):
+			return node
+		node = node.get_parent()
+	return null
+
+func _try_report_body() -> void:
+	if is_dead:
+		return
+	if not _looking_at_corpse or not is_instance_valid(_looking_at_corpse):
+		return
+	var victim_name: String = _looking_at_corpse.get_meta("victim_name", "")
+	if victim_name == "":
+		return
+	if _looking_at_corpse.has_meta("reported") and _looking_at_corpse.get_meta("reported"):
+		return
+	_looking_at_corpse.set_meta("reported", true)
+	NetworkManager.send_body_reported(victim_name)
 
 func _try_interact() -> void:
 	if not _looking_at_interactable:
@@ -1719,14 +1747,32 @@ func _spawn_corpse() -> void:
 	var scene_root := get_tree().current_scene
 	if not scene_root:
 		return
-	var corpse := model.duplicate() as Node3D
-	if not corpse:
+	var corpse_model := model.duplicate() as Node3D
+	if not corpse_model:
 		return
-	scene_root.add_child(corpse)
-	corpse.global_transform = model.global_transform
-	corpse.visible = true
+
+	var corpse_root := StaticBody3D.new()
+	corpse_root.name = "Corpse_%d" % steam_id
+	corpse_root.add_to_group("corpse")
+	corpse_root.set_meta("victim_name", String(nametag.text) if nametag else "")
+	corpse_root.set_meta("reported", false)
+	scene_root.add_child(corpse_root)
+	corpse_root.global_transform = Transform3D(Basis.IDENTITY, global_position)
+
+	var collider := CollisionShape3D.new()
+	var capsule := CapsuleShape3D.new()
+	capsule.radius = 0.5
+	capsule.height = 1.6
+	collider.shape = capsule
+	# Lay the capsule flat along the ground so a prone body is hittable from above.
+	collider.transform = Transform3D(Basis(Vector3(1, 0, 0), deg_to_rad(90)), Vector3(0, 0.4, 0))
+	corpse_root.add_child(collider)
+
+	corpse_root.add_child(corpse_model)
+	corpse_model.global_transform = model.global_transform
+	corpse_model.visible = true
 	var corpse_anim: AnimationPlayer = null
-	for child in corpse.get_children():
+	for child in corpse_model.get_children():
 		if child is AnimationPlayer:
 			corpse_anim = child
 			break
@@ -1739,7 +1785,7 @@ func _spawn_corpse() -> void:
 	if nametag:
 		var corpse_nametag := nametag.duplicate() as Node3D
 		if corpse_nametag:
-			scene_root.add_child(corpse_nametag)
+			corpse_root.add_child(corpse_nametag)
 			corpse_nametag.global_transform = nametag.global_transform
 			corpse_nametag.visible = true
 

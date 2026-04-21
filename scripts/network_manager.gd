@@ -37,6 +37,7 @@ signal possess_action_received(target_steam_id: int, action: String)
 signal door_lock_received(door_id: String, locked: bool)
 signal hide_update_recieved(locker_id: String, io: bool, steam_id: int)
 signal emote_received(steam_id: int, emote_name: String)
+signal body_reported(victim_name: String, reporter_name: String)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -72,7 +73,8 @@ enum PacketType {
 	POSSESS_ACTION,
 	DOOR_LOCK,
 	HIDE_UPDATE,
-	EMOTE
+	EMOTE,
+	BODY_REPORTED
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -219,6 +221,11 @@ func send_elevator_door_state_change(door_id: String, action: String):
 func send_emergency_meeting():
 	send_p2p_packet(0, {"type": PacketType.EMERGENCY_MEETING}, Steam.P2P_SEND_RELIABLE, 0)
 	emergency_meeting_called.emit()
+
+func send_body_reported(victim_name: String):
+	var reporter_name = Steam.getPersonaName()
+	send_p2p_packet(0, {"type": PacketType.BODY_REPORTED, "victim": victim_name, "reporter": reporter_name}, Steam.P2P_SEND_RELIABLE, 0)
+	body_reported.emit(victim_name, reporter_name)
 
 func send_timer_sync(arrival: float, speed: float):
 	send_p2p_packet(0, {"type": PacketType.TIMER_SYNC, "arrival": arrival, "spd": speed}, Steam.P2P_SEND_RELIABLE, 0)
@@ -380,6 +387,9 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 
 		PacketType.EMERGENCY_MEETING:
 			emergency_meeting_called.emit()
+
+		PacketType.BODY_REPORTED:
+			body_reported.emit(data.get("victim", ""), data.get("reporter", ""))
 
 		PacketType.TIMER_SYNC:
 			timer_sync_received.emit(data.get("arrival", 0.0), data.get("spd", 1.0))
