@@ -1325,12 +1325,7 @@ func _on_health_update_received(sender_steam_id: int, health: int) -> void:
 	if player and player != self:
 		player.current_health = health
 		if health <= 0 and not player.is_dead:
-			player.is_dead = true
-			player.get_node("PlayerModel").visible = false
-			if player._held_taser:
-				player._held_taser.visible = false
-			if player._held_baton:
-				player._held_baton.visible = false
+			player._enter_dead_state()
 
 # Apply gravity for local player
 func _apply_gravity(delta: float) -> void:
@@ -1696,15 +1691,16 @@ func _toggle_third_person() -> void:
 
 func _enter_dead_state() -> void:
 	is_dead = true
-	
+
 	#if is_local_player:
 	drop_current_weapon()
-	
+
 	if _anim_player and _anim_player.has_animation(_anim("dying")):
 		$PlayerModel.visible = true
 		_anim_player.play(_anim("dying"), ANIM_BLEND)
 		_anim_player.speed_scale = 1.0
 		await _anim_player.animation_finished
+		await get_tree().create_timer(1.5).timeout
 	$PlayerModel.visible = false
 	nametag.visible = false
 	if _held_taser:
@@ -1712,7 +1708,8 @@ func _enter_dead_state() -> void:
 	if _held_baton:
 		_held_baton.visible = false
 	$PhysicsCollider.disabled = true
-	_interact_label.visible = false
+	if _interact_label:
+		_interact_label.visible = false
 
 func _on_taser_hit_received(dmg: int) -> void:
 	if is_dead:
