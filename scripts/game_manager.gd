@@ -274,6 +274,7 @@ func _on_game_over(impostor_won: bool):
 
 	# Switch voice chat to non-proximity (everyone hears everyone)
 	VoiceManager.disable_proximity()
+	VoiceManager.disable_dead_chat()
 
 	# Show mouse cursor
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)

@@ -19,6 +19,16 @@ var voice_playbacks: Dictionary = {}
 # AudioStreamPlayer3D nodes per remote player: steam_id -> AudioStreamPlayer3D
 var voice_players: Dictionary = {}
 
+# Non-proximity "dead chat" playback per dead remote: steam_id -> AudioStreamGeneratorPlayback
+var dead_voice_playbacks: Dictionary = {}
+
+# Non-proximity "dead chat" players per dead remote: steam_id -> AudioStreamPlayer
+var dead_voice_players: Dictionary = {}
+
+# When true, dead senders are filtered: living listeners drop their audio and
+# dead listeners route them through the non-proximity dead-chat stream.
+var dead_chat_enabled: bool = true
+
 # Voice scramble — uses a dedicated audio bus with AudioEffectPitchShift
 var voice_scrambled: bool = false
 const SCRAMBLE_PITCH: float = 1.6
@@ -99,6 +109,10 @@ func _on_voice_data_received(sender_steam_id: int, compressed_audio: PackedByteA
 	if compressed_audio.is_empty():
 		return
 
+	var playback: AudioStreamGeneratorPlayback = _route_voice_playback(sender_steam_id)
+	if playback == null:
+		return
+
 	var decompressed = Steam.decompressVoice(compressed_audio, sample_rate)
 	if decompressed["result"] != 0:
 		return
@@ -107,13 +121,41 @@ func _on_voice_data_received(sender_steam_id: int, compressed_audio: PackedByteA
 	# "size" is the actual byte count of real audio — the rest of the buffer is empty
 	var actual_byte_size: int = decompressed["size"]
 	var num_samples: int = actual_byte_size / 2
-	var playback: AudioStreamGeneratorPlayback = voice_playbacks[sender_steam_id]
 
 	# Convert 16-bit signed PCM samples to float frames and push to audio stream
 	for i in range(num_samples):
 		if playback.can_push_buffer(1):
 			var sample_value = pcm_data.decode_s16(i * 2) / 32768.0
 			playback.push_frame(Vector2(sample_value, sample_value))
+
+func _route_voice_playback(sender_steam_id: int) -> AudioStreamGeneratorPlayback:
+	if not dead_chat_enabled:
+		return voice_playbacks.get(sender_steam_id, null)
+	var sender = NetworkManager.get_player(sender_steam_id)
+	var sender_dead: bool = sender != null and "is_dead" in sender and sender.is_dead
+	if not sender_dead:
+		return voice_playbacks.get(sender_steam_id, null)
+	var local_player = NetworkManager.get_player(Steam.getSteamID())
+	var local_dead: bool = local_player != null and "is_dead" in local_player and local_player.is_dead
+	if not local_dead:
+		return null
+	return _ensure_dead_voice_playback(sender_steam_id)
+
+func _ensure_dead_voice_playback(sender_steam_id: int) -> AudioStreamGeneratorPlayback:
+	if dead_voice_playbacks.has(sender_steam_id):
+		return dead_voice_playbacks[sender_steam_id]
+	var dead_player = AudioStreamPlayer.new()
+	dead_player.name = "DeadVoicePlayer_%d" % sender_steam_id
+	var stream = AudioStreamGenerator.new()
+	stream.mix_rate = float(sample_rate)
+	stream.buffer_length = 0.5
+	dead_player.stream = stream
+	dead_player.bus = VOICE_BUS_NAME
+	get_tree().root.add_child(dead_player)
+	dead_player.play()
+	dead_voice_players[sender_steam_id] = dead_player
+	dead_voice_playbacks[sender_steam_id] = dead_player.get_stream_playback()
+	return dead_voice_playbacks[sender_steam_id]
 
 # ============ PLAYER SETUP ============
 
@@ -175,6 +217,19 @@ func remove_player_voice(steam_id: int):
 		voice_players[steam_id].queue_free()
 		voice_players.erase(steam_id)
 	voice_playbacks.erase(steam_id)
+	if dead_voice_players.has(steam_id):
+		if is_instance_valid(dead_voice_players[steam_id]):
+			dead_voice_players[steam_id].queue_free()
+		dead_voice_players.erase(steam_id)
+	dead_voice_playbacks.erase(steam_id)
+
+func disable_dead_chat():
+	dead_chat_enabled = false
+	for steam_id in dead_voice_players.keys():
+		if dead_voice_players[steam_id] != null and is_instance_valid(dead_voice_players[steam_id]):
+			dead_voice_players[steam_id].queue_free()
+	dead_voice_playbacks.clear()
+	dead_voice_players.clear()
 
 func cleanup():
 	for steam_id in voice_players.keys():
@@ -182,3 +237,9 @@ func cleanup():
 			voice_players[steam_id].queue_free()
 	voice_playbacks.clear()
 	voice_players.clear()
+	for steam_id in dead_voice_players.keys():
+		if dead_voice_players[steam_id] != null and is_instance_valid(dead_voice_players[steam_id]):
+			dead_voice_players[steam_id].queue_free()
+	dead_voice_playbacks.clear()
+	dead_voice_players.clear()
+	dead_chat_enabled = true

@@ -1700,7 +1700,8 @@ func _enter_dead_state() -> void:
 		_anim_player.play(_anim("dying"), ANIM_BLEND)
 		_anim_player.speed_scale = 1.0
 		await _anim_player.animation_finished
-		await get_tree().create_timer(1.5).timeout
+
+	_spawn_corpse()
 	$PlayerModel.visible = false
 	nametag.visible = false
 	if _held_taser:
@@ -1710,6 +1711,37 @@ func _enter_dead_state() -> void:
 	$PhysicsCollider.disabled = true
 	if _interact_label:
 		_interact_label.visible = false
+
+func _spawn_corpse() -> void:
+	var model := $PlayerModel as Node3D
+	if not model:
+		return
+	var scene_root := get_tree().current_scene
+	if not scene_root:
+		return
+	var corpse := model.duplicate() as Node3D
+	if not corpse:
+		return
+	scene_root.add_child(corpse)
+	corpse.global_transform = model.global_transform
+	corpse.visible = true
+	var corpse_anim: AnimationPlayer = null
+	for child in corpse.get_children():
+		if child is AnimationPlayer:
+			corpse_anim = child
+			break
+	if corpse_anim and corpse_anim.has_animation(_anim("dying")):
+		var dying_anim := corpse_anim.get_animation(_anim("dying"))
+		corpse_anim.play(_anim("dying"))
+		if dying_anim:
+			corpse_anim.seek(dying_anim.length, true)
+		corpse_anim.pause()
+	if nametag:
+		var corpse_nametag := nametag.duplicate() as Node3D
+		if corpse_nametag:
+			scene_root.add_child(corpse_nametag)
+			corpse_nametag.global_transform = nametag.global_transform
+			corpse_nametag.visible = true
 
 func _on_taser_hit_received(dmg: int) -> void:
 	if is_dead:
