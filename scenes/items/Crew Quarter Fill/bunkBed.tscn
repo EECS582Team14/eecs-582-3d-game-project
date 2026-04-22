@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://ii4hfvx88dm4"]
+
+[ext_resource type="PackedScene" uid="uid://cgxd6mmtffsd1" path="res://scenes/items/Crew Quarter Fill/space_ship_bunk_beds.glb" id="1_l3vyf"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xn4r5"]
+size = Vector3(1.4, 3.3, 2.3)
+
+[node name="Node3D" type="Node3D" unique_id=1410620799]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=396782491]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1311780120]
+shape = SubResource("BoxShape3D_xn4r5")
+
+[node name="Sketchfab_Scene" parent="." unique_id=657305364 instance=ExtResource("1_l3vyf")]
