@@ -16,7 +16,6 @@ size = Vector3(1, 1, 0.3)
 script = ExtResource("1_script")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=611438190]
-visible = false
 shape = SubResource("BoxShape3D_console")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1007452384]

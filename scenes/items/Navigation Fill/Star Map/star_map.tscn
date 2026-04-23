@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://os3v3b52j6y7"]
+
+[ext_resource type="PackedScene" uid="uid://c0npm1omhcjm" path="res://scenes/items/Navigation Fill/Star Map/stargate_sg-1_star_map_boardroom.glb" id="1_ytqfb"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ytqfb"]
+size = Vector3(3.19812, 2.155548, 0.16748047)
+
+[node name="star_map" type="StaticBody3D" unique_id=640723875]
+
+[node name="Sketchfab_Scene" parent="." unique_id=1215707624 instance=ExtResource("1_ytqfb")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=129111020]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0067749023, -0.0069122314, 0.0031738281)
+shape = SubResource("BoxShape3D_ytqfb")
+debug_color = Color(0, 11.708403, 13.469126, 1)
