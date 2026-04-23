@@ -981,7 +981,10 @@ transform = Transform3D(-2.1855694e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.1855694e-
 transform = Transform3D(-2.1855694e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.1855694e-08, 25.1, 0, 21.1)
 
 [node name="desk1" parent="Crew Quarters" unique_id=905057909 instance=ExtResource("52_empy8")]
-transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 20, 0, 20)
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 18, 0, 22)
+
+[node name="desk2" parent="Crew Quarters" unique_id=465319179 instance=ExtResource("52_empy8")]
+transform = Transform3D(-0.8, 0, -6.9938224e-08, 0, 0.8, 0, 6.9938224e-08, 0, -0.8, 18.33, 0, 21.3)
 
 [node name="TaserPickup" parent="." unique_id=1416351404 instance=ExtResource("7_rmbde")]
 transform = Transform3D(3.3985966e-08, 0.77750814, -0.62887275, 1, -4.371139e-08, -1.6415074e-15, -2.7488898e-08, -0.62887275, -0.77750814, -18.964157, 0.7129056, 13.29552)
