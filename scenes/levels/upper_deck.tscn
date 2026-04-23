@@ -1035,6 +1035,12 @@ transform = Transform3D(-3.4969112e-08, 0, 0.8, 0, 0.8, 0, -0.8, 0, -3.4969112e-
 [node name="desk17" parent="Crew Quarters" unique_id=812285271 instance=ExtResource("52_empy8")]
 transform = Transform3D(-3.4969112e-08, 0, 0.8, 0, 0.8, 0, -0.8, 0, -3.4969112e-08, 19, 0, 19)
 
+[node name="desk18" parent="Crew Quarters" unique_id=476595848 instance=ExtResource("52_empy8")]
+transform = Transform3D(-3.4969112e-08, 0, -0.8, 0, 0.8, 0, 0.8, 0, -3.4969112e-08, 18.3, 0, 16.6)
+
+[node name="desk19" parent="Crew Quarters" unique_id=1580548823 instance=ExtResource("52_empy8")]
+transform = Transform3D(-3.4969112e-08, 0, -0.8, 0, 0.8, 0, 0.8, 0, -3.4969112e-08, 19.8, 0, 16.6)
+
 [node name="sofa1" parent="Crew Quarters" unique_id=1868046191 instance=ExtResource("54_bk6jx")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 24.2, 0.75, 19)
 
