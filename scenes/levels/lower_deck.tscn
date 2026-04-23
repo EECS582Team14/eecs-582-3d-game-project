@@ -30,8 +30,8 @@
 [ext_resource type="Texture2D" uid="uid://bxhrca3vs34xt" path="res://assets/room_symbols/fab_icon.png" id="18_m25je"]
 [ext_resource type="PackedScene" uid="uid://dkmlnl6gy54df" path="res://scenes/items/Healthpack Table/Healthpack1 Table.tscn" id="18_r5xfg"]
 [ext_resource type="PackedScene" uid="uid://cfv7eebsn6dc2" path="res://scenes/items/TrashFill/actualTrashCan.tscn" id="18_ug617"]
+[ext_resource type="PackedScene" uid="uid://dcbgy4tbcs2x4" path="res://scenes/items/TrashFill/trashBags.tscn" id="19_0brod"]
 [ext_resource type="PackedScene" uid="uid://bbn3lr5anxeqd" path="res://scenes/items/ColonialFill/plantTower.tscn" id="19_7idiv"]
-[ext_resource type="PackedScene" uid="uid://b26gu71sxd3xo" path="res://scenes/items/TrashFill/trash_bag.glb" id="19_124l6"]
 [ext_resource type="Texture2D" uid="uid://ddgjgjsc26lln" path="res://assets/room_symbols/personalItems_icon.png" id="19_ttbe1"]
 [ext_resource type="PackedScene" uid="uid://bhnihej24hlrx" path="res://scenes/items/healthpack.tscn" id="20_0brod"]
 
@@ -203,14 +203,14 @@ transform = Transform3D(-3.934025e-07, 0, 9, 0, 9, 0, -9, 0, -3.934025e-07, -1.8
 [node name="trashCan4" parent="Trash" unique_id=1565240347 instance=ExtResource("18_ug617")]
 transform = Transform3D(-3.934025e-07, 0, 9, 0, 9, 0, -9, 0, -3.934025e-07, -1.8, 0, 4.1)
 
-[node name="trashBags1" parent="Trash" unique_id=1811658552 instance=ExtResource("19_124l6")]
-transform = Transform3D(-0.03, 0, -2.6226832e-09, 0, 0.03, 0, 2.6226832e-09, 0, -0.03, -0.4, 0, -4)
+[node name="trashBags" parent="Trash" unique_id=1811658552 instance=ExtResource("19_0brod")]
+transform = Transform3D(-0.03, 0, -4.529874e-09, 0, 0.03, 0, 4.529874e-09, 0, -0.03, -0.39999962, 0, -4)
 
-[node name="trashBags2" parent="Trash" unique_id=1322372428 instance=ExtResource("19_124l6")]
+[node name="trashBags2" parent="Trash" unique_id=297447581 instance=ExtResource("19_0brod")]
 transform = Transform3D(-0.03, 0, -2.6226832e-09, 0, 0.03, 0, 2.6226832e-09, 0, -0.03, 4, 0, -5)
 
-[node name="trashBags3" parent="Trash" unique_id=2142717090 instance=ExtResource("19_124l6")]
-transform = Transform3D(0.025, 0, 0, 0, 0.025, 0, 0, 0, 0.025, 5.5, 0, 2.6)
+[node name="trahsBags3" parent="Trash" unique_id=533355943 instance=ExtResource("19_0brod")]
+transform = Transform3D(0.025, 0, 0, 0, 0.025, 0, 0, 0, 0.025, 5.5, 0, 2.6000004)
 
 [node name="Healthpack" parent="Trash" unique_id=82828419 instance=ExtResource("20_0brod")]
 transform = Transform3D(-0.5, -4.371139e-08, 1.9106855e-15, 0, -2.1855694e-08, -0.5, 4.371139e-08, -0.5, 2.1855694e-08, 2, 1.4, 7.32)
