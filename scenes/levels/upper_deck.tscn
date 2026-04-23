@@ -58,6 +58,7 @@
 [ext_resource type="PackedScene" uid="uid://cuhiojblllwvc" path="res://scenes/levels/flooring/floor_path_corner.tscn" id="38_efilq"]
 [ext_resource type="Texture2D" uid="uid://ohy3tncig073" path="res://assets/room_symbols/crewQuarters_icon.png" id="41_qhraa"]
 [ext_resource type="Texture2D" uid="uid://dt3p3k31bgb02" path="res://assets/room_symbols/supplyCloset_icon.png" id="41_vamc2"]
+[ext_resource type="PackedScene" uid="uid://g3bh5qpiy0h2" path="res://scenes/items/cleaningCart.tscn" id="48_j6mj3"]
 [ext_resource type="PackedScene" uid="uid://ii4hfvx88dm4" path="res://scenes/items/Crew Quarter Fill/bunkBed.tscn" id="50_empy8"]
 [ext_resource type="PackedScene" uid="uid://b4o60d2isbuhx" path="res://scenes/items/Crew Quarter Fill/desk.tscn" id="52_empy8"]
 [ext_resource type="PackedScene" uid="uid://cq7kip4qa1yh0" path="res://scenes/items/Crew Quarter Fill/sofa.tscn" id="54_bk6jx"]
@@ -897,7 +898,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0, 6)
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15, 0, 4)
 
 [node name="SupplyClosetTask" parent="SupplyCloset" unique_id=1693878617 instance=ExtResource("5_iah82")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 22, 0.5, 3)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 17.5, 0.5, 1.3)
 constant_linear_velocity = Vector3(0, 0.5, 0)
 script = ExtResource("24_0m6m5")
 task_id = "Supply_Closet_task"
@@ -907,6 +908,45 @@ transform = Transform3D(-4.371139e-08, -1, 4.371139e-08, 0, -4.371139e-08, -1, 1
 size = Vector3(5, 3, 3.5)
 texture_albedo = ExtResource("41_vamc2")
 lower_fade = 1e-05
+
+[node name="Locker" parent="SupplyCloset" unique_id=881088007 instance=ExtResource("8_h1yrm")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 24.5, 0, 1.5)
+
+[node name="Locker2" parent="SupplyCloset" unique_id=1617978474 instance=ExtResource("8_h1yrm")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 15.9, 0, 1.5)
+
+[node name="personal_locker_wall" parent="SupplyCloset" unique_id=283776482 instance=ExtResource("22_57p4a")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 20, 0, 1.15)
+
+[node name="personal_locker_wall2" parent="SupplyCloset" unique_id=1516710943 instance=ExtResource("22_57p4a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.5, 0, 5.9)
+
+[node name="personal_locker_wall3" parent="SupplyCloset" unique_id=1433016406 instance=ExtResource("22_57p4a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.5, 0, 5.9)
+
+[node name="cleaningCart" parent="SupplyCloset" unique_id=2073804642 instance=ExtResource("48_j6mj3")]
+transform = Transform3D(-3.934025e-08, 0, -0.9, 0, 0.9, 0, 0.9, 0, -3.934025e-08, 15.8, 0, 5.4)
+
+[node name="cleaningCart2" parent="SupplyCloset" unique_id=11326046 instance=ExtResource("48_j6mj3")]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 25, 0, 5.3)
+
+[node name="cleaningCart3" parent="SupplyCloset" unique_id=227968386 instance=ExtResource("48_j6mj3")]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 24, 0, 5.3)
+
+[node name="ammo_locker" parent="SupplyCloset" unique_id=1718033369 instance=ExtResource("24_efilq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.8, 0, 1.1)
+
+[node name="ammo_locker2" parent="SupplyCloset" unique_id=80939 instance=ExtResource("24_efilq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.35, 0, 1.1)
+
+[node name="ammo_locker3" parent="SupplyCloset" unique_id=1284373175 instance=ExtResource("24_efilq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.9, 0, 1.1)
+
+[node name="armory_bench" parent="SupplyCloset" unique_id=1822938367 instance=ExtResource("23_0m6m5")]
+transform = Transform3D(0.38, 0, 0, 0, 0.38, 0, 0, 0, 0.38, 20, 0.53, 3.2)
+
+[node name="armory_bench2" parent="SupplyCloset" unique_id=2047591001 instance=ExtResource("23_0m6m5")]
+transform = Transform3D(0.38, 0, 0, 0, 0.38, 0, 0, 0, 0.38, 22.8, 0.53, 3.2)
 
 [node name="Crew Quarters" type="Node3D" parent="." unique_id=1733845478]
 
