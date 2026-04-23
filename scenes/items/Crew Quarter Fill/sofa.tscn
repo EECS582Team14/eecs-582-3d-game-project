@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://cq7kip4qa1yh0"]
+
+[ext_resource type="PackedScene" uid="uid://c76gkhngig6l" path="res://scenes/items/Crew Quarter Fill/modern_leather_sofa_with_wooden_legs.glb" id="1_omxde"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7dqin"]
+size = Vector3(3.97, 0.48, 1.37)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0sw5x"]
+size = Vector3(3.8, 0.48, 0.36)
+
+[node name="Node3D" type="Node3D" unique_id=1868046191]
+
+[node name="Sketchfab_Scene" parent="." unique_id=335602366 instance=ExtResource("1_omxde")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11886382, -0.0061399937, 3.0731387)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1225001283]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=807937225]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.72, -0.52, -0.58)
+shape = SubResource("BoxShape3D_7dqin")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="StaticBody3D" unique_id=922882010]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.72, -0.05, -1.07)
+shape = SubResource("BoxShape3D_0sw5x")

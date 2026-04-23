@@ -60,6 +60,7 @@
 [ext_resource type="Texture2D" uid="uid://dt3p3k31bgb02" path="res://assets/room_symbols/supplyCloset_icon.png" id="41_vamc2"]
 [ext_resource type="PackedScene" uid="uid://ii4hfvx88dm4" path="res://scenes/items/Crew Quarter Fill/bunkBed.tscn" id="50_empy8"]
 [ext_resource type="PackedScene" uid="uid://b4o60d2isbuhx" path="res://scenes/items/Crew Quarter Fill/desk.tscn" id="52_empy8"]
+[ext_resource type="PackedScene" uid="uid://cq7kip4qa1yh0" path="res://scenes/items/Crew Quarter Fill/sofa.tscn" id="54_bk6jx"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]
 size = Vector2(60, 101.77)
@@ -922,7 +923,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0, 25)
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 25.5, 0, 15)
 
 [node name="CrewTask" parent="Crew Quarters" unique_id=995424861 instance=ExtResource("5_iah82")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 25, 0.5, 15)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 15.35, 0.5, 12.7)
 constant_linear_velocity = Vector3(0, 0.5, 0)
 script = ExtResource("25_efilq")
 task_id = "Crew_task"
@@ -980,11 +981,71 @@ transform = Transform3D(-2.1855694e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.1855694e-
 [node name="HealthpackTable2" parent="Crew Quarters" unique_id=459211652 instance=ExtResource("28_4ertf")]
 transform = Transform3D(-2.1855694e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.1855694e-08, 25.1, 0, 21.1)
 
+[node name="Healthpack" parent="Crew Quarters" unique_id=82828419 instance=ExtResource("15_bj8xs")]
+transform = Transform3D(-2.1855694e-08, 0.5, -2.1855694e-08, 0, -2.1855694e-08, -0.5, -0.5, -2.1855694e-08, 9.553427e-16, 15.179, 1.4, 16.2)
+
 [node name="desk1" parent="Crew Quarters" unique_id=905057909 instance=ExtResource("52_empy8")]
-transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 18, 0, 22)
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 20.37, 0, 14.4)
 
 [node name="desk2" parent="Crew Quarters" unique_id=465319179 instance=ExtResource("52_empy8")]
-transform = Transform3D(-0.8, 0, -6.9938224e-08, 0, 0.8, 0, 6.9938224e-08, 0, -0.8, 18.33, 0, 21.3)
+transform = Transform3D(-0.8, 0, -6.9938224e-08, 0, 0.8, 0, 6.9938224e-08, 0, -0.8, 20.7, 0, 13.7)
+
+[node name="desk3" parent="Crew Quarters" unique_id=1130245531 instance=ExtResource("52_empy8")]
+transform = Transform3D(-0.8, 0, -6.9938224e-08, 0, 0.8, 0, 6.9938224e-08, 0, -0.8, 23, 0, 19.3)
+
+[node name="desk4" parent="Crew Quarters" unique_id=2091694312 instance=ExtResource("52_empy8")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 22.67, 0, 20)
+
+[node name="desk5" parent="Crew Quarters" unique_id=1410571427 instance=ExtResource("52_empy8")]
+transform = Transform3D(-0.8, 0, -6.9938224e-08, 0, 0.8, 0, 6.9938224e-08, 0, -0.8, 20.7, 0, 21.5)
+
+[node name="desk6" parent="Crew Quarters" unique_id=481775496 instance=ExtResource("52_empy8")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 20.37, 0, 22.2)
+
+[node name="desk7" parent="Crew Quarters" unique_id=937084734 instance=ExtResource("52_empy8")]
+transform = Transform3D(-0.8, 0, -6.9938224e-08, 0, 0.8, 0, 6.9938224e-08, 0, -0.8, 15.23, 0, 13.499999)
+
+[node name="desk8" parent="Crew Quarters" unique_id=1444751739 instance=ExtResource("52_empy8")]
+transform = Transform3D(-0.8, 0, -6.9938224e-08, 0, 0.8, 0, 6.9938224e-08, 0, -0.8, 15.23, 0, 14.900001)
+
+[node name="desk9" parent="Crew Quarters" unique_id=886176444 instance=ExtResource("52_empy8")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 18, 0, 11.999999)
+
+[node name="desk10" parent="Crew Quarters" unique_id=1110770352 instance=ExtResource("52_empy8")]
+transform = Transform3D(-0.8, 0, -6.9938224e-08, 0, 0.8, 0, 6.9938224e-08, 0, -0.8, 18.33, 0, 11.3)
+
+[node name="desk11" parent="Crew Quarters" unique_id=327471484 instance=ExtResource("52_empy8")]
+transform = Transform3D(-0.8, 0, -6.9938224e-08, 0, 0.8, 0, 6.9938224e-08, 0, -0.8, 23, 0, 11.3)
+
+[node name="desk12" parent="Crew Quarters" unique_id=242246800 instance=ExtResource("52_empy8")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 22.67, 0, 12)
+
+[node name="desk13" parent="Crew Quarters" unique_id=311823223 instance=ExtResource("52_empy8")]
+transform = Transform3D(-0.8, 0, -6.9938224e-08, 0, 0.8, 0, 6.9938224e-08, 0, -0.8, 20.7, 0, 8.5)
+
+[node name="desk14" parent="Crew Quarters" unique_id=356881970 instance=ExtResource("52_empy8")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 20.37, 0, 9.2)
+
+[node name="desk15" parent="Crew Quarters" unique_id=1314894455 instance=ExtResource("52_empy8")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 25, 0, 11.5)
+
+[node name="desk16" parent="Crew Quarters" unique_id=1434676704 instance=ExtResource("52_empy8")]
+transform = Transform3D(-3.4969112e-08, 0, 0.8, 0, 0.8, 0, -0.8, 0, -3.4969112e-08, 20.5, 0, 19)
+
+[node name="desk17" parent="Crew Quarters" unique_id=812285271 instance=ExtResource("52_empy8")]
+transform = Transform3D(-3.4969112e-08, 0, 0.8, 0, 0.8, 0, -0.8, 0, -3.4969112e-08, 19, 0, 19)
+
+[node name="sofa1" parent="Crew Quarters" unique_id=1868046191 instance=ExtResource("54_bk6jx")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 24.2, 0.75, 19)
+
+[node name="sofa2" parent="Crew Quarters" unique_id=415024082 instance=ExtResource("54_bk6jx")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 24.2, 0.75, 14.8)
+
+[node name="sofa3" parent="Crew Quarters" unique_id=1215718215 instance=ExtResource("54_bk6jx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0.75, 16)
+
+[node name="sofa4" parent="Crew Quarters" unique_id=1980683022 instance=ExtResource("54_bk6jx")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 18.6, 0.75, 19.9)
 
 [node name="TaserPickup" parent="." unique_id=1416351404 instance=ExtResource("7_rmbde")]
 transform = Transform3D(3.3985966e-08, 0.77750814, -0.62887275, 1, -4.371139e-08, -1.6415074e-15, -2.7488898e-08, -0.62887275, -0.77750814, -18.964157, 0.7129056, 13.29552)
@@ -1033,9 +1094,6 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -15,
 
 [node name="EastWallCamsShieldIntersect" parent="ClosingOffWalls" unique_id=1795972356 instance=ExtResource("7_86pjy")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15, 0, -12.715)
-
-[node name="Healthpack" parent="." unique_id=82828419 instance=ExtResource("15_bj8xs")]
-transform = Transform3D(-2.1855694e-08, 0.5, -2.1855694e-08, 0, -2.1855694e-08, -0.5, -0.5, -2.1855694e-08, 9.553427e-16, 15.179, 1, 15.968)
 
 [node name="Healthpack2" parent="." unique_id=1799112390 instance=ExtResource("15_bj8xs")]
 transform = Transform3D(-2.1855694e-08, 0.5, -2.1855694e-08, 0, -2.1855694e-08, -0.5, -0.5, -2.1855694e-08, 9.553427e-16, 15.179, 1, 2.7)
