@@ -18,6 +18,7 @@
 [ext_resource type="Script" uid="uid://bp3euv8oddh2m" path="res://scenes/tasks/Nav_task_script.gd" id="9_r35sg"]
 [ext_resource type="Texture2D" uid="uid://b1g55j3i0dfxx" path="res://assets/room_symbols/life_support_icon.png" id="11_uuep5"]
 [ext_resource type="Texture2D" uid="uid://ch68nhpym2hx8" path="res://assets/room_symbols/shielding_icon.png" id="12_1eu2h"]
+[ext_resource type="PackedScene" uid="uid://brlcnt6oyqbl4" path="res://scenes/items/Window Shields/window_shield_pair.tscn" id="12_5tn7t"]
 [ext_resource type="Texture2D" uid="uid://dqddsetl17cxi" path="res://assets/room_symbols/armory_icon.png" id="12_u5hsw"]
 [ext_resource type="PackedScene" uid="uid://bhnihej24hlrx" path="res://scenes/items/healthpack.tscn" id="15_bj8xs"]
 [ext_resource type="Texture2D" uid="uid://b8coimrlu3xx2" path="res://assets/room_symbols/reactor_icon.png" id="15_d0doh"]
@@ -222,7 +223,7 @@ distance_fade_begin = 0.0
 distance_fade_length = 5.0
 
 [node name="NavTask" parent="NavBridge" unique_id=1840045951 instance=ExtResource("5_iah82")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -1)
 script = ExtResource("9_r35sg")
 task_id = "Nav_task"
 
@@ -231,6 +232,21 @@ transform = Transform3D(-0.8, 0, 6.9938224e-08, 0, 0.8, 0, -6.9938224e-08, 0, -0
 
 [node name="NavLocker2" parent="NavBridge" unique_id=1808734934 instance=ExtResource("8_h1yrm")]
 transform = Transform3D(-0.8, 0, 6.9938224e-08, 0, 0.8, 0, -6.9938224e-08, 0, -0.8, 4, 0, 7)
+
+[node name="window_shield_pair" parent="NavBridge" unique_id=1728022553 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(-0.6691307, 0, 0.7431448, 0, 1, 0, -0.7431448, 0, -0.6691307, -6.142767, 0, -1.5045385)
+
+[node name="window_shield_pair2" parent="NavBridge" unique_id=1595502650 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(-0.6691307, 0, 0.7431448, 0, 1, 0, -0.7431448, 0, -0.6691307, -3.4998384, 0, -4.0107183)
+
+[node name="window_shield_pair3" parent="NavBridge" unique_id=2079939414 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(0.66913056, 0, 0.74314487, 0, 1, 0, -0.74314487, 0, 0.66913056, 6.143, 0, -1.505)
+
+[node name="window_shield_pair4" parent="NavBridge" unique_id=1089565807 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(0.66913056, 0, 0.74314487, 0, 1, 0, -0.74314487, 0, 0.66913056, 3.5, 0, -4.011)
+
+[node name="window_shield_pair5" parent="NavBridge" unique_id=663349232 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(-4.371139e-08, 0, 1.2, 0, 1, 0, -1, 0, -5.2453668e-08, 0, 0, -5.279977)
 
 [node name="Cams" type="Node3D" parent="." unique_id=682191193]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -20)

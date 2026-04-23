@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://brlcnt6oyqbl4"]
+
+[ext_resource type="PackedScene" uid="uid://dm54yeoth7rlp" path="res://scenes/items/Window Shields/window_shield.tscn" id="1_etluv"]
+
+[node name="window_shield_pair" type="Node3D" unique_id=1728022553]
+
+[node name="window_shield" parent="." unique_id=40662524 instance=ExtResource("1_etluv")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.050957084, 1.6866419, -0.0020353794)
+
+[node name="window_shield2" parent="." unique_id=1822909851 instance=ExtResource("1_etluv")]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.0318373, 2.446, -0.00994055)

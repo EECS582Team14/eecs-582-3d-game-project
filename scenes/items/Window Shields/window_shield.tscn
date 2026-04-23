@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://dm54yeoth7rlp"]
+
+[ext_resource type="PackedScene" uid="uid://bud2njkw10ovs" path="res://scenes/items/Window Shields/astralassault_-_unused_blast_door.glb" id="1_einkp"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_einkp"]
+size = Vector3(0.13427734, 3.7050781, 1.7949829)
+
+[node name="window_shield" type="StaticBody3D" unique_id=40662524]
+
+[node name="Sketchfab_Scene" parent="." unique_id=1855425295 instance=ExtResource("1_einkp")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2113836093]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0021972656, -0.005859375, 0.87802124)
+shape = SubResource("BoxShape3D_einkp")
+debug_color = Color(0, 11.708403, 13.469126, 1)
