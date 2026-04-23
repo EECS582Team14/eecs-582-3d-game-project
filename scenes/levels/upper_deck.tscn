@@ -58,6 +58,7 @@
 [ext_resource type="PackedScene" uid="uid://cuhiojblllwvc" path="res://scenes/levels/flooring/floor_path_corner.tscn" id="38_efilq"]
 [ext_resource type="Texture2D" uid="uid://ohy3tncig073" path="res://assets/room_symbols/crewQuarters_icon.png" id="41_qhraa"]
 [ext_resource type="Texture2D" uid="uid://dt3p3k31bgb02" path="res://assets/room_symbols/supplyCloset_icon.png" id="41_vamc2"]
+[ext_resource type="PackedScene" uid="uid://cs6cxxmluq54i" path="res://scenes/items/Shielding Fill/monitoring_station.glb" id="46_3oy06"]
 [ext_resource type="PackedScene" uid="uid://g3bh5qpiy0h2" path="res://scenes/items/cleaningCart.tscn" id="48_j6mj3"]
 [ext_resource type="PackedScene" uid="uid://ii4hfvx88dm4" path="res://scenes/items/Crew Quarter Fill/bunkBed.tscn" id="50_empy8"]
 [ext_resource type="PackedScene" uid="uid://b4o60d2isbuhx" path="res://scenes/items/Crew Quarter Fill/desk.tscn" id="52_empy8"]
@@ -889,6 +890,39 @@ constant_linear_velocity = Vector3(0, 0.5, 0)
 script = ExtResource("23_57p4a")
 task_id = "Shielding_task"
 
+[node name="lab_table" parent="Shielding" unique_id=389761986 instance=ExtResource("26_h83ro")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.14478, 0.29999995, 0.21417046)
+
+[node name="lab_table2" parent="Shielding" unique_id=436156117 instance=ExtResource("26_h83ro")]
+transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 19.14478, 0.29999995, -10.88583)
+
+[node name="CoolTableThatMakesNoSense" parent="Shielding" unique_id=319995018 instance=ExtResource("46_3oy06")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 22, 0, -6.4)
+
+[node name="Sketchfab_Scene2" parent="Shielding" unique_id=9348018 instance=ExtResource("46_3oy06")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 22, 0, -3.6000004)
+
+[node name="Server" parent="Shielding" unique_id=1945937330 instance=ExtResource("7_8q6of")]
+transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.027, 22.9, 0, -5.000001)
+
+[node name="Server2" parent="Shielding" unique_id=1755101975 instance=ExtResource("7_8q6of")]
+transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.027, 23.9, 0, -5.000001)
+
+[node name="Server3" parent="Shielding" unique_id=1727674472 instance=ExtResource("7_8q6of")]
+transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.027, 24.9, 0, -5.000001)
+
+[node name="desk1" parent="Shielding" unique_id=905057909 instance=ExtResource("52_empy8")]
+transform = Transform3D(-0.56568545, 0, -0.56568545, 0, 0.8, 0, 0.56568545, 0, -0.56568545, 15.804187, 0, -2.014161)
+
+[node name="desk2" parent="Shielding" unique_id=286295238 instance=ExtResource("52_empy8")]
+transform = Transform3D(0.56568545, 0, 0.56568545, 0, 0.8, 0, -0.56568545, 0, 0.56568545, 16.065819, 0, -1.28584)
+
+[node name="desk3" parent="Shielding" unique_id=1395234473 instance=ExtResource("52_empy8")]
+transform = Transform3D(-0.56568545, 0, 0.56568545, 0, 0.8, 0, -0.56568545, 0, -0.56568545, 16.499163, 0, -8.680815)
+
+[node name="desk4" parent="Shielding" unique_id=1793829209 instance=ExtResource("52_empy8")]
+transform = Transform3D(0.56568545, 0, -0.56568545, 0, 0.8, 0, 0.56568545, 0, 0.56568545, 15.770842, 0, -8.419186)
+
 [node name="SupplyCloset" type="Node3D" parent="." unique_id=1232075518]
 
 [node name="SouthSupplyWall" parent="SupplyCloset" unique_id=2044504798 instance=ExtResource("5_vucmy")]
@@ -1024,7 +1058,7 @@ transform = Transform3D(-2.1855694e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.1855694e-
 [node name="Healthpack" parent="Crew Quarters" unique_id=82828419 instance=ExtResource("15_bj8xs")]
 transform = Transform3D(-2.1855694e-08, 0.5, -2.1855694e-08, 0, -2.1855694e-08, -0.5, -0.5, -2.1855694e-08, 9.553427e-16, 15.179, 1.4, 16.2)
 
-[node name="desk1" parent="Crew Quarters" unique_id=905057909 instance=ExtResource("52_empy8")]
+[node name="desk1" parent="Crew Quarters" unique_id=1628537631 instance=ExtResource("52_empy8")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 20.37, 0, 14.4)
 
 [node name="desk2" parent="Crew Quarters" unique_id=465319179 instance=ExtResource("52_empy8")]
