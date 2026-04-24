@@ -3,12 +3,12 @@
 [ext_resource type="PackedScene" uid="uid://buqji88tu2huw" path="res://assets/sci-_fi_railing.glb" id="1_3qrde"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_3qrde"]
-size = Vector3(3.4172363, 1.0344238, 0.058166504)
+size = Vector3(3.5127563, 2.1137695, 0.058166504)
 
 [node name="Railing" type="StaticBody3D" unique_id=898120770]
 
 [node name="Model" parent="." unique_id=343759777 instance=ExtResource("1_3qrde")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1125782747]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8687744, 0.5213623, 0.005218506)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.88534546, 1.0610352, 0.005218506)
 shape = SubResource("BoxShape3D_3qrde")
