@@ -134,6 +134,54 @@ mesh = SubResource("PlaneMesh_mgbrt")
 transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_d0doh")
 
+[node name="window_shield_pair" parent="Ceiling" unique_id=1728022553 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.100426674, -0.09951115, 14.502009)
+
+[node name="window_shield_pair2" parent="Ceiling" unique_id=1340154654 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, 0.072705984, -0.09951115, 14.502009)
+
+[node name="window_shield_pair3" parent="Ceiling" unique_id=1518933978 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 8.9392605, -0.09951115, 14.502009)
+
+[node name="window_shield_pair4" parent="Ceiling" unique_id=1712499511 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, 9.112393, -0.09951115, 14.502009)
+
+[node name="window_shield_pair5" parent="Ceiling" unique_id=1402315758 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -8.939, -0.09951115, 14.502009)
+
+[node name="window_shield_pair6" parent="Ceiling" unique_id=1135850080 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, -8.939, -0.09951115, 14.502009)
+
+[node name="window_shield_pair7" parent="Ceiling" unique_id=612147793 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -8.939, -0.09951115, 22.000835)
+
+[node name="window_shield_pair8" parent="Ceiling" unique_id=999072508 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, -8.939, -0.09951115, 22.000835)
+
+[node name="window_shield_pair9" parent="Ceiling" unique_id=2027812239 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 8.9392605, -0.09951115, 22.001)
+
+[node name="window_shield_pair10" parent="Ceiling" unique_id=2081624928 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, 9.112393, -0.09951115, 22.001)
+
+[node name="window_shield_pair11" parent="Ceiling" unique_id=104615089 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 8.939, -0.1, 29.5)
+
+[node name="window_shield_pair12" parent="Ceiling" unique_id=1869842808 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, 9.112, -0.1, 29.5)
+
+[node name="window_shield_pair13" parent="Ceiling" unique_id=363833029 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.100426674, -0.09951115, 29.5)
+
+[node name="window_shield_pair14" parent="Ceiling" unique_id=1231870593 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, 0.072705984, -0.09951115, 29.5)
+
+[node name="window_shield_pair15" parent="Ceiling" unique_id=1332561266 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -8.939, -0.09951115, 29.5)
+
+[node name="window_shield_pair16" parent="Ceiling" unique_id=663167316 instance=ExtResource("12_5tn7t")]
+transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, -8.939, -0.09951115, 29.5)
+
 [node name="BakedFloor" type="StaticBody3D" parent="." unique_id=344446775]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 10)
 
@@ -236,7 +284,7 @@ transform = Transform3D(-0.8, 0, 6.9938224e-08, 0, 0.8, 0, -6.9938224e-08, 0, -0
 [node name="NavLocker2" parent="NavBridge" unique_id=1808734934 instance=ExtResource("8_h1yrm")]
 transform = Transform3D(-0.8, 0, 6.9938224e-08, 0, 0.8, 0, -6.9938224e-08, 0, -0.8, 4, 0, 7)
 
-[node name="window_shield_pair" parent="NavBridge" unique_id=1728022553 instance=ExtResource("12_5tn7t")]
+[node name="window_shield_pair" parent="NavBridge" unique_id=950386498 instance=ExtResource("12_5tn7t")]
 transform = Transform3D(-0.6691307, 0, 0.7431448, 0, 1, 0, -0.7431448, 0, -0.6691307, -6.142767, 0, -1.5045385)
 
 [node name="window_shield_pair2" parent="NavBridge" unique_id=1595502650 instance=ExtResource("12_5tn7t")]
