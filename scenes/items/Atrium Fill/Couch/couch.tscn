@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://d0cnp2p0avqm"]
+
+[ext_resource type="PackedScene" uid="uid://cv4ouknpdsdrp" path="res://scenes/items/Atrium Fill/Couch/sofa_game_ready__2k_pbr.glb" id="1_jpgek"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jpgek"]
+size = Vector3(2.199463, 0.46148682, 0.9790039)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qe7gj"]
+size = Vector3(0.28393555, 0.77246094, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7xj2o"]
+size = Vector3(1.66922, 0.7758789, 0.26953125)
+
+[node name="couch" type="StaticBody3D" unique_id=21747767]
+
+[node name="Sketchfab_Scene" parent="." unique_id=2098459497 instance=ExtResource("1_jpgek")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=167012004]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0052490234, 0.23031616, 0.010498047)
+shape = SubResource("BoxShape3D_jpgek")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=1557567620]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.96569824, 0.3930664, 0)
+shape = SubResource("BoxShape3D_qe7gj")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="." unique_id=2143460335]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9608693, 0.3930664, 0)
+shape = SubResource("BoxShape3D_qe7gj")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="." unique_id=1182966296]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.6293945e-05, 0.39135742, -0.34277344)
+shape = SubResource("BoxShape3D_7xj2o")
+debug_color = Color(0, 11.708403, 13.469126, 1)

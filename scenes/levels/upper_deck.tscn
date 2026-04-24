@@ -67,6 +67,7 @@
 [ext_resource type="PackedScene" uid="uid://ii4hfvx88dm4" path="res://scenes/items/Crew Quarter Fill/bunkBed.tscn" id="50_empy8"]
 [ext_resource type="PackedScene" uid="uid://b4o60d2isbuhx" path="res://scenes/items/Crew Quarter Fill/desk.tscn" id="52_empy8"]
 [ext_resource type="PackedScene" uid="uid://cq7kip4qa1yh0" path="res://scenes/items/Crew Quarter Fill/sofa.tscn" id="54_bk6jx"]
+[ext_resource type="PackedScene" uid="uid://d0cnp2p0avqm" path="res://scenes/items/Atrium Fill/Couch/couch.tscn" id="68_yy54a"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]
 size = Vector2(60, 101.77)
@@ -147,16 +148,16 @@ transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 8.93
 transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, 9.112393, -0.09951115, 14.502009)
 
 [node name="window_shield_pair5" parent="Ceiling" unique_id=1402315758 instance=ExtResource("12_5tn7t")]
-transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -8.939, -0.09951115, 14.502009)
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -9.039, -0.1, 14.502)
 
 [node name="window_shield_pair6" parent="Ceiling" unique_id=1135850080 instance=ExtResource("12_5tn7t")]
-transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, -8.939, -0.09951115, 14.502009)
+transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, -8.857, -0.1, 14.502)
 
 [node name="window_shield_pair7" parent="Ceiling" unique_id=612147793 instance=ExtResource("12_5tn7t")]
-transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -8.939, -0.09951115, 22.000835)
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -9.039, -0.1, 22.001)
 
 [node name="window_shield_pair8" parent="Ceiling" unique_id=999072508 instance=ExtResource("12_5tn7t")]
-transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, -8.939, -0.09951115, 22.000835)
+transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, -8.857, -0.1, 22.001)
 
 [node name="window_shield_pair9" parent="Ceiling" unique_id=2027812239 instance=ExtResource("12_5tn7t")]
 transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 8.9392605, -0.09951115, 22.001)
@@ -177,10 +178,10 @@ transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.1
 transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, 0.072705984, -0.09951115, 29.5)
 
 [node name="window_shield_pair15" parent="Ceiling" unique_id=1332561266 instance=ExtResource("12_5tn7t")]
-transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -8.939, -0.09951115, 29.5)
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -9.039, -0.1, 29.5)
 
 [node name="window_shield_pair16" parent="Ceiling" unique_id=663167316 instance=ExtResource("12_5tn7t")]
-transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, -8.939, -0.09951115, 29.5)
+transform = Transform3D(4.371139e-08, 1, -8.742278e-08, 1, -4.371139e-08, 0, -3.821371e-15, -8.742278e-08, -1, -8.857, -0.1, 29.5)
 
 [node name="BakedFloor" type="StaticBody3D" parent="." unique_id=344446775]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 10)
@@ -1793,3 +1794,80 @@ item_id = "baton_12"
 
 [node name="LifeLocker" parent="." unique_id=1727066536 instance=ExtResource("8_h1yrm")]
 transform = Transform3D(-3.4969112e-08, 0, 0.8, 0, 0.8, 0, -0.8, 0, -3.4969112e-08, -24.6, 0, 13.099999)
+
+[node name="Atrium" type="Node3D" parent="." unique_id=1370255337]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 21.440884)
+
+[node name="couch_group" type="Node3D" parent="Atrium" unique_id=327592796]
+
+[node name="couch" parent="Atrium/couch_group" unique_id=21747767 instance=ExtResource("68_yy54a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.613703, 0, -1.245964)
+
+[node name="couch2" parent="Atrium/couch_group" unique_id=1304743764 instance=ExtResource("68_yy54a")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -8.924389, 0, 1.0509987)
+
+[node name="couch3" parent="Atrium/couch_group" unique_id=138106901 instance=ExtResource("68_yy54a")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.4158792, 0, 1.0509987)
+
+[node name="couch4" parent="Atrium/couch_group" unique_id=1539839585 instance=ExtResource("68_yy54a")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -6.613703, 0, 3.3043785)
+
+[node name="couch_group2" type="Node3D" parent="Atrium" unique_id=1457182188]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.737341, 0, 4.3778267)
+
+[node name="couch" parent="Atrium/couch_group2" unique_id=1712333611 instance=ExtResource("68_yy54a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.613703, 0, -1.245964)
+
+[node name="couch2" parent="Atrium/couch_group2" unique_id=414435843 instance=ExtResource("68_yy54a")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -8.924389, 0, 1.0509987)
+
+[node name="couch3" parent="Atrium/couch_group2" unique_id=841708538 instance=ExtResource("68_yy54a")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.4158792, 0, 1.0509987)
+
+[node name="couch4" parent="Atrium/couch_group2" unique_id=556909824 instance=ExtResource("68_yy54a")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -6.613703, 0, 3.3043785)
+
+[node name="couch_group3" type="Node3D" parent="Atrium" unique_id=2041492563]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 2.1275406)
+
+[node name="couch" parent="Atrium/couch_group3" unique_id=1603080205 instance=ExtResource("68_yy54a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.613703, 0, -1.245964)
+
+[node name="couch2" parent="Atrium/couch_group3" unique_id=414255646 instance=ExtResource("68_yy54a")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -8.924389, 0, 1.0509987)
+
+[node name="couch3" parent="Atrium/couch_group3" unique_id=1967988669 instance=ExtResource("68_yy54a")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.4158792, 0, 1.0509987)
+
+[node name="couch4" parent="Atrium/couch_group3" unique_id=1620916098 instance=ExtResource("68_yy54a")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -6.613703, 0, 3.3043785)
+
+[node name="couch_group4" type="Node3D" parent="Atrium" unique_id=1173551832]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.887121)
+
+[node name="couch" parent="Atrium/couch_group4" unique_id=2086395488 instance=ExtResource("68_yy54a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.613703, 0, -1.245964)
+
+[node name="couch2" parent="Atrium/couch_group4" unique_id=898618043 instance=ExtResource("68_yy54a")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -8.924389, 0, 1.0509987)
+
+[node name="couch3" parent="Atrium/couch_group4" unique_id=1817539316 instance=ExtResource("68_yy54a")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.4158792, 0, 1.0509987)
+
+[node name="couch4" parent="Atrium/couch_group4" unique_id=1015082364 instance=ExtResource("68_yy54a")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -6.613703, 0, 3.3043785)
+
+[node name="couch_group5" type="Node3D" parent="Atrium" unique_id=2124729138]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -6.9022484)
+
+[node name="couch" parent="Atrium/couch_group5" unique_id=1435017717 instance=ExtResource("68_yy54a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.613703, 0, -1.245964)
+
+[node name="couch2" parent="Atrium/couch_group5" unique_id=1335057924 instance=ExtResource("68_yy54a")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -8.924389, 0, 1.0509987)
+
+[node name="couch3" parent="Atrium/couch_group5" unique_id=1518576381 instance=ExtResource("68_yy54a")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.4158792, 0, 1.0509987)
+
+[node name="couch4" parent="Atrium/couch_group5" unique_id=1179012294 instance=ExtResource("68_yy54a")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -6.613703, 0, 3.3043785)
