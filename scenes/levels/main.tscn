@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://ckods7tupa2e8" path="res://scenes/levels/main_assets/ladder.tscn" id="6_b6bv0"]
 [ext_resource type="AudioStream" uid="uid://bsbxxh204lrgs" path="res://sounds/elevator_button_press.wav" id="8_7lrji"]
 [ext_resource type="PackedScene" uid="uid://bnsi3ojfq1xff" path="res://scenes/levels/scifi_button.glb" id="8_scifi_btn"]
+[ext_resource type="PackedScene" uid="uid://b8bk1hqwwux1o" path="res://scenes/levels/main_assets/railing.tscn" id="10_rssyh"]
 
 [sub_resource type="Environment" id="Environment_y0acb"]
 background_mode = 1
@@ -147,7 +148,43 @@ transform = Transform3D(-0.4, 0, 0, 0, 0.4, 0, 0, 0, -0.4, 0, 2.0525913, 0)
 stream = ExtResource("8_7lrji")
 
 [node name="EastLadder" parent="." unique_id=1563259296 instance=ExtResource("6_b6bv0")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 10, -2.444, 36)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 9.097676, -2.444, 36)
 
 [node name="WestLadder" parent="." unique_id=1997380291 instance=ExtResource("6_b6bv0")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -10, -2.444, 36)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -9.071939, -2.444, 36)
+
+[node name="Railing" type="Node3D" parent="." unique_id=609094705]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 35.98644)
+
+[node name="Railing1" parent="Railing" unique_id=898120770 instance=ExtResource("10_rssyh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.311907, 0, 0)
+
+[node name="Railing2" parent="Railing" unique_id=1166329182 instance=ExtResource("10_rssyh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.811905, 0, 0)
+
+[node name="Railing3" parent="Railing" unique_id=1365104625 instance=ExtResource("10_rssyh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.312145, 0, 0)
+
+[node name="Railing4" parent="Railing" unique_id=1507191114 instance=ExtResource("10_rssyh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.1058855, 0, 0)
+
+[node name="Railing5" parent="Railing" unique_id=286078171 instance=ExtResource("10_rssyh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6058855, 0, 0)
+
+[node name="Railing6" parent="Railing" unique_id=806076914 instance=ExtResource("10_rssyh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8941145, 0, 0)
+
+[node name="Railing7" parent="Railing" unique_id=1550091337 instance=ExtResource("10_rssyh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.3941145, 0, 0)
+
+[node name="Railing8" parent="Railing" unique_id=1489663794 instance=ExtResource("10_rssyh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.8941145, 0, 0)
+
+[node name="Railing9" parent="Railing" unique_id=1786562254 instance=ExtResource("10_rssyh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.004396, 0, 0)
+
+[node name="Railing10" parent="Railing" unique_id=1643116912 instance=ExtResource("10_rssyh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.504215, 0, 0)
+
+[node name="Railing11" parent="Railing" unique_id=101065831 instance=ExtResource("10_rssyh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.004215, 0, 0)
