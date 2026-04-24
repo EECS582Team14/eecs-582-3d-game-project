@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://o7anbjhcj405"]
+
+[ext_resource type="PackedScene" uid="uid://6if3mxbekvv8" path="res://scenes/items/Navigation Fill/Bridge Console/bridge_controls.glb" id="1_mbxkp"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mbxkp"]
+size = Vector3(40.555588, 10.171936, 13.709824)
+
+[node name="bridge_console" type="StaticBody3D" unique_id=603103072]
+transform = Transform3D(0.8453551, 0, 0.5342049, 0, 1, 0, -0.5342049, 0, 0.8453551, 0, 0, 0.8170748)
+
+[node name="Sketchfab_Scene" parent="." unique_id=1236076330 instance=ExtResource("1_mbxkp")]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=563206102]
+transform = Transform3D(0.08528315, 0, -0.05221859, 0, 0.1, 0, 0.05221859, 0, 0.08528315, 0.0032727718, 0.48671556, -0.2596264)
+shape = SubResource("BoxShape3D_mbxkp")
+debug_color = Color(0, 11.708403, 13.469126, 1)

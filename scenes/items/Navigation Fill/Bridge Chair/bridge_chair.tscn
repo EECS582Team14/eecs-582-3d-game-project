@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://dx3ktcdue3in0"]
+
+[ext_resource type="PackedScene" uid="uid://doafch4vwt8hl" path="res://scenes/items/Navigation Fill/Bridge Chair/cockpit_chair.glb" id="1_uut7b"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uut7b"]
+size = Vector3(0.967041, 0.4177246, 0.88845825)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_81nc0"]
+size = Vector3(0.2692871, 0.84399414, 1)
+
+[node name="bridge_chair" type="StaticBody3D" unique_id=117662902]
+
+[node name="Sketchfab_Scene" parent="." unique_id=1722714704 instance=ExtResource("1_uut7b")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1614609409]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.049194336, 0.21130371, -0.010513306)
+shape = SubResource("BoxShape3D_uut7b")
+debug_color = Color(0, 11.708403, 13.469126, 1)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=897218812]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.29211426, 0.83532715, 0)
+shape = SubResource("BoxShape3D_81nc0")
+debug_color = Color(0, 11.708403, 13.469126, 1)

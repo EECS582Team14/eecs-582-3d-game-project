@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://bm6y5e4hnmbka"]
+
+[ext_resource type="PackedScene" uid="uid://o7anbjhcj405" path="res://scenes/items/Navigation Fill/Bridge Console/bridge_console.tscn" id="1_6ck5c"]
+[ext_resource type="PackedScene" uid="uid://dx3ktcdue3in0" path="res://scenes/items/Navigation Fill/Bridge Chair/bridge_chair.tscn" id="2_rxwh0"]
+
+[node name="bridge_console_w_chair" type="Node3D" unique_id=1563603185]
+
+[node name="bridge_console" parent="." unique_id=603103072 instance=ExtResource("1_6ck5c")]
+
+[node name="bridge_chair" parent="." unique_id=117662902 instance=ExtResource("2_rxwh0")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.82690716, 0, 1.9)
+
+[node name="bridge_chair2" parent="." unique_id=686470366 instance=ExtResource("2_rxwh0")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.827, 0, 1.9)
