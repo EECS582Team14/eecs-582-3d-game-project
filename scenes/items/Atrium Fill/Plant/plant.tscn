@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://bjt0kncqakdsm"]
+
+[ext_resource type="PackedScene" uid="uid://bbpvmpp6ptsqn" path="res://scenes/items/Atrium Fill/Plant/tree_s1.glb" id="1_jr16d"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_jr16d"]
+height = 1.1367188
+radius = 0.43115234
+
+[node name="plant" type="StaticBody3D" unique_id=519464945]
+
+[node name="Sketchfab_Scene" parent="." unique_id=937362671 instance=ExtResource("1_jr16d")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1462070431]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5488281, 0)
+shape = SubResource("CylinderShape3D_jr16d")
+debug_color = Color(0, 11.708403, 13.469126, 1)

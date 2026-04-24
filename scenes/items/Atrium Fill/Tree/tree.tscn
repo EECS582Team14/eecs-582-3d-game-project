@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://cjr4ohkrc74i"]
+
+[ext_resource type="PackedScene" uid="uid://baqg2pvox4i8u" path="res://scenes/items/Atrium Fill/Tree/potted_tree.glb" id="1_1o45t"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_1o45t"]
+height = 2.3691406
+radius = 0.5756836
+
+[node name="tree" type="StaticBody3D" unique_id=32595065]
+
+[node name="Sketchfab_Scene" parent="." unique_id=341011724 instance=ExtResource("1_1o45t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.303, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1255989104]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1787109, 0)
+shape = SubResource("CylinderShape3D_1o45t")
+debug_color = Color(0, 11.708403, 13.469126, 1)

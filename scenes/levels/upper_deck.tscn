@@ -68,6 +68,8 @@
 [ext_resource type="PackedScene" uid="uid://b4o60d2isbuhx" path="res://scenes/items/Crew Quarter Fill/desk.tscn" id="52_empy8"]
 [ext_resource type="PackedScene" uid="uid://cq7kip4qa1yh0" path="res://scenes/items/Crew Quarter Fill/sofa.tscn" id="54_bk6jx"]
 [ext_resource type="PackedScene" uid="uid://d0cnp2p0avqm" path="res://scenes/items/Atrium Fill/Couch/couch.tscn" id="68_yy54a"]
+[ext_resource type="PackedScene" uid="uid://bjt0kncqakdsm" path="res://scenes/items/Atrium Fill/Plant/plant.tscn" id="69_6kk8k"]
+[ext_resource type="PackedScene" uid="uid://cjr4ohkrc74i" path="res://scenes/items/Atrium Fill/Tree/tree.tscn" id="69_ig0wm"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_mgbrt"]
 size = Vector2(60, 101.77)
@@ -1812,6 +1814,12 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.4
 [node name="couch4" parent="Atrium/couch_group" unique_id=1539839585 instance=ExtResource("68_yy54a")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -6.613703, 0, 3.3043785)
 
+[node name="plant" parent="Atrium/couch_group" unique_id=519464945 instance=ExtResource("69_6kk8k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.600412, 0, -0.86800003)
+
+[node name="plant2" parent="Atrium/couch_group" unique_id=1513594372 instance=ExtResource("69_6kk8k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7688646, 0, 3.381546)
+
 [node name="couch_group2" type="Node3D" parent="Atrium" unique_id=1457182188]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.737341, 0, 4.3778267)
 
@@ -1826,6 +1834,12 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.4
 
 [node name="couch4" parent="Atrium/couch_group2" unique_id=556909824 instance=ExtResource("68_yy54a")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -6.613703, 0, 3.3043785)
+
+[node name="plant" parent="Atrium/couch_group2" unique_id=77464493 instance=ExtResource("69_6kk8k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.600412, 0, -0.86800003)
+
+[node name="plant2" parent="Atrium/couch_group2" unique_id=1485043057 instance=ExtResource("69_6kk8k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7688646, 0, 3.381546)
 
 [node name="couch_group3" type="Node3D" parent="Atrium" unique_id=2041492563]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 2.1275406)
@@ -1842,6 +1856,12 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.4
 [node name="couch4" parent="Atrium/couch_group3" unique_id=1620916098 instance=ExtResource("68_yy54a")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -6.613703, 0, 3.3043785)
 
+[node name="plant" parent="Atrium/couch_group3" unique_id=175167444 instance=ExtResource("69_6kk8k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.600412, 0, -0.86800003)
+
+[node name="plant2" parent="Atrium/couch_group3" unique_id=1488284633 instance=ExtResource("69_6kk8k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7688646, 0, 3.381546)
+
 [node name="couch_group4" type="Node3D" parent="Atrium" unique_id=1173551832]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.887121)
 
@@ -1857,6 +1877,12 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.4
 [node name="couch4" parent="Atrium/couch_group4" unique_id=1015082364 instance=ExtResource("68_yy54a")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -6.613703, 0, 3.3043785)
 
+[node name="plant" parent="Atrium/couch_group4" unique_id=1985959732 instance=ExtResource("69_6kk8k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.600412, 0, -0.86800003)
+
+[node name="plant2" parent="Atrium/couch_group4" unique_id=1720281748 instance=ExtResource("69_6kk8k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7688646, 0, 3.381546)
+
 [node name="couch_group5" type="Node3D" parent="Atrium" unique_id=2124729138]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -6.9022484)
 
@@ -1871,3 +1897,33 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.4
 
 [node name="couch4" parent="Atrium/couch_group5" unique_id=1179012294 instance=ExtResource("68_yy54a")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -6.613703, 0, 3.3043785)
+
+[node name="plant" parent="Atrium/couch_group5" unique_id=234983083 instance=ExtResource("69_6kk8k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.600412, 0, -0.86800003)
+
+[node name="plant2" parent="Atrium/couch_group5" unique_id=565110081 instance=ExtResource("69_6kk8k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7688646, 0, 3.381546)
+
+[node name="tree" parent="Atrium" unique_id=32595065 instance=ExtResource("69_ig0wm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6129804, -0.2745154, -1.3113861)
+
+[node name="tree2" parent="Atrium" unique_id=778975410 instance=ExtResource("69_ig0wm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.613, -0.2745154, -1.3110008)
+
+[node name="tree3" parent="Atrium" unique_id=1638476012 instance=ExtResource("69_ig0wm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7165833, -0.2745154, -5.31423)
+
+[node name="tree4" parent="Atrium" unique_id=729966658 instance=ExtResource("69_ig0wm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.717, -0.2745154, -5.313999)
+
+[node name="tree5" parent="Atrium" unique_id=929402268 instance=ExtResource("69_ig0wm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.9362245, -0.2745154, 7.5944786)
+
+[node name="tree6" parent="Atrium" unique_id=62508440 instance=ExtResource("69_ig0wm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.830689, -0.2745154, 6.148571)
+
+[node name="tree7" parent="Atrium" unique_id=884700382 instance=ExtResource("69_ig0wm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.831, -0.2745154, 6.149002)
+
+[node name="tree8" parent="Atrium" unique_id=2071278114 instance=ExtResource("69_ig0wm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.936, -0.2745154, 7.594002)
