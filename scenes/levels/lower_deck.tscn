@@ -37,6 +37,7 @@
 [ext_resource type="PackedScene" uid="uid://cf8lxteqa8p3b" path="res://scenes/items/ShipSupplies Fill/Cargo Container/cargo_container.tscn" id="28_pob8u"]
 [ext_resource type="PackedScene" uid="uid://brami6jiee4yg" path="res://scenes/items/ShipSupplies Fill/Canister Set 1/canister_set.tscn" id="29_ptq0s"]
 [ext_resource type="PackedScene" uid="uid://cpt16nevvt0f1" path="res://scenes/items/ShipSupplies Fill/Canister 2/canister.tscn" id="30_kpkm3"]
+[ext_resource type="PackedScene" uid="uid://qauxkv3y8lop" path="res://scenes/items/ShipSupplies Fill/forklift.tscn" id="38_kpkm3"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bjwnh"]
 albedo_texture = ExtResource("7_floor_color")
@@ -672,3 +673,6 @@ transform = Transform3D(-2.1855694e-08, 0, -0.5, 0, 0.5, 0, 0.5, 0, -2.1855694e-
 
 [node name="HealthpackTable3" parent="." unique_id=546272465 instance=ExtResource("18_r5xfg")]
 transform = Transform3D(-0.5, 0, -4.371139e-08, 0, 0.5, 0, 4.371139e-08, 0, -0.5, -18.008553, 0, -24.208368)
+
+[node name="Forklift" parent="." unique_id=1393790818 instance=ExtResource("38_kpkm3")]
+transform = Transform3D(-0.8562673, 0, -0.516533, 0, 1, 0, 0.516533, 0, -0.8562673, -13.735, 0.215, -0.475)

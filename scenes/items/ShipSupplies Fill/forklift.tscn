@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://qauxkv3y8lop"]
+
+[ext_resource type="PackedScene" uid="uid://caiklqwl10hyk" path="res://scenes/items/ShipSupplies Fill/scifi_forklift.glb" id="1_bhgxc"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3gwnq"]
+size = Vector3(4.165, 2.27, 1.885)
+
+[node name="Forklift" type="StaticBody3D" unique_id=1393790818]
+
+[node name="Sketchfab_Scene" parent="." unique_id=893754451 instance=ExtResource("1_bhgxc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.905)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1975151972]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.715, 0.97, -0.08)
+shape = SubResource("BoxShape3D_3gwnq")
