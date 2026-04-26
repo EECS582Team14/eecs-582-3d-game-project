@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://cpt16nevvt0f1"]
+
+[ext_resource type="PackedScene" uid="uid://cmy4e0ltjmnib" path="res://scenes/items/ShipSupplies Fill/Canister 2/scifi_canister.glb" id="1_qbyjw"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_hh63u"]
+radius = 0.5732422
+
+[node name="canister" type="StaticBody3D" unique_id=373167410]
+
+[node name="Sketchfab_Scene" parent="." unique_id=1342215547 instance=ExtResource("1_qbyjw")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2053009360]
+shape = SubResource("CylinderShape3D_hh63u")
+debug_color = Color(0, 11.708403, 13.469126, 1)

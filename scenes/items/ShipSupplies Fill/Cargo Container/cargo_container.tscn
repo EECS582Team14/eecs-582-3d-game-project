@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://cf8lxteqa8p3b"]
+
+[ext_resource type="PackedScene" uid="uid://d33mmbi273iig" path="res://scenes/items/ShipSupplies Fill/Cargo Container/futuristic_cargo_container_low-poly.glb" id="1_0w48i"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0w48i"]
+size = Vector3(2.5170898, 2.5735168, 3.314087)
+
+[node name="cargo_container" type="StaticBody3D" unique_id=910385935]
+
+[node name="Sketchfab_Scene" parent="." unique_id=179908968 instance=ExtResource("1_0w48i")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3502691, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1256810267]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.004638672, 1.269455, -0.07684326)
+shape = SubResource("BoxShape3D_0w48i")
+debug_color = Color(0, 11.708403, 13.469126, 1)

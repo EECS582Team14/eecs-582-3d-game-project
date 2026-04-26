@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://brami6jiee4yg"]
+
+[ext_resource type="PackedScene" uid="uid://cx4e7wyjdycke" path="res://scenes/items/ShipSupplies Fill/Canister Set 1/scifi_cylinder_canisters.glb" id="1_ae03m"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kqwfe"]
+size = Vector3(3.0020142, 1.5869751, 2.5552979)
+
+[node name="canister_set" type="StaticBody3D" unique_id=1337853994]
+
+[node name="Sketchfab_Scene" parent="." unique_id=932160799 instance=ExtResource("1_ae03m")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=117463395]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.040130615, 0.76620483, -0.07281494)
+shape = SubResource("BoxShape3D_kqwfe")
+debug_color = Color(0, 11.708403, 13.469126, 1)
