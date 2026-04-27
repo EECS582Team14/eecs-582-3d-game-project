@@ -465,34 +465,34 @@ transform = Transform3D(-0.57236046, 0, 0.82000214, 0, 1, 0, -0.82000214, 0, -0.
 transform = Transform3D(-0.6928106, 0, -0.72111964, 0, 1, 0, 0.72111964, 0, -0.6928106, 4.0688267, 0, 5.7226563)
 
 [node name="canister" parent="ShipSupplies" unique_id=373167410 instance=ExtResource("30_kpkm3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.155199, 0, -6.804753)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.155199, 1.1654177, -6.804753)
 
 [node name="canister2" parent="ShipSupplies" unique_id=1466752034 instance=ExtResource("30_kpkm3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.155199, 0, -5.382954)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.155199, 1.1654177, -5.382954)
 
 [node name="canister3" parent="ShipSupplies" unique_id=687199608 instance=ExtResource("30_kpkm3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1981926, 0, -6.804753)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1981926, 1.1654177, -6.804753)
 
 [node name="canister4" parent="ShipSupplies" unique_id=1788586066 instance=ExtResource("30_kpkm3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1981926, 0, -5.382954)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1981926, 1.1654177, -5.382954)
 
 [node name="canister5" parent="ShipSupplies" unique_id=565976576 instance=ExtResource("30_kpkm3")]
-transform = Transform3D(0.48561844, 0, 0.8741709, 0, 1, 0, -0.8741709, 0, 0.48561844, 1.0949383, 0, -6.797954)
+transform = Transform3D(0.48561844, 0, 0.8741709, 0, 1, 0, -0.8741709, 0, 0.48561844, 1.0949383, 1.1654177, -6.797954)
 
 [node name="canister6" parent="ShipSupplies" unique_id=1909634392 instance=ExtResource("30_kpkm3")]
-transform = Transform3D(0.48561844, 0, 0.8741709, 0, 1, 0, -0.8741709, 0, 0.48561844, 2.3378334, 0, -6.1075025)
+transform = Transform3D(0.48561844, 0, 0.8741709, 0, 1, 0, -0.8741709, 0, 0.48561844, 2.3378334, 1.1654177, -6.1075025)
 
 [node name="canister7" parent="ShipSupplies" unique_id=347417614 instance=ExtResource("30_kpkm3")]
-transform = Transform3D(0.2368212, 0.97155327, -4.2467942e-08, 0, -4.371139e-08, -1, -0.97155327, 0.2368212, -1.0351783e-08, 4.0185347, 0, -6.804753)
+transform = Transform3D(0.2368212, 0.97155327, -4.2467942e-08, 0, -4.371139e-08, -1, -0.97155327, 0.2368212, -1.0351783e-08, 4.0185347, 0.62226343, -6.804753)
 
 [node name="canister8" parent="ShipSupplies" unique_id=265908897 instance=ExtResource("30_kpkm3")]
-transform = Transform3D(0.5866692, 0.8098267, -3.539865e-08, 0, -4.371139e-08, -1, -0.8098267, 0.5866692, -2.5644127e-08, 6.36747, 0, -6.2749166)
+transform = Transform3D(0.5866692, 0.8098267, -3.539865e-08, 0, -4.371139e-08, -1, -0.8098267, 0.5866692, -2.5644127e-08, 6.36747, 0.62226343, -6.2749166)
 
 [node name="canister9" parent="ShipSupplies" unique_id=2027274576 instance=ExtResource("30_kpkm3")]
-transform = Transform3D(0.15643442, 0, 0.9876883, 0, 1, 0, -0.9876883, 0, 0.15643442, 4.060465, 0, -5.2867537)
+transform = Transform3D(0.15643442, 0, 0.9876883, 0, 1, 0, -0.9876883, 0, 0.15643442, 4.060465, 1.1654177, -5.2867537)
 
 [node name="canister10" parent="ShipSupplies" unique_id=1581855816 instance=ExtResource("30_kpkm3")]
-transform = Transform3D(0.15643442, 0, 0.9876883, 0, 1, 0, -0.9876883, 0, 0.15643442, 5.46476, 0, -5.064335)
+transform = Transform3D(0.15643442, 0, 0.9876883, 0, 1, 0, -0.9876883, 0, 0.15643442, 5.46476, 1.1654177, -5.064335)
 
 [node name="Forklift" parent="ShipSupplies" unique_id=1393790818 instance=ExtResource("38_kpkm3")]
 transform = Transform3D(-0.8562673, 0, -0.516533, 0, 1, 0, 0.516533, 0, -0.8562673, 3.684001, 0.215, -2.975)
@@ -501,7 +501,7 @@ transform = Transform3D(-0.8562673, 0, -0.516533, 0, 1, 0, 0.516533, 0, -0.85626
 transform = Transform3D(-0.6928106, 0, -0.72111964, 0, 1, 0, 0.72111964, 0, -0.6928106, 4.0688267, 0, -16.277344)
 
 [node name="canister11" parent="ShipSupplies" unique_id=2029727226 instance=ExtResource("30_kpkm3")]
-transform = Transform3D(0.48561844, 0, 0.8741709, 0, 1, 0, -0.8741709, 0, 0.48561844, -2.0621662, 0, -18.107502)
+transform = Transform3D(0.48561844, 0, 0.8741709, 0, 1, 0, -0.8741709, 0, 0.48561844, -2.0621662, 1.0612957, -18.107502)
 
 [node name="PersonalItems" type="Node3D" parent="." unique_id=1044334352]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.419, 0, -17)
