@@ -37,6 +37,8 @@
 [ext_resource type="PackedScene" uid="uid://cf8lxteqa8p3b" path="res://scenes/items/ShipSupplies Fill/Cargo Container/cargo_container.tscn" id="28_pob8u"]
 [ext_resource type="PackedScene" uid="uid://brami6jiee4yg" path="res://scenes/items/ShipSupplies Fill/Canister Set 1/canister_set.tscn" id="29_ptq0s"]
 [ext_resource type="PackedScene" uid="uid://cpt16nevvt0f1" path="res://scenes/items/ShipSupplies Fill/Canister 2/canister.tscn" id="30_kpkm3"]
+[ext_resource type="PackedScene" uid="uid://teatsvvq70xk" path="res://scenes/items/Armory Fill/Large Weapon Crate/large_weapon_crate.tscn" id="33_sjmpb"]
+[ext_resource type="PackedScene" uid="uid://b6gb7jdttl0e1" path="res://scenes/items/Armory Fill/Small Weapon Crate/small_weapon_crate.tscn" id="34_fns04"]
 [ext_resource type="PackedScene" uid="uid://b7bje8am5odnl" path="res://scenes/items/Shielding Fill/industrial_building.glb" id="35_e88g7"]
 [ext_resource type="PackedScene" uid="uid://ddjwjtca7s4kl" path="res://scenes/items/Shielding Fill/tanker_box_metallic_industrial.glb" id="36_ja101"]
 [ext_resource type="PackedScene" uid="uid://dbabn7rbmjax3" path="res://scenes/items/Lockers/locker.tscn" id="37_ln0cn"]
@@ -433,6 +435,12 @@ transform = Transform3D(0.15643442, 0, 0.9876883, 0, 1, 0, -0.9876883, 0, 0.1564
 [node name="canister10" parent="ShipSupplies" unique_id=1581855816 instance=ExtResource("30_kpkm3")]
 transform = Transform3D(0.15643442, 0, 0.9876883, 0, 1, 0, -0.9876883, 0, 0.15643442, 5.46476, 0, -5.064335)
 
+[node name="canister_set3" parent="ShipSupplies" unique_id=646355136 instance=ExtResource("29_ptq0s")]
+transform = Transform3D(-0.6928106, 0, -0.72111964, 0, 1, 0, 0.72111964, 0, -0.6928106, 4.0688267, 0, -16.277344)
+
+[node name="canister11" parent="ShipSupplies" unique_id=2029727226 instance=ExtResource("30_kpkm3")]
+transform = Transform3D(0.48561844, 0, 0.8741709, 0, 1, 0, -0.8741709, 0, 0.48561844, -2.0621662, 0, -18.107502)
+
 [node name="PersonalItems" type="Node3D" parent="." unique_id=1044334352]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.419, 0, -17)
 
@@ -458,6 +466,129 @@ transform = Transform3D(-4.371139e-08, 1, -4.371139e-08, 0, -4.371139e-08, -1, -
 size = Vector3(3, 3, 3)
 texture_albedo = ExtResource("19_ttbe1")
 lower_fade = 1e-05
+
+[node name="LargeWeaponCrate2" parent="PersonalItems" unique_id=1801158292 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.041359, 0.3824208, 6.9456167)
+
+[node name="LargeWeaponCrate3" parent="PersonalItems" unique_id=384976249 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0992708, 0.3824208, 6.9021196)
+
+[node name="LargeWeaponCrate4" parent="PersonalItems" unique_id=712679933 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.346627, 0.3824208, 6.9540644)
+
+[node name="LargeWeaponCrate5" parent="PersonalItems" unique_id=589536355 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.1963625, 0.3824208, 7.026284)
+
+[node name="small_weapon_crate" parent="PersonalItems" unique_id=400241379 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.906934, 0.4070808, 6.9622335)
+
+[node name="LargeWeaponCrate6" parent="PersonalItems" unique_id=644485153 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.0708036, 1.0024683, 6.9231787)
+
+[node name="LargeWeaponCrate7" parent="PersonalItems" unique_id=1460970014 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8788977, 1.0024683, 6.944854)
+
+[node name="small_weapon_crate2" parent="PersonalItems" unique_id=875314382 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.654212, 1.0123518, 6.9622335)
+
+[node name="small_weapon_crate3" parent="PersonalItems" unique_id=1135800441 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6251287, 1.0123518, 6.980365)
+
+[node name="small_weapon_crate4" parent="PersonalItems" unique_id=1929508850 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.37217903, 0.41235173, 6.9622335)
+
+[node name="LargeWeaponCrate8" parent="PersonalItems" unique_id=55275750 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.958641, 0.3824208, 4.9456167)
+
+[node name="LargeWeaponCrate9" parent="PersonalItems" unique_id=1121669611 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.9007282, 0.3824208, 4.9021196)
+
+[node name="LargeWeaponCrate10" parent="PersonalItems" unique_id=336001045 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6533718, 1.0824208, 6.9540644)
+
+[node name="LargeWeaponCrate11" parent="PersonalItems" unique_id=2122183812 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8036366, 0.3824208, 5.026284)
+
+[node name="small_weapon_crate5" parent="PersonalItems" unique_id=313987737 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09306526, 0.4070808, 4.9622335)
+
+[node name="LargeWeaponCrate12" parent="PersonalItems" unique_id=638344578 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9291973, 0.50246835, 6.9231787)
+
+[node name="LargeWeaponCrate13" parent="PersonalItems" unique_id=2094740473 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.1211033, 1.0024683, 4.944854)
+
+[node name="small_weapon_crate6" parent="PersonalItems" unique_id=270233519 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.345789, 1.0123518, 6.9622335)
+
+[node name="small_weapon_crate7" parent="PersonalItems" unique_id=1549919133 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.3748722, 1.0123518, 4.980365)
+
+[node name="small_weapon_crate8" parent="PersonalItems" unique_id=965296052 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6721783, 0.41235173, 6.562234)
+
+[node name="LargeWeaponCrate14" parent="PersonalItems" unique_id=809768145 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.041359, 0.3824208, -4.0543823)
+
+[node name="LargeWeaponCrate15" parent="PersonalItems" unique_id=552765262 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0992708, 0.3824208, -4.0978813)
+
+[node name="LargeWeaponCrate16" parent="PersonalItems" unique_id=2098554971 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.346627, 0.3824208, -4.0459366)
+
+[node name="LargeWeaponCrate17" parent="PersonalItems" unique_id=1789907919 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.1963625, 0.3824208, -3.9737167)
+
+[node name="small_weapon_crate9" parent="PersonalItems" unique_id=1110963531 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.906934, 0.4070808, -4.0377655)
+
+[node name="LargeWeaponCrate18" parent="PersonalItems" unique_id=1083275767 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.0708036, 1.0024683, -4.0768204)
+
+[node name="LargeWeaponCrate19" parent="PersonalItems" unique_id=400988261 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8788977, 1.0024683, -4.0551453)
+
+[node name="small_weapon_crate10" parent="PersonalItems" unique_id=915246395 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.654212, 1.0123518, -4.0377655)
+
+[node name="small_weapon_crate11" parent="PersonalItems" unique_id=1875993170 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6251287, 1.0123518, -4.0196342)
+
+[node name="small_weapon_crate12" parent="PersonalItems" unique_id=2042379553 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.37217903, 0.41235173, -4.0377655)
+
+[node name="LargeWeaponCrate20" parent="PersonalItems" unique_id=1471020328 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.958641, 0.3824208, -6.0543823)
+
+[node name="LargeWeaponCrate21" parent="PersonalItems" unique_id=1581534340 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.9007282, 0.3824208, -6.0978813)
+
+[node name="LargeWeaponCrate22" parent="PersonalItems" unique_id=1713315128 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6533718, 1.0824208, -4.0459366)
+
+[node name="LargeWeaponCrate23" parent="PersonalItems" unique_id=210557736 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8036366, 0.3824208, -5.9737167)
+
+[node name="small_weapon_crate13" parent="PersonalItems" unique_id=782177427 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09306526, 0.4070808, -6.0377655)
+
+[node name="LargeWeaponCrate24" parent="PersonalItems" unique_id=2091247799 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9291973, 0.50246835, -4.0768204)
+
+[node name="LargeWeaponCrate25" parent="PersonalItems" unique_id=803470044 instance=ExtResource("33_sjmpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.1211033, 1.0024683, -6.0551453)
+
+[node name="small_weapon_crate14" parent="PersonalItems" unique_id=1908143947 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.345789, 1.0123518, -4.0377655)
+
+[node name="small_weapon_crate15" parent="PersonalItems" unique_id=533750544 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.3748722, 1.0123518, -6.0196342)
+
+[node name="small_weapon_crate16" parent="PersonalItems" unique_id=1529884993 instance=ExtResource("34_fns04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6721783, 0.41235173, -4.437767)
+
+[node name="cargo_container5" parent="PersonalItems" unique_id=229944309 instance=ExtResource("28_pob8u")]
+transform = Transform3D(-0.50000006, 0, -0.8660254, 0, 1, 0, 0.8660254, 0, -0.50000006, 0.31516075, 0, -1.2839851)
 
 [node name="FabManufacturing" type="Node3D" parent="." unique_id=1065997204]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0840979, 0, -19.476221)
