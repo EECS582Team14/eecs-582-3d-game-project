@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dca82oy2g71o5"]
+
+[ext_resource type="PackedScene" uid="uid://cj7jh82tuxx2e" path="res://scenes/items/Electrical Fill/wires.glb" id="1_pp2xp"]
+
+[node name="HangingWires" type="Node3D" unique_id=552804812]
+
+[node name="Sketchfab_Scene" parent="." unique_id=1913612778 instance=ExtResource("1_pp2xp")]
+transform = Transform3D(0.009, 0, 0, 0, 0.009, 0, 0, 0, 0.009, 0, 0, 0)
