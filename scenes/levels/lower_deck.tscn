@@ -37,6 +37,8 @@
 [ext_resource type="PackedScene" uid="uid://cf8lxteqa8p3b" path="res://scenes/items/ShipSupplies Fill/Cargo Container/cargo_container.tscn" id="28_pob8u"]
 [ext_resource type="PackedScene" uid="uid://brami6jiee4yg" path="res://scenes/items/ShipSupplies Fill/Canister Set 1/canister_set.tscn" id="29_ptq0s"]
 [ext_resource type="PackedScene" uid="uid://cpt16nevvt0f1" path="res://scenes/items/ShipSupplies Fill/Canister 2/canister.tscn" id="30_kpkm3"]
+[ext_resource type="PackedScene" uid="uid://b7bje8am5odnl" path="res://scenes/items/Shielding Fill/industrial_building.glb" id="35_e88g7"]
+[ext_resource type="PackedScene" uid="uid://ddjwjtca7s4kl" path="res://scenes/items/Shielding Fill/tanker_box_metallic_industrial.glb" id="36_ja101"]
 [ext_resource type="PackedScene" uid="uid://dbabn7rbmjax3" path="res://scenes/items/Lockers/locker.tscn" id="37_ln0cn"]
 [ext_resource type="PackedScene" uid="uid://qauxkv3y8lop" path="res://scenes/items/ShipSupplies Fill/forklift.tscn" id="38_kpkm3"]
 [ext_resource type="PackedScene" uid="uid://g3bh5qpiy0h2" path="res://scenes/items/cleaningCart.tscn" id="38_sbdpu"]
@@ -482,6 +484,24 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 2.05
 size = Vector3(3, 3, 3)
 texture_albedo = ExtResource("18_m25je")
 lower_fade = 1e-05
+
+[node name="WeirdMachine" parent="FabManufacturing" unique_id=1095282676 instance=ExtResource("35_e88g7")]
+transform = Transform3D(-2.1855695e-09, 0, -0.05, 0, 0.04, 0, 0.05, 0, -2.1855695e-09, -5.5, 0.099999964, -1)
+
+[node name="StrangeMachine" parent="FabManufacturing" unique_id=1026373529 instance=ExtResource("35_e88g7")]
+transform = Transform3D(-2.1855695e-09, 0, -0.05, 0, 0.04, 0, 0.05, 0, -2.1855695e-09, -5.5, 0.099999964, -6)
+
+[node name="StrangeMachine2" parent="FabManufacturing" unique_id=1773506116 instance=ExtResource("35_e88g7")]
+transform = Transform3D(-2.1855695e-09, 0, 0.05, 0, 0.04, 0, 0.05, 0, 2.1855695e-09, 5.4, 0.099999964, -6)
+
+[node name="WeirdMachine2" parent="FabManufacturing" unique_id=132930741 instance=ExtResource("35_e88g7")]
+transform = Transform3D(-2.1855695e-09, 0, 0.05, 0, 0.04, 0, 0.05, 0, 2.1855695e-09, 5.5, 0.1, -1)
+
+[node name="Tank of flammable stuff" parent="FabManufacturing" unique_id=1673046719 instance=ExtResource("36_ja101")]
+transform = Transform3D(0.005, 0, 0, 0, 0.005, 0, 0, 0, 0.005, 4.1000004, 0, 5.8)
+
+[node name="Tank of flammable stuff2" parent="FabManufacturing" unique_id=80478989 instance=ExtResource("36_ja101")]
+transform = Transform3D(0.005, 0, 0, 0, 0.005, 0, 0, 0, 0.005, -3.8999996, 0, 5.8)
 
 [node name="ClosingOffWalls" type="Node3D" parent="." unique_id=1931912096]
 
