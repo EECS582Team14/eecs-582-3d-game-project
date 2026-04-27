@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://bew362cymg1uv"]
+
+[ext_resource type="PackedScene" uid="uid://cs6cxxmluq54i" path="res://scenes/items/Shielding Fill/monitoring_station.glb" id="1_gi55k"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_eowkp"]
+size = Vector3(1.1, 0.65, 2)
+
+[node name="Node3D" type="Node3D" unique_id=1760882543]
+
+[node name="Sketchfab_Scene" parent="." unique_id=1680403677 instance=ExtResource("1_gi55k")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Sketchfab_Scene" unique_id=1243717920]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.0030138, -0.591619, 2.0088413)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Sketchfab_Scene/StaticBody3D" unique_id=2076775825]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0807624, 0.93930364, -2)
+shape = SubResource("BoxShape3D_eowkp")
