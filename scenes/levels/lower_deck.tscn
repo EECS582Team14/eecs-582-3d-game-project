@@ -37,7 +37,11 @@
 [ext_resource type="PackedScene" uid="uid://cf8lxteqa8p3b" path="res://scenes/items/ShipSupplies Fill/Cargo Container/cargo_container.tscn" id="28_pob8u"]
 [ext_resource type="PackedScene" uid="uid://brami6jiee4yg" path="res://scenes/items/ShipSupplies Fill/Canister Set 1/canister_set.tscn" id="29_ptq0s"]
 [ext_resource type="PackedScene" uid="uid://cpt16nevvt0f1" path="res://scenes/items/ShipSupplies Fill/Canister 2/canister.tscn" id="30_kpkm3"]
+[ext_resource type="PackedScene" uid="uid://dbabn7rbmjax3" path="res://scenes/items/Lockers/locker.tscn" id="37_ln0cn"]
 [ext_resource type="PackedScene" uid="uid://qauxkv3y8lop" path="res://scenes/items/ShipSupplies Fill/forklift.tscn" id="38_kpkm3"]
+[ext_resource type="PackedScene" uid="uid://g3bh5qpiy0h2" path="res://scenes/items/cleaningCart.tscn" id="38_sbdpu"]
+[ext_resource type="PackedScene" uid="uid://c5rrxl1atxykp" path="res://scenes/items/Armory Fill/Personal Locker/personal_locker_wall.tscn" id="39_e88g7"]
+[ext_resource type="PackedScene" uid="uid://dnb0mheryqfrt" path="res://scenes/items/Armory Fill/Armory Bench/armory_bench.tscn" id="40_ja101"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bjwnh"]
 albedo_texture = ExtResource("7_floor_color")
@@ -664,6 +668,30 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.5
 
 [node name="CenterWall6" parent="Maze" unique_id=1465264831 instance=ExtResource("10_myntk")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.585, 0, 6.971)
+
+[node name="Locker" parent="Maze" unique_id=1646487477 instance=ExtResource("37_ln0cn")]
+transform = Transform3D(-0.02237919, 0, 0.7996868, 0, 0.8, 0, -0.7996868, 0, -0.02237919, -1.1451018, 0, 29.501135)
+
+[node name="cleaningCart" parent="Maze/Locker" unique_id=2073804642 instance=ExtResource("38_sbdpu")]
+transform = Transform3D(-0.9, 0, 8.754432e-08, 0, 0.9, 0, -8.754432e-08, 0, -0.9, 3.220955, 0, 8.04915)
+
+[node name="cleaningCart2" parent="Maze/Locker" unique_id=560387506 instance=ExtResource("38_sbdpu")]
+transform = Transform3D(-0.9, 0, 9.126961e-08, 0, 0.9, 0, -9.126961e-08, 0, -0.9, -0.27767944, 0, 7.951241)
+
+[node name="personal_locker_wall3" parent="Maze/Locker" unique_id=1467040260 instance=ExtResource("39_e88g7")]
+transform = Transform3D(-2.4214387e-08, 0, 1, 0, 1, 0, -1, 0, -2.4214387e-08, 4.3721237, 0, 1.2940619)
+
+[node name="personal_locker_wall4" parent="Maze/Locker" unique_id=1710574730 instance=ExtResource("39_e88g7")]
+transform = Transform3D(-1.8626451e-08, 0, 1, 0, 1, 0, -1, 0, -1.8626451e-08, 4.413147, 0, 4.296385)
+
+[node name="armory_bench2" parent="Maze/Locker" unique_id=1559148481 instance=ExtResource("40_ja101")]
+transform = Transform3D(0.38, 0, -9.313226e-10, 0, 0.38, 0, 9.313226e-10, 0, 0.38, 2.8078232, 0.53, 2.64052)
+
+[node name="armory_bench3" parent="Maze/Locker" unique_id=1434029804 instance=ExtResource("40_ja101")]
+transform = Transform3D(0.38, 0, -2.7939677e-09, 0, 0.38, 0, 2.7939677e-09, 0, 0.38, 2.7378883, 0.53, 5.1395416)
+
+[node name="ElevatorWall7" parent="Maze" unique_id=1811967492 instance=ExtResource("10_myntk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.23000002, 0, 25.904982)
 
 [node name="HealthpackTable" parent="." unique_id=1078645518 instance=ExtResource("18_r5xfg")]
 transform = Transform3D(-2.1855694e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.1855694e-08, 19.700966, 0, 42)
