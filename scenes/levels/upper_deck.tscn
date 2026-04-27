@@ -436,7 +436,7 @@ distance_fade_begin = 0.0
 distance_fade_length = 5.0
 
 [node name="LifeTask" parent="LifeSupport" unique_id=367489626 instance=ExtResource("5_iah82")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3, 0.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 2)
 script = ExtResource("18_sco87")
 task_id = "Life_task"
 
@@ -610,6 +610,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.144779, 0, -2.38583)
 
 [node name="LabLocker" parent="HumanResources" unique_id=273384694 instance=ExtResource("8_h1yrm")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 2.8999996, 0, -6.9000006)
+
+[node name="lab_tank2" parent="HumanResources" unique_id=77118520 instance=ExtResource("24_g03in")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -4.437771, 0, -13.572702)
+
+[node name="lab_terminal2" parent="HumanResources" unique_id=353241504 instance=ExtResource("25_i5plh")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -1.2553673, 0, -14.6028)
+
+[node name="lab_terminal3" parent="HumanResources" unique_id=889233389 instance=ExtResource("25_i5plh")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -2.2553673, 0, -14.6028)
+
+[node name="lab_terminal4" parent="HumanResources" unique_id=1927507763 instance=ExtResource("25_i5plh")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.2553673, 0, -14.6028)
 
 [node name="Armory" type="Node3D" parent="." unique_id=1952892335]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 0)
@@ -1028,6 +1040,9 @@ transform = Transform3D(-0.56568545, 0, 0.56568545, 0, 0.8, 0, -0.56568545, 0, -
 
 [node name="desk4" parent="Shielding" unique_id=1793829209 instance=ExtResource("52_empy8")]
 transform = Transform3D(0.56568545, 0, -0.56568545, 0, 0.8, 0, 0.56568545, 0, 0.56568545, 15.770842, 0, -8.419186)
+
+[node name="lab_table3" parent="Shielding" unique_id=1533169202 instance=ExtResource("26_h83ro")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -22.85522, 0.29999995, -11.18583)
 
 [node name="SupplyCloset" type="Node3D" parent="." unique_id=1232075518]
 
@@ -1927,3 +1942,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.831, -0.2745154, 6.149002)
 
 [node name="tree8" parent="Atrium" unique_id=2071278114 instance=ExtResource("69_ig0wm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.936, -0.2745154, 7.594002)
+
+[node name="Healthpack17" parent="." unique_id=998424675 instance=ExtResource("15_bj8xs")]
+transform = Transform3D(5.9624403e-09, -0.5, 2.1855694e-08, 0, -2.1855694e-08, -0.5, 0.5, 5.9624403e-09, -2.6062653e-16, -15.178999, 1, -14.2597065)
+
+[node name="Healthpack18" parent="." unique_id=269802035 instance=ExtResource("15_bj8xs")]
+transform = Transform3D(0.5, 2.7818135e-08, -1.2159693e-15, 0, -2.1855694e-08, -0.5, -2.7818135e-08, 0.5, -2.1855694e-08, -16.178999, 1, -14.7597065)
+
+[node name="Healthpack19" parent="." unique_id=1750049840 instance=ExtResource("15_bj8xs")]
+transform = Transform3D(0.5, 2.7818135e-08, -1.2159693e-15, 0, -2.1855694e-08, -0.5, -2.7818135e-08, 0.5, -2.1855694e-08, -18.178999, 1, -14.7597065)
+
+[node name="Healthpack20" parent="." unique_id=1438394147 instance=ExtResource("15_bj8xs")]
+transform = Transform3D(0.5, 2.7818135e-08, -1.2159693e-15, 0, -2.1855694e-08, -0.5, -2.7818135e-08, 0.5, -2.1855694e-08, -20.178999, 1, -14.7597065)
