@@ -16,10 +16,13 @@
 [ext_resource type="Script" uid="uid://bf5mvc3noeqqg" path="res://scenes/tasks/Trash_task_script.gd" id="11_hneab"]
 [ext_resource type="Script" uid="uid://dmlso17bxp0pt" path="res://scenes/tasks/Colonial_task_script.gd" id="12_r5xfg"]
 [ext_resource type="Script" uid="uid://d15ca5ap7kjyq" path="res://scenes/tasks/Supply_task_script.gd" id="13_bjwnh"]
+[ext_resource type="PackedScene" uid="uid://d2ftc6coiqii6" path="res://scenes/items/Electrical Fill/electrical_box.tscn" id="13_iru7g"]
 [ext_resource type="Texture2D" uid="uid://dphna36btyd0v" path="res://assets/room_symbols/trash_icon.png" id="13_m25je"]
 [ext_resource type="Script" uid="uid://djo2fr1vj2i2c" path="res://scenes/tasks/Personal_task_script.gd" id="14_3tbkn"]
+[ext_resource type="PackedScene" uid="uid://vxadptdex5qc" path="res://scenes/items/Electrical Fill/wires_left.tscn" id="14_7yyx8"]
 [ext_resource type="PackedScene" uid="uid://61dswtmam352" path="res://scenes/items/TrashFill/trashCompactor.tscn" id="15_2hslu"]
 [ext_resource type="Texture2D" uid="uid://c7v1p8kouhhrk" path="res://assets/room_symbols/colonial_icon.png" id="15_f8vy1"]
+[ext_resource type="PackedScene" uid="uid://c45n4iy33cv3i" path="res://scenes/items/Electrical Fill/wires_right.tscn" id="15_ln0cn"]
 [ext_resource type="Script" uid="uid://om2cgiipkf6h" path="res://scenes/tasks/Fab_task_script.gd" id="15_m25je"]
 [ext_resource type="PackedScene" uid="uid://bj8e5mj86qkxh" path="res://scenes/items/TrashFill/dumpster.tscn" id="16_b8tib"]
 [ext_resource type="PackedScene" uid="uid://767lafkoatba" path="res://scenes/items/TrashFill/recycleCans.tscn" id="17_fate1"]
@@ -154,11 +157,67 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 5)
 script = ExtResource("10_d2gx7")
 task_id = "Electrical_task"
 
+[node name="ConnectingWires1" parent="Electrical" unique_id=14178359 instance=ExtResource("15_ln0cn")]
+transform = Transform3D(5.2125306e-16, -1.1924881e-08, -1, 1, 4.371139e-08, 0, -4.371139e-08, 1, -1.1924881e-08, 6.938, 0.247, 3.708)
+
 [node name="ElectricalIcon" type="Decal" parent="Electrical" unique_id=2005928005]
 transform = Transform3D(-1, -8.742278e-08, 3.821371e-15, 0, -4.371139e-08, -1, 8.742278e-08, -1, 4.371139e-08, -1.7019348, 1.4, -9.0082245)
 size = Vector3(4, 3, 3)
 texture_albedo = ExtResource("11_3tbkn")
 lower_fade = 1e-05
+
+[node name="WallWires1" type="Node3D" parent="Electrical" unique_id=2066378315]
+
+[node name="ElectricalBox" parent="Electrical/WallWires1" unique_id=135373225 instance=ExtResource("13_iru7g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9846725, 0.4433639, -5.5425816)
+
+[node name="ElectricalBox2" parent="Electrical/WallWires1" unique_id=1846978612 instance=ExtResource("13_iru7g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.985, 0.443, 2.487)
+
+[node name="WiresLeft" parent="Electrical/WallWires1" unique_id=771446180 instance=ExtResource("14_7yyx8")]
+transform = Transform3D(-5.2125306e-16, -1.1924881e-08, 1, 1, -4.371139e-08, 0, 4.371139e-08, 1, 1.1924881e-08, -2.1851606, 0.256, -5.441)
+
+[node name="WiresLeft2" parent="Electrical/WallWires1" unique_id=641996268 instance=ExtResource("14_7yyx8")]
+transform = Transform3D(-5.2125306e-16, -1.1924881e-08, 1, 1, -4.371139e-08, 0, 4.371139e-08, 1, 1.1924881e-08, -2.185, 0.256, -1.571)
+
+[node name="WiresRight" parent="Electrical/WallWires1" unique_id=1496741056 instance=ExtResource("15_ln0cn")]
+transform = Transform3D(-5.2125306e-16, 1.1924881e-08, 1, -1, -4.371139e-08, 0, 4.371139e-08, -1, 1.1924881e-08, -2.18, 1.43, 0.675)
+
+[node name="WallWires2" type="Node3D" parent="Electrical" unique_id=705388460]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 4.76, 0, -1.895)
+
+[node name="ElectricalBox" parent="Electrical/WallWires2" unique_id=1739293583 instance=ExtResource("13_iru7g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9846725, 0.4433639, -5.5425816)
+
+[node name="ElectricalBox2" parent="Electrical/WallWires2" unique_id=1885019214 instance=ExtResource("13_iru7g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.985, 0.443, 2.487)
+
+[node name="WiresLeft" parent="Electrical/WallWires2" unique_id=684570472 instance=ExtResource("14_7yyx8")]
+transform = Transform3D(-5.2125306e-16, -1.1924881e-08, 1, 1, -4.371139e-08, 0, 4.371139e-08, 1, 1.1924881e-08, -2.1851606, 0.256, -5.441)
+
+[node name="WiresLeft2" parent="Electrical/WallWires2" unique_id=1486149887 instance=ExtResource("14_7yyx8")]
+transform = Transform3D(-5.2125306e-16, -1.1924881e-08, 1, 1, -4.371139e-08, 0, 4.371139e-08, 1, 1.1924881e-08, -2.185, 0.256, -1.571)
+
+[node name="WiresRight" parent="Electrical/WallWires2" unique_id=2138123805 instance=ExtResource("15_ln0cn")]
+transform = Transform3D(-5.2125306e-16, 1.1924881e-08, 1, -1, -4.371139e-08, 0, 4.371139e-08, -1, 1.1924881e-08, -2.18, 1.43, 0.675)
+
+[node name="WallWires3" type="Node3D" parent="Electrical" unique_id=245192019]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.385, 0, 5.26)
+
+[node name="ElectricalBox" parent="Electrical/WallWires3" unique_id=1796171537 instance=ExtResource("13_iru7g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9846725, 0.4433639, -5.5425816)
+
+[node name="ElectricalBox2" parent="Electrical/WallWires3" unique_id=2038045023 instance=ExtResource("13_iru7g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.985, 0.443, 2.487)
+
+[node name="WiresLeft" parent="Electrical/WallWires3" unique_id=703735813 instance=ExtResource("14_7yyx8")]
+transform = Transform3D(-5.2125306e-16, -1.1924881e-08, 1, 1, -4.371139e-08, 0, 4.371139e-08, 1, 1.1924881e-08, -2.1851606, 0.256, -5.441)
+
+[node name="WiresLeft2" parent="Electrical/WallWires3" unique_id=905500520 instance=ExtResource("14_7yyx8")]
+transform = Transform3D(-5.2125306e-16, -1.1924881e-08, 1, 1, -4.371139e-08, 0, 4.371139e-08, 1, 1.1924881e-08, -2.185, 0.256, -1.571)
+
+[node name="WiresRight" parent="Electrical/WallWires3" unique_id=2021039188 instance=ExtResource("15_ln0cn")]
+transform = Transform3D(-5.2125306e-16, 1.1924881e-08, 1, -1, -4.371139e-08, 0, 4.371139e-08, -1, 1.1924881e-08, -2.18, 1.43, 0.675)
 
 [node name="Trash" type="Node3D" parent="." unique_id=651322574]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.63516, 0, -22)
@@ -432,6 +491,9 @@ transform = Transform3D(0.15643442, 0, 0.9876883, 0, 1, 0, -0.9876883, 0, 0.1564
 
 [node name="canister10" parent="ShipSupplies" unique_id=1581855816 instance=ExtResource("30_kpkm3")]
 transform = Transform3D(0.15643442, 0, 0.9876883, 0, 1, 0, -0.9876883, 0, 0.15643442, 5.46476, 0, -5.064335)
+
+[node name="Forklift" parent="ShipSupplies" unique_id=1393790818 instance=ExtResource("38_kpkm3")]
+transform = Transform3D(-0.8562673, 0, -0.516533, 0, 1, 0, 0.516533, 0, -0.8562673, 3.684001, 0.215, -2.975)
 
 [node name="PersonalItems" type="Node3D" parent="." unique_id=1044334352]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.419, 0, -17)
@@ -721,6 +783,3 @@ transform = Transform3D(-2.1855694e-08, 0, -0.5, 0, 0.5, 0, 0.5, 0, -2.1855694e-
 
 [node name="HealthpackTable3" parent="." unique_id=546272465 instance=ExtResource("18_r5xfg")]
 transform = Transform3D(-0.5, 0, -4.371139e-08, 0, 0.5, 0, 4.371139e-08, 0, -0.5, -18.008553, 0, -24.208368)
-
-[node name="Forklift" parent="." unique_id=1393790818 instance=ExtResource("38_kpkm3")]
-transform = Transform3D(-0.8562673, 0, -0.516533, 0, 1, 0, 0.516533, 0, -0.8562673, -13.735, 0.215, -0.475)

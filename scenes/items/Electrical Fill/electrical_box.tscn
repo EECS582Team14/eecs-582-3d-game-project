@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://d2ftc6coiqii6"]
+
+[ext_resource type="PackedScene" uid="uid://cxvoebndduqwr" path="res://scenes/items/Electrical Fill/electrical_control_panel_sci-fi.glb" id="1_y8i18"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7eiis"]
+size = Vector3(0.485, 1.835, 0.835)
+
+[node name="ElectricalBox" type="StaticBody3D" unique_id=135373225]
+
+[node name="Sketchfab_Scene" parent="." unique_id=16396734 instance=ExtResource("1_y8i18")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2069943755]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 0.915, 0)
+shape = SubResource("BoxShape3D_7eiis")

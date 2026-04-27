@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://c45n4iy33cv3i"]
+
+[ext_resource type="PackedScene" uid="uid://dc7hcljknscis" path="res://scenes/items/Electrical Fill/wires_right_side.glb" id="1_qb77h"]
+
+[node name="WiresRight" type="Node3D" unique_id=14178359]
+
+[node name="Sketchfab_Scene" parent="." unique_id=21617849 instance=ExtResource("1_qb77h")]
