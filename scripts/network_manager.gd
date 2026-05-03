@@ -27,6 +27,7 @@ signal ship_integrity_update_received(sender_steam_id: int, integrity: float)
 signal taser_hide_received(steam_id: int, hidden: bool)
 signal armory_button_changed(button_id: String, pressed: bool)
 signal punch_received(steam_id: int)
+signal baton_swing_received(steam_id: int)
 signal item_dropped_received(item_id: String, tranform: Transform3D, uses: int)
 signal taser_dead(steam_id: int)
 signal sabotage_received(sabotage_type: String)
@@ -65,6 +66,7 @@ enum PacketType {
 	TASER_HIDE,
 	ARMORY_BUTTON,
 	PUNCH,
+	BATON_SWING,
 	TASER_DEAD,
 	SABOTAGE,
 	POSSESS_START,
@@ -240,6 +242,9 @@ func send_door_state_change(door_id: String, action: String):
 func send_punch():
 	send_p2p_packet(0, {"type": PacketType.PUNCH}, Steam.P2P_SEND_RELIABLE, 0)
 
+func send_baton_swing():
+	send_p2p_packet(0, {"type": PacketType.BATON_SWING}, Steam.P2P_SEND_RELIABLE, 0)
+
 func send_armory_button(button_id: String, pressed: bool):
 	send_p2p_packet(0, {"type": PacketType.ARMORY_BUTTON, "button_id": button_id, "pressed": pressed}, Steam.P2P_SEND_RELIABLE, 0)
 	armory_button_changed.emit(button_id, pressed)
@@ -411,6 +416,9 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 
 		PacketType.PUNCH:
 			punch_received.emit(sender_steam_id)
+
+		PacketType.BATON_SWING:
+			baton_swing_received.emit(sender_steam_id)
 
 		PacketType.TASER_DEAD:
 			taser_dead.emit(sender_steam_id)

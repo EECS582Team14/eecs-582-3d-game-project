@@ -347,6 +347,7 @@ func _ready() -> void:
 		_set_anim_looping("rifle_strafe_mirror", true)
 
 	NetworkManager.punch_received.connect(_on_punch_received)
+	NetworkManager.baton_swing_received.connect(_on_baton_swing_received)
 
 	if is_local_player:
 		# Capture the mouse cursor for looking around
@@ -805,6 +806,20 @@ func _on_punch_received(sender_steam_id: int) -> void:
 	_anim_player.speed_scale = 2.0
 	await _anim_player.animation_finished
 	_is_punching = false
+	_current_anim_state = ""
+
+func _on_baton_swing_received(sender_steam_id: int) -> void:
+	if sender_steam_id != steam_id:
+		return
+	if not _anim_player:
+		return
+	_is_swinging = true
+	var slash_name = "baton_slash" if _anim_player.has_animation(_anim("baton_slash")) else "punch"
+	_current_anim_state = slash_name
+	_anim_player.play(_anim(slash_name), ANIM_BLEND)
+	_anim_player.speed_scale = 1.0
+	await _anim_player.animation_finished
+	_is_swinging = false
 	_current_anim_state = ""
 
 func _punch_hit_check() -> void:
@@ -1765,6 +1780,7 @@ func _swing_baton() -> void:
 	_current_anim_state = slash_name
 	_anim_player.play(_anim(slash_name), 0.2)
 	_anim_player.speed_scale = 1.0
+	NetworkManager.send_baton_swing()
 	
 	await get_tree().create_timer(0.2).timeout
 	_baton_hit_check()
