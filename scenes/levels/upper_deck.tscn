@@ -253,6 +253,9 @@ transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.027, -4.1000004, 0, 0.19
 [node name="Server6" parent="Nexus" unique_id=1763979540 instance=ExtResource("7_8q6of")]
 transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.027, 3.8999996, 0, 0.19999886)
 
+[node name="baton_pickup" parent="Nexus" unique_id=2003324940 instance=ExtResource("32_4clrc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.1144714, -0.037302077, 0)
+
 [node name="NavBridge" type="Node3D" parent="." unique_id=1363310021]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -22.5)
 
@@ -811,7 +814,7 @@ transform = Transform3D(0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0, 0.
 [node name="ammo_crate2" parent="Armory/Shelf" unique_id=778280288 instance=ExtResource("29_egdqv")]
 transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0, 0.80391306, 0)
 
-[node name="baton_pickup12" parent="Armory/Shelf" unique_id=2003324940 instance=ExtResource("32_4clrc")]
+[node name="baton_pickup12" parent="Armory/Shelf" unique_id=1478818311 instance=ExtResource("32_4clrc")]
 transform = Transform3D(1.6147119e-09, 0.03694032, 0.999317, 0.99999976, -4.3711374e-08, -4.7549118e-17, 4.368154e-08, 0.999317, -0.03694032, -0.14146805, 1.297066, 0.009262085)
 item_id = "baton_13"
 

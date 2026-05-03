@@ -70,6 +70,11 @@ var _crouch_taser_idle_scene: PackedScene = preload("res://scenes/player/idle_cr
 var _crouch_taser_walk_scene: PackedScene = preload("res://scenes/player/crouch_run_taser.fbx")
 var _crouch_taser_strafe_right_scene: PackedScene = preload("res://scenes/player/strafe_right_crouch_taser.fbx")
 var _crouch_taser_strafe_left_scene: PackedScene = preload("res://scenes/player/strafe_left_crouch_taser.fbx")
+var _baton_idle_scene: PackedScene = preload("res://scenes/player/Sword And Shield Idle.fbx")
+var _baton_run_scene: PackedScene = preload("res://scenes/player/Sword And Shield Run.fbx")
+var _baton_slash_scene: PackedScene = preload("res://scenes/player/Sword And Shield Slash.fbx")
+var _baton_strafe_right_scene: PackedScene = preload("res://scenes/player/Sword And Shield Strafe.fbx")
+var _baton_strafe_left_scene: PackedScene = preload("res://scenes/player/Sword And Shield Strafe (1).fbx")
 var _rifle_idle_scene: PackedScene = preload("res://scenes/player/Rifle Aiming Idle.fbx")
 var _breakdance_scene: PackedScene = preload("res://scenes/player/Hip Hop Dancing.fbx")
 var _thriller_scene: PackedScene = preload("res://scenes/player/Thriller Part 2.fbx")
@@ -308,6 +313,11 @@ func _ready() -> void:
 		_import_animation(_crouch_taser_walk_scene, "crouch_taser_walk", true)
 		_import_animation(_crouch_taser_strafe_right_scene, "crouch_taser_strafe_right", true)
 		_import_animation(_crouch_taser_strafe_left_scene, "crouch_taser_strafe_left", true)
+		_import_animation(_baton_idle_scene, "baton_idle", true)
+		_import_animation(_baton_run_scene, "baton_run", true)
+		_import_animation(_baton_slash_scene, "baton_slash", true)
+		_import_animation(_baton_strafe_right_scene, "baton_strafe_right", true)
+		_import_animation(_baton_strafe_left_scene, "baton_strafe_left", true)
 		_import_animation(_rifle_idle_scene, "rifle_idle", true)
 		_import_animation(_breakdance_scene, "breakdance", true)
 		_import_animation(_thriller_scene, "thriller", true)
@@ -327,6 +337,10 @@ func _ready() -> void:
 		_set_anim_looping("crouch_taser_walk", true)
 		_set_anim_looping("crouch_taser_strafe_right", true)
 		_set_anim_looping("crouch_taser_strafe_left", true)
+		_set_anim_looping("baton_idle", true)
+		_set_anim_looping("baton_run", true)
+		_set_anim_looping("baton_strafe_right", true)
+		_set_anim_looping("baton_strafe_left", true)
 		_set_anim_looping("rifle_idle", true)
 		_set_anim_looping("rifle_walk_back", true)
 		_set_anim_looping("rifle_strafe", true)
@@ -1092,6 +1106,43 @@ func _update_walk_animation() -> void:
 		_set_model_diagonal_rotation(0.0)
 		return
 
+	# When holding baton (and not crouching), use sword/shield animations
+	if has_baton and not _baton_hidden and _anim_player.has_animation(_anim("baton_run")):
+		if is_moving:
+			var right = transform.basis.x
+			var move_dir = Vector3(velocity.x, 0, velocity.z).normalized()
+			var side_dot = right.dot(move_dir)
+			var has_sideways = abs(side_dot) > 0.3
+
+			if has_sideways:
+				_reset_model_mirror()
+				if side_dot < 0:
+					if _current_anim_state != "baton_strafe_left":
+						_current_anim_state = "baton_strafe_left"
+						_anim_player.play(_anim("baton_strafe_left"), ANIM_BLEND)
+						_anim_player.speed_scale = 1.0
+				else:
+					if _current_anim_state != "baton_strafe_right":
+						_current_anim_state = "baton_strafe_right"
+						_anim_player.play(_anim("baton_strafe_right"), ANIM_BLEND)
+						_anim_player.speed_scale = 1.0
+			else:
+				if _current_anim_state != "baton_run":
+					_current_anim_state = "baton_run"
+					_reset_model_mirror()
+					_anim_player.play(_anim("baton_run"), ANIM_BLEND)
+					_anim_player.speed_scale = 1.5
+			if not _anim_player.is_playing():
+				_anim_player.play(_anim_player.current_animation, ANIM_BLEND)
+		else:
+			_reset_model_mirror()
+			if _current_anim_state != "baton_idle":
+				_current_anim_state = "baton_idle"
+				_anim_player.play(_anim("baton_idle"), ANIM_BLEND)
+				_anim_player.speed_scale = 1.0
+		_set_model_diagonal_rotation(0.0)
+		return
+
 	if is_moving:
 		var forward = -transform.basis.z
 		var right = transform.basis.x
@@ -1159,6 +1210,21 @@ func _set_remote_moving(moving: bool, moving_backward: bool = false) -> void:
 			if _current_anim_state != "rifle_idle":
 				_current_anim_state = "rifle_idle"
 				_anim_player.play(_anim("rifle_idle"), ANIM_BLEND)
+				_anim_player.speed_scale = 1.0
+		return
+	# Remote players holding baton use sword/shield animations
+	if has_baton and not _baton_hidden and _anim_player.has_animation(_anim("baton_run")):
+		if moving:
+			if _current_anim_state != "baton_run":
+				_current_anim_state = "baton_run"
+				_anim_player.play(_anim("baton_run"), ANIM_BLEND)
+				_anim_player.speed_scale = 1.5
+			if not _anim_player.is_playing():
+				_anim_player.play(_anim("baton_run"), ANIM_BLEND)
+		else:
+			if _current_anim_state != "baton_idle":
+				_current_anim_state = "baton_idle"
+				_anim_player.play(_anim("baton_idle"), ANIM_BLEND)
 				_anim_player.speed_scale = 1.0
 		return
 	if moving:
@@ -1532,10 +1598,51 @@ func _attach_baton_model() -> void:
 	if _held_baton:
 		return
 	_held_baton = _baton_scene.instantiate()
-	_held_baton.scale = Vector3(0.5, 0.5, 0.5)
-	_held_baton.rotation_degrees.y = 90.0
-	weapon_holder.add_child(_held_baton)
-	
+
+	var hand_attach := _get_or_create_hand_attachment()
+	if hand_attach:
+		# Bone is inside PlayerModel (scale 65) inside player root (scale 1.1),
+		# so divide visible scale through to compensate
+		_held_baton.scale = Vector3(0.008, 0.008, 0.008)
+		_held_baton.rotation_degrees = Vector3(0, 0, 0)
+		_held_baton.position = Vector3(0, 0, 0)
+		hand_attach.add_child(_held_baton)
+	else:
+		# Fallback: camera-relative (only visible in first-person)
+		_held_baton.scale = Vector3(0.5, 0.5, 0.5)
+		_held_baton.rotation_degrees.y = 90.0
+		weapon_holder.add_child(_held_baton)
+
+func _get_or_create_hand_attachment() -> BoneAttachment3D:
+	var skel := _find_skeleton($PlayerModel)
+	if not skel:
+		return null
+	var existing := skel.get_node_or_null("BatonHandAttach")
+	if existing and existing is BoneAttachment3D:
+		return existing
+	var bone_idx := -1
+	for bone_name in ["mixamorig_RightHand", "mixamorig:RightHand", "RightHand", "mixamorig_RightHandIndex1"]:
+		bone_idx = skel.find_bone(bone_name)
+		if bone_idx != -1:
+			break
+	if bone_idx == -1:
+		return null
+	var attach := BoneAttachment3D.new()
+	attach.name = "BatonHandAttach"
+	attach.bone_idx = bone_idx
+	skel.add_child(attach)
+	return attach
+
+func _find_skeleton(node: Node) -> Skeleton3D:
+	if node is Skeleton3D:
+		return node
+	for c in node.get_children():
+		var s := _find_skeleton(c)
+		if s:
+			return s
+	return null
+
+
 func _on_taser_dead(steam_id):
 	var player = NetworkManager.get_player(steam_id)
 	if player and player != self and player._held_baton:
@@ -1654,8 +1761,10 @@ func _swing_baton() -> void:
 		return
 	_is_swinging = true
 	baton_use_sound.play()
-	_current_anim_state = "punch"
-	_anim_player.play(_anim("punch"), 0.2)
+	var slash_name = "baton_slash" if _anim_player.has_animation(_anim("baton_slash")) else "punch"
+	_current_anim_state = slash_name
+	_anim_player.play(_anim(slash_name), 0.2)
+	_anim_player.speed_scale = 1.0
 	
 	await get_tree().create_timer(0.2).timeout
 	_baton_hit_check()
