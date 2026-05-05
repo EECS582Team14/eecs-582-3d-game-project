@@ -139,6 +139,19 @@ const THIRD_PERSON_HEIGHT: float = 1.5
 # Network update rate
 const NETWORK_UPDATE_RATE: float = 1.0 / 30.0  # 30 updates per second
 var _network_update_timer: float = 0.0
+# Idle-suppression: skip packets when nothing changed beyond these thresholds.
+# A heartbeat is forced every NETWORK_HEARTBEAT_RATE seconds so late joiners
+# (and any dropped unreliable packets) still resync.
+const NETWORK_POS_EPSILON: float = 0.01           # meters
+const NETWORK_ROT_EPSILON: float = 0.00873        # ~0.5 degrees, in radians
+const NETWORK_CAM_EPSILON: float = 0.5            # degrees (camera_rotation_x is in degrees)
+const NETWORK_HEARTBEAT_RATE: float = 1.0
+var _last_sent_position: Vector3 = Vector3.INF
+var _last_sent_rotation_y: float = INF
+var _last_sent_camera_x: float = INF
+var _last_sent_moving: bool = false
+var _last_sent_moving_back: bool = false
+var _heartbeat_timer: float = 0.0
 
 # Role assignment
 var is_impostor: bool = false
@@ -1333,19 +1346,44 @@ func _process_remote_movement(delta: float) -> void:
 
 func _send_network_update(delta: float) -> void:
 	_network_update_timer += delta
-	if _network_update_timer >= NETWORK_UPDATE_RATE:
-		_network_update_timer = 0.0
-		var moving = Vector2(velocity.x, velocity.z).length() > 0.1
-		var forward = -transform.basis.z
-		var move_dir = Vector3(velocity.x, 0, velocity.z).normalized()
-		var moving_backward = moving and forward.dot(move_dir) < -0.1
-		NetworkManager.send_player_state(
-			global_position,
-			rotation.y,
-			camera.rotation_degrees.x,
-			moving,
-			moving_backward
-		)
+	_heartbeat_timer += delta
+	if _network_update_timer < NETWORK_UPDATE_RATE:
+		return
+	_network_update_timer = 0.0
+
+	var moving = Vector2(velocity.x, velocity.z).length() > 0.1
+	var forward = -transform.basis.z
+	var move_dir = Vector3(velocity.x, 0, velocity.z).normalized()
+	var moving_backward = moving and forward.dot(move_dir) < -0.1
+	var cam_x = camera.rotation_degrees.x
+
+	# Skip the broadcast if nothing meaningful changed since the last send.
+	# At ~6 players this cuts ~150 packets/sec when everyone is idle.
+	var changed := (
+		_heartbeat_timer >= NETWORK_HEARTBEAT_RATE
+		or moving != _last_sent_moving
+		or moving_backward != _last_sent_moving_back
+		or _last_sent_position.distance_squared_to(global_position) > NETWORK_POS_EPSILON * NETWORK_POS_EPSILON
+		or absf(wrapf(rotation.y - _last_sent_rotation_y, -PI, PI)) > NETWORK_ROT_EPSILON
+		or absf(cam_x - _last_sent_camera_x) > NETWORK_CAM_EPSILON
+	)
+	if not changed:
+		return
+
+	_last_sent_position = global_position
+	_last_sent_rotation_y = rotation.y
+	_last_sent_camera_x = cam_x
+	_last_sent_moving = moving
+	_last_sent_moving_back = moving_backward
+	_heartbeat_timer = 0.0
+
+	NetworkManager.send_player_state(
+		global_position,
+		rotation.y,
+		cam_x,
+		moving,
+		moving_backward
+	)
 
 func _on_player_state_received(sender_steam_id: int, state: Dictionary) -> void:
 	# Find the player node for this sender and update their target state
