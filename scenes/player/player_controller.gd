@@ -382,6 +382,7 @@ func _ready() -> void:
 		# Connect to receive remote player states
 		NetworkManager.player_state_received.connect(_on_player_state_received)
 		NetworkManager.health_update_received.connect(_on_health_update_received)
+		NetworkManager.player_died_received.connect(_on_player_died_received)
 		NetworkManager.role_assigned.connect(_on_role_assigned)
 		NetworkManager.item_picked_up.connect(_on_item_picked_up)
 		NetworkManager.taser_shot_received.connect(_on_taser_shot_received)
@@ -1509,6 +1510,15 @@ func _on_health_update_received(sender_steam_id: int, health: int) -> void:
 		if health <= 0 and not player.is_dead:
 			player._enter_dead_state()
 
+func _on_player_died_received(dead_steam_id: int) -> void:
+	# Redundant death trigger so a single dropped HEALTH_UPDATE packet can't
+	# leave a dead player appearing alive on remote clients. _enter_dead_state
+	# is idempotent (early-returns on is_dead) so double-firing is safe.
+	var player = NetworkManager.get_player(dead_steam_id)
+	if player and player != self and not player.is_dead:
+		print("Death broadcast received for steam_id %d — entering dead state" % dead_steam_id)
+		player._enter_dead_state()
+
 # Apply gravity for local player
 func _apply_gravity(delta: float) -> void:
 	if not is_on_floor() and can_move:
@@ -2016,6 +2026,14 @@ func _enter_dead_state() -> void:
 	if is_dead:
 		return
 	is_dead = true
+	print("_enter_dead_state: steam_id=%d local=%s" % [steam_id, str(is_local_player)])
+
+	# When the LOCAL player dies, broadcast PLAYER_DIED so every other client
+	# runs _enter_dead_state on their copy of this player. This is independent
+	# of HEALTH_UPDATE — covers the debug-kill path, and adds redundancy in
+	# case a single HEALTH_UPDATE packet drops.
+	if is_local_player:
+		NetworkManager.send_player_died(steam_id)
 
 	drop_current_weapon()
 

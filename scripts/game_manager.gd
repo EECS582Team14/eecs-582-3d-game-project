@@ -282,11 +282,34 @@ func _check_win_conditions():
 
 func _trigger_game_over(impostor_won: bool):
 	game_state = GAME_STATE_GAME_OVER
+	print("_trigger_game_over: impostor_won=%s — broadcasting" % str(impostor_won))
 	NetworkManager.send_game_over(impostor_won)
+	# Resend twice more on a short delay. send_game_over is RELIABLE so this
+	# should normally be redundant, but field reports show the packet
+	# occasionally not landing on a client — repeat broadcasts get it through
+	# without harm because _on_game_over is idempotent on game_state.
+	_resend_game_over(impostor_won)
+
+func _resend_game_over(impostor_won: bool) -> void:
+	await get_tree().create_timer(0.5).timeout
+	if game_state != GAME_STATE_GAME_OVER:
+		return
+	NetworkManager.resend_game_over(impostor_won)
+	await get_tree().create_timer(1.5).timeout
+	if game_state != GAME_STATE_GAME_OVER:
+		return
+	NetworkManager.resend_game_over(impostor_won)
 
 # ============ GAME OVER HANDLING ============
 
 func _on_game_over(impostor_won: bool):
+	# Idempotent — handler may be invoked multiple times if the host
+	# retransmits GAME_OVER. Skip the side effects (voice swap, end-screen
+	# rebuild) on duplicate calls.
+	if game_state == GAME_STATE_GAME_OVER and _end_screen_layer != null:
+		print("_on_game_over: already handled, ignoring duplicate")
+		return
+	print("_on_game_over: impostor_won=%s" % str(impostor_won))
 	game_state = GAME_STATE_GAME_OVER
 	_local_player_is_impostor = NetworkManager.pending_role_impostor
 

@@ -39,6 +39,10 @@ signal door_lock_received(door_id: String, locked: bool)
 signal hide_update_recieved(locker_id: String, io: bool, steam_id: int)
 signal emote_received(steam_id: int, emote_name: String)
 signal body_reported(victim_name: String, reporter_name: String)
+# Dedicated death broadcast — fires when any player has entered dead state.
+# Redundant with HEALTH_UPDATE so a single-packet drop can't leave a dead
+# player appearing alive on remote clients.
+signal player_died_received(dead_steam_id: int)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -83,7 +87,8 @@ enum PacketType {
 	DOOR_LOCK,
 	HIDE_UPDATE,
 	EMOTE,
-	BODY_REPORTED
+	BODY_REPORTED,
+	PLAYER_DIED
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -185,6 +190,12 @@ func send_role_assignment(target_steam_id: int, is_impostor: bool, impostor_ids:
 func send_health_update(health: int):
 	send_p2p_packet(0, {"type": PacketType.HEALTH_UPDATE, "hp": health}, Steam.P2P_SEND_RELIABLE, 0)
 
+func send_player_died(dead_steam_id: int):
+	# Broadcast even though the dead player's steam_id is implicitly the
+	# sender — explicit field lets recipients handle relayed death (e.g.,
+	# host announcing a player's death) and stay forwards-compatible.
+	send_p2p_packet(0, {"type": PacketType.PLAYER_DIED, "dead_id": dead_steam_id}, Steam.P2P_SEND_RELIABLE, 0)
+
 func send_voice_data(compressed_audio: PackedByteArray):
 	send_p2p_packet(0, {"type": PacketType.VOICE_DATA, "audio": compressed_audio}, Steam.P2P_SEND_UNRELIABLE, 0)
 
@@ -230,6 +241,11 @@ func send_game_start():
 func send_game_over(impostor_won: bool):
 	send_p2p_packet(0, {"type": PacketType.GAME_OVER, "impostor_won": impostor_won}, Steam.P2P_SEND_RELIABLE, 0)
 	game_over_received.emit(impostor_won)
+
+# Broadcast-only variant for retransmits — does NOT emit locally, since the
+# host already showed their end screen on the first send_game_over call.
+func resend_game_over(impostor_won: bool):
+	send_p2p_packet(0, {"type": PacketType.GAME_OVER, "impostor_won": impostor_won}, Steam.P2P_SEND_RELIABLE, 0)
 
 func send_play_again():
 	send_p2p_packet(0, {"type": PacketType.PLAY_AGAIN}, Steam.P2P_SEND_RELIABLE, 0)
@@ -398,6 +414,9 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 
 		PacketType.HEALTH_UPDATE:
 			health_update_received.emit(sender_steam_id, data.get("hp", 0))
+
+		PacketType.PLAYER_DIED:
+			player_died_received.emit(data.get("dead_id", sender_steam_id))
 
 		PacketType.ROLE_ASSIGNMENT:
 			var is_imp = data.get("impostor", false)
