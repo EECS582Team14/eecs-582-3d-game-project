@@ -383,6 +383,7 @@ func _ready() -> void:
 		NetworkManager.player_state_received.connect(_on_player_state_received)
 		NetworkManager.health_update_received.connect(_on_health_update_received)
 		NetworkManager.player_died_received.connect(_on_player_died_received)
+		NetworkManager.weapon_equipped_received.connect(_on_weapon_equipped_received)
 		NetworkManager.role_assigned.connect(_on_role_assigned)
 		NetworkManager.item_picked_up.connect(_on_item_picked_up)
 		NetworkManager.taser_shot_received.connect(_on_taser_shot_received)
@@ -1519,6 +1520,22 @@ func _on_player_died_received(dead_steam_id: int) -> void:
 		print("Death broadcast received for steam_id %d — entering dead state" % dead_steam_id)
 		player._enter_dead_state()
 
+func _on_weapon_equipped_received(equipper_steam_id: int, weapon_type: String, uses: int) -> void:
+	# Dedicated path for attaching a weapon model to a remote player. This is
+	# redundant with the ITEM_PICKUP path but more reliable since it's
+	# explicit about the visual equip and idempotent on the receiver — we
+	# drop whatever the player was holding and attach the new weapon.
+	var player = NetworkManager.get_player(equipper_steam_id)
+	if not player or player == self:
+		return
+	print("Weapon equipped broadcast for steam_id %d weapon=%s uses=%d" % [equipper_steam_id, weapon_type, uses])
+	if "drop_current_weapon" in player:
+		player.drop_current_weapon()
+	if weapon_type == "taser" and player.has_method("give_taser"):
+		player.give_taser()
+	elif weapon_type == "baton" and player.has_method("give_baton"):
+		player.give_baton(uses)
+
 # Apply gravity for local player
 func _apply_gravity(delta: float) -> void:
 	if not is_on_floor() and can_move:
@@ -1687,6 +1704,11 @@ func give_taser() -> void:
 	taser_pickup_sound.play()
 	if is_local_player and not _third_person:
 		$PlayerModel.visible = false
+	# Broadcast so other clients explicitly attach the model on their copy of
+	# this player. Redundant with ITEM_PICKUP but the visual-equip is the
+	# user-visible thing, so we want a dedicated reliable path.
+	if is_local_player:
+		NetworkManager.send_weapon_equipped("taser")
 	if is_local_player:
 		_notification_label.text = "Taser Acquired!"
 		_notification_label.visible = true
@@ -1713,6 +1735,11 @@ func give_baton(current_uses: int = MAX_BATON_USES) -> void:
 	baton_uses = current_uses
 	_attach_baton_model()
 	baton_pickup_sound.play()
+	# Broadcast so other clients explicitly attach the model on their copy of
+	# this player. Redundant with ITEM_PICKUP but the visual-equip is the
+	# user-visible thing, so we want a dedicated reliable path.
+	if is_local_player:
+		NetworkManager.send_weapon_equipped("baton", current_uses)
 	if is_local_player:
 		_notification_label.text = "Baton Acquired (Power Level: %s%%)!" % (baton_uses * 100 / MAX_BATON_USES)
 		_notification_label.visible = true

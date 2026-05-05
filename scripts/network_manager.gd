@@ -43,6 +43,12 @@ signal body_reported(victim_name: String, reporter_name: String)
 # Redundant with HEALTH_UPDATE so a single-packet drop can't leave a dead
 # player appearing alive on remote clients.
 signal player_died_received(dead_steam_id: int)
+# Dedicated visual-equip broadcast. ITEM_PICKUP already kicks remote clients
+# into give_baton/give_taser, but field reports show the weapon model
+# sometimes not appearing on the picker's remote model. This is a redundant
+# explicit "attach this weapon to this player" message that other clients
+# act on idempotently.
+signal weapon_equipped_received(equipper_steam_id: int, weapon_type: String, uses: int)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -88,7 +94,8 @@ enum PacketType {
 	HIDE_UPDATE,
 	EMOTE,
 	BODY_REPORTED,
-	PLAYER_DIED
+	PLAYER_DIED,
+	WEAPON_EQUIPPED
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -195,6 +202,13 @@ func send_player_died(dead_steam_id: int):
 	# sender — explicit field lets recipients handle relayed death (e.g.,
 	# host announcing a player's death) and stay forwards-compatible.
 	send_p2p_packet(0, {"type": PacketType.PLAYER_DIED, "dead_id": dead_steam_id}, Steam.P2P_SEND_RELIABLE, 0)
+
+func send_weapon_equipped(weapon_type: String, uses: int = 0):
+	# Broadcast that the local player now visibly holds this weapon. Receivers
+	# attach the model to their copy of this player. Independent of
+	# ITEM_PICKUP so the model attaches reliably even if the pickup-handler
+	# path fails for any reason.
+	send_p2p_packet(0, {"type": PacketType.WEAPON_EQUIPPED, "weapon": weapon_type, "uses": uses}, Steam.P2P_SEND_RELIABLE, 0)
 
 func send_voice_data(compressed_audio: PackedByteArray):
 	send_p2p_packet(0, {"type": PacketType.VOICE_DATA, "audio": compressed_audio}, Steam.P2P_SEND_UNRELIABLE, 0)
@@ -417,6 +431,9 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 
 		PacketType.PLAYER_DIED:
 			player_died_received.emit(data.get("dead_id", sender_steam_id))
+
+		PacketType.WEAPON_EQUIPPED:
+			weapon_equipped_received.emit(sender_steam_id, data.get("weapon", ""), data.get("uses", 0))
 
 		PacketType.ROLE_ASSIGNMENT:
 			var is_imp = data.get("impostor", false)
