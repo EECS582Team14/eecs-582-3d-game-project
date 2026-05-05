@@ -45,7 +45,11 @@ func _setup_cameras() -> void:
 		var viewport = SubViewport.new()
 		viewport.name = "CamViewport_" + cam_name.replace(" ", "_")
 		viewport.size = VIEWPORT_SIZE
-		viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+		# UPDATE_WHEN_VISIBLE: only render the camera feed when the monitor mesh
+		# using it is visible to the active camera. When players aren't in the
+		# Cams room, none of the 6 viewports render — saves a huge amount of
+		# rendering work for what's nearly always an off-screen feed.
+		viewport.render_target_update_mode = SubViewport.UPDATE_WHEN_VISIBLE
 		viewport.own_world_3d = false
 		# Manually assign the world so the camera sees the game level
 		viewport.world_3d = get_viewport().world_3d

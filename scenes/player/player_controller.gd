@@ -139,6 +139,10 @@ const THIRD_PERSON_HEIGHT: float = 1.5
 # Network update rate
 const NETWORK_UPDATE_RATE: float = 1.0 / 30.0  # 30 updates per second
 var _network_update_timer: float = 0.0
+# Interaction raycast throttle — 15 Hz feels indistinguishable from per-frame
+# for "Press E" prompts and saves an aggressive raycast every physics tick.
+const INTERACTION_RAYCAST_RATE: float = 1.0 / 15.0
+var _interaction_raycast_timer: float = 0.0
 # Idle-suppression: skip packets when nothing changed beyond these thresholds.
 # A heartbeat is forced every NETWORK_HEARTBEAT_RATE seconds so late joiners
 # (and any dropped unreliable packets) still resync.
@@ -643,6 +647,17 @@ func _ready() -> void:
 		camera.current = false
 		set_process_input(false)
 		$HUD.visible = false
+		# Kill the shadowed SpotLight3D entirely on remote players.
+		# Each shadowed light is one extra shadow map per frame; with 6 players
+		# that's 5 unnecessary shadow maps for everyone.
+		if flashlight:
+			flashlight.shadow_enabled = false
+			flashlight.visible = false
+		# Local-only audio/UI nodes — leave them in the tree but stop them
+		# from polling/processing. Footsteps in particular check is_on_floor()
+		# which is meaningless on a remote-controlled CharacterBody3D anyway.
+		if steps_sound:
+			steps_sound.stop()
 
 # _input() handles input events
 func _input(event: InputEvent) -> void:
@@ -839,18 +854,24 @@ func _punch_hit_check() -> void:
 	if not GameManager.players_container:
 		return
 	var punch_dir = -global_transform.basis.z
+	var range_sq = PUNCH_RANGE * PUNCH_RANGE
+	# dot(punch_dir, normalized(to_player)) > PUNCH_ANGLE  is equivalent to
+	# dot(punch_dir, to_player) > 0 AND dot^2 > PUNCH_ANGLE^2 * dist_sq.
+	# Avoids the sqrt in length()/normalized().
+	var angle_sq = PUNCH_ANGLE * PUNCH_ANGLE
 	for player in GameManager.players_container.get_children():
 		if player == self or not player is CharacterBody3D:
 			continue
 		if player.is_dead:
 			continue
 		var to_player = player.global_position - global_position
-		var distance = to_player.length()
-		if distance > PUNCH_RANGE:
+		var dist_sq = to_player.length_squared()
+		if dist_sq > range_sq or dist_sq <= 0.0:
 			continue
-		var direction = to_player.normalized()
-		if punch_dir.dot(direction) > PUNCH_ANGLE:
+		var dot = punch_dir.dot(to_player)
+		if dot > 0.0 and dot * dot > angle_sq * dist_sq:
 			NetworkManager.send_taser_hit(player.steam_id, PUNCH_DAMAGE)
+			break
 
 func _on_resume_game() -> void:
 	_is_paused = false
@@ -916,12 +937,14 @@ func _physics_process(delta: float) -> void:
 	if is_local_player and _minigame_active:
 		return
 	
-	# Footsteps
-	if velocity.x != 0 and is_on_floor() and not _is_crouching:
-		if !steps_sound.playing:
-			steps_sound.play()
-	elif steps_sound.playing:
-		steps_sound.stop()
+	# Footsteps (local player only — is_on_floor is unreliable on remote-driven
+	# CharacterBody3Ds since we don't run move_and_slide for them)
+	if is_local_player:
+		if velocity.x != 0 and is_on_floor() and not _is_crouching:
+			if !steps_sound.playing:
+				steps_sound.play()
+		elif steps_sound.playing:
+			steps_sound.stop()
 		
 	if is_local_player:
 		# If being possessed, apply remote movement instead of local input
@@ -956,7 +979,10 @@ func _physics_process(delta: float) -> void:
 			move_and_slide()
 			_update_walk_animation()
 			_send_network_update(delta)
-			_update_interaction_look()
+			_interaction_raycast_timer += delta
+			if _interaction_raycast_timer >= INTERACTION_RAYCAST_RATE:
+				_interaction_raycast_timer = 0.0
+				_update_interaction_look()
 			if _taser_cooldown_timer > 0.0:
 				_taser_cooldown_timer -= delta
 				_taser_timer_circle.value = TASER_COOLDOWN - _taser_cooldown_timer
@@ -1333,6 +1359,15 @@ func _process_ghost_movement(_delta: float) -> void:
 		velocity.y = -speed
 
 func _process_remote_movement(delta: float) -> void:
+	# Skip the lerp work entirely once we're effectively at the target. Saves
+	# 3 lerps + a transform write per remote player per physics frame when
+	# they're standing still — common case.
+	var pos_delta_sq = global_position.distance_squared_to(_target_position)
+	var rot_delta = absf(wrapf(rotation.y - _target_rotation_y, -PI, PI))
+	var cam_delta = absf(camera.rotation_degrees.x - _target_camera_rotation_x)
+	if pos_delta_sq < 0.0001 and rot_delta < 0.001 and cam_delta < 0.05:
+		return
+
 	# Interpolate position smoothly
 	global_position = global_position.lerp(_target_position, interpolation_speed * delta)
 
@@ -1830,11 +1865,18 @@ func _swing_baton() -> void:
 	
 func _baton_hit_check() -> void:
 	var swing_dir = -global_transform.basis.z
+	var range_sq = BATON_RANGE * BATON_RANGE
+	# 0.5 is the cone-cosine threshold; squared so we can avoid normalize().
+	const ANGLE_SQ := 0.25
 	for player in GameManager.players_container.get_children():
 		if player == self or not player is CharacterBody3D or player.is_dead:
 			continue
 		var to_player = player.global_position - global_position
-		if to_player.length() < BATON_RANGE and swing_dir.dot(to_player.normalized()) > 0.5:			
+		var dist_sq = to_player.length_squared()
+		if dist_sq > range_sq or dist_sq <= 0.0:
+			continue
+		var dot = swing_dir.dot(to_player)
+		if dot > 0.0 and dot * dot > ANGLE_SQ * dist_sq:
 			baton_uses -= 1
 			_update_baton_status()
 			NetworkManager.send_taser_hit(player.steam_id, BATON_DAMAGE)

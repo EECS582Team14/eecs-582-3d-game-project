@@ -35,6 +35,12 @@ const SCRAMBLE_PITCH: float = 1.6
 const VOICE_BUS_NAME: String = "VoiceChat"
 var _voice_bus_idx: int = -1
 
+# Poll Steam mic + broadcast at ~30Hz instead of every frame. Steam already
+# buffers voice samples internally between calls, so a slightly slower poll
+# rate just batches more samples per packet (fewer packets, same audio).
+const VOICE_POLL_RATE: float = 1.0 / 30.0
+var _voice_poll_timer: float = 0.0
+
 func _ready():
 	NetworkManager.voice_data_received.connect(_on_voice_data_received)
 	UIState.sabotage_triggered.connect(_on_sabotage_triggered)
@@ -68,9 +74,13 @@ func _on_sabotage_ended(sabotage_type: String) -> void:
 	if sabotage_type == "anonymous":
 		set_voice_scramble(false)
 
-func _process(_delta):
+func _process(delta):
 	if not is_active:
 		return
+	_voice_poll_timer += delta
+	if _voice_poll_timer < VOICE_POLL_RATE:
+		return
+	_voice_poll_timer = 0.0
 	_poll_and_send_voice()
 
 # ============ RECORDING CONTROL ============

@@ -9,7 +9,10 @@ extends StaticBody3D
 @onready var sound_player: AudioStreamPlayer3D = $AudioStreamPlayer3D
 
 # Internal state variables
-var is_locked: bool = false
+var is_locked: bool = false:
+	set(value):
+		is_locked = value
+		_apply_locked_visuals()
 var _is_open: bool = false
 var _is_animating: bool = false
 var _bodies_in_range: int = 0
@@ -34,9 +37,12 @@ func _ready() -> void:
 	NetworkManager.door_opened.connect(_on_door_opened)
 	NetworkManager.door_closed.connect(_on_door_closed)
 	NetworkManager.door_lock_received.connect(_on_door_lock_received)
+	# Apply once at startup since the setter ran before @onready vars existed.
+	_apply_locked_visuals()
 
-func _process(_delta: float) -> void:
-	# Update the door's mesh based on its locked state
+func _apply_locked_visuals() -> void:
+	if not door_mesh or not lock_icon:
+		return
 	if is_locked:
 		door_mesh.material_override = locked_mesh
 		lock_icon.visible = true

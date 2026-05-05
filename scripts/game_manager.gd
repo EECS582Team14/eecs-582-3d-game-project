@@ -50,6 +50,11 @@ const PROGRESS_SYNC_RATE: float = 1.0
 var _progress_sync_timer: float = 0.0
 var true_destination_progress: float = 0
 
+# Win conditions only change on death/integrity events, so the per-frame loop
+# was wasteful. 2 Hz is plenty responsive for end-of-game detection.
+const WIN_CHECK_RATE: float = 0.5
+var _win_check_timer: float = 0.0
+
 # Arrival countdown
 var arrival_time: float = 0.0  # absolute Unix timestamp
 var timer_active: bool = false
@@ -109,8 +114,11 @@ func _process(delta):
 	if game_state == GAME_STATE_GAME_OVER:
 		return
 
-	# Check win conditions every frame (host only)
-	_check_win_conditions()
+	# Check win conditions on a timer (host only) — was every frame, now 2 Hz.
+	_win_check_timer += delta
+	if _win_check_timer >= WIN_CHECK_RATE:
+		_win_check_timer = 0.0
+		_check_win_conditions()
 
 	var now = Time.get_unix_time_from_system()
 	if now > arrival_time and game_state == 1:
