@@ -1808,14 +1808,18 @@ func drop_current_weapon() -> void:
 		NetworkManager.send_item_dropped(saved_id, pickup.global_transform, uses)
 		player_weapon_id = ""
 
-func _on_item_dropped_received(item_id: String, pos: Vector3, uses: int) -> void:
+func _on_item_dropped_received(item_id: String, xform: Transform3D, uses: int) -> void:
+	# The signal sends a Transform3D (network_manager.gd builds one with both
+	# position and rotation). Earlier this handler declared Vector3 here,
+	# causing every weapon respawn / drop to fail with a type-conversion
+	# error and skipping spawn of the pickup on remote clients.
 	var scene_to_spawn: PackedScene = null
 	if item_id.begins_with("taser"):
 		scene_to_spawn = _taser_pickup_scene
 	elif item_id.begins_with("baton"):
 		scene_to_spawn = _baton_pickup_scene
 	if scene_to_spawn:
-		_spawn_pickup_in_world(item_id, scene_to_spawn, pos, uses)
+		_spawn_pickup_in_world(item_id, scene_to_spawn, xform.origin, uses)
 		
 func _spawn_pickup_in_world(id: String, scene: PackedScene, pos: Vector3, uses: int) -> void:
 	var pickup = scene.instantiate()
@@ -1829,14 +1833,21 @@ func _spawn_pickup_in_world(id: String, scene: PackedScene, pos: Vector3, uses: 
 
 func _on_item_picked_up(picker_steam_id: int, item_id: String) -> void:
 	var player = NetworkManager.get_player(picker_steam_id)
-	if player:
-		if player != self:
-			if item_id.begins_with("taser") and player.has_method("give_taser"):
-				player.give_taser()
-			elif item_id.begins_with("baton") and player.has_method("give_baton"):
-				player.give_baton()
-		else:
-			player_weapon_id = item_id
+	if not player:
+		return
+	if player == self:
+		player_weapon_id = item_id
+		return
+	# A stale weapon model on the picker (e.g. from a previous round, or from
+	# them swapping weapons) makes _attach_*_model early-return, leaving the
+	# picker visibly empty-handed on remote clients. Drop whatever they were
+	# holding before attaching the new pickup.
+	if "drop_current_weapon" in player:
+		player.drop_current_weapon()
+	if item_id.begins_with("taser") and player.has_method("give_taser"):
+		player.give_taser()
+	elif item_id.begins_with("baton") and player.has_method("give_baton"):
+		player.give_baton()
 
 func _shoot_taser() -> void:
 	if _taser_cooldown_timer > 0.0:
@@ -1941,6 +1952,49 @@ func _toggle_third_person() -> void:
 		camera.rotation_degrees.x = 0.0
 		$PlayerModel.visible = not has_taser
 		weapon_holder.visible = true
+
+## Explicitly reset all per-round state to a fresh "alive" baseline.
+## Called by GameManager._spawn_all_players_progressively after each player
+## spawns into a new round, to defend against:
+##   1. Stale damage/death packets from a previous round that get processed
+##      during round 2's first frame and would otherwise immediately mark a
+##      freshly-spawned player dead.
+##   2. Anything else (signal handlers, lingering references) that could
+##      leave a fresh node in a non-default state.
+## Cheap to call on a fresh node — the values are already correct, this just
+## guarantees them.
+func reset_round_state() -> void:
+	is_dead = false
+	current_health = max_health
+	_is_possessed = false
+	_is_possessing = false
+	_possess_target_id = 0
+	_possess_timer = 0.0
+	_possess_move_dir = Vector3.ZERO
+	_possess_rot_y = 0.0
+	_possess_cam_x = 0.0
+	has_taser = false
+	has_baton = false
+	baton_uses = 0
+	_taser_hidden = false
+	_baton_hidden = false
+	if _held_taser and is_instance_valid(_held_taser):
+		_held_taser.queue_free()
+	_held_taser = null
+	if _held_baton and is_instance_valid(_held_baton):
+		_held_baton.queue_free()
+	_held_baton = null
+	# Restore visibility / collision in case _enter_dead_state ran on this
+	# node before reset (shouldn't happen on a fresh instance, but cheap to
+	# be explicit).
+	if has_node("PlayerModel"):
+		$PlayerModel.visible = true
+	if nametag and is_instance_valid(nametag):
+		nametag.visible = true
+	if has_node("PhysicsCollider"):
+		$PhysicsCollider.disabled = false
+	if _interact_label and is_instance_valid(_interact_label):
+		_interact_label.visible = false
 
 func _enter_dead_state() -> void:
 	is_dead = true

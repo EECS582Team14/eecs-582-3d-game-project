@@ -546,6 +546,13 @@ func _load_game_level():
 	await get_tree().process_frame
 	await get_tree().process_frame
 
+	# Drain any P2P packets that were still in flight from the previous round
+	# (final HEALTH_UPDATE / TASER_HIT / GAME_OVER messages). Without this, a
+	# late-arriving damage packet can land on a freshly-spawned player and
+	# immediately re-mark them dead, leaving them stuck in ghost mode for the
+	# new round.
+	NetworkManager.flush_packet_queue()
+
 	# Synchronous scene change — the threaded variant could silently fail and
 	# leave a player stuck on the previous scene while we kept spawning into
 	# their old current_scene. Sync is reliable; the per-frame win comes from
@@ -677,6 +684,14 @@ func _spawn_all_players_progressively() -> void:
 	if existing_player:
 		existing_player.queue_free()
 
+	# Clear any corpse nodes left over from a previous round. The level scene
+	# is fresh so this is normally empty, but any node that ended up parented
+	# elsewhere (e.g., directly under the SceneTree root) would survive the
+	# scene change and confuse win-condition / interaction logic.
+	for corpse in get_tree().get_nodes_in_group("corpse"):
+		if is_instance_valid(corpse):
+			corpse.queue_free()
+
 	if players_container == null:
 		players_container = Node3D.new()
 		players_container.name = "Players"
@@ -713,6 +728,12 @@ func _spawn_all_players_progressively() -> void:
 
 		if not is_local:
 			VoiceManager.setup_player_voice(player_steam_id, player)
+
+		# Defensive reset of round-related state (is_dead, possession, weapons,
+		# health, visibility). Belt-and-suspenders against stale damage/death
+		# packets from a previous round being processed during this frame.
+		if player.has_method("reset_round_state"):
+			player.reset_round_state()
 
 		print("Spawned player: ", member.name, " (local: ", is_local, ")")
 

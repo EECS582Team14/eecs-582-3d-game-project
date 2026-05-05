@@ -324,6 +324,22 @@ func _read_all_p2p_packets(_read_count: int = 0):
 			return
 		_read_p2p_packet()
 
+# Discard any queued P2P packets without dispatching their signals. Called
+# at the start of a new round so stale damage/death/state packets from the
+# previous round can't immediately re-kill or desync a freshly-spawned player.
+func flush_packet_queue() -> void:
+	var dropped := 0
+	# No PACKET_READ_LIMIT here — we want to fully drain whatever's queued.
+	while Steam.getAvailableP2PPacketSize(0) > 0:
+		var size: int = Steam.getAvailableP2PPacketSize(0)
+		Steam.readP2PPacket(size, 0)
+		dropped += 1
+		if dropped > 1024:
+			# Safety cap so a malicious sender can't wedge us in this loop.
+			break
+	if dropped > 0:
+		print("flush_packet_queue: discarded %d stale packets" % dropped)
+
 func _read_p2p_packet() -> void:
 	var packet_size: int = Steam.getAvailableP2PPacketSize(0)
 	if packet_size > 0:
