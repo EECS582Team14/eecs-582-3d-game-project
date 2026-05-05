@@ -199,24 +199,22 @@ func send_p2p_packet(target: int, packet_data: Dictionary, send_type: int = Stea
 			])
 
 func send_player_state(position: Vector3, rotation_y: float, camera_rotation_x: float, is_moving: bool = false, is_moving_backward: bool = false):
-	# Manual binary layout: 1B magic | 1B flags | 3x4B pos | 4B rot_y | 4B cam_x.
-	# 22 bytes vs ~80+ for the equivalent Dictionary, and skips the variant
-	# encoder/decoder entirely. PLAYER_STATE is by far our most frequent packet.
-	var buf := PackedByteArray()
-	buf.resize(_PLAYER_STATE_PACKET_SIZE)
-	buf.encode_u8(0, _PACKET_MAGIC_PLAYER_STATE)
-	var flags := 0
-	if is_moving:
-		flags |= 0x01
-	if is_moving_backward:
-		flags |= 0x02
-	buf.encode_u8(1, flags)
-	buf.encode_float(2, position.x)
-	buf.encode_float(6, position.y)
-	buf.encode_float(10, position.z)
-	buf.encode_float(14, rotation_y)
-	buf.encode_float(18, camera_rotation_x)
-	_send_raw_p2p(0, buf, Steam.P2P_SEND_UNRELIABLE, 0)
+	# Reverted from manual binary encoding back to Dictionary serialization.
+	# The binary path was suspected of breaking host->client P2P delivery
+	# (asymmetric packet loss). Idle-suppression in the player_controller
+	# already cuts most of the traffic; the per-packet CPU win from binary
+	# encoding wasn't worth the reliability risk.
+	var data = {
+		"type": PacketType.PLAYER_STATE,
+		"px": position.x,
+		"py": position.y,
+		"pz": position.z,
+		"ry": rotation_y,
+		"cx": camera_rotation_x,
+		"mv": is_moving,
+		"mb": is_moving_backward
+	}
+	send_p2p_packet(0, data, Steam.P2P_SEND_UNRELIABLE, 0)
 
 func _send_raw_p2p(target: int, data: PackedByteArray, send_type: int, channel: int) -> void:
 	# Same fan-out logic as send_p2p_packet but without re-serializing the
@@ -419,25 +417,6 @@ func _read_p2p_packet() -> void:
 
 		var packet_sender: int = packet['remote_steam_id']
 		var packet_data: PackedByteArray = packet['data']
-
-		# Fast path: manually-encoded PLAYER_STATE. Byte 0 is our sentinel
-		# (0xFF can't appear as the first byte of a var_to_bytes Dictionary).
-		if packet_data.size() == _PLAYER_STATE_PACKET_SIZE and packet_data.decode_u8(0) == _PACKET_MAGIC_PLAYER_STATE:
-			var flags: int = packet_data.decode_u8(1)
-			var state := {
-				"position": Vector3(
-					packet_data.decode_float(2),
-					packet_data.decode_float(6),
-					packet_data.decode_float(10)
-				),
-				"rotation_y": packet_data.decode_float(14),
-				"camera_rotation_x": packet_data.decode_float(18),
-				"is_moving": (flags & 0x01) != 0,
-				"is_moving_backward": (flags & 0x02) != 0,
-			}
-			player_state_received.emit(packet_sender, state)
-			return
-
 		var readable: Dictionary = bytes_to_var(packet_data)
 		_handle_packet(packet_sender, readable)
 
