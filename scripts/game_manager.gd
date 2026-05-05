@@ -92,6 +92,11 @@ var _loading_screen: CanvasLayer = null
 var _loading_progress_bar: ProgressBar = null
 var _loading_status_label: Label = null
 
+# Re-entry guard for _on_game_started. The signal can fire from multiple
+# sources now: the original P2P GAME_START packet, the host's local emit,
+# and the lobby-data fallback poll for clients that missed the packet.
+var _game_start_in_progress: bool = false
+
 func _ready():
 	NetworkManager.game_started.connect(_on_game_started)
 	NetworkManager.game_over_received.connect(_on_game_over)
@@ -444,9 +449,16 @@ func _on_play_again():
 	# Re-capture mouse
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-	# Re-open the lobby so new players can join again
+	# Re-open the lobby so new players can join again, and clear the
+	# in-progress lobby-data flag so the recovery poll doesn't immediately
+	# pull everyone back into another game.
 	if LobbyManager.lobby_id != 0:
 		Steam.setLobbyJoinable(LobbyManager.lobby_id, true)
+		if LobbyManager.is_host():
+			Steam.setLobbyData(LobbyManager.lobby_id, "game_state", "lobby")
+
+	# Allow the next round's game-started flow to fire again.
+	_game_start_in_progress = false
 
 	# Go back to lobby room
 	get_tree().call_deferred("change_scene_to_file", LOBBY_SCENE_PATH)
@@ -503,9 +515,24 @@ func start_game():
 		print("Only the host can start the game")
 
 func _on_game_started():
-	# Prevent new players from joining while the game is in progress
+	# Re-entry guard — multiple sources can fire game_started for the same
+	# round (P2P packet, host self-emit, lobby-data fallback). Without this
+	# we'd queue multiple _load_game_level coroutines, which is a recipe for
+	# scene-change races.
+	if _game_start_in_progress:
+		print("_on_game_started: already loading, ignoring duplicate")
+		return
+	_game_start_in_progress = true
+	print("_on_game_started: triggering load")
+
+	# Prevent new players from joining while the game is in progress.
+	# Also write "in_progress" to lobby data so any client that missed the
+	# P2P GAME_START packet can recover by polling lobby state. Lobby data
+	# rides on Steam's lobby system, not P2P, so it's far more reliable.
 	if LobbyManager.lobby_id != 0:
 		Steam.setLobbyJoinable(LobbyManager.lobby_id, false)
+		if LobbyManager.is_host():
+			Steam.setLobbyData(LobbyManager.lobby_id, "game_state", "in_progress")
 	destination_progress = 0.0
 	progress_speed_modifier = 1.0
 	_progress_sync_timer = 0.0
@@ -528,6 +555,7 @@ func _load_game_level():
 	if change_err != OK:
 		push_error("Failed to change scene to game level (err=%d) — aborting game start" % change_err)
 		_hide_loading_screen()
+		_game_start_in_progress = false
 		return
 
 	# Wait for the new scene to be ready before touching it.
@@ -541,6 +569,7 @@ func _load_game_level():
 	if current == null or current.scene_file_path != GAME_LEVEL:
 		push_error("After change_scene_to_file, current_scene is %s (expected %s)" % [current.scene_file_path if current else "null", GAME_LEVEL])
 		_hide_loading_screen()
+		_game_start_in_progress = false
 		return
 
 	# Get reference to WorldEnvironment

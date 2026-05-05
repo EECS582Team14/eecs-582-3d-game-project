@@ -38,6 +38,14 @@ var _host_label: Label = null
 var dot_purple = preload("res://scenes/lobby/lobby_assets/PurpleIcon.png")
 var dot_host = preload("res://scenes/lobby/lobby_assets/HostIcon.png")
 
+# Recovery: poll the Steam lobby's "game_state" data periodically so a client
+# that missed the GAME_START P2P packet still gets dragged into the game.
+# Lobby data is part of the Steam lobby itself, not a P2P channel, so it's
+# much more reliable than a single reliable packet.
+const _GAME_STATE_POLL_INTERVAL: float = 1.0
+var _game_state_poll_timer: float = 0.0
+var _missed_game_start_recovered: bool = false
+
 func _ready():
 	_build_room()
 	_build_consoles()
@@ -660,6 +668,31 @@ func _go_to_lobby_ui():
 func _on_game_started():
 	# Clean up lobby players - GameManager will spawn game players in the new scene
 	_cleanup_players()
+
+func _process(delta: float) -> void:
+	# Only the recovery check runs here. If we ever start doing real per-frame
+	# work in lobby_room, gate it explicitly so this stays cheap.
+	_game_state_poll_timer += delta
+	if _game_state_poll_timer < _GAME_STATE_POLL_INTERVAL:
+		return
+	_game_state_poll_timer = 0.0
+	_check_for_missed_game_start()
+
+func _check_for_missed_game_start() -> void:
+	# If the Steam lobby is flagged "in_progress" but we're still sitting in
+	# the lobby room, we missed the GAME_START packet. Force-fire the signal
+	# so GameManager loads the level. The re-entry guard in
+	# GameManager._on_game_started prevents duplicate loads if the original
+	# packet shows up after this.
+	if _missed_game_start_recovered:
+		return
+	if LobbyManager.lobby_id == 0:
+		return
+	var state = Steam.getLobbyData(LobbyManager.lobby_id, "game_state")
+	if state == "in_progress":
+		_missed_game_start_recovered = true
+		print("lobby_room: detected missed game start via lobby data — recovering")
+		NetworkManager.game_started.emit()
 
 func _input(event):
 	if _settings_open and event is InputEventKey and event.pressed:
