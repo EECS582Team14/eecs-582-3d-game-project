@@ -82,6 +82,11 @@ var _end_screen_layer: CanvasLayer = null
 var _end_screen: Control = null
 var _local_player_is_impostor: bool = false
 
+# Loading screen (lives under SceneTree.root so it survives scene changes)
+var _loading_screen: CanvasLayer = null
+var _loading_progress_bar: ProgressBar = null
+var _loading_status_label: Label = null
+
 func _ready():
 	NetworkManager.game_started.connect(_on_game_started)
 	NetworkManager.game_over_received.connect(_on_game_over)
@@ -501,23 +506,57 @@ func _on_game_started():
 
 
 func _load_game_level():
-	# Change to the game level scene
-	get_tree().change_scene_to_file(GAME_LEVEL)
-	# Wait for scene to load, then spawn players
+	_show_loading_screen("Loading level...")
+	# Let the loading screen actually paint before any heavy work hits the main thread.
 	await get_tree().process_frame
 	await get_tree().process_frame
-	
+
+	# Threaded load so the main thread can keep drawing the loading screen.
+	# Falls back to a synchronous change if the threaded request can't be issued.
+	var packed_scene: PackedScene = null
+	if ResourceLoader.load_threaded_request(GAME_LEVEL) == OK:
+		while true:
+			var progress: Array = []
+			var status = ResourceLoader.load_threaded_get_status(GAME_LEVEL, progress)
+			if status == ResourceLoader.THREAD_LOAD_LOADED:
+				packed_scene = ResourceLoader.load_threaded_get(GAME_LEVEL)
+				break
+			if status == ResourceLoader.THREAD_LOAD_FAILED or status == ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
+				break
+			var pct: float = (progress[0] if progress.size() > 0 else 0.0) * 60.0
+			_set_loading_status("Loading level...", pct)
+			await get_tree().process_frame
+
+	if packed_scene:
+		get_tree().change_scene_to_packed(packed_scene)
+	else:
+		get_tree().change_scene_to_file(GAME_LEVEL)
+
+	# Wait for the new scene to be ready before touching it.
+	await get_tree().process_frame
+	await get_tree().process_frame
+
 	# Get reference to WorldEnvironment
 	world_env = get_tree().current_scene.find_child("WorldEnvironment", true, false)
 	if world_env and world_env.environment:
 		_original_ambient_light_energy = world_env.environment.ambient_light_energy
-	
+
 	if LobbyManager.is_host():
 		_capture_initial_weapon_states()
 		_reset_weapon_pickups()
-	
-	_spawn_all_players()
+
+	# Spawn players one at a time with a frame in between, so the (heavy)
+	# per-player animation imports don't all stack into one mega-hitch.
+	_set_loading_status("Spawning players...", 70)
+	await get_tree().process_frame
+	await _spawn_all_players_progressively()
+
+	_set_loading_status("Loading HUD...", 90)
+	await get_tree().process_frame
 	_spawn_local_hud()
+
+	_set_loading_status("Initializing security cameras...", 95)
+	await get_tree().process_frame
 	_spawn_security_cameras()
 	if LobbyManager.is_host():
 		# emit initial timer now that HUD exists
@@ -525,6 +564,132 @@ func _load_game_level():
 		arrival_time = now + timer_phase_one
 		timer_active = true
 		_broadcast_timer_sync()
+
+	_set_loading_status("Ready!", 100)
+	# Hold one extra frame so the first post-load render doesn't show through.
+	await get_tree().process_frame
+	await get_tree().process_frame
+	_hide_loading_screen()
+
+# ============ LOADING SCREEN ============
+
+func _show_loading_screen(initial_text: String = "Loading...") -> void:
+	if _loading_screen != null:
+		_set_loading_status(initial_text, 0.0)
+		return
+
+	_loading_screen = CanvasLayer.new()
+	_loading_screen.name = "LoadingScreen"
+	_loading_screen.layer = 200  # render above everything
+
+	var bg = ColorRect.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.color = Color(0.04, 0.05, 0.08, 1.0)
+	bg.mouse_filter = Control.MOUSE_FILTER_STOP  # block clicks while loading
+	_loading_screen.add_child(bg)
+
+	var center = CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.add_child(center)
+
+	var vbox = VBoxContainer.new()
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_theme_constant_override("separation", 22)
+	center.add_child(vbox)
+
+	var title = Label.new()
+	title.text = initial_text
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 36)
+	title.add_theme_color_override("font_color", Color(0.85, 0.95, 1.0, 1.0))
+	vbox.add_child(title)
+	_loading_status_label = title
+
+	var bar = ProgressBar.new()
+	bar.min_value = 0.0
+	bar.max_value = 100.0
+	bar.value = 0.0
+	bar.show_percentage = false
+	bar.custom_minimum_size = Vector2(420, 18)
+	vbox.add_child(bar)
+	_loading_progress_bar = bar
+
+	# Attach to root, NOT current_scene, so the screen survives change_scene_to_*.
+	get_tree().root.add_child(_loading_screen)
+
+func _set_loading_status(text: String, progress: float = -1.0) -> void:
+	if _loading_status_label and is_instance_valid(_loading_status_label):
+		_loading_status_label.text = text
+	if _loading_progress_bar and is_instance_valid(_loading_progress_bar) and progress >= 0.0:
+		_loading_progress_bar.value = progress
+
+func _hide_loading_screen() -> void:
+	if _loading_screen and is_instance_valid(_loading_screen):
+		_loading_screen.queue_free()
+	_loading_screen = null
+	_loading_progress_bar = null
+	_loading_status_label = null
+
+# Spawn players one per frame so the per-player FBX animation imports don't
+# collapse into a single multi-second hitch. Same end result as
+# _spawn_all_players(), just spread across frames.
+func _spawn_all_players_progressively() -> void:
+	var current_scene = get_tree().current_scene
+
+	# Remove any existing Player nodes from the scene
+	var existing_player = current_scene.get_node_or_null("Player")
+	if existing_player:
+		existing_player.queue_free()
+
+	if players_container == null:
+		players_container = Node3D.new()
+		players_container.name = "Players"
+		current_scene.add_child(players_container)
+
+	var my_steam_id = Steam.getSteamID()
+	var spawn_index = 0
+	var total = LobbyManager.lobby_members.size()
+
+	for member in LobbyManager.lobby_members:
+		var player_steam_id = member.steam_id
+		var is_local = (player_steam_id == my_steam_id)
+
+		var player = PlayerScene.instantiate()
+		player.steam_id = player_steam_id
+		player.is_local_player = is_local
+		player.name = "Player_" + str(player_steam_id)
+
+		var spawn_pos = spawn_points[spawn_index % spawn_points.size()]
+		player.position = spawn_pos
+		spawn_index += 1
+		players_container.add_child(player)
+
+		var color = PLAYER_COLORS[(spawn_index - 1) % PLAYER_COLORS.size()]
+		var mat = StandardMaterial3D.new()
+		mat.albedo_color = color
+		var model = player.get_node("PlayerModel")
+		for child in model.get_children():
+			if child is MeshInstance3D:
+				child.material_override = mat
+				break
+
+		NetworkManager.register_player(player_steam_id, player)
+
+		if not is_local:
+			VoiceManager.setup_player_voice(player_steam_id, player)
+
+		print("Spawned player: ", member.name, " (local: ", is_local, ")")
+
+		# Update progress bar and yield so the loading screen repaints
+		# between heavy player instantiations.
+		var pct = 70.0 + (float(spawn_index) / float(max(total, 1))) * 18.0
+		_set_loading_status("Spawning players (%d / %d)..." % [spawn_index, total], pct)
+		await get_tree().process_frame
+
+	VoiceManager.start()
+
+	if LobbyManager.is_host():
+		_assign_roles()
 
 func _spawn_all_players():
 	var current_scene = get_tree().current_scene
