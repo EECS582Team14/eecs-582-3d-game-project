@@ -4,6 +4,7 @@ extends Control
 
 var arrival_time: float = 0.0
 var active := false
+var _last_displayed_seconds: int = -1
 
 func _ready():
 	label.text = "--:--"
@@ -20,7 +21,13 @@ func _process(_delta):
 	if not active:
 		return
 	var remaining: float = max(0.0, arrival_time - float(Time.get_unix_time_from_system()))
-	label.text = _format_time(remaining)
+	# Only rewrite the label when the displayed second-resolution value has
+	# actually changed. Setting Label.text every frame forces a re-layout
+	# whose result is identical for ~59 of every 60 frames.
+	var whole_seconds := int(remaining)
+	if whole_seconds != _last_displayed_seconds:
+		_last_displayed_seconds = whole_seconds
+		label.text = _format_time(remaining)
 
 	if remaining <= 0.0:
 		active = false

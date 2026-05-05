@@ -42,6 +42,13 @@ signal body_reported(victim_name: String, reporter_name: String)
 
 const PACKET_READ_LIMIT: int = 32
 
+# Marker byte for the manually-serialized PLAYER_STATE packet. var_to_bytes
+# encodes a Dictionary with type=27 (TYPE_DICTIONARY) in the first byte, so
+# 0xFF is unambiguously our binary format. Cuts ~75% off PLAYER_STATE
+# bandwidth and dodges the var_to_bytes / bytes_to_var path on the hot loop.
+const _PACKET_MAGIC_PLAYER_STATE: int = 0xFF
+const _PLAYER_STATE_PACKET_SIZE: int = 22
+
 # Packet types
 enum PacketType {
 	PLAYER_STATE,
@@ -141,17 +148,36 @@ func send_p2p_packet(target: int, packet_data: Dictionary, send_type: int = Stea
 		Steam.sendP2PPacket(target, this_data, send_type, channel)
 
 func send_player_state(position: Vector3, rotation_y: float, camera_rotation_x: float, is_moving: bool = false, is_moving_backward: bool = false):
-	var data = {
-		"type": PacketType.PLAYER_STATE,
-		"px": position.x,
-		"py": position.y,
-		"pz": position.z,
-		"ry": rotation_y,
-		"cx": camera_rotation_x,
-		"mv": is_moving,
-		"mb": is_moving_backward
-	}
-	send_p2p_packet(0, data, Steam.P2P_SEND_UNRELIABLE, 0)
+	# Manual binary layout: 1B magic | 1B flags | 3x4B pos | 4B rot_y | 4B cam_x.
+	# 22 bytes vs ~80+ for the equivalent Dictionary, and skips the variant
+	# encoder/decoder entirely. PLAYER_STATE is by far our most frequent packet.
+	var buf := PackedByteArray()
+	buf.resize(_PLAYER_STATE_PACKET_SIZE)
+	buf.encode_u8(0, _PACKET_MAGIC_PLAYER_STATE)
+	var flags := 0
+	if is_moving:
+		flags |= 0x01
+	if is_moving_backward:
+		flags |= 0x02
+	buf.encode_u8(1, flags)
+	buf.encode_float(2, position.x)
+	buf.encode_float(6, position.y)
+	buf.encode_float(10, position.z)
+	buf.encode_float(14, rotation_y)
+	buf.encode_float(18, camera_rotation_x)
+	_send_raw_p2p(0, buf, Steam.P2P_SEND_UNRELIABLE, 0)
+
+func _send_raw_p2p(target: int, data: PackedByteArray, send_type: int, channel: int) -> void:
+	# Same fan-out logic as send_p2p_packet but without re-serializing the
+	# already-encoded byte array.
+	if target == 0:
+		var my_steam_id = Steam.getSteamID()
+		if LobbyManager.lobby_members.size() > 1:
+			for member in LobbyManager.lobby_members:
+				if member['steam_id'] != my_steam_id:
+					Steam.sendP2PPacket(member['steam_id'], data, send_type, channel)
+	else:
+		Steam.sendP2PPacket(target, data, send_type, channel)
 
 func send_role_assignment(target_steam_id: int, is_impostor: bool, impostor_ids: Array = [], anon_impostors: bool = false):
 	send_p2p_packet(target_steam_id, {"type": PacketType.ROLE_ASSIGNMENT, "impostor": is_impostor, "impostor_ids": impostor_ids, "anon_imp": anon_impostors}, Steam.P2P_SEND_RELIABLE, 0)
@@ -289,12 +315,14 @@ func send_hide_update(cabinet_id: String, io: bool, steam_id: int):
 	hide_update_recieved.emit(cabinet_id,io,steam_id)
 # ============ READ PACKETS ============
 
-func _read_all_p2p_packets(read_count: int = 0):
-	if read_count >= PACKET_READ_LIMIT:
-		return
-	if Steam.getAvailableP2PPacketSize(0) > 0:
+func _read_all_p2p_packets(_read_count: int = 0):
+	# Iterative drain — used to recurse, which paid GDScript call overhead per
+	# packet and could blow the stack on packet floods. The default-arg keeps
+	# the old call signature in case something external calls it.
+	for _i in range(PACKET_READ_LIMIT):
+		if Steam.getAvailableP2PPacketSize(0) <= 0:
+			return
 		_read_p2p_packet()
-		_read_all_p2p_packets(read_count + 1)
 
 func _read_p2p_packet() -> void:
 	var packet_size: int = Steam.getAvailableP2PPacketSize(0)
@@ -306,8 +334,26 @@ func _read_p2p_packet() -> void:
 
 		var packet_sender: int = packet['remote_steam_id']
 		var packet_data: PackedByteArray = packet['data']
-		var readable: Dictionary = bytes_to_var(packet_data)
 
+		# Fast path: manually-encoded PLAYER_STATE. Byte 0 is our sentinel
+		# (0xFF can't appear as the first byte of a var_to_bytes Dictionary).
+		if packet_data.size() == _PLAYER_STATE_PACKET_SIZE and packet_data.decode_u8(0) == _PACKET_MAGIC_PLAYER_STATE:
+			var flags: int = packet_data.decode_u8(1)
+			var state := {
+				"position": Vector3(
+					packet_data.decode_float(2),
+					packet_data.decode_float(6),
+					packet_data.decode_float(10)
+				),
+				"rotation_y": packet_data.decode_float(14),
+				"camera_rotation_x": packet_data.decode_float(18),
+				"is_moving": (flags & 0x01) != 0,
+				"is_moving_backward": (flags & 0x02) != 0,
+			}
+			player_state_received.emit(packet_sender, state)
+			return
+
+		var readable: Dictionary = bytes_to_var(packet_data)
 		_handle_packet(packet_sender, readable)
 
 func _handle_packet(sender_steam_id: int, data: Dictionary):

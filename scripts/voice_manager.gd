@@ -131,12 +131,21 @@ func _on_voice_data_received(sender_steam_id: int, compressed_audio: PackedByteA
 	# "size" is the actual byte count of real audio — the rest of the buffer is empty
 	var actual_byte_size: int = decompressed["size"]
 	var num_samples: int = actual_byte_size / 2
+	if num_samples <= 0:
+		return
 
-	# Convert 16-bit signed PCM samples to float frames and push to audio stream
+	# Convert 16-bit signed PCM samples to a stereo float buffer and push it
+	# in one call. The previous per-sample push_frame loop made one C++ call
+	# per sample (hundreds per voice packet, per remote player) — this batches
+	# them into a single push_buffer for ~100x lower per-packet overhead.
+	if not playback.can_push_buffer(num_samples):
+		return
+	var frames := PackedVector2Array()
+	frames.resize(num_samples)
 	for i in range(num_samples):
-		if playback.can_push_buffer(1):
-			var sample_value = pcm_data.decode_s16(i * 2) / 32768.0
-			playback.push_frame(Vector2(sample_value, sample_value))
+		var v = pcm_data.decode_s16(i * 2) / 32768.0
+		frames[i] = Vector2(v, v)
+	playback.push_buffer(frames)
 
 func _route_voice_playback(sender_steam_id: int) -> AudioStreamGeneratorPlayback:
 	if not dead_chat_enabled:

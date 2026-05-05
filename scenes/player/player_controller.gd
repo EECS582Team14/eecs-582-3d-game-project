@@ -374,6 +374,11 @@ func _ready() -> void:
 		camera.current = true
 		# Show own model in first-person view
 		$PlayerModel.visible = true
+		# Real-time shadowed lights are very expensive in Forward+. The
+		# flashlight still illuminates the scene, just without casting shadows.
+		# Saves a full shadow pass per frame.
+		if flashlight:
+			flashlight.shadow_enabled = false
 		# Connect to receive remote player states
 		NetworkManager.player_state_received.connect(_on_player_state_received)
 		NetworkManager.health_update_received.connect(_on_health_update_received)
@@ -996,11 +1001,29 @@ func _physics_process(delta: float) -> void:
 	else:
 		_process_remote_movement(delta)
 
+# Static across all PlayerController instances. The first player to spawn
+# pays the FBX instantiation cost; subsequent players reuse the cached
+# Animation resource, which AnimationPlayer plays just fine when shared.
+# This cuts ~24 full scene instantiations per extra player at game start.
+static var _anim_cache: Dictionary = {}
+
 func _import_animation(scene: PackedScene, anim_name: String, strip_root_position: bool = false) -> void:
+	var main_lib_names = _anim_player.get_animation_library_list()
+	var main_lib: AnimationLibrary = null
+	if main_lib_names.size() > 0:
+		main_lib = _anim_player.get_animation_library(main_lib_names[0])
+	if not main_lib or main_lib.has_animation(anim_name):
+		return
+
+	# Fast path: animation already extracted by an earlier player instance.
+	if _anim_cache.has(anim_name):
+		main_lib.add_animation(anim_name, _anim_cache[anim_name])
+		return
+
+	# Slow path: extract from the FBX scene and cache it.
 	var temp = scene.instantiate()
 	for child in temp.get_children():
 		if child is AnimationPlayer:
-			# Find the first available animation library (e.g. "mixamo_com")
 			var lib_names = child.get_animation_library_list()
 			for lib_name in lib_names:
 				var lib = child.get_animation_library(lib_name)
@@ -1008,16 +1031,13 @@ func _import_animation(scene: PackedScene, anim_name: String, strip_root_positio
 					var anim_list = lib.get_animation_list()
 					if anim_list.size() > 0:
 						var anim = lib.get_animation(anim_list[0])
-						# Remove root bone position tracks that teleport the model
 						if strip_root_position:
 							for i in range(anim.get_track_count() - 1, -1, -1):
 								var path = str(anim.track_get_path(i))
 								if "Hips" in path and anim.track_get_type(i) == Animation.TYPE_POSITION_3D:
 									anim.remove_track(i)
-						var main_lib_names = _anim_player.get_animation_library_list()
-						var main_lib = _anim_player.get_animation_library(main_lib_names[0]) if main_lib_names.size() > 0 else null
-						if main_lib and not main_lib.has_animation(anim_name):
-							main_lib.add_animation(anim_name, anim)
+						_anim_cache[anim_name] = anim
+						main_lib.add_animation(anim_name, anim)
 						break
 			break
 	temp.queue_free()

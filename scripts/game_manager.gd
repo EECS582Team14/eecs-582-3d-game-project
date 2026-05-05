@@ -519,33 +519,32 @@ func _load_game_level():
 	await get_tree().process_frame
 	await get_tree().process_frame
 
-	# Threaded load so the main thread can keep drawing the loading screen.
-	# Falls back to a synchronous change if the threaded request can't be issued.
-	var packed_scene: PackedScene = null
-	if ResourceLoader.load_threaded_request(GAME_LEVEL) == OK:
-		while true:
-			var progress: Array = []
-			var status = ResourceLoader.load_threaded_get_status(GAME_LEVEL, progress)
-			if status == ResourceLoader.THREAD_LOAD_LOADED:
-				packed_scene = ResourceLoader.load_threaded_get(GAME_LEVEL)
-				break
-			if status == ResourceLoader.THREAD_LOAD_FAILED or status == ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
-				break
-			var pct: float = (progress[0] if progress.size() > 0 else 0.0) * 60.0
-			_set_loading_status("Loading level...", pct)
-			await get_tree().process_frame
-
-	if packed_scene:
-		get_tree().change_scene_to_packed(packed_scene)
-	else:
-		get_tree().change_scene_to_file(GAME_LEVEL)
+	# Synchronous scene change — the threaded variant could silently fail and
+	# leave a player stuck on the previous scene while we kept spawning into
+	# their old current_scene. Sync is reliable; the per-frame win comes from
+	# the progressive player spawn below, not the level load.
+	_set_loading_status("Loading level...", 30)
+	var change_err: int = get_tree().change_scene_to_file(GAME_LEVEL)
+	if change_err != OK:
+		push_error("Failed to change scene to game level (err=%d) — aborting game start" % change_err)
+		_hide_loading_screen()
+		return
 
 	# Wait for the new scene to be ready before touching it.
 	await get_tree().process_frame
 	await get_tree().process_frame
 
+	# Sanity check: if we somehow didn't end up on the game level, bail rather
+	# than spawning players into the wrong scene (which produced the
+	# "third-player stuck in lobby" desync bug).
+	var current = get_tree().current_scene
+	if current == null or current.scene_file_path != GAME_LEVEL:
+		push_error("After change_scene_to_file, current_scene is %s (expected %s)" % [current.scene_file_path if current else "null", GAME_LEVEL])
+		_hide_loading_screen()
+		return
+
 	# Get reference to WorldEnvironment
-	world_env = get_tree().current_scene.find_child("WorldEnvironment", true, false)
+	world_env = current.find_child("WorldEnvironment", true, false)
 	if world_env and world_env.environment:
 		_original_ambient_light_energy = world_env.environment.ambient_light_energy
 
@@ -555,7 +554,7 @@ func _load_game_level():
 
 	# Spawn players one at a time with a frame in between, so the (heavy)
 	# per-player animation imports don't all stack into one mega-hitch.
-	_set_loading_status("Spawning players...", 70)
+	_set_loading_status("Spawning players...", 60)
 	await get_tree().process_frame
 	await _spawn_all_players_progressively()
 
