@@ -149,15 +149,36 @@ func send_p2p_packet(target: int, packet_data: Dictionary, send_type: int = Stea
 	var this_data: PackedByteArray
 	this_data.append_array(var_to_bytes(packet_data))
 
+	var packet_type_id = packet_data.get("type", -1)
+	# Diagnostic: print broadcasts of any "important" one-shot packet so we
+	# can correlate host send vs client receive in the console. Not for
+	# PLAYER_STATE / VOICE_DATA — too noisy.
+	var noisy_types: Array = [
+		PacketType.PLAYER_STATE,
+		PacketType.VOICE_DATA,
+		PacketType.POSSESS_MOVE,
+	]
+
 	# target == 0 means broadcast to all lobby members
 	if target == 0:
 		var my_steam_id = Steam.getSteamID()
-		if LobbyManager.lobby_members.size() > 1:
+		var member_count := LobbyManager.lobby_members.size()
+		var sent_to: Array = []
+		if member_count > 1:
 			for member in LobbyManager.lobby_members:
 				if member['steam_id'] != my_steam_id:
-					Steam.sendP2PPacket(member['steam_id'], this_data, send_type, channel)
+					var ok = Steam.sendP2PPacket(member['steam_id'], this_data, send_type, channel)
+					sent_to.append({"id": member['steam_id'], "ok": ok})
+		if not noisy_types.has(packet_type_id):
+			print("[SEND] type=%d host=%s lobby_members=%d sent_to=%s" % [
+				packet_type_id, str(LobbyManager.is_host()), member_count, str(sent_to)
+			])
 	else:
-		Steam.sendP2PPacket(target, this_data, send_type, channel)
+		var ok = Steam.sendP2PPacket(target, this_data, send_type, channel)
+		if not noisy_types.has(packet_type_id):
+			print("[SEND] type=%d host=%s direct_target=%d ok=%s" % [
+				packet_type_id, str(LobbyManager.is_host()), target, str(ok)
+			])
 
 func send_player_state(position: Vector3, rotation_y: float, camera_rotation_x: float, is_moving: bool = false, is_moving_backward: bool = false):
 	# Manual binary layout: 1B magic | 1B flags | 3x4B pos | 4B rot_y | 4B cam_x.
@@ -404,6 +425,12 @@ func _read_p2p_packet() -> void:
 
 func _handle_packet(sender_steam_id: int, data: Dictionary):
 	var packet_type = data.get("type", -999)
+	# Diagnostic: log non-noisy packet receives so we can see whether broadcasts
+	# from the host (or anyone) are landing on this client.
+	if packet_type != PacketType.PLAYER_STATE and packet_type != PacketType.VOICE_DATA and packet_type != PacketType.POSSESS_MOVE:
+		print("[RECV] type=%d from=%d host=%s" % [
+			packet_type, sender_steam_id, str(LobbyManager.is_host())
+		])
 
 	match packet_type:
 		PacketType.HANDSHAKE:

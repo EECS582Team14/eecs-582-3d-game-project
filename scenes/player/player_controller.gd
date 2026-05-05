@@ -1748,6 +1748,7 @@ func give_baton(current_uses: int = MAX_BATON_USES) -> void:
 
 func _attach_baton_model() -> void:
 	if _held_baton:
+		print("_attach_baton_model: skip — already have _held_baton on steam_id=%d local=%s" % [steam_id, str(is_local_player)])
 		return
 	_held_baton = _baton_scene.instantiate()
 
@@ -1759,30 +1760,41 @@ func _attach_baton_model() -> void:
 		_held_baton.rotation_degrees = Vector3(0, 0, 0)
 		_held_baton.position = Vector3(0, 0, 0)
 		hand_attach.add_child(_held_baton)
+		print("_attach_baton_model: bone-attached on steam_id=%d local=%s" % [steam_id, str(is_local_player)])
 	else:
 		# Fallback: camera-relative (only visible in first-person)
 		_held_baton.scale = Vector3(0.5, 0.5, 0.5)
 		_held_baton.rotation_degrees.y = 90.0
 		weapon_holder.add_child(_held_baton)
+		print("_attach_baton_model: WEAPON_HOLDER fallback on steam_id=%d local=%s (bone search failed)" % [steam_id, str(is_local_player)])
 
 func _get_or_create_hand_attachment() -> BoneAttachment3D:
 	var skel := _find_skeleton($PlayerModel)
 	if not skel:
+		print("_get_or_create_hand_attachment: NO SKELETON found for steam_id=%d" % steam_id)
 		return null
 	var existing := skel.get_node_or_null("BatonHandAttach")
 	if existing and existing is BoneAttachment3D:
 		return existing
 	var bone_idx := -1
+	var found_bone_name := ""
 	for bone_name in ["mixamorig_RightHand", "mixamorig:RightHand", "RightHand", "mixamorig_RightHandIndex1"]:
 		bone_idx = skel.find_bone(bone_name)
 		if bone_idx != -1:
+			found_bone_name = bone_name
 			break
 	if bone_idx == -1:
+		# Print all available bones so we can see what naming the FBX actually uses.
+		var all_bones: Array = []
+		for i in range(skel.get_bone_count()):
+			all_bones.append(skel.get_bone_name(i))
+		print("_get_or_create_hand_attachment: NO BONE matched on steam_id=%d. Skeleton has %d bones: %s" % [steam_id, skel.get_bone_count(), str(all_bones)])
 		return null
 	var attach := BoneAttachment3D.new()
 	attach.name = "BatonHandAttach"
 	attach.bone_idx = bone_idx
 	skel.add_child(attach)
+	print("_get_or_create_hand_attachment: created attach on bone '%s' (idx=%d) for steam_id=%d" % [found_bone_name, bone_idx, steam_id])
 	return attach
 
 func _find_skeleton(node: Node) -> Skeleton3D:
