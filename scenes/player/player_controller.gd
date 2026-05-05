@@ -1268,6 +1268,13 @@ func _update_walk_animation() -> void:
 func _set_remote_moving(moving: bool, moving_backward: bool = false) -> void:
 	if not _anim_player:
 		return
+	# A dead remote player is ghost-flying and still broadcasting PLAYER_STATE.
+	# Without this guard, each incoming state packet would replay walk/idle,
+	# interrupting the dying animation. Since walk/idle loop, animation_finished
+	# never fires, _enter_dead_state's await hangs, and _spawn_corpse + the
+	# PlayerModel hide never run — so the dying player stays visible as a ghost.
+	if is_dead:
+		return
 	if _is_punching or _is_swinging or _is_emoting:
 		return
 	# Remote players holding taser use shoot_rifle animation
@@ -1996,27 +2003,49 @@ func reset_round_state() -> void:
 	if _interact_label and is_instance_valid(_interact_label):
 		_interact_label.visible = false
 
+## Maximum time to display the dying animation before forcibly hiding the
+## live model and spawning the corpse. We used to await animation_finished,
+## but if anything interrupts the animation (e.g. a remote PLAYER_STATE
+## packet replaying a walk loop) the await never resumes, leaving the dying
+## player visible as a "ghost" forever.
+const DYING_ANIMATION_DURATION: float = 2.0
+
 func _enter_dead_state() -> void:
+	# Idempotent — guards against double-trigger from overlapping HEALTH_UPDATE
+	# packets, retransmits, or simultaneous damage sources.
+	if is_dead:
+		return
 	is_dead = true
 
-	#if is_local_player:
 	drop_current_weapon()
 
 	if _anim_player and _anim_player.has_animation(_anim("dying")):
 		$PlayerModel.visible = true
 		_anim_player.play(_anim("dying"), ANIM_BLEND)
 		_anim_player.speed_scale = 1.0
-		await _anim_player.animation_finished
+
+	# Fixed-duration delay rather than animation_finished. Reliable even if
+	# something else replays a different animation on this AnimationPlayer
+	# while the dying animation would have been playing.
+	await get_tree().create_timer(DYING_ANIMATION_DURATION).timeout
+
+	# Bail safely if this node was freed during the await (e.g. play_again
+	# despawn, scene change).
+	if not is_instance_valid(self):
+		return
 
 	_spawn_corpse()
-	$PlayerModel.visible = false
-	nametag.visible = false
-	if _held_taser:
+	if has_node("PlayerModel"):
+		$PlayerModel.visible = false
+	if nametag and is_instance_valid(nametag):
+		nametag.visible = false
+	if _held_taser and is_instance_valid(_held_taser):
 		_held_taser.visible = false
-	if _held_baton:
+	if _held_baton and is_instance_valid(_held_baton):
 		_held_baton.visible = false
-	$PhysicsCollider.disabled = true
-	if _interact_label:
+	if has_node("PhysicsCollider"):
+		$PhysicsCollider.disabled = true
+	if _interact_label and is_instance_valid(_interact_label):
 		_interact_label.visible = false
 
 func _spawn_corpse() -> void:
