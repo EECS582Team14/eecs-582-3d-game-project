@@ -647,6 +647,16 @@ func _load_game_level():
 		timer_active = true
 		_broadcast_timer_sync()
 
+	# Walk the level tree once and disable per-frame processing notifications
+	# on every static, scriptless node. With ~16k nodes in the level (mostly
+	# walls/floors/decoration), this saves a meaningful chunk of CPU process
+	# time per frame. Doesn't affect rendering, physics, or signal handlers —
+	# only suppresses _process / _physics_process / _input callbacks (which
+	# pure geometry doesn't have anyway).
+	_set_loading_status("Optimizing level...", 98)
+	await get_tree().process_frame
+	_optimize_level_processing(get_tree().current_scene)
+
 	_set_loading_status("Ready!", 100)
 	# Hold one extra frame so the first post-load render doesn't show through.
 	await get_tree().process_frame
@@ -711,6 +721,56 @@ func _hide_loading_screen() -> void:
 	_loading_screen = null
 	_loading_progress_bar = null
 	_loading_status_label = null
+
+# ============ LEVEL PROCESSING OPTIMIZER ============
+
+# Names of subtrees we must NEVER touch — they need normal processing.
+const _DYNAMIC_SUBTREE_NAMES: Array[String] = [
+	"Players",         # player nodes need _physics_process + animations
+	"PerfOverlay",     # F3 overlay needs to update
+	"LoadingScreen",   # loading screen UI
+]
+
+# Walk the scene tree and set process_mode = DISABLED on every node that
+# (a) has no script, AND (b) belongs to a static-geometry node class.
+# Disabling process_mode skips _process/_physics_process/_input callbacks
+# but does NOT affect rendering, collision detection, signals, or AnimationPlayer
+# tracks — those are driven by other subsystems.
+func _optimize_level_processing(root: Node) -> void:
+	if root == null:
+		return
+	var stats := {"disabled": 0, "kept_script": 0, "kept_dynamic": 0, "visited": 0}
+	_optimize_walk(root, stats)
+	print("Level optimizer: disabled=%d  kept(script)=%d  kept(dynamic)=%d  visited=%d" % [
+		stats.disabled, stats.kept_script, stats.kept_dynamic, stats.visited
+	])
+
+func _optimize_walk(node: Node, stats: Dictionary) -> void:
+	stats.visited += 1
+	# Never recurse into dynamic subtrees — they need processing.
+	if node.name in _DYNAMIC_SUBTREE_NAMES:
+		return
+	# Recurse into children FIRST so we can decide for parent based on what
+	# its descendants look like.
+	for child in node.get_children():
+		_optimize_walk(child, stats)
+	# Skip nodes with scripts — they may have logic in _process etc.
+	if node.get_script() != null:
+		stats.kept_script += 1
+		return
+	# CRITICAL: do NOT disable any physics-related node. PROCESS_MODE_DISABLED
+	# on a CollisionObject3D / CollisionShape3D removes it from the physics
+	# simulation, which makes the player fall through floors and walk through
+	# walls. Same applies to Area3D, RigidBody3D, etc.
+	# Only safe to disable: pure visual nodes (mesh + light) with no children
+	# that need processing.
+	if node is CollisionObject3D or node is CollisionShape3D or node is Area3D:
+		stats.kept_dynamic += 1
+		return
+	# Limit to genuinely visual-only types.
+	if node is MeshInstance3D or node is Light3D or node is BoneAttachment3D:
+		node.process_mode = Node.PROCESS_MODE_DISABLED
+		stats.disabled += 1
 
 # ============ PERF OVERLAY (F3) ============
 
