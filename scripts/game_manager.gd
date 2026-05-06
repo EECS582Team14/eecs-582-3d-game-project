@@ -97,6 +97,13 @@ var _loading_status_label: Label = null
 # and the lobby-data fallback poll for clients that missed the packet.
 var _game_start_in_progress: bool = false
 
+# F3 perf overlay state
+var _perf_overlay_layer: CanvasLayer = null
+var _perf_overlay_label: Label = null
+var _perf_overlay_visible: bool = false
+var _perf_sample_timer: float = 0.0
+const _PERF_SAMPLE_INTERVAL: float = 0.25
+
 func _ready():
 	NetworkManager.game_started.connect(_on_game_started)
 	NetworkManager.game_over_received.connect(_on_game_over)
@@ -111,6 +118,13 @@ func _ready():
 func _process(delta):
 	# Sabotage timers run on all clients
 	_update_sabotages(delta)
+
+	# Perf overlay sample (cheap unless visible)
+	if _perf_overlay_visible:
+		_perf_sample_timer += delta
+		if _perf_sample_timer >= _PERF_SAMPLE_INTERVAL:
+			_perf_sample_timer = 0.0
+			_update_perf_overlay()
 
 	if not LobbyManager.is_host():
 		return
@@ -142,6 +156,11 @@ func _process(delta):
 			_progress_sync_timer = 0.0
 			NetworkManager.send_progress_update(true_destination_progress, progress_speed_modifier)
 			NetworkManager.progress_update_received.emit(true_destination_progress, progress_speed_modifier)
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_F3:
+			_toggle_perf_overlay()
 
 # ============ SABOTAGE ============
 
@@ -692,6 +711,90 @@ func _hide_loading_screen() -> void:
 	_loading_screen = null
 	_loading_progress_bar = null
 	_loading_status_label = null
+
+# ============ PERF OVERLAY (F3) ============
+
+func _toggle_perf_overlay() -> void:
+	_perf_overlay_visible = not _perf_overlay_visible
+	if _perf_overlay_visible:
+		if _perf_overlay_layer == null:
+			_create_perf_overlay()
+		_perf_overlay_layer.visible = true
+		_update_perf_overlay()
+	elif _perf_overlay_layer:
+		_perf_overlay_layer.visible = false
+
+func _create_perf_overlay() -> void:
+	_perf_overlay_layer = CanvasLayer.new()
+	_perf_overlay_layer.name = "PerfOverlay"
+	_perf_overlay_layer.layer = 250  # above loading screen, end screen, etc.
+
+	var bg = ColorRect.new()
+	bg.color = Color(0, 0, 0, 0.55)
+	bg.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	bg.offset_left = 8
+	bg.offset_top = 8
+	bg.offset_right = 360
+	bg.offset_bottom = 200
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_perf_overlay_layer.add_child(bg)
+
+	_perf_overlay_label = Label.new()
+	_perf_overlay_label.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_perf_overlay_label.offset_left = 10
+	_perf_overlay_label.offset_top = 6
+	_perf_overlay_label.offset_right = -6
+	_perf_overlay_label.offset_bottom = -6
+	_perf_overlay_label.add_theme_font_size_override("font_size", 13)
+	_perf_overlay_label.add_theme_color_override("font_color", Color(0.9, 1.0, 0.9, 1.0))
+	_perf_overlay_label.text = "Sampling..."
+	bg.add_child(_perf_overlay_label)
+
+	# Attach to root so it survives scene changes.
+	get_tree().root.add_child(_perf_overlay_layer)
+
+func _update_perf_overlay() -> void:
+	if _perf_overlay_label == null:
+		return
+	var fps: float = Engine.get_frames_per_second()
+	var frame_ms: float = (1000.0 / fps) if fps > 0.0 else 0.0
+	# Performance monitors return seconds — convert to ms.
+	var proc_ms: float = Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0
+	var phys_ms: float = Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0
+	var nav_ms: float = Performance.get_monitor(Performance.TIME_NAVIGATION_PROCESS) * 1000.0
+	var cpu_ms: float = proc_ms + phys_ms + nav_ms
+	# "Other" = frame time that isn't accounted for by Process/Physics — this
+	# is mostly GPU work + vsync wait. If frame_ms is high but cpu_ms is low,
+	# you're GPU-bound (or vsync-locked).
+	var other_ms: float = max(0.0, frame_ms - cpu_ms)
+
+	var draw_calls: int = int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME))
+	var prims: int = int(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME))
+	var objects: int = int(Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME))
+	var node_count: int = int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT))
+	var vid_mem_mb: float = Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED) / 1048576.0
+
+	# Bottleneck heuristic: which "side" is eating frame time?
+	var verdict := "balanced"
+	if frame_ms > 16.7:  # below 60 fps
+		if cpu_ms > other_ms * 1.5:
+			verdict = "CPU-BOUND"
+		elif other_ms > cpu_ms * 1.5:
+			verdict = "GPU-BOUND or VSYNC"
+		else:
+			verdict = "mixed"
+
+	_perf_overlay_label.text = (
+		"FPS: %d   frame: %.2f ms   [%s]\n" +
+		"  CPU process:  %.2f ms\n" +
+		"  CPU physics:  %.2f ms\n" +
+		"  CPU nav:      %.2f ms\n" +
+		"  Other (GPU+vsync): %.2f ms\n" +
+		"\n" +
+		"draw calls: %d   prims: %d   objects: %d\n" +
+		"nodes in tree: %d   vram: %.1f MB"
+	) % [fps, frame_ms, verdict, proc_ms, phys_ms, nav_ms, other_ms,
+		 draw_calls, prims, objects, node_count, vid_mem_mb]
 
 # Spawn players one per frame so the per-player FBX animation imports don't
 # collapse into a single multi-second hitch. Same end result as
