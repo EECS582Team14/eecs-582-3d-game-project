@@ -49,6 +49,7 @@
 [ext_resource type="PackedScene" uid="uid://g3bh5qpiy0h2" path="res://scenes/items/cleaningCart.tscn" id="38_sbdpu"]
 [ext_resource type="PackedScene" uid="uid://c5rrxl1atxykp" path="res://scenes/items/Armory Fill/Personal Locker/personal_locker_wall.tscn" id="39_e88g7"]
 [ext_resource type="PackedScene" uid="uid://dnb0mheryqfrt" path="res://scenes/items/Armory Fill/Armory Bench/armory_bench.tscn" id="40_ja101"]
+[ext_resource type="PackedScene" uid="uid://d2x7pl2ej6xkc" path="res://scenes/weapons/baton/baton.tscn" id="50_mmjmo"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bjwnh"]
 albedo_texture = ExtResource("7_floor_color")
@@ -914,3 +915,21 @@ transform = Transform3D(-2.1855694e-08, 0, -0.5, 0, 0.5, 0, 0.5, 0, -2.1855694e-
 
 [node name="HealthpackTable3" parent="." unique_id=546272465 instance=ExtResource("18_r5xfg")]
 transform = Transform3D(-0.5, 0, -4.371139e-08, 0, 0.5, 0, 4.371139e-08, 0, -0.5, -18.008553, 0, -24.208368)
+
+[node name="baton_pickup" parent="." unique_id=2003324940 instance=ExtResource("50_mmjmo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.75647, 0, 3.4690886)
+
+[node name="baton_pickup2" parent="." unique_id=1383606890 instance=ExtResource("50_mmjmo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4627342, 0, -19.053448)
+
+[node name="baton_pickup3" parent="." unique_id=1316291578 instance=ExtResource("50_mmjmo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.93064, 0, 18.529055)
+
+[node name="baton_pickup4" parent="." unique_id=974364897 instance=ExtResource("50_mmjmo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.313128, 0, 25.065613)
+
+[node name="baton_pickup5" parent="." unique_id=1588837803 instance=ExtResource("50_mmjmo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.574684, 0, 47.33526)
+
+[node name="baton_pickup6" parent="." unique_id=267208726 instance=ExtResource("50_mmjmo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.183228, 0, 16.084675)
