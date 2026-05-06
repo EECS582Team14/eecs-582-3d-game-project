@@ -211,7 +211,12 @@ func _send_raw_p2p(target: int, data: PackedByteArray, send_type: int, channel: 
 		Steam.sendP2PPacket(target, data, send_type, channel)
 
 func send_role_assignment(target_steam_id: int, is_impostor: bool, impostor_ids: Array = [], anon_impostors: bool = false):
-	send_p2p_packet(target_steam_id, {"type": PacketType.ROLE_ASSIGNMENT, "impostor": is_impostor, "impostor_ids": impostor_ids, "anon_imp": anon_impostors}, Steam.P2P_SEND_RELIABLE, 0)
+	var data = {"type": PacketType.ROLE_ASSIGNMENT, "impostor": is_impostor, "impostor_ids": impostor_ids, "anon_imp": anon_impostors}
+	send_p2p_packet(target_steam_id, data, Steam.P2P_SEND_RELIABLE, 0)
+	# Retransmit at +0.5s and +2s so VPN/flaky-network players still get
+	# their role even if the first packet drops. Receiver gates on
+	# _role_received so duplicates are no-ops.
+	_retransmit_packet(target_steam_id, data, [0.5, 2.0])
 
 func send_health_update(health: int):
 	send_p2p_packet(0, {"type": PacketType.HEALTH_UPDATE, "hp": health}, Steam.P2P_SEND_RELIABLE, 0)
@@ -220,14 +225,21 @@ func send_player_died(dead_steam_id: int):
 	# Broadcast even though the dead player's steam_id is implicitly the
 	# sender — explicit field lets recipients handle relayed death (e.g.,
 	# host announcing a player's death) and stay forwards-compatible.
-	send_p2p_packet(0, {"type": PacketType.PLAYER_DIED, "dead_id": dead_steam_id}, Steam.P2P_SEND_RELIABLE, 0)
+	var data = {"type": PacketType.PLAYER_DIED, "dead_id": dead_steam_id}
+	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE, 0)
+	# Retransmits — _enter_dead_state is idempotent on is_dead, so safe.
+	_retransmit_packet(0, data, [0.5, 2.0])
 
 func send_weapon_equipped(weapon_type: String, uses: int = 0):
 	# Broadcast that the local player now visibly holds this weapon. Receivers
 	# attach the model to their copy of this player. Independent of
 	# ITEM_PICKUP so the model attaches reliably even if the pickup-handler
 	# path fails for any reason.
-	send_p2p_packet(0, {"type": PacketType.WEAPON_EQUIPPED, "weapon": weapon_type, "uses": uses}, Steam.P2P_SEND_RELIABLE, 0)
+	var data = {"type": PacketType.WEAPON_EQUIPPED, "weapon": weapon_type, "uses": uses}
+	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE, 0)
+	# Retransmits — receiver drops + reattaches each time, which is a no-op
+	# if the model is already correct.
+	_retransmit_packet(0, data, [0.5, 2.0])
 
 func send_voice_data(compressed_audio: PackedByteArray):
 	send_p2p_packet(0, {"type": PacketType.VOICE_DATA, "audio": compressed_audio}, Steam.P2P_SEND_UNRELIABLE, 0)
@@ -279,6 +291,18 @@ func send_game_over(impostor_won: bool):
 # host already showed their end screen on the first send_game_over call.
 func resend_game_over(impostor_won: bool):
 	send_p2p_packet(0, {"type": PacketType.GAME_OVER, "impostor_won": impostor_won}, Steam.P2P_SEND_RELIABLE, 0)
+
+# Schedule N retransmits of the same packet at the given delays. Useful for
+# important reliable packets that must reach players on flaky networks
+# (e.g., VPNs that disrupt Steam P2P) — duplicates are absorbed by
+# idempotent receive handlers, so this is safe.
+func _retransmit_packet(target: int, packet_data: Dictionary, delays: Array) -> void:
+	for d in delays:
+		await get_tree().create_timer(d).timeout
+		# Bail if the lobby has been left in the meantime.
+		if LobbyManager.lobby_id == 0:
+			return
+		send_p2p_packet(target, packet_data, Steam.P2P_SEND_RELIABLE, 0)
 
 func send_play_again():
 	send_p2p_packet(0, {"type": PacketType.PLAY_AGAIN}, Steam.P2P_SEND_RELIABLE, 0)

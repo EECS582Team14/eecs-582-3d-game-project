@@ -1459,6 +1459,11 @@ func _on_player_state_received(sender_steam_id: int, state: Dictionary) -> void:
 		player._set_remote_moving(state.get("is_moving", false), state.get("is_moving_backward", false))
 
 func _on_role_assigned(impostor: bool) -> void:
+	# Idempotent — host now retransmits ROLE_ASSIGNMENT 3 times for VPN
+	# tolerance. Without this guard the welcome_operator sound would replay
+	# and the role-reveal timer would reset on each duplicate delivery.
+	if _role_received:
+		return
 	welcome_operator.play()
 	is_impostor = impostor
 	_role_received = true
@@ -1523,10 +1528,17 @@ func _on_player_died_received(dead_steam_id: int) -> void:
 func _on_weapon_equipped_received(equipper_steam_id: int, weapon_type: String, uses: int) -> void:
 	# Dedicated path for attaching a weapon model to a remote player. This is
 	# redundant with the ITEM_PICKUP path but more reliable since it's
-	# explicit about the visual equip and idempotent on the receiver — we
-	# drop whatever the player was holding and attach the new weapon.
+	# explicit about the visual equip.
 	var player = NetworkManager.get_player(equipper_steam_id)
 	if not player or player == self:
+		return
+	# Idempotent — sender retransmits this packet 3 times for VPN tolerance.
+	# Skip if the player already visibly holds the right weapon, otherwise
+	# we'd free + reinstantiate the model on every duplicate delivery
+	# (visual flicker + wasted CPU).
+	if weapon_type == "baton" and "has_baton" in player and player.has_baton:
+		return
+	if weapon_type == "taser" and "has_taser" in player and player.has_taser:
 		return
 	print("Weapon equipped broadcast for steam_id %d weapon=%s uses=%d" % [equipper_steam_id, weapon_type, uses])
 	if "drop_current_weapon" in player:
