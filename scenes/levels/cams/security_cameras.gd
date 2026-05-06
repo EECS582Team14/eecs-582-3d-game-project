@@ -19,11 +19,21 @@ const CAMERA_LOCATIONS = {
 # Monitor layout in Cams room
 const MONITOR_SIZE = Vector2(1.8, 1.2)
 const MONITOR_SPACING = 0.3
-const VIEWPORT_SIZE = Vector2i(320, 240)
+const VIEWPORT_SIZE = Vector2i(240, 180)  # was 320x240, dropped for perf
+
+# Cams room world-space center, used to gate viewport rendering by distance.
+# Players outside this range get UPDATE_DISABLED on every camera viewport,
+# which removes 6 full-scene renders per frame.
+const CAMS_ROOM_CENTER: Vector3 = Vector3(11.0, 0.0, -18.0)
+const CAMS_ROOM_ACTIVE_DISTANCE: float = 14.0  # meters from cams room center
+const CAMS_ROOM_ACTIVE_DISTANCE_SQ: float = CAMS_ROOM_ACTIVE_DISTANCE * CAMS_ROOM_ACTIVE_DISTANCE
+const CAMS_DISTANCE_CHECK_INTERVAL: float = 0.5
 
 var _cameras: Dictionary = {}  # name -> Camera3D
 var _viewports: Dictionary = {}  # name -> SubViewport
 var _monitors: Dictionary = {}  # name -> MeshInstance3D
+var _cameras_active: bool = false
+var _distance_check_timer: float = 0.0
 
 func _ready() -> void:
 	# Wait for the scene tree to be fully loaded
@@ -31,6 +41,34 @@ func _ready() -> void:
 	await get_tree().process_frame
 	_setup_cameras()
 	_setup_monitors()
+
+func _process(delta: float) -> void:
+	# Cheap proximity check — runs at 2 Hz, just compares squared distance.
+	_distance_check_timer += delta
+	if _distance_check_timer < CAMS_DISTANCE_CHECK_INTERVAL:
+		return
+	_distance_check_timer = 0.0
+	_update_camera_activation()
+
+func _update_camera_activation() -> void:
+	# Find the local player's position. If we can't, leave cameras off.
+	var local_id := Steam.getSteamID()
+	var local_player = NetworkManager.get_player(local_id)
+	if not local_player or not is_instance_valid(local_player):
+		_set_cameras_active(false)
+		return
+	var dist_sq: float = local_player.global_position.distance_squared_to(CAMS_ROOM_CENTER)
+	_set_cameras_active(dist_sq <= CAMS_ROOM_ACTIVE_DISTANCE_SQ)
+
+func _set_cameras_active(active: bool) -> void:
+	if active == _cameras_active:
+		return
+	_cameras_active = active
+	var mode = SubViewport.UPDATE_ALWAYS if active else SubViewport.UPDATE_DISABLED
+	for cam_name in _viewports:
+		var vp: SubViewport = _viewports[cam_name]
+		if vp and is_instance_valid(vp):
+			vp.render_target_update_mode = mode
 
 func _setup_cameras() -> void:
 	var scene_root = get_tree().current_scene
@@ -45,11 +83,11 @@ func _setup_cameras() -> void:
 		var viewport = SubViewport.new()
 		viewport.name = "CamViewport_" + cam_name.replace(" ", "_")
 		viewport.size = VIEWPORT_SIZE
-		# UPDATE_WHEN_VISIBLE: only render the camera feed when the monitor mesh
-		# using it is visible to the active camera. When players aren't in the
-		# Cams room, none of the 6 viewports render — saves a huge amount of
-		# rendering work for what's nearly always an off-screen feed.
-		viewport.render_target_update_mode = SubViewport.UPDATE_WHEN_VISIBLE
+		# Default to DISABLED; the distance-gated _process below flips this
+		# to ALWAYS only when a player is near the cams room. UPDATE_WHEN_VISIBLE
+		# is unreliable with 3D-mesh-attached viewport textures and was leaving
+		# the cameras rendering full scenes (6×) every frame regardless.
+		viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 		viewport.own_world_3d = false
 		# Manually assign the world so the camera sees the game level
 		viewport.world_3d = get_viewport().world_3d
