@@ -192,12 +192,6 @@ func _refresh_lobby_members():
 			"name": member_name
 		})
 	print("Members: ", lobby_members)
-	# Whenever membership changes (someone joined, someone left, or initial
-	# population), proactively accept P2P sessions with everyone. This is
-	# load-bearing for host->client reliable packet delivery — see
-	# NetworkManager.accept_all_p2p_sessions for the why.
-	if NetworkManager and NetworkManager.has_method("accept_all_p2p_sessions"):
-		NetworkManager.accept_all_p2p_sessions()
 
 func _on_persona_state_change(steam_id: int, _flags: int):
 	if lobby_id == 0:

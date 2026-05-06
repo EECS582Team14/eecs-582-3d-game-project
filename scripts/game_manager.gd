@@ -569,12 +569,9 @@ func _load_game_level():
 	await get_tree().process_frame
 	await get_tree().process_frame
 
-	# Drain any P2P packets that were still in flight from the previous round
-	# (final HEALTH_UPDATE / TASER_HIT / GAME_OVER messages). Without this, a
-	# late-arriving damage packet can land on a freshly-spawned player and
-	# immediately re-mark them dead, leaving them stuck in ghost mode for the
-	# new round.
-	NetworkManager.flush_packet_queue()
+	# (Removed flush_packet_queue call — was suspected of contributing to a
+	# host->client P2P delivery regression. The reset_round_state on each
+	# spawned player still defends against stale damage packets.)
 
 	# Synchronous scene change — the threaded variant could silently fail and
 	# leave a player stuck on the previous scene while we kept spawning into

@@ -141,25 +141,7 @@ func make_p2p_handshake() -> void:
 # Call this when joining a lobby to pre-establish P2P with all members
 func establish_p2p_with_lobby():
 	Steam.allowP2PPacketRelay(true)
-	# CRITICAL: proactively accept sessions with every existing lobby member,
-	# rather than waiting for p2p_session_request to fire. That callback is
-	# unreliable for lobby peers — if Steam considers the session "already up"
-	# from this side's outgoing send, the request never fires on the other
-	# side and their incoming traffic from us silently drops. Diagnostic logs
-	# proved this: host's [SEND] showed ok=true on every reliable packet but
-	# client received zero of them.
-	accept_all_p2p_sessions()
 	make_p2p_handshake()
-
-# Pre-accept incoming P2P sessions with every other lobby member. Idempotent
-# at the Steam level — calling acceptP2PSessionWithUser on an already-open
-# session is a no-op. Safe to call any time lobby membership changes.
-func accept_all_p2p_sessions() -> void:
-	var my_steam_id = Steam.getSteamID()
-	for member in LobbyManager.lobby_members:
-		if member['steam_id'] != my_steam_id:
-			Steam.acceptP2PSessionWithUser(member['steam_id'])
-			print("Pre-accepted P2P session with: %s" % Steam.getFriendPersonaName(member['steam_id']))
 
 # ============ SEND PACKETS ============
 
@@ -382,14 +364,15 @@ func send_hide_update(cabinet_id: String, io: bool, steam_id: int):
 	hide_update_recieved.emit(cabinet_id,io,steam_id)
 # ============ READ PACKETS ============
 
-func _read_all_p2p_packets(_read_count: int = 0):
-	# Iterative drain — used to recurse, which paid GDScript call overhead per
-	# packet and could blow the stack on packet floods. The default-arg keeps
-	# the old call signature in case something external calls it.
-	for _i in range(PACKET_READ_LIMIT):
-		if Steam.getAvailableP2PPacketSize(0) <= 0:
-			return
+func _read_all_p2p_packets(read_count: int = 0):
+	# Reverted to original recursive form. The iterative loop was suspected
+	# of contributing to a host->client P2P regression; reverting to the
+	# baseline behavior to isolate.
+	if read_count >= PACKET_READ_LIMIT:
+		return
+	if Steam.getAvailableP2PPacketSize(0) > 0:
 		_read_p2p_packet()
+		_read_all_p2p_packets(read_count + 1)
 
 # Discard any queued P2P packets without dispatching their signals. Called
 # at the start of a new round so stale damage/death/state packets from the
