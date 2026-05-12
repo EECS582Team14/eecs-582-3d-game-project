@@ -1,0 +1,121 @@
+[gd_scene format=3 uid="uid://bhig54t76ditj"]
+
+[ext_resource type="Script" path="res://scenes/lobby/how_to_play.gd" id="1_hp_script"]
+[ext_resource type="FontFile" uid="uid://bgb7dmtwax5mq" path="res://scenes/lobby/lobby_assets/Dune_Rise.otf" id="2_hp_title"]
+[ext_resource type="FontFile" uid="uid://da1buffs4fgf6" path="res://scenes/lobby/lobby_assets/Nasalization Rg.otf" id="3_hp_body"]
+[ext_resource type="Texture2D" uid="uid://cbq2vomgm3n6u" path="res://scenes/lobby/lobby_assets/Starry_night_over_a_dark_sky.png" id="4_hp_bg"]
+
+[node name="HowToPlay" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hp_script")
+
+[node name="SpaceBackground" type="TextureRect" parent="."]
+z_index = -10
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_hp_bg")
+stretch_mode = 6
+
+[node name="TitleLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 20.0
+offset_right = 400.0
+offset_bottom = 140.0
+grow_horizontal = 2
+theme_override_fonts/normal_font = ExtResource("2_hp_title")
+bbcode_enabled = true
+text = "[center][font_size=72][color=#FFFFFF]How to Play[/color][/font_size]
+[font_size=36][color=#FF3B3B]OutLIAR[/color][/font_size][/center]"
+
+[node name="RulesScroll" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -200.0
+offset_right = 480.0
+offset_bottom = 260.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RulesText" type="RichTextLabel" parent="RulesScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_minimum_size = Vector2(960, 460)
+theme_override_fonts/normal_font = ExtResource("3_hp_body")
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+fit_content = true
+scroll_active = true
+text = "[color=#FFFFFF]
+[font_size=28][color=#FF3B3B]Overview[/color][/font_size]
+OutLIAR is a multiplayer social-deduction game aboard a deep-space vessel. Most of the players are Crew trying to keep the ship running. Hidden among them are [color=#FF3B3B]Imposters[/color] who lie, sabotage, and pick off the Crew one by one.
+
+[font_size=28][color=#FF3B3B]Roles[/color][/font_size]
+• [color=#9FB3C8]Crew[/color]: complete tasks around the ship and figure out who is lying.
+• [color=#FF3B3B]Imposters[/color]: blend in with the Crew, fake tasks, and eliminate players without getting caught. The host chooses 1, 2, or 3 Imposters depending on lobby size.
+
+[font_size=28][color=#FF3B3B]Objective[/color][/font_size]
+• [color=#9FB3C8]Crew wins[/color] by eliminating every Imposter, or by surviving until the round timer runs out.
+• [color=#FF3B3B]Imposters win[/color] by eliminating the Crew, or by sabotaging the ship until its integrity drops to zero.
+
+[font_size=28][color=#FF3B3B]How a Round Works[/color][/font_size]
+1. Players spawn on the ship and roles are dealt secretly.
+2. Crew moves through the decks completing tasks and watching for suspicious behavior. Imposters fake tasks, trigger sabotages, and look for openings to strike.
+3. If you find a body, you can report it. A report just alerts the rest of the ship that someone has died, there is no emergency meeting and no voting.
+4. Crew tracks down Imposters and eliminates them, while Imposters pick off Crew and chip away at ship integrity.
+5. The round ends the moment one side meets its win condition, or the timer expires in the Crew's favor.
+
+[font_size=28][color=#FF3B3B]Controls[/color][/font_size]
+• [color=#9FB3C8]W / A / S / D[/color]: move
+• [color=#9FB3C8]Space[/color]: jump
+• [color=#9FB3C8]E[/color]: interact (tasks, buttons, doors, pickups)
+• [color=#9FB3C8]B[/color]: open the emote wheel, then press 1, 2, or 3 to play Flair, Breakdance, or Thriller
+• [color=#9FB3C8]Mouse[/color]: look around
+
+[font_size=28][color=#FF3B3B]Ship Systems[/color][/font_size]
+• [color=#9FB3C8]Armory[/color]: the armory door is locked by default and holds the most powerful weapons on the ship, including the [color=#FF3B3B]taser[/color]. Opening it is a three-person job: two players have to stand at the left and right armory buttons and hold them down at the same time, while a third player runs inside to grab the gear. The door stays open only while both buttons are held, so coordinate before anyone steps in.
+• [color=#9FB3C8]Elevator[/color]: each deck has a call button. Walk up and press E on it to call the elevator to your floor, then ride it between the upper and lower decks.
+• [color=#9FB3C8]Security Cameras[/color]: certain stations let the Crew watch other parts of the ship. Use them to track movement and catch Imposters in the act.
+• [color=#9FB3C8]Batons[/color]: scattered around the map. Walk up to one and press E to pick it up. Batons are the basic melee weapon, so even players who never make it into the armory have a way to fight back.
+• [color=#9FB3C8]Health Packs[/color]: pick them up with E to restore health if you have been wounded.
+• [color=#9FB3C8]Voice Chat[/color]: proximity voice is on while alive. Dead players can still talk to other dead players in a separate channel.
+
+[font_size=28][color=#FF3B3B]Tips[/color][/font_size]
+• Pay attention to where players come from. Alibis fall apart fast on a small ship.
+• Watch task animations. A real task takes time, a fake one is instant.
+• Use emotes (B) to celebrate, distract, or call out a play to your teammates.
+• Buddy up around the armory. Imposters cannot open it alone, so getting weapons takes trust.
+[/color]"
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = -88.0
+offset_right = 200.0
+offset_bottom = -40.0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("3_hp_body")
+theme_override_font_sizes/font_size = 22
+text = "< Back"

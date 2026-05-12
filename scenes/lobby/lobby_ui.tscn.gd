@@ -1,6 +1,7 @@
 extends Control
 
 @onready var host_btn = $HostButton
+@onready var how_to_play_btn = $HowToPlayButton
 @onready var status_label = $StatusLabel
 @onready var player_list = $PlayerList
 @onready var start_btn = $StartButton
@@ -29,6 +30,8 @@ func _ready():
 	#SAFE SIGNAL CONNECTIONS (prevents duplicates)
 	if not host_btn.pressed.is_connected(_on_host_pressed):
 		host_btn.pressed.connect(_on_host_pressed)
+	if not how_to_play_btn.pressed.is_connected(_on_how_to_play_pressed):
+		how_to_play_btn.pressed.connect(_on_how_to_play_pressed)
 	if not refresh_btn.pressed.is_connected(_on_refresh_pressed):
 		refresh_btn.pressed.connect(_on_refresh_pressed)
 	if not start_btn.pressed.is_connected(_on_start_pressed):
@@ -117,6 +120,9 @@ func _on_host_changed(_new_host_id):
 		status_label.text = "You are now the host."
 	else:
 		status_label.text = "Host changed."
+
+func _on_how_to_play_pressed():
+	get_tree().change_scene_to_file("res://scenes/lobby/how_to_play.tscn")
 
 func _on_host_pressed():
 	var popup = AcceptDialog.new()
