@@ -385,10 +385,10 @@ func _open_settings_ui():
 	panel.anchor_right = 0.5
 	panel.anchor_top = 0.5
 	panel.anchor_bottom = 0.5
-	panel.offset_left = -200
-	panel.offset_right = 200
-	panel.offset_top = -240
-	panel.offset_bottom = 240
+	panel.offset_left = -220
+	panel.offset_right = 220
+	panel.offset_top = -300
+	panel.offset_bottom = 300
 
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0.08, 0.08, 0.15, 0.95)
@@ -399,20 +399,45 @@ func _open_settings_ui():
 	panel.add_theme_stylebox_override("panel", style)
 	_settings_layer.add_child(panel)
 
-	var vbox = VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 15)
-	panel.add_child(vbox)
+	# Outer layout: header row (title + X), then scrollable body.
+	var outer = VBoxContainer.new()
+	outer.add_theme_constant_override("separation", 10)
+	panel.add_child(outer)
 
-	# Title
+	var header = HBoxContainer.new()
+	header.add_theme_constant_override("separation", 10)
+	outer.add_child(header)
+
 	var title = Label.new()
 	title.text = "MISSION SETTINGS"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	title.add_theme_font_size_override("font_size", 28)
 	title.add_theme_color_override("font_color", Color(0.5, 0.7, 1.0))
-	vbox.add_child(title)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(title)
+
+	# Top-right close button.
+	var close_x = Button.new()
+	close_x.text = "✕"
+	close_x.custom_minimum_size = Vector2(36, 36)
+	close_x.add_theme_font_size_override("font_size", 22)
+	close_x.pressed.connect(_close_settings_ui)
+	header.add_child(close_x)
 
 	var sep = HSeparator.new()
-	vbox.add_child(sep)
+	outer.add_child(sep)
+
+	# Scrollable content area.
+	var scroll = ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	outer.add_child(scroll)
+
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 15)
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(vbox)
 
 	# Imposter count
 	var imp_label = Label.new()
@@ -506,20 +531,54 @@ func _open_settings_ui():
 
 	baton_slider.value_changed.connect(_on_baton_spawn_changed.bind(baton_value_label))
 
-	var sep4 = HSeparator.new()
-	vbox.add_child(sep4)
+	var sep_ai = HSeparator.new()
+	vbox.add_child(sep_ai)
 
-	# Close button
-	var close_container = HBoxContainer.new()
-	close_container.alignment = BoxContainer.ALIGNMENT_CENTER
-	vbox.add_child(close_container)
+	# AI Mode toggle
+	var ai_container = HBoxContainer.new()
+	ai_container.alignment = BoxContainer.ALIGNMENT_CENTER
+	ai_container.add_theme_constant_override("separation", 10)
+	vbox.add_child(ai_container)
 
-	var close_btn = Button.new()
-	close_btn.text = "CLOSE"
-	close_btn.custom_minimum_size = Vector2(120, 40)
-	close_btn.add_theme_font_size_override("font_size", 18)
-	close_btn.pressed.connect(_close_settings_ui)
-	close_container.add_child(close_btn)
+	var ai_label = Label.new()
+	ai_label.text = "AI Mode"
+	ai_label.add_theme_font_size_override("font_size", 20)
+	ai_container.add_child(ai_label)
+
+	var ai_toggle = CheckButton.new()
+	ai_toggle.button_pressed = GameManager.ai_mode_enabled
+	ai_container.add_child(ai_toggle)
+
+	# AI count selector (only sensible when AI mode is on; disabled otherwise)
+	var ai_count_label = Label.new()
+	ai_count_label.text = "Number of AI Impostors"
+	ai_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	ai_count_label.add_theme_font_size_override("font_size", 18)
+	vbox.add_child(ai_count_label)
+
+	var ai_btn_container = HBoxContainer.new()
+	ai_btn_container.alignment = BoxContainer.ALIGNMENT_CENTER
+	ai_btn_container.add_theme_constant_override("separation", 20)
+	vbox.add_child(ai_btn_container)
+
+	var ai_button_group = ButtonGroup.new()
+	var ai_count_buttons: Array[Button] = []
+	for i in range(1, 5):
+		var btn = Button.new()
+		btn.text = str(i)
+		btn.toggle_mode = true
+		btn.button_group = ai_button_group
+		btn.custom_minimum_size = Vector2(60, 40)
+		btn.add_theme_font_size_override("font_size", 22)
+		btn.disabled = not GameManager.ai_mode_enabled
+		if i == GameManager.ai_bot_count:
+			btn.button_pressed = true
+		btn.pressed.connect(_on_ai_bot_count_changed.bind(i))
+		ai_btn_container.add_child(btn)
+		ai_count_buttons.append(btn)
+
+	ai_toggle.toggled.connect(_on_ai_mode_toggled.bind(ai_count_buttons))
+
 
 func _close_settings_ui():
 	_settings_open = false
@@ -545,6 +604,14 @@ func _on_anonymous_impostors_toggled(enabled: bool):
 func _on_baton_spawn_changed(value: float, value_label: Label):
 	GameManager.baton_spawn_chance = value
 	value_label.text = "%d%%" % int(value * 100)
+
+func _on_ai_mode_toggled(enabled: bool, count_buttons: Array) -> void:
+	GameManager.ai_mode_enabled = enabled
+	for b in count_buttons:
+		b.disabled = not enabled
+
+func _on_ai_bot_count_changed(count: int) -> void:
+	GameManager.ai_bot_count = count
 
 # ============ NOTIFICATIONS ============
 

@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3 uid="uid://ibotscene01"]
+
+[ext_resource type="Script" path="res://scripts/ai_bot.gd" id="1_botscript"]
+[ext_resource type="PackedScene" uid="uid://ckqknkquj1prp" path="res://scenes/player/Walking.fbx" id="2_walking"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bot"]
+size = Vector3(0.4, 1.2, 0.55)
+
+[node name="AIBot" type="CharacterBody3D"]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
+collision_layer = 1
+collision_mask = 1
+floor_max_angle = 0.98611104
+floor_snap_length = 0.4
+script = ExtResource("1_botscript")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -0.075)
+shape = SubResource("BoxShape3D_bot")
+
+[node name="PlayerModel" parent="." instance=ExtResource("2_walking")]
+transform = Transform3D(-65, 0, 0, 0, 65, 0, 0, 0, -65, 0, 0, 0)
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.6
+target_desired_distance = 1.2
+path_max_distance = 5.0
+avoidance_enabled = false
+debug_enabled = false
+
+[node name="Nametag" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, 0)
+text = "AI"
+font_size = 64
+outline_size = 8
+billboard = 1
+no_depth_test = true

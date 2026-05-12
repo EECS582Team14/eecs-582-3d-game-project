@@ -906,7 +906,11 @@ func _punch_hit_check() -> void:
 			continue
 		var dot = punch_dir.dot(to_player)
 		if dot > 0.0 and dot * dot > angle_sq * dist_sq:
-			NetworkManager.send_taser_hit(player.steam_id, PUNCH_DAMAGE)
+			# Bots route damage via the host (no Steam ID for direct P2P).
+			if player.has_method("apply_damage"):
+				NetworkManager.send_bot_hit(player.steam_id, PUNCH_DAMAGE)
+			else:
+				NetworkManager.send_taser_hit(player.steam_id, PUNCH_DAMAGE)
 			break
 
 func _on_resume_game() -> void:
@@ -1782,9 +1786,48 @@ func _attach_taser_model() -> void:
 	if _held_taser:
 		return
 	_held_taser = _taser_scene.instantiate()
-	_held_taser.scale = Vector3(0.5, 0.5, 0.5)
-	_held_taser.rotation_degrees.y = 180.0
-	weapon_holder.add_child(_held_taser)
+	# For the LOCAL player in first-person, keep the historical camera-relative
+	# attach. PlayerModel gets hidden in that mode (see give_taser), and the
+	# bone attach lives inside PlayerModel — so a bone-attached gun would also
+	# vanish. Camera-relative keeps the first-person view-model visible.
+	if is_local_player and not _third_person:
+		_held_taser.scale = Vector3(0.5, 0.5, 0.5)
+		_held_taser.rotation_degrees.y = 180.0
+		weapon_holder.add_child(_held_taser)
+		return
+	# Remote players and the local player in third-person: bone-attach so the
+	# gun appears in the right hand instead of floating at chest level.
+	var hand_attach := _get_or_create_taser_hand_attachment()
+	if hand_attach:
+		_held_taser.scale = Vector3(0.008, 0.008, 0.008)
+		_held_taser.rotation_degrees = Vector3(-90, 90, 180)
+		_held_taser.position = Vector3(0, 0.002, 0)
+		hand_attach.add_child(_held_taser)
+	else:
+		# Fallback if no skeleton/bone — drop back to camera-relative.
+		_held_taser.scale = Vector3(0.5, 0.5, 0.5)
+		_held_taser.rotation_degrees.y = 180.0
+		weapon_holder.add_child(_held_taser)
+
+func _get_or_create_taser_hand_attachment() -> BoneAttachment3D:
+	var skel := _find_skeleton($PlayerModel)
+	if not skel:
+		return null
+	var existing := skel.get_node_or_null("TaserHandAttach")
+	if existing and existing is BoneAttachment3D:
+		return existing
+	var bone_idx := -1
+	for bone_name in ["mixamorig_RightHand", "mixamorig:RightHand", "RightHand", "mixamorig_RightHandIndex1"]:
+		bone_idx = skel.find_bone(bone_name)
+		if bone_idx != -1:
+			break
+	if bone_idx == -1:
+		return null
+	var attach := BoneAttachment3D.new()
+	attach.name = "TaserHandAttach"
+	attach.bone_idx = bone_idx
+	skel.add_child(attach)
+	return attach
 
 func _on_taser_hide_received(sender_steam_id: int, hidden: bool) -> void:
 	var player = NetworkManager.get_player(sender_steam_id)
@@ -2029,7 +2072,10 @@ func _baton_hit_check() -> void:
 		if dot > 0.0 and dot * dot > ANGLE_SQ * dist_sq:
 			baton_uses -= 1
 			_update_baton_status()
-			NetworkManager.send_taser_hit(player.steam_id, BATON_DAMAGE)
+			if player.has_method("apply_damage"):
+				NetworkManager.send_bot_hit(player.steam_id, BATON_DAMAGE)
+			else:
+				NetworkManager.send_taser_hit(player.steam_id, BATON_DAMAGE)
 			break
 
 func _update_baton_status() -> void:

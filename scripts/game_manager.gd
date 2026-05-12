@@ -6,6 +6,11 @@ extends Node
 ## Add this as an autoload singleton.
 
 const PlayerScene = preload("res://scenes/player/player.tscn")
+const AIBotScene = preload("res://scenes/player/ai_bot.tscn")
+# Sentinel IDs reserved for AI bots. Real Steam IDs are 64-bit numbers in the
+# 76561198xxxxxxxxx range, so small ints can't collide.
+const AI_BOT_ID_BASE: int = 1
+const AI_BOT_MAX_COUNT: int = 4
 const TaserPickupScene = preload("res://scenes/weapons/taser/taser_pickup.tscn")
 const BatonPickupScene = preload("res://scenes/weapons/baton/baton.tscn")
 const GAME_LEVEL = "res://scenes/levels/main.tscn"
@@ -28,6 +33,10 @@ var _initial_weapon_data: Array = []	# Stores lists of [item_id, global_position
 
 var imposter_count: int = 1
 var anonymous_impostors: bool = false
+# AI mode: toggleable via the host's lobby settings. When on, the normal random
+# impostor selection is skipped and `ai_bot_count` AI impostors are spawned.
+var ai_mode_enabled: bool = false
+var ai_bot_count: int = 1
 
 const PLAYER_COLORS: Array[Color] = [
 	Color.GREEN,
@@ -112,6 +121,7 @@ func _ready():
 	LobbyManager.player_left.connect(_on_player_left)
 	NetworkManager.ship_integrity_update_received.connect(_on_ship_integrity_update_received)
 	NetworkManager.sabotage_received.connect(_on_sabotage_received)
+	NetworkManager.bot_spawn_received.connect(_on_bot_spawn_received)
 	UIState.ship_durability_changed.emit(ship_integrity)
 
 
@@ -486,6 +496,9 @@ func _on_play_again():
 	imposter_count = 1
 	anonymous_impostors = false
 	baton_spawn_chance = 0.75
+	# Note: do NOT reset ai_mode_enabled / ai_bot_count — the host chose those
+	# in the lobby settings and they should persist across rounds until the
+	# host changes them.
 
 	# Stop voice recording
 	VoiceManager.stop()
@@ -931,7 +944,85 @@ func _spawn_all_players_progressively() -> void:
 	VoiceManager.start()
 
 	if LobbyManager.is_host():
+		_maybe_spawn_ai_bot()
 		_assign_roles()
+
+# Two-player special mode: spawn a guaranteed-impostor AI bot so the round has
+# a real adversary. Host-only — bot is host-authoritative; clients spawn a
+# matching node when they receive BOT_SPAWN.
+func _maybe_spawn_ai_bot() -> void:
+	if not ai_mode_enabled:
+		return
+	var count: int = clamp(ai_bot_count, 1, AI_BOT_MAX_COUNT)
+	for i in range(count):
+		var bot_id: int = AI_BOT_ID_BASE + i
+		# Offset each bot's spawn so they don't stack on top of each other.
+		var spawn_pos: Vector3 = spawn_points[(2 + i) % spawn_points.size()]
+		_spawn_local_ai_bot(bot_id, spawn_pos)
+		NetworkManager.send_bot_spawn(bot_id, spawn_pos)
+	_bake_bot_navmesh()
+
+# Bake a NavigationRegion3D from the level's static collision geometry so the
+# bot's NavigationAgent3D can path around walls and through doorways. Host-only:
+# clients don't pathfind (they just lerp the bot to host-broadcast positions).
+# Async bake so it doesn't add to load time on the critical path; the bot's
+# 10-second initial firing delay covers the bake window.
+func _bake_bot_navmesh() -> void:
+	var current = get_tree().current_scene
+	if current == null:
+		return
+	if current.get_node_or_null("BotNavRegion") != null:
+		return
+	var nav_region := NavigationRegion3D.new()
+	nav_region.name = "BotNavRegion"
+	var nav_mesh := NavigationMesh.new()
+	nav_mesh.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
+	nav_mesh.geometry_collision_mask = 1
+	nav_mesh.agent_height = 1.8
+	# Tight radius so the bot can fit through standard doorways. The player
+	# physics box is 0.4 wide, so 0.3 leaves a little slack.
+	nav_mesh.agent_radius = 0.3
+	nav_mesh.agent_max_climb = 0.5
+	nav_mesh.agent_max_slope = 45.0
+	nav_mesh.cell_size = 0.2
+	nav_mesh.cell_height = 0.2
+	nav_region.navigation_mesh = nav_mesh
+	current.add_child(nav_region)
+	# Threaded bake so the loading screen stays responsive; the bot's 10-second
+	# initial firing delay covers the bake window.
+	nav_region.bake_navigation_mesh(true)
+	print("Bot navmesh: bake started")
+
+func _spawn_local_ai_bot(bot_id: int, spawn_pos: Vector3) -> Node:
+	if NetworkManager.get_player(bot_id) != null:
+		return NetworkManager.get_player(bot_id)
+	var bot = AIBotScene.instantiate()
+	bot.steam_id = bot_id
+	bot.is_local_player = false
+	bot.is_impostor = true
+	bot.name = "AIBot_" + str(bot_id)
+	bot.position = spawn_pos
+	if players_container == null:
+		var cur = get_tree().current_scene
+		players_container = Node3D.new()
+		players_container.name = "Players"
+		cur.add_child(players_container)
+	players_container.add_child(bot)
+	NetworkManager.register_player(bot_id, bot)
+	print("Spawned AI bot id=%d at %s" % [bot_id, spawn_pos])
+	return bot
+
+func _on_bot_spawn_received(bot_id: int, position: Vector3) -> void:
+	# Host already spawned its own bot locally before broadcasting.
+	if LobbyManager.is_host():
+		return
+	if NetworkManager.get_player(bot_id) != null:
+		return
+	# Ensure we're in the game scene (defensive — BOT_SPAWN can land during
+	# the load if a retransmit overlaps).
+	if players_container == null:
+		await get_tree().process_frame
+	_spawn_local_ai_bot(bot_id, position)
 
 func _spawn_all_players():
 	var current_scene = get_tree().current_scene
@@ -1026,6 +1117,12 @@ func _capture_initial_weapon_states():
 	print("Weapon state captured: ", _initial_weapon_data.size(), " weapons found")
 
 func _assign_roles():
+	# AI mode: every human is a crewmate; the AI bots are the impostors.
+	# Skip the normal random-impostor selection entirely.
+	if ai_mode_enabled:
+		_assign_roles_ai_mode()
+		return
+
 	# Shuffle members and pick impostor(s) based on imposter_count setting
 	var members = LobbyManager.lobby_members.duplicate()
 	members.shuffle()
@@ -1058,6 +1155,25 @@ func _assign_roles():
 			NetworkManager.send_role_assignment(member_steam_id, is_impostor, impostor_ids, anonymous_impostors)
 
 	print("Impostors assigned: ", actual_count)
+
+func _assign_roles_ai_mode() -> void:
+	var my_steam_id = Steam.getSteamID()
+	var count: int = clamp(ai_bot_count, 1, AI_BOT_MAX_COUNT)
+	var impostor_ids: Array = []
+	for i in range(count):
+		impostor_ids.append(AI_BOT_ID_BASE + i)
+	for member in LobbyManager.lobby_members:
+		var member_steam_id = member.steam_id
+		var player_node = NetworkManager.get_player(member_steam_id)
+		if player_node:
+			player_node.is_impostor = false
+		if member_steam_id == my_steam_id:
+			NetworkManager.pending_role_received = true
+			NetworkManager.pending_role_impostor = false
+			NetworkManager.role_assigned.emit(false)
+		else:
+			NetworkManager.send_role_assignment(member_steam_id, false, impostor_ids, anonymous_impostors)
+	print("AI mode: %d bot(s) are the impostors; all humans are crewmates" % count)
 
 func _give_impostor_taser_after_reveal(impostor_steam_id: int):
 	await get_tree().create_timer(30.0).timeout

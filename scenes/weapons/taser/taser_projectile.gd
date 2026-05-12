@@ -93,6 +93,10 @@ func _on_body_entered(body: Node3D) -> void:
 		# It's a player — check it's not the shooter
 		if body.steam_id == shooter_steam_id:
 			return
-		# Send damage to the victim via network
-		NetworkManager.send_taser_hit(body.steam_id, damage)
+		# AI bots have no Steam ID, so direct P2P send would fail. Bots expose
+		# apply_damage(); route through send_bot_hit so the host applies it.
+		if body.has_method("apply_damage"):
+			NetworkManager.send_bot_hit(body.steam_id, damage)
+		else:
+			NetworkManager.send_taser_hit(body.steam_id, damage)
 		queue_free()

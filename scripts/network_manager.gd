@@ -49,6 +49,11 @@ signal player_died_received(dead_steam_id: int)
 # explicit "attach this weapon to this player" message that other clients
 # act on idempotently.
 signal weapon_equipped_received(equipper_steam_id: int, weapon_type: String, uses: int)
+# AI bot (2-player mode). Host is authoritative; clients receive these.
+signal bot_spawn_received(bot_id: int, position: Vector3)
+signal bot_state_received(bot_id: int, position: Vector3, rotation_y: float)
+signal bot_taser_shot_received(bot_id: int, origin: Vector3, direction: Vector3)
+signal bot_died_received(bot_id: int)
 
 const PACKET_READ_LIMIT: int = 32
 
@@ -95,7 +100,12 @@ enum PacketType {
 	EMOTE,
 	BODY_REPORTED,
 	PLAYER_DIED,
-	WEAPON_EQUIPPED
+	WEAPON_EQUIPPED,
+	BOT_SPAWN,
+	BOT_STATE,
+	BOT_TASER_SHOT,
+	BOT_HIT,
+	BOT_DIED
 }
 
 var players_in_game: Dictionary = {}  # steam_id -> player node
@@ -383,6 +393,52 @@ func send_door_lock(door_id: String, locked: bool):
 func send_emote(emote_name: String):
 	send_p2p_packet(0, {"type": PacketType.EMOTE, "emote_name": emote_name}, Steam.P2P_SEND_RELIABLE, 0)
 
+func send_bot_spawn(bot_id: int, position: Vector3):
+	var data = {
+		"type": PacketType.BOT_SPAWN,
+		"bot_id": bot_id,
+		"px": position.x, "py": position.y, "pz": position.z
+	}
+	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE, 0)
+	# Retransmit so late-arriving clients reliably spawn the bot.
+	_retransmit_packet(0, data, [0.5, 2.0])
+
+func send_bot_state(bot_id: int, position: Vector3, rotation_y: float):
+	var data = {
+		"type": PacketType.BOT_STATE,
+		"bot_id": bot_id,
+		"px": position.x, "py": position.y, "pz": position.z,
+		"ry": rotation_y
+	}
+	send_p2p_packet(0, data, Steam.P2P_SEND_UNRELIABLE, 0)
+
+func send_bot_taser_shot(bot_id: int, origin: Vector3, direction: Vector3):
+	var data = {
+		"type": PacketType.BOT_TASER_SHOT,
+		"bot_id": bot_id,
+		"ox": origin.x, "oy": origin.y, "oz": origin.z,
+		"dx": direction.x, "dy": direction.y, "dz": direction.z
+	}
+	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE, 0)
+	bot_taser_shot_received.emit(bot_id, origin, direction)
+
+# Client → host: "my taser projectile hit the bot, apply damage". If we ARE
+# the host, just apply locally.
+func send_bot_hit(bot_id: int, damage: int):
+	if LobbyManager.is_host():
+		var bot = get_player(bot_id)
+		if bot and bot.has_method("apply_damage"):
+			bot.apply_damage(damage)
+		return
+	var host_id = LobbyManager.get_host_steam_id()
+	send_p2p_packet(host_id, {"type": PacketType.BOT_HIT, "bot_id": bot_id, "dmg": damage}, Steam.P2P_SEND_RELIABLE, 0)
+
+func send_bot_died(bot_id: int):
+	var data = {"type": PacketType.BOT_DIED, "bot_id": bot_id}
+	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE, 0)
+	bot_died_received.emit(bot_id)
+	_retransmit_packet(0, data, [0.5, 2.0])
+
 func send_hide_update(cabinet_id: String, io: bool, steam_id: int):
 	send_p2p_packet(0, {"type": PacketType.HIDE_UPDATE, "cabinet_id": cabinet_id, "io": io, "target": steam_id})
 	hide_update_recieved.emit(cabinet_id,io,steam_id)
@@ -572,6 +628,24 @@ func _handle_packet(sender_steam_id: int, data: Dictionary):
 			hide_update_recieved.emit(data.get("locker_id", ""), data.get("io", false), data.get("target", 0))
 		PacketType.EMOTE:
 			emote_received.emit(sender_steam_id, data.get("emote_name", ""))
+		PacketType.BOT_SPAWN:
+			var bot_pos = Vector3(data.get("px", 0.0), data.get("py", 0.0), data.get("pz", 0.0))
+			bot_spawn_received.emit(data.get("bot_id", 0), bot_pos)
+		PacketType.BOT_STATE:
+			var bs_pos = Vector3(data.get("px", 0.0), data.get("py", 0.0), data.get("pz", 0.0))
+			bot_state_received.emit(data.get("bot_id", 0), bs_pos, data.get("ry", 0.0))
+		PacketType.BOT_TASER_SHOT:
+			var bt_origin = Vector3(data.get("ox", 0.0), data.get("oy", 0.0), data.get("oz", 0.0))
+			var bt_dir = Vector3(data.get("dx", 0.0), data.get("dy", 0.0), data.get("dz", 0.0))
+			bot_taser_shot_received.emit(data.get("bot_id", 0), bt_origin, bt_dir)
+		PacketType.BOT_HIT:
+			# Host receives this from a client whose projectile hit the bot.
+			if LobbyManager.is_host():
+				var bot = get_player(data.get("bot_id", 0))
+				if bot and bot.has_method("apply_damage"):
+					bot.apply_damage(data.get("dmg", 0))
+		PacketType.BOT_DIED:
+			bot_died_received.emit(data.get("bot_id", 0))
 		_:
 			print("Unknown packet type: %s" % packet_type)
 
