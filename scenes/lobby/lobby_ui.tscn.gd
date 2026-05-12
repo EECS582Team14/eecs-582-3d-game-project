@@ -307,13 +307,13 @@ func update_imposter_options():
 	var count = LobbyManager.lobby_members.size()
 
 	imposter1.disabled = count < 3
-	imposter2.disabled = count < 5
+	imposter2.disabled = count < 3
 	imposter3.disabled = count < 7
 
 	# Force valid selection if current one becomes invalid
 	if imposter_count == 3 and count < 7:
 		imposter2.button_pressed = true
-	elif imposter_count == 2 and count < 5:
+	elif imposter_count == 2 and count < 3:
 		imposter1.button_pressed = true
 
 # ============ LEAVING ============

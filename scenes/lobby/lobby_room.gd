@@ -437,8 +437,8 @@ func _open_settings_ui():
 		btn.custom_minimum_size = Vector2(60, 40)
 		btn.add_theme_font_size_override("font_size", 22)
 
-		# Need at least 2*imposters + 1 players
-		if player_count < (i * 2 + 1):
+		# Need at least imposters + 1 players (one crew minimum)
+		if player_count < (i + 1):
 			btn.disabled = true
 
 		if i == GameManager.imposter_count:
