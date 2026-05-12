@@ -65,7 +65,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8443237, 0)
 stream = ExtResource("3_gmlin")
 volume_db = -18.0
 pitch_scale = 0.75
-max_distance = 1.0
+max_distance = 8.0
 bus = &"Footsteps"
 
 [node name="AccessDenied" type="AudioStreamPlayer" parent="." unique_id=1245637298]

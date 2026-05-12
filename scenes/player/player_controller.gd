@@ -682,11 +682,8 @@ func _ready() -> void:
 		if flashlight:
 			flashlight.shadow_enabled = false
 			flashlight.visible = false
-		# Local-only audio/UI nodes — leave them in the tree but stop them
-		# from polling/processing. Footsteps in particular check is_on_floor()
-		# which is meaningless on a remote-controlled CharacterBody3D anyway.
-		if steps_sound:
-			steps_sound.stop()
+		# Footsteps for remote players are driven by _set_remote_moving from
+		# the networked is_moving flag, so leave steps_sound running.
 
 # _input() handles input events
 func _input(event: InputEvent) -> void:
@@ -1297,6 +1294,15 @@ func _update_walk_animation() -> void:
 			_anim_player.speed_scale = 1.0
 
 func _set_remote_moving(moving: bool, moving_backward: bool = false) -> void:
+	# Drive remote-player footstep audio off the networked moving flag so other
+	# clients can hear them walking. Hidden (in a locker) or dead players
+	# shouldn't make noise.
+	if steps_sound and not is_local_player:
+		var should_play := moving and not is_dead and _hiding_in == null
+		if should_play and not steps_sound.playing:
+			steps_sound.play()
+		elif not should_play and steps_sound.playing:
+			steps_sound.stop()
 	if not _anim_player:
 		return
 	# A dead remote player is ghost-flying and still broadcasting PLAYER_STATE.
