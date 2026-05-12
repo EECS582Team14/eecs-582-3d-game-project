@@ -260,17 +260,19 @@ func _reset_ship_integrity() -> void:
 
 func _check_win_conditions():
 	var all_crewmates_dead := true
-	var impostor_dead := false
+	var all_impostors_dead := true
 	var has_any_player := false
 	var crewmate_count := 0
+	var impostor_count := 0
 
 	for player in players_container.get_children():
 		if not ("is_impostor" in player and "is_dead" in player):
 			continue
 		has_any_player = true
 		if player.is_impostor:
-			if player.is_dead:
-				impostor_dead = true
+			impostor_count += 1
+			if not player.is_dead:
+				all_impostors_dead = false
 		else:
 			crewmate_count += 1
 			if not player.is_dead:
@@ -284,8 +286,8 @@ func _check_win_conditions():
 		_trigger_game_over(true)
 		return
 
-	# Condition 2: Impostor dead -> Crewmates win
-	if impostor_dead:
+	# Condition 2: All impostors dead -> Crewmates win
+	if impostor_count > 0 and all_impostors_dead:
 		_trigger_game_over(false)
 		return
 
