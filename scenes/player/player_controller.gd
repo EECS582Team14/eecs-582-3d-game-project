@@ -119,6 +119,7 @@ var _is_punching: bool = false
 var _is_swinging: bool = false
 var _is_jumping: bool = false
 var _post_land_step_timer: float = 0.0
+var _was_on_floor: bool = true
 var _is_emoting: bool = false
 var _is_crouching: bool = false
 const CROUCH_CAMERA_OFFSET: float = -0.45
@@ -371,6 +372,13 @@ func _ready() -> void:
 	NetworkManager.baton_swing_received.connect(_on_baton_swing_received)
 
 	if is_local_player:
+		# Restore the quieter, short-range footstep config for the local
+		# player. The scene defaults are tuned for remote listeners (louder/
+		# farther) so other players can hear them; we don't want that bleeding
+		# into our own ears.
+		if steps_sound:
+			steps_sound.volume_db = -18.0
+			steps_sound.max_distance = 1.0
 		# Capture the mouse cursor for looking around
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		_is_mouse_captured = true
@@ -1007,8 +1015,16 @@ func _physics_process(delta: float) -> void:
 				_play_jump()
 			if _is_jumping and is_on_floor() and velocity.y <= 0:
 				_is_jumping = false
-				_post_land_step_timer = 0.15
 				_current_anim_state = ""  # Reset so next frame picks correct animation
+			# Landing detection — fires for jumps AND falls. Restart steps_sound
+			# from the beginning so the tick is audible even if footsteps were
+			# already looping from horizontal motion.
+			if is_on_floor() and not _was_on_floor:
+				_post_land_step_timer = 0.15
+				if steps_sound and not _is_crouching:
+					steps_sound.stop()
+					steps_sound.play()
+			_was_on_floor = is_on_floor()
 			move_and_slide()
 			_update_walk_animation()
 			_send_network_update(delta)

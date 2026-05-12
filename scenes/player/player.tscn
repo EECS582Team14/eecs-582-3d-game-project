@@ -63,9 +63,9 @@ text = "
 [node name="StepsSound" type="AudioStreamPlayer3D" parent="." unique_id=745389472]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8443237, 0)
 stream = ExtResource("3_gmlin")
-volume_db = -18.0
+volume_db = -22.0
 pitch_scale = 0.75
-max_distance = 8.0
+max_distance = 16.0
 bus = &"Footsteps"
 
 [node name="AccessDenied" type="AudioStreamPlayer" parent="." unique_id=1245637298]
