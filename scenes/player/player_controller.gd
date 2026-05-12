@@ -1010,7 +1010,7 @@ func _physics_process(delta: float) -> void:
 				_play_jump()
 			if _is_jumping and is_on_floor() and velocity.y <= 0:
 				_is_jumping = false
-				_post_land_step_timer = 1.0
+				_post_land_step_timer = 0.15
 				_current_anim_state = ""  # Reset so next frame picks correct animation
 			move_and_slide()
 			_update_walk_animation()
