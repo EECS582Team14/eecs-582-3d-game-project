@@ -909,8 +909,8 @@ func _punch_hit_check() -> void:
 		var dot = punch_dir.dot(to_player)
 		if dot > 0.0 and dot * dot > angle_sq * dist_sq:
 			var dmg := PUNCH_DAMAGE
-			if is_impostor and GameManager.is_sabotage_active("double_damage"):
-				dmg *= 2
+			if is_impostor and GameManager.is_sabotage_active("surge_of_strength"):
+				dmg *= 3
 			# Bots route damage via the host (no Steam ID for direct P2P).
 			if player.has_method("apply_damage"):
 				NetworkManager.send_bot_hit(player.steam_id, dmg)
@@ -2078,8 +2078,8 @@ func _baton_hit_check() -> void:
 			baton_uses -= 1
 			_update_baton_status()
 			var dmg := BATON_DAMAGE
-			if is_impostor and GameManager.is_sabotage_active("double_damage"):
-				dmg *= 2
+			if is_impostor and GameManager.is_sabotage_active("surge_of_strength"):
+				dmg *= 3
 			if player.has_method("apply_damage"):
 				NetworkManager.send_bot_hit(player.steam_id, dmg)
 			else:
@@ -2548,13 +2548,13 @@ func _create_sabotage_panel() -> void:
 	vbox.add_child(btn_doors)
 	_sabotage_buttons["lock_doors"] = btn_doors
 
-	var btn_double = Button.new()
-	btn_double.text = "Double Damage (6s)"
-	btn_double.add_theme_font_size_override("font_size", 18)
-	btn_double.mouse_filter = Control.MOUSE_FILTER_STOP
-	btn_double.pressed.connect(_on_sabotage_selected.bind("double_damage"))
-	vbox.add_child(btn_double)
-	_sabotage_buttons["double_damage"] = btn_double
+	var btn_surge = Button.new()
+	btn_surge.text = "Surge of Strength (6s)"
+	btn_surge.add_theme_font_size_override("font_size", 18)
+	btn_surge.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn_surge.pressed.connect(_on_sabotage_selected.bind("surge_of_strength"))
+	vbox.add_child(btn_surge)
+	_sabotage_buttons["surge_of_strength"] = btn_surge
 
 	# Cancel label
 	var cancel = Label.new()
