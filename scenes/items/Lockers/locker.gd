@@ -62,7 +62,7 @@ func exit_player(player):
 
 func _show_timer_label(player) -> void:
 	_hide_timer_label_clear()
-	var hud := player.get_node_or_null("HUD")
+	var hud: Node = player.get_node_or_null("HUD")
 	if hud == null:
 		return
 	_timer_label = Label.new()
