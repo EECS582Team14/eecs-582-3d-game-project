@@ -19,7 +19,7 @@ func _process(delta: float) -> void:
 		return
 	_hide_remaining -= delta
 	if _timer_label and is_instance_valid(_timer_label):
-		_timer_label.text = "Hiding: %0.1fs" % max(_hide_remaining, 0.0)
+		_timer_label.text = "Hiding: %ds" % int(ceil(max(_hide_remaining, 0.0)))
 	if _hide_remaining <= 0.0:
 		exit_player(player_inside)
 
@@ -67,7 +67,7 @@ func _show_timer_label(player) -> void:
 		return
 	_timer_label = Label.new()
 	_timer_label.name = "LockerHideTimer"
-	_timer_label.text = "Hiding: %0.1fs" % MAX_HIDE_TIME
+	_timer_label.text = "Hiding: %ds" % int(MAX_HIDE_TIME)
 	_timer_label.add_theme_font_size_override("font_size", 28)
 	_timer_label.add_theme_color_override("font_color", Color(1, 1, 1))
 	_timer_label.add_theme_color_override("font_outline_color", Color(0, 0, 0))
