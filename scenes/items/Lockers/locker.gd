@@ -1,6 +1,9 @@
 extends Node3D
 
+const MAX_HIDE_TIME := 30.0
+
 var player_inside = null
+var _hide_session_id := 0
 
 @onready var door = $DoorPivot
 @onready var hide_point = $HidePoint
@@ -15,7 +18,7 @@ func activate(player) -> void:
 		exit_player(player_inside)
 	else:
 		exit_player(player)
-		
+
 func hide_player(player):
 	player_inside = player
 	print(player)
@@ -27,6 +30,13 @@ func hide_player(player):
 	player.set_collision_mask_value(1, false)
 	print(player, " is hiding in ", self.name)
 	NetworkManager.send_hide_update(self.name, true, player.steam_id)
+	_hide_session_id += 1
+	_start_auto_eject(player, _hide_session_id)
+
+func _start_auto_eject(player, session_id: int) -> void:
+	await get_tree().create_timer(MAX_HIDE_TIME).timeout
+	if player_inside == player and _hide_session_id == session_id:
+		exit_player(player)
 	
 func exit_player(player):
 	player_inside.visible = true

@@ -118,6 +118,7 @@ var _current_anim_state: String = ""
 var _is_punching: bool = false
 var _is_swinging: bool = false
 var _is_jumping: bool = false
+var _post_land_step_timer: float = 0.0
 var _is_emoting: bool = false
 var _is_crouching: bool = false
 const CROUCH_CAMERA_OFFSET: float = -0.45
@@ -970,7 +971,11 @@ func _physics_process(delta: float) -> void:
 	# Footsteps (local player only — is_on_floor is unreliable on remote-driven
 	# CharacterBody3Ds since we don't run move_and_slide for them)
 	if is_local_player:
-		if velocity.x != 0 and is_on_floor() and not _is_crouching:
+		if _post_land_step_timer > 0.0:
+			_post_land_step_timer -= delta
+		var should_step := (velocity.x != 0 and is_on_floor() and not _is_crouching) \
+			or (_post_land_step_timer > 0.0 and is_on_floor() and not _is_crouching)
+		if should_step:
 			if !steps_sound.playing:
 				steps_sound.play()
 		elif steps_sound.playing:
@@ -1005,6 +1010,7 @@ func _physics_process(delta: float) -> void:
 				_play_jump()
 			if _is_jumping and is_on_floor() and velocity.y <= 0:
 				_is_jumping = false
+				_post_land_step_timer = 1.0
 				_current_anim_state = ""  # Reset so next frame picks correct animation
 			move_and_slide()
 			_update_walk_animation()
