@@ -83,7 +83,7 @@ var active_sabotages: Dictionary = {}  # sabotage_type -> remaining duration
 const SABOTAGE_DURATION: float = 20.0
 const SABOTAGE_COOLDOWN: float = 30.0
 const SABOTAGE_INTEGRITY_DRAIN: float = 15.0
-const SURGE_OF_STRENGTH_DURATION: float = 6.0
+const SURGE_OF_STRENGTH_DURATION: float = 4.0
 
 # Lights out effect
 var _original_ambient_light_energy: float = 1.0

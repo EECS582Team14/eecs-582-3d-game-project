@@ -2549,7 +2549,7 @@ func _create_sabotage_panel() -> void:
 	_sabotage_buttons["lock_doors"] = btn_doors
 
 	var btn_surge = Button.new()
-	btn_surge.text = "Surge of Strength (6s)"
+	btn_surge.text = "Surge of Strength (4s)"
 	btn_surge.add_theme_font_size_override("font_size", 18)
 	btn_surge.mouse_filter = Control.MOUSE_FILTER_STOP
 	btn_surge.pressed.connect(_on_sabotage_selected.bind("surge_of_strength"))
