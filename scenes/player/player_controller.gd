@@ -2525,6 +2525,7 @@ func _on_sabotage_triggered(sabotage_type: String) -> void:
 		emergency_measures_activated.play()
 		flashlight.visible = true
 		flashlight.light_color = Color.GREEN
+		_dim_all_nametags()
 	elif sabotage_type == "drain_integrity":
 		structural_integrity_compromised.play()
 	elif sabotage_type == "disable_comms":
@@ -2539,6 +2540,7 @@ func _on_sabotage_ended(sabotage_type: String) -> void:
 	systems_operational.play()
 	if sabotage_type == "lights_out":
 		flashlight.visible = false
+		_undim_all_nametags()
 	elif sabotage_type == "anonymous":
 		_restore_all_nametags()
 
@@ -2579,6 +2581,31 @@ func _restore_all_nametags() -> void:
 			if tag.has_meta("real_name"):
 				tag.text = tag.get_meta("real_name")
 			tag.modulate = Color(1, 1, 1, 1)
+
+func _dim_all_nametags() -> void:
+	if not GameManager.players_container:
+		return
+	for player in GameManager.players_container.get_children():
+		if player == self:
+			continue
+		if player.has_node("Label3D"):
+			var tag = player.get_node("Label3D")
+			if not tag.has_meta("pre_dim_modulate"):
+				tag.set_meta("pre_dim_modulate", tag.modulate)
+			var base: Color = tag.modulate
+			tag.modulate = Color(base.r * 0.15, base.g * 0.15, base.b * 0.15, base.a * 0.2)
+
+func _undim_all_nametags() -> void:
+	if not GameManager.players_container:
+		return
+	for player in GameManager.players_container.get_children():
+		if player == self:
+			continue
+		if player.has_node("Label3D"):
+			var tag = player.get_node("Label3D")
+			if tag.has_meta("pre_dim_modulate"):
+				tag.modulate = tag.get_meta("pre_dim_modulate")
+				tag.remove_meta("pre_dim_modulate")
 
 # --- Possession System ---
 
