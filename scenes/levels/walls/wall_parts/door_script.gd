@@ -34,11 +34,17 @@ func _ready() -> void:
 	_closed_position = door_mesh.position
 	_open_position = _closed_position + Vector3(SLIDE_DISTANCE, 0, 0)
 	_lock_closed_position = lock_icon.position
+	# Apply once at startup since the setter ran before @onready vars existed.
+	_apply_locked_visuals()
+	# Skip network signal hookups in the editor. This is a @tool script, so
+	# _ready also runs when the editor loads the scene for preview — autoloads
+	# may not be fully initialized in that context, leading to spurious
+	# "Invalid access to property door_opened" errors.
+	if Engine.is_editor_hint():
+		return
 	NetworkManager.door_opened.connect(_on_door_opened)
 	NetworkManager.door_closed.connect(_on_door_closed)
 	NetworkManager.door_lock_received.connect(_on_door_lock_received)
-	# Apply once at startup since the setter ran before @onready vars existed.
-	_apply_locked_visuals()
 
 func _apply_locked_visuals() -> void:
 	if not door_mesh or not lock_icon:

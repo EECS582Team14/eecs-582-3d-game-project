@@ -50,9 +50,9 @@ signal player_died_received(dead_steam_id: int)
 # act on idempotently.
 signal weapon_equipped_received(equipper_steam_id: int, weapon_type: String, uses: int)
 # AI bot (2-player mode). Host is authoritative; clients receive these.
-signal bot_spawn_received(bot_id: int, position: Vector3)
-signal bot_state_received(bot_id: int, position: Vector3, rotation_y: float)
-signal bot_taser_shot_received(bot_id: int, origin: Vector3, direction: Vector3)
+signal bot_spawn_received(bot_id: int, spawn_pos: Vector3)
+signal bot_state_received(bot_id: int, pos: Vector3, rot_y: float)
+signal bot_taser_shot_received(bot_id: int, origin: Vector3, shot_dir: Vector3)
 signal bot_died_received(bot_id: int)
 
 const PACKET_READ_LIMIT: int = 32
@@ -418,12 +418,12 @@ func send_bot_taser_shot(bot_id: int, origin: Vector3, direction: Vector3):
 		"bot_id": bot_id,
 		"ox": origin.x, "oy": origin.y, "oz": origin.z,
 		"dx": direction.x, "dy": direction.y, "dz": direction.z
-	}
+	} 
 	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE, 0)
 	bot_taser_shot_received.emit(bot_id, origin, direction)
 
 # Client → host: "my taser projectile hit the bot, apply damage". If we ARE
-# the host, just apply locally.
+# the host, just apply locally. 
 func send_bot_hit(bot_id: int, damage: int):
 	if LobbyManager.is_host():
 		var bot = get_player(bot_id)

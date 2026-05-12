@@ -19,9 +19,10 @@ const _RIFLE_STRAFE_MIRROR_SCENE: PackedScene = preload("res://scenes/player/Str
 const _ANIM_BLEND: float = 0.2
 const _MOVE_ANIM_THRESHOLD: float = 0.5  # m/s — below this the bot's "idle"
 
-# Per-class cache: extracting an animation from an FBX is expensive, so we keep
-# the parsed Animation resources around and share them across bot instances.
-static var _bot_anim_cache: Dictionary = {}
+# Per-instance cache (cheaper than re-extracting from the FBX on each anim
+# play, but not shared between bots — Godot 4's static-var handling can
+# interact badly with autoloads, so we keep this instance-scoped to be safe).
+var _bot_anim_cache: Dictionary = {}
 
 # --- Duck-typed player fields the rest of the codebase reads ---
 var steam_id: int = BOT_STEAM_ID
