@@ -83,6 +83,7 @@ var active_sabotages: Dictionary = {}  # sabotage_type -> remaining duration
 const SABOTAGE_DURATION: float = 20.0
 const SABOTAGE_COOLDOWN: float = 30.0
 const SABOTAGE_INTEGRITY_DRAIN: float = 15.0
+const DOUBLE_DAMAGE_DURATION: float = 6.0
 
 # Lights out effect
 var _original_ambient_light_energy: float = 1.0
@@ -191,6 +192,10 @@ func _on_sabotage_received(sabotage_type: String) -> void:
 			UIState.system_alert.emit("WARNING: Communications array offline! Directives unavailable!")
 		elif sabotage_type == "anonymous":
 			UIState.system_alert.emit("WARNING: IFF and audio systems compromised! Crew identity unknown!")
+	elif sabotage_type == "double_damage":
+		active_sabotages[sabotage_type] = DOUBLE_DAMAGE_DURATION
+		UIState.sabotage_triggered.emit(sabotage_type)
+		UIState.system_alert.emit("WARNING: Anomalous energy surge detected!")
 
 func _update_sabotages(delta: float) -> void:
 	var to_remove: Array[String] = []
