@@ -57,12 +57,28 @@ signal bot_died_received(bot_id: int)
 
 const PACKET_READ_LIMIT: int = 32
 
+# Send flags for SteamNetworkingMessages (k_nSteamNetworkingSend_*). Numeric
+# values are fixed by Valve's SDK so we hardcode them rather than relying on
+# whichever name GodotSteam exposes. Migrated from the legacy
+# Steam.P2P_SEND_* constants — callers should
+# now use NetworkManager.SEND_RELIABLE / SEND_UNRELIABLE.
+const SEND_UNRELIABLE: int = 0
+const SEND_RELIABLE: int = 8
+
+# Channel used for all gameplay traffic. SteamNetworkingMessages multiplexes
+# by channel; we only need one.
+const _CHANNEL: int = 0
+
 # Marker byte for the manually-serialized PLAYER_STATE packet. var_to_bytes
 # encodes a Dictionary with type=27 (TYPE_DICTIONARY) in the first byte, so
 # 0xFF is unambiguously our binary format. Cuts ~75% off PLAYER_STATE
 # bandwidth and dodges the var_to_bytes / bytes_to_var path on the hot loop.
 const _PACKET_MAGIC_PLAYER_STATE: int = 0xFF
 const _PLAYER_STATE_PACKET_SIZE: int = 22
+
+# Tracks which peers we've established a SteamNetworkingMessages session
+# with, so close_all_sessions knows which sessions to tear down.
+var _active_sessions: Dictionary = {}  # steam_id -> true
 
 # Packet types
 enum PacketType {
@@ -116,46 +132,51 @@ var pending_role_received: bool = false
 var pending_role_impostor: bool = false
 
 func _ready():
-	Steam.p2p_session_request.connect(_on_p2p_session_request)
-	Steam.p2p_session_connect_fail.connect(_on_p2p_session_connect_fail)
+	# SteamNetworkingMessages (SDR-backed) replaces the legacy P2P session
+	# API. Connections relay through Valve's Steam Datagram Relay network
+	# by default, which handles NAT/VPN scenarios that broke the old
+	# direct-P2P path with timeouts.
+	Steam.network_messages_session_request.connect(_on_network_messages_session_request)
+	Steam.network_messages_session_failed.connect(_on_network_messages_session_failed)
 
 func _process(_delta):
 	if LobbyManager.lobby_id > 0:
 		_read_all_p2p_packets()
 
-# ============ P2P SESSION MANAGEMENT ============
+# ============ SESSION MANAGEMENT ============
 
-func _on_p2p_session_request(remote_id: int) -> void:
+func _on_network_messages_session_request(remote_id: int) -> void:
+	# SteamNetworkingMessages fires this when a remote peer first sends to
+	# us. We accept any inbound session while we're in a lobby — the lobby
+	# itself is the trust boundary.
 	var requester: String = Steam.getFriendPersonaName(remote_id)
-	print("P2P session request from: %s" % requester)
+	print("NetworkingMessages session request from: %s (id=%d)" % [requester, remote_id])
 
-	# Accept if we're in a lobby
 	if LobbyManager.lobby_id != 0:
-		Steam.acceptP2PSessionWithUser(remote_id)
-		print("Accepted P2P session with: %s" % requester)
+		Steam.acceptSessionWithUser(remote_id)
+		_active_sessions[remote_id] = true
+		print("Accepted NetworkingMessages session with: %s" % requester)
 		make_p2p_handshake()
 
-func _on_p2p_session_connect_fail(this_steam_id: int, session_error: int) -> void:
-	match session_error:
-		0: print("P2P failure with %s: no error given" % this_steam_id)
-		1: print("P2P failure with %s: target not running same game" % this_steam_id)
-		2: print("P2P failure with %s: local user doesn't own app" % this_steam_id)
-		3: print("P2P failure with %s: target not connected to Steam" % this_steam_id)
-		4: print("P2P failure with %s: connection timed out" % this_steam_id)
-		_: print("P2P failure with %s: unknown error %s" % [this_steam_id, session_error])
+func _on_network_messages_session_failed(reason: int) -> void:
+	# `reason` is a k_ESteamNetConnectionEnd_* code. Log raw — these codes
+	# are numerous and mostly diagnostic. See SteamNetworkingTypes.h.
+	print("NetworkingMessages session failed: end_reason=%d" % reason)
 
 func make_p2p_handshake() -> void:
-	print("Sending P2P handshake to lobby")
+	print("Sending handshake to lobby")
 	send_p2p_packet(0, {"type": PacketType.HANDSHAKE, "from": Steam.getSteamID()})
 
-# Call this when joining a lobby to pre-establish P2P with all members
+# Call this when joining a lobby. With SteamNetworkingMessages the
+# underlying session is established lazily on first send, so we don't
+# need an explicit "allow relay" call — SDR routing is automatic. The
+# handshake doubles as the first-send that triggers session setup.
 func establish_p2p_with_lobby():
-	Steam.allowP2PPacketRelay(true)
 	make_p2p_handshake()
 
 # ============ SEND PACKETS ============
 
-func send_p2p_packet(target: int, packet_data: Dictionary, send_type: int = Steam.P2P_SEND_RELIABLE, channel: int = 0) -> void:
+func send_p2p_packet(target: int, packet_data: Dictionary, send_type: int = SEND_RELIABLE, channel: int = 0) -> void:
 	var this_data: PackedByteArray
 	this_data.append_array(var_to_bytes(packet_data))
 
@@ -177,17 +198,19 @@ func send_p2p_packet(target: int, packet_data: Dictionary, send_type: int = Stea
 		if member_count > 1:
 			for member in LobbyManager.lobby_members:
 				if member['steam_id'] != my_steam_id:
-					var ok = Steam.sendP2PPacket(member['steam_id'], this_data, send_type, channel)
-					sent_to.append({"id": member['steam_id'], "ok": ok})
+					var result = Steam.sendMessageToUser(member['steam_id'], this_data, send_type, channel)
+					_active_sessions[member['steam_id']] = true
+					sent_to.append({"id": member['steam_id'], "result": result})
 		if not noisy_types.has(packet_type_id):
 			print("[SEND] type=%d host=%s lobby_members=%d sent_to=%s" % [
 				packet_type_id, str(LobbyManager.is_host()), member_count, str(sent_to)
 			])
 	else:
-		var ok = Steam.sendP2PPacket(target, this_data, send_type, channel)
+		var result = Steam.sendMessageToUser(target, this_data, send_type, channel)
+		_active_sessions[target] = true
 		if not noisy_types.has(packet_type_id):
-			print("[SEND] type=%d host=%s direct_target=%d ok=%s" % [
-				packet_type_id, str(LobbyManager.is_host()), target, str(ok)
+			print("[SEND] type=%d host=%s direct_target=%d result=%s" % [
+				packet_type_id, str(LobbyManager.is_host()), target, str(result)
 			])
 
 func send_player_state(position: Vector3, rotation_y: float, camera_rotation_x: float, is_moving: bool = false, is_moving_backward: bool = false):
@@ -206,7 +229,7 @@ func send_player_state(position: Vector3, rotation_y: float, camera_rotation_x: 
 		"mv": is_moving,
 		"mb": is_moving_backward
 	}
-	send_p2p_packet(0, data, Steam.P2P_SEND_UNRELIABLE, 0)
+	send_p2p_packet(0, data, SEND_UNRELIABLE, 0)
 
 func _send_raw_p2p(target: int, data: PackedByteArray, send_type: int, channel: int) -> void:
 	# Same fan-out logic as send_p2p_packet but without re-serializing the
@@ -216,27 +239,29 @@ func _send_raw_p2p(target: int, data: PackedByteArray, send_type: int, channel: 
 		if LobbyManager.lobby_members.size() > 1:
 			for member in LobbyManager.lobby_members:
 				if member['steam_id'] != my_steam_id:
-					Steam.sendP2PPacket(member['steam_id'], data, send_type, channel)
+					Steam.sendMessageToUser(member['steam_id'], data, send_type, channel)
+					_active_sessions[member['steam_id']] = true
 	else:
-		Steam.sendP2PPacket(target, data, send_type, channel)
+		Steam.sendMessageToUser(target, data, send_type, channel)
+		_active_sessions[target] = true
 
 func send_role_assignment(target_steam_id: int, is_impostor: bool, impostor_ids: Array = [], anon_impostors: bool = false):
 	var data = {"type": PacketType.ROLE_ASSIGNMENT, "impostor": is_impostor, "impostor_ids": impostor_ids, "anon_imp": anon_impostors}
-	send_p2p_packet(target_steam_id, data, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(target_steam_id, data, SEND_RELIABLE, 0)
 	# Retransmit at +0.5s and +2s so VPN/flaky-network players still get
 	# their role even if the first packet drops. Receiver gates on
 	# _role_received so duplicates are no-ops.
 	_retransmit_packet(target_steam_id, data, [0.5, 2.0])
 
 func send_health_update(health: int):
-	send_p2p_packet(0, {"type": PacketType.HEALTH_UPDATE, "hp": health}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.HEALTH_UPDATE, "hp": health}, SEND_RELIABLE, 0)
 
 func send_player_died(dead_steam_id: int):
 	# Broadcast even though the dead player's steam_id is implicitly the
 	# sender — explicit field lets recipients handle relayed death (e.g.,
 	# host announcing a player's death) and stay forwards-compatible.
 	var data = {"type": PacketType.PLAYER_DIED, "dead_id": dead_steam_id}
-	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, data, SEND_RELIABLE, 0)
 	# Retransmits — _enter_dead_state is idempotent on is_dead, so safe.
 	_retransmit_packet(0, data, [0.5, 2.0])
 
@@ -246,16 +271,16 @@ func send_weapon_equipped(weapon_type: String, uses: int = 0):
 	# ITEM_PICKUP so the model attaches reliably even if the pickup-handler
 	# path fails for any reason.
 	var data = {"type": PacketType.WEAPON_EQUIPPED, "weapon": weapon_type, "uses": uses}
-	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, data, SEND_RELIABLE, 0)
 	# Retransmits — receiver drops + reattaches each time, which is a no-op
 	# if the model is already correct.
 	_retransmit_packet(0, data, [0.5, 2.0])
 
 func send_voice_data(compressed_audio: PackedByteArray):
-	send_p2p_packet(0, {"type": PacketType.VOICE_DATA, "audio": compressed_audio}, Steam.P2P_SEND_UNRELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.VOICE_DATA, "audio": compressed_audio}, SEND_UNRELIABLE, 0)
 
 func send_taser_hit(target_steam_id: int, damage: int):
-	send_p2p_packet(target_steam_id, {"type": PacketType.TASER_HIT, "dmg": damage}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(target_steam_id, {"type": PacketType.TASER_HIT, "dmg": damage}, SEND_RELIABLE, 0)
 
 func send_taser_shot(origin: Vector3, direction: Vector3):
 	var data = {
@@ -263,11 +288,11 @@ func send_taser_shot(origin: Vector3, direction: Vector3):
 		"ox": origin.x, "oy": origin.y, "oz": origin.z,
 		"dx": direction.x, "dy": direction.y, "dz": direction.z
 	}
-	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, data, SEND_RELIABLE, 0)
 	taser_shot_received.emit(Steam.getSteamID(), origin, direction)
 
 func send_item_pickup(item_id: String):
-	send_p2p_packet(0, {"type": PacketType.ITEM_PICKUP, "item_id": item_id, "picker": Steam.getSteamID()}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.ITEM_PICKUP, "item_id": item_id, "picker": Steam.getSteamID()}, SEND_RELIABLE, 0)
 	item_picked_up.emit(Steam.getSteamID(), item_id)
 
 func send_item_dropped(item_id: String, transform: Transform3D, uses: int = 0) -> void:
@@ -281,26 +306,26 @@ func send_item_dropped(item_id: String, transform: Transform3D, uses: int = 0) -
 		"rotation": {"x": rot.x, "y": rot.y, "z": rot.z},
 		"uses": uses
 	}
-	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE)
+	send_p2p_packet(0, data, SEND_RELIABLE)
 
 func send_taser_hide(hidden: bool):
-	send_p2p_packet(0, {"type": PacketType.TASER_HIDE, "hidden": hidden}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.TASER_HIDE, "hidden": hidden}, SEND_RELIABLE, 0)
 
 func send_progress_update(progress: float, speed: float):
-	send_p2p_packet(0, {"type": PacketType.PROGRESS_UPDATE, "prog": progress, "spd": speed}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.PROGRESS_UPDATE, "prog": progress, "spd": speed}, SEND_RELIABLE, 0)
 
 func send_game_start():
-	send_p2p_packet(0, {"type": PacketType.GAME_START}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.GAME_START}, SEND_RELIABLE, 0)
 	game_started.emit()
 
 func send_game_over(impostor_won: bool):
-	send_p2p_packet(0, {"type": PacketType.GAME_OVER, "impostor_won": impostor_won}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.GAME_OVER, "impostor_won": impostor_won}, SEND_RELIABLE, 0)
 	game_over_received.emit(impostor_won)
 
 # Broadcast-only variant for retransmits — does NOT emit locally, since the
 # host already showed their end screen on the first send_game_over call.
 func resend_game_over(impostor_won: bool):
-	send_p2p_packet(0, {"type": PacketType.GAME_OVER, "impostor_won": impostor_won}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.GAME_OVER, "impostor_won": impostor_won}, SEND_RELIABLE, 0)
 
 # Schedule N retransmits of the same packet at the given delays. Useful for
 # important reliable packets that must reach players on flaky networks
@@ -312,63 +337,63 @@ func _retransmit_packet(target: int, packet_data: Dictionary, delays: Array) -> 
 		# Bail if the lobby has been left in the meantime.
 		if LobbyManager.lobby_id == 0:
 			return
-		send_p2p_packet(target, packet_data, Steam.P2P_SEND_RELIABLE, 0)
+		send_p2p_packet(target, packet_data, SEND_RELIABLE, 0)
 
 func send_play_again():
-	send_p2p_packet(0, {"type": PacketType.PLAY_AGAIN}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.PLAY_AGAIN}, SEND_RELIABLE, 0)
 	play_again_received.emit()
 
 func send_elevator_use(action: String, floor_name: String):
-	send_p2p_packet(0, {"type": PacketType.ELEVATOR_USE, "action": action, "floor": floor_name}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.ELEVATOR_USE, "action": action, "floor": floor_name}, SEND_RELIABLE, 0)
 	elevator_used.emit(action, floor_name)
 
 func send_elevator_door_state_change(door_id: String, action: String):
-	send_p2p_packet(0, {"type": PacketType.ELEVATOR_DOOR_STATE_CHANGE, "door_id": door_id, "action": action}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.ELEVATOR_DOOR_STATE_CHANGE, "door_id": door_id, "action": action}, SEND_RELIABLE, 0)
 	if action == "open":
 		elevator_door_opened.emit(door_id)
 	else:
 		elevator_door_closed.emit(door_id)
 
 func send_emergency_meeting():
-	send_p2p_packet(0, {"type": PacketType.EMERGENCY_MEETING}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.EMERGENCY_MEETING}, SEND_RELIABLE, 0)
 	emergency_meeting_called.emit()
 
 func send_body_reported(victim_name: String):
 	var reporter_name = Steam.getPersonaName()
-	send_p2p_packet(0, {"type": PacketType.BODY_REPORTED, "victim": victim_name, "reporter": reporter_name}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.BODY_REPORTED, "victim": victim_name, "reporter": reporter_name}, SEND_RELIABLE, 0)
 	body_reported.emit(victim_name, reporter_name)
 
 func send_timer_sync(arrival: float, speed: float):
-	send_p2p_packet(0, {"type": PacketType.TIMER_SYNC, "arrival": arrival, "spd": speed}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.TIMER_SYNC, "arrival": arrival, "spd": speed}, SEND_RELIABLE, 0)
 
 func send_ship_integrity_update(integrity: float):
-	send_p2p_packet(0, {"type": PacketType.SHIP_INTEGRITY, "integrity": integrity}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.SHIP_INTEGRITY, "integrity": integrity}, SEND_RELIABLE, 0)
 	ship_integrity_update_received.emit(Steam.getSteamID(), integrity)
 
 func send_door_state_change(door_id: String, action: String):
-	send_p2p_packet(0, {"type": PacketType.DOOR_STATE_CHANGE, "door_id": door_id, "action": action}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.DOOR_STATE_CHANGE, "door_id": door_id, "action": action}, SEND_RELIABLE, 0)
 
 func send_punch():
-	send_p2p_packet(0, {"type": PacketType.PUNCH}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.PUNCH}, SEND_RELIABLE, 0)
 
 func send_baton_swing():
-	send_p2p_packet(0, {"type": PacketType.BATON_SWING}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.BATON_SWING}, SEND_RELIABLE, 0)
 
 func send_armory_button(button_id: String, pressed: bool):
-	send_p2p_packet(0, {"type": PacketType.ARMORY_BUTTON, "button_id": button_id, "pressed": pressed}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.ARMORY_BUTTON, "button_id": button_id, "pressed": pressed}, SEND_RELIABLE, 0)
 	armory_button_changed.emit(button_id, pressed)
 
 func send_taser_dead(target_id: int):
-	send_p2p_packet(0, {"type": PacketType.TASER_DEAD, "steam_id": target_id }, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.TASER_DEAD, "steam_id": target_id }, SEND_RELIABLE, 0)
 	taser_dead.emit(target_id)
 
 func send_sabotage(sabotage_type: String):
-	send_p2p_packet(0, {"type": PacketType.SABOTAGE, "sabotage_type": sabotage_type}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.SABOTAGE, "sabotage_type": sabotage_type}, SEND_RELIABLE, 0)
 	sabotage_received.emit(sabotage_type)
 
 func send_possess_start(target_steam_id: int):
 	possessed_players[target_steam_id] = Steam.getSteamID()
-	send_p2p_packet(0, {"type": PacketType.POSSESS_START, "impostor_id": Steam.getSteamID(), "target": target_steam_id}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.POSSESS_START, "impostor_id": Steam.getSteamID(), "target": target_steam_id}, SEND_RELIABLE, 0)
 
 func send_possess_move(target_steam_id: int, move_dir: Vector3, rot_y: float, cam_rot_x: float):
 	var data = {
@@ -377,21 +402,21 @@ func send_possess_move(target_steam_id: int, move_dir: Vector3, rot_y: float, ca
 		"mx": move_dir.x, "my": move_dir.y, "mz": move_dir.z,
 		"ry": rot_y, "cx": cam_rot_x
 	}
-	send_p2p_packet(target_steam_id, data, Steam.P2P_SEND_UNRELIABLE, 0)
+	send_p2p_packet(target_steam_id, data, SEND_UNRELIABLE, 0)
 
 func send_possess_end(target_steam_id: int):
 	possessed_players.erase(target_steam_id)
-	send_p2p_packet(0, {"type": PacketType.POSSESS_END, "target": target_steam_id}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.POSSESS_END, "target": target_steam_id}, SEND_RELIABLE, 0)
 
 func send_possess_action(target_steam_id: int, action: String):
-	send_p2p_packet(target_steam_id, {"type": PacketType.POSSESS_ACTION, "target": target_steam_id, "action": action}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(target_steam_id, {"type": PacketType.POSSESS_ACTION, "target": target_steam_id, "action": action}, SEND_RELIABLE, 0)
 
 func send_door_lock(door_id: String, locked: bool):
-	send_p2p_packet(0, {"type": PacketType.DOOR_LOCK, "door_id": door_id, "locked": locked}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.DOOR_LOCK, "door_id": door_id, "locked": locked}, SEND_RELIABLE, 0)
 	door_lock_received.emit(door_id, locked)
 	
 func send_emote(emote_name: String):
-	send_p2p_packet(0, {"type": PacketType.EMOTE, "emote_name": emote_name}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, {"type": PacketType.EMOTE, "emote_name": emote_name}, SEND_RELIABLE, 0)
 
 func send_bot_spawn(bot_id: int, position: Vector3):
 	var data = {
@@ -399,7 +424,7 @@ func send_bot_spawn(bot_id: int, position: Vector3):
 		"bot_id": bot_id,
 		"px": position.x, "py": position.y, "pz": position.z
 	}
-	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, data, SEND_RELIABLE, 0)
 	# Retransmit so late-arriving clients reliably spawn the bot.
 	_retransmit_packet(0, data, [0.5, 2.0])
 
@@ -410,7 +435,7 @@ func send_bot_state(bot_id: int, position: Vector3, rotation_y: float):
 		"px": position.x, "py": position.y, "pz": position.z,
 		"ry": rotation_y
 	}
-	send_p2p_packet(0, data, Steam.P2P_SEND_UNRELIABLE, 0)
+	send_p2p_packet(0, data, SEND_UNRELIABLE, 0)
 
 func send_bot_taser_shot(bot_id: int, origin: Vector3, direction: Vector3):
 	var data = {
@@ -419,7 +444,7 @@ func send_bot_taser_shot(bot_id: int, origin: Vector3, direction: Vector3):
 		"ox": origin.x, "oy": origin.y, "oz": origin.z,
 		"dx": direction.x, "dy": direction.y, "dz": direction.z
 	} 
-	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, data, SEND_RELIABLE, 0)
 	bot_taser_shot_received.emit(bot_id, origin, direction)
 
 # Client → host: "my taser projectile hit the bot, apply damage". If we ARE
@@ -431,11 +456,11 @@ func send_bot_hit(bot_id: int, damage: int):
 			bot.apply_damage(damage)
 		return
 	var host_id = LobbyManager.get_host_steam_id()
-	send_p2p_packet(host_id, {"type": PacketType.BOT_HIT, "bot_id": bot_id, "dmg": damage}, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(host_id, {"type": PacketType.BOT_HIT, "bot_id": bot_id, "dmg": damage}, SEND_RELIABLE, 0)
 
 func send_bot_died(bot_id: int):
 	var data = {"type": PacketType.BOT_DIED, "bot_id": bot_id}
-	send_p2p_packet(0, data, Steam.P2P_SEND_RELIABLE, 0)
+	send_p2p_packet(0, data, SEND_RELIABLE, 0)
 	bot_died_received.emit(bot_id)
 	_retransmit_packet(0, data, [0.5, 2.0])
 
@@ -444,44 +469,54 @@ func send_hide_update(cabinet_id: String, io: bool, steam_id: int):
 	hide_update_recieved.emit(cabinet_id,io,steam_id)
 # ============ READ PACKETS ============
 
-func _read_all_p2p_packets(read_count: int = 0):
-	# Reverted to original recursive form. The iterative loop was suspected
-	# of contributing to a host->client P2P regression; reverting to the
-	# baseline behavior to isolate.
-	if read_count >= PACKET_READ_LIMIT:
-		return
-	if Steam.getAvailableP2PPacketSize(0) > 0:
-		_read_p2p_packet()
-		_read_all_p2p_packets(read_count + 1)
+func _read_all_p2p_packets() -> void:
+	# SteamNetworkingMessages: drain up to PACKET_READ_LIMIT queued messages
+	# per frame on our channel. Returns an Array of Dictionaries each with
+	# a "payload" (PackedByteArray) and a sender steam_id (see
+	# _sender_steam_id_from_message for the key it lives under).
+	var messages: Array = Steam.receiveMessagesOnChannel(_CHANNEL, PACKET_READ_LIMIT)
+	for msg in messages:
+		var sender_id := _sender_steam_id_from_message(msg)
+		var payload: PackedByteArray = msg.get("payload", PackedByteArray())
+		if payload.is_empty():
+			print("WARNING: received empty message payload from %d" % sender_id)
+			continue
+		var readable = bytes_to_var(payload)
+		if typeof(readable) != TYPE_DICTIONARY:
+			print("WARNING: dropped non-dictionary payload from %d" % sender_id)
+			continue
+		_handle_packet(sender_id, readable)
 
-# Discard any queued P2P packets without dispatching their signals. Called
-# at the start of a new round so stale damage/death/state packets from the
-# previous round can't immediately re-kill or desync a freshly-spawned player.
+# Extract the sender's SteamID64 from a receiveMessagesOnChannel entry.
+# GodotSteam 4.17 surfaces it directly as an int field on the message
+# Dictionary; key name varies slightly across builds so we try the common
+# spellings.
+func _sender_steam_id_from_message(msg: Dictionary) -> int:
+	for key in ["steam_id_remote", "remote_steam_id", "sender", "peer", "identity"]:
+		if msg.has(key):
+			var v = msg[key]
+			if typeof(v) == TYPE_INT:
+				return v
+			# Some builds stringify the id — accept that too.
+			if typeof(v) == TYPE_STRING and v.is_valid_int():
+				return int(v)
+	return 0
+
+# Discard any queued packets without dispatching their signals. Called at
+# the start of a new round so stale damage/death/state packets from the
+# previous round can't immediately re-kill or desync a freshly-spawned
+# player.
 func flush_packet_queue() -> void:
 	var dropped := 0
-	# No PACKET_READ_LIMIT here — we want to fully drain whatever's queued.
-	while Steam.getAvailableP2PPacketSize(0) > 0:
-		var size: int = Steam.getAvailableP2PPacketSize(0)
-		Steam.readP2PPacket(size, 0)
-		dropped += 1
-		if dropped > 1024:
-			# Safety cap so a malicious sender can't wedge us in this loop.
+	# Drain in chunks until empty. Safety cap so a malicious sender can't
+	# wedge us in this loop.
+	while dropped < 4096:
+		var batch: Array = Steam.receiveMessagesOnChannel(_CHANNEL, PACKET_READ_LIMIT)
+		if batch.is_empty():
 			break
+		dropped += batch.size()
 	if dropped > 0:
 		print("flush_packet_queue: discarded %d stale packets" % dropped)
-
-func _read_p2p_packet() -> void:
-	var packet_size: int = Steam.getAvailableP2PPacketSize(0)
-	if packet_size > 0:
-		var packet: Dictionary = Steam.readP2PPacket(packet_size, 0)
-		if packet.is_empty():
-			print("WARNING: read an empty packet with non-zero size!")
-			return
-
-		var packet_sender: int = packet['remote_steam_id']
-		var packet_data: PackedByteArray = packet['data']
-		var readable: Dictionary = bytes_to_var(packet_data)
-		_handle_packet(packet_sender, readable)
 
 func _handle_packet(sender_steam_id: int, data: Dictionary):
 	var packet_type = data.get("type", -999)
@@ -662,9 +697,12 @@ func get_player(steam_id: int) -> Node:
 
 # ============ CLEANUP ============
 func close_all_sessions():
-	for member in LobbyManager.lobby_members:
-		if member['steam_id'] != Steam.getSteamID():
-			Steam.closeP2PSessionWithUser(member['steam_id'])
+	# Close every NetworkingMessages session we've established. Iterate
+	# our tracking map rather than lobby_members so we also clean up
+	# peers who may have already left the lobby snapshot.
+	for sid in _active_sessions.keys():
+		Steam.closeSessionWithUser(sid)
+	_active_sessions.clear()
 	players_in_game.clear()
 	possessed_players.clear()
 	pending_role_received = false

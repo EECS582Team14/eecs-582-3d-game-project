@@ -1186,7 +1186,7 @@ func _give_impostor_taser_after_reveal(impostor_steam_id: int):
 	if impostor_player:
 		impostor_player.give_taser()
 	# Broadcast to all clients so they show the taser on the impostor
-	NetworkManager.send_p2p_packet(0, {"type": NetworkManager.PacketType.ITEM_PICKUP, "item_id": "taser_impostor", "picker": impostor_steam_id}, Steam.P2P_SEND_RELIABLE, 0)
+	NetworkManager.send_p2p_packet(0, {"type": NetworkManager.PacketType.ITEM_PICKUP, "item_id": "taser_impostor", "picker": impostor_steam_id}, NetworkManager.SEND_RELIABLE, 0)
 
 func _on_player_left(steam_id: int):
 	VoiceManager.remove_player_voice(steam_id)

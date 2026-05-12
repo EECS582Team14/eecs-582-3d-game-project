@@ -74,8 +74,8 @@ func _on_lobby_created(result: int, new_lobby_id: int):
 		else:
 			Steam.setLobbyData(lobby_id, "has_password", "0")
 		_pending_password = ""
-		# Allow Steam relay as fallback for P2P
-		Steam.allowP2PPacketRelay(true)
+		# SteamNetworkingMessages routes via SDR by default — no equivalent
+		# of allowP2PPacketRelay is needed on the new API.
 		_refresh_lobby_members()
 		lobby_created.emit(lobby_id)
 	else:
