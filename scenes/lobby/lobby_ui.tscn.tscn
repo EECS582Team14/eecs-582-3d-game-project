@@ -7,7 +7,6 @@
 [ext_resource type="FontFile" uid="uid://da1buffs4fgf6" path="res://scenes/lobby/lobby_assets/Nasalization Rg.otf" id="3_wkgk0"]
 [ext_resource type="Texture2D" uid="uid://cgw7n0537q17t" path="res://scenes/lobby/lobby_assets/StartGameButton.png" id="4_7sou2"]
 [ext_resource type="Texture2D" uid="uid://bsj66kmguclbi" path="res://scenes/lobby/lobby_assets/HowToPlayButton.png" id="5_wkgk0"]
-[ext_resource type="Texture2D" uid="uid://bqjaw43kq7mxr" path="res://scenes/lobby/lobby_assets/SettingsButton.png" id="6_7hq2d"]
 [ext_resource type="Texture2D" uid="uid://btkgw7lugu7le" path="res://scenes/lobby/lobby_assets/RefreshButton.png" id="6_ykcmf"]
 [ext_resource type="Texture2D" uid="uid://d4mebvdghs2yf" path="res://scenes/lobby/lobby_assets/LeaveLobbyButton.png" id="9_2gg2j"]
 [ext_resource type="Texture2D" uid="uid://bwpqfqjmxuc3k" path="res://scenes/lobby/lobby_assets/CloseLobbyButton.png" id="10_riw86"]
@@ -108,9 +107,9 @@ stretch_mode = 6
 [node name="HostButton" type="TextureButton" parent="." unique_id=123094437]
 layout_mode = 0
 offset_left = 420.0
-offset_top = 161.0
+offset_top = 247.0
 offset_right = 722.0
-offset_bottom = 240.0
+offset_bottom = 326.0
 texture_normal = ExtResource("3_7hq2d")
 ignore_texture_size = true
 stretch_mode = 5
@@ -118,9 +117,9 @@ stretch_mode = 5
 [node name="StartButton" type="TextureButton" parent="." unique_id=70984848]
 layout_mode = 0
 offset_left = 421.0
-offset_top = 165.0
+offset_top = 251.0
 offset_right = 723.0
-offset_bottom = 234.0
+offset_bottom = 320.0
 texture_normal = ExtResource("4_7sou2")
 ignore_texture_size = true
 stretch_mode = 5
@@ -128,29 +127,19 @@ stretch_mode = 5
 [node name="HowToPlayButton" type="TextureButton" parent="." unique_id=1084292714]
 layout_mode = 0
 offset_left = 420.0
-offset_top = 237.0
+offset_top = 323.0
 offset_right = 722.0
-offset_bottom = 316.0
+offset_bottom = 402.0
 texture_normal = ExtResource("5_wkgk0")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="SettingsButton" type="TextureButton" parent="." unique_id=790090182]
-layout_mode = 0
-offset_left = 420.0
-offset_top = 319.0
-offset_right = 724.0
-offset_bottom = 384.0
-texture_normal = ExtResource("6_7hq2d")
 ignore_texture_size = true
 stretch_mode = 5
 
 [node name="LeaveLobbyButton" type="TextureButton" parent="." unique_id=123748908]
 layout_mode = 0
 offset_left = 420.0
-offset_top = 401.0
+offset_top = 405.0
 offset_right = 733.0
-offset_bottom = 468.0
+offset_bottom = 472.0
 texture_normal = ExtResource("9_2gg2j")
 ignore_texture_size = true
 stretch_mode = 5
@@ -158,9 +147,9 @@ stretch_mode = 5
 [node name="CloseLobbyButton" type="TextureButton" parent="." unique_id=394143398]
 layout_mode = 0
 offset_left = 420.0
-offset_top = 401.0
+offset_top = 405.0
 offset_right = 735.0
-offset_bottom = 468.0
+offset_bottom = 472.0
 texture_normal = ExtResource("10_riw86")
 ignore_texture_size = true
 stretch_mode = 5
