@@ -262,6 +262,9 @@ var _destination_label: Label = null
 # Taser cooldown HUD
 var _taser_timer_circle: TextureProgressBar = null
 
+# Mic mute indicator HUD
+var _mute_label: Label = null
+
 # Signals
 signal health_changed(new_health)
 
@@ -595,6 +598,24 @@ func _ready() -> void:
 		_taser_timer_circle.tint_under = Color(0.1, 0.1, 0.1, 0.5)
 		$HUD.add_child(_taser_timer_circle)
 
+		# Mic mute indicator (bottom-left)
+		_mute_label = Label.new()
+		_mute_label.anchor_left = 0.0
+		_mute_label.anchor_right = 0.0
+		_mute_label.anchor_top = 1.0
+		_mute_label.anchor_bottom = 1.0
+		_mute_label.offset_left = 20
+		_mute_label.offset_right = 240
+		_mute_label.offset_top = -110
+		_mute_label.offset_bottom = -80
+		_mute_label.add_theme_font_size_override("font_size", 22)
+		_mute_label.add_theme_color_override("font_color", Color(1.0, 0.3, 0.3))
+		_mute_label.text = "MIC MUTED (M)"
+		_mute_label.visible = VoiceManager.is_muted
+		$HUD.add_child(_mute_label)
+		if not VoiceManager.muted_changed.is_connected(_on_voice_muted_changed):
+			VoiceManager.muted_changed.connect(_on_voice_muted_changed)
+
 		# Connect destination progress updates
 		NetworkManager.progress_update_received.connect(_on_progress_update_received)
 
@@ -769,8 +790,10 @@ func _input(event: InputEvent) -> void:
 					$PlayerModel.visible = false
 				else:
 					$PlayerModel.visible = not has_taser
-		elif event.key_label == KEY_B and event.pressed and not is_dead:
+		elif event.is_action_pressed("emote_wheel") and not is_dead:
 			_toggle_emote_wheel()
+		elif event.is_action_pressed("mute_mic"):
+			VoiceManager.toggle_mute()
 		elif _emote_wheel_visible and event.pressed:
 			if event.key_label == KEY_1 and _emote_names.size() >= 1:
 				_on_emote_selected(_emote_names[0].to_lower())
@@ -3355,3 +3378,7 @@ func _on_emote_received(sender_steam_id: int, emote_name: String) -> void:
 	var player = NetworkManager.get_player(sender_steam_id)
 	if player:
 		player._play_emote(emote_name)
+
+func _on_voice_muted_changed(muted: bool) -> void:
+	if _mute_label != null and is_instance_valid(_mute_label):
+		_mute_label.visible = muted

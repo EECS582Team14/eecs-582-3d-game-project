@@ -13,6 +13,12 @@ var sample_rate: int = 0
 # Whether voice recording is active
 var is_active: bool = false
 
+# Whether the local mic is muted (recording still runs so Steam's internal
+# buffer keeps draining, but outgoing packets are suppressed).
+var is_muted: bool = false
+
+signal muted_changed(muted: bool)
+
 # Playback streams per remote player: steam_id -> AudioStreamGeneratorPlayback
 var voice_playbacks: Dictionary = {}
 
@@ -109,7 +115,20 @@ func _poll_and_send_voice():
 	if voice["result"] != 0 or voice["written"] == 0:
 		return
 
+	if is_muted:
+		return
+
 	NetworkManager.send_voice_data(voice["buffer"])
+
+func toggle_mute() -> void:
+	set_muted(not is_muted)
+
+func set_muted(muted: bool) -> void:
+	if is_muted == muted:
+		return
+	is_muted = muted
+	Steam.setInGameVoiceSpeaking(Steam.getSteamID(), is_active and not is_muted)
+	muted_changed.emit(is_muted)
 
 # ============ RECEIVE & PLAY VOICE ============
 

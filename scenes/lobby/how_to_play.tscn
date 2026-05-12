@@ -89,6 +89,7 @@ OutLIAR is a multiplayer social-deduction game aboard a deep-space vessel. Most 
 • [color=#9FB3C8]Space[/color]: jump
 • [color=#9FB3C8]E[/color]: interact (tasks, buttons, doors, pickups)
 • [color=#9FB3C8]B[/color]: open the emote wheel, then press 1, 2, or 3 to play Flair, Breakdance, or Thriller
+• [color=#9FB3C8]M[/color]: toggle your microphone on or off (a MIC MUTED indicator appears in the bottom-left when muted)
 • [color=#9FB3C8]Mouse[/color]: look around
 
 [font_size=28][color=#FF3B3B]Ship Systems[/color][/font_size]
@@ -97,7 +98,7 @@ OutLIAR is a multiplayer social-deduction game aboard a deep-space vessel. Most 
 • [color=#9FB3C8]Security Cameras[/color]: certain stations let the Crew watch other parts of the ship. Use them to track movement and catch Imposters in the act.
 • [color=#9FB3C8]Batons[/color]: scattered around the map. Walk up to one and press E to pick it up. Batons are the basic melee weapon, so even players who never make it into the armory have a way to fight back.
 • [color=#9FB3C8]Health Packs[/color]: pick them up with E to restore health if you have been wounded.
-• [color=#9FB3C8]Voice Chat[/color]: proximity voice is on while alive. Dead players can still talk to other dead players in a separate channel.
+• [color=#9FB3C8]Voice Chat[/color]: proximity voice is on while alive, so people near you can hear what you say. Dead players can still talk to other dead players in a separate channel. Press [color=#9FB3C8]M[/color] at any time to mute or unmute your microphone.
 
 [font_size=28][color=#FF3B3B]Tips[/color][/font_size]
 • Pay attention to where players come from. Alibis fall apart fast on a small ship.
