@@ -116,7 +116,6 @@ func _on_node_clicked(index):
 			finish_game()
 	else:
 		# Wrong step! Reset with a penalty flash
-		denied_sound.play()
 		reset_game_state()
 
 func reset_game_state():

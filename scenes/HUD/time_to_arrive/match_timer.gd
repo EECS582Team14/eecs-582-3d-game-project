@@ -8,6 +8,7 @@ var _last_displayed_seconds: int = -1
 
 func _ready():
 	label.text = "--:--"
+	visible = false
 	UIState.timer_synced.connect(_on_timer_synced)
 	# Pick up timer if it was already set before HUD loaded
 	if GameManager.arrival_time > 0.0:
@@ -16,6 +17,7 @@ func _ready():
 func _on_timer_synced(server_arrival_time: float, _scale: float):
 	arrival_time = server_arrival_time
 	active = true
+	visible = true
 
 func _process(_delta):
 	if not active:

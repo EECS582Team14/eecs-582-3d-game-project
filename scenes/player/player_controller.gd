@@ -522,6 +522,7 @@ func _ready() -> void:
 		_destination_label.offset_bottom = 50
 		_destination_label.add_theme_font_size_override("font_size", 20)
 		_destination_label.text = "Destination: 0%"
+		_destination_label.visible = false
 		$HUD.add_child(_destination_label)
 
 		# Create destination progress bar (top-right, below label)
@@ -546,6 +547,7 @@ func _ready() -> void:
 		fill_style.corner_radius_bottom_left = 3
 		fill_style.corner_radius_bottom_right = 3
 		_destination_bar.add_theme_stylebox_override("fill", fill_style)
+		_destination_bar.visible = false
 		# Style the background
 		var bg_style = StyleBoxFlat.new()
 		bg_style.bg_color = Color(0.15, 0.15, 0.15, 0.8)
@@ -2278,8 +2280,10 @@ func _on_taser_hit_received(dmg: int) -> void:
 func _on_progress_update_received(progress: float, _speed: float) -> void:
 	if _destination_bar:
 		_destination_bar.value = progress
+		_destination_bar.visible = true
 	if _destination_label:
 		_destination_label.text = "Destination: %d%%" % int(progress)
+		_destination_label.visible = true
 
 func _is_looking_at_task_console() -> bool:
 	return _looking_at_interactable != null and _looking_at_interactable.is_in_group("task_console")

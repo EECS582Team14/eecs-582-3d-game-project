@@ -32,7 +32,7 @@ var _comms_disabled: bool = false
 var _saved_text: String = ""
 
 func _ready():
-	panel.visible = false
+	panel.visible = true
 	randomize()
 	all_task_ids = []
 	for key in TASK_DESCRIPTIONS.keys():
