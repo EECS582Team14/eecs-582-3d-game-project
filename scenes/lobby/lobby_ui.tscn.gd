@@ -13,6 +13,10 @@ extends Control
 @onready var imposter2 = $"PickImposters/2Imposter"
 @onready var imposter3 = $"PickImposters/3Imposter"
 @onready var pickImposters = $"PickImposters"
+@onready var credits_btn = $CreditsButton
+@onready var credits_panel = $CreditsPanel
+@onready var close_credits_btn = $"CreditsPanel/CloseCreditsButton"
+@onready var credits_text = $"CreditsPanel/CreditsScroll/CreditsText"
 
 var available_lobbies: Array = []
 var dot_blue = preload("res://scenes/lobby/lobby_assets/BlueIcon.png")
@@ -42,6 +46,12 @@ func _ready():
 		close_lobby.pressed.connect(_on_close_lobby_pressed)
 	if not lobby_list.item_activated.is_connected(_on_lobby_selected):
 		lobby_list.item_activated.connect(_on_lobby_selected)
+	if not credits_btn.pressed.is_connected(_on_credits_pressed):
+		credits_btn.pressed.connect(_on_credits_pressed)
+	if not close_credits_btn.pressed.is_connected(_on_close_credits_pressed):
+		close_credits_btn.pressed.connect(_on_close_credits_pressed)
+	if not credits_text.meta_clicked.is_connected(_on_credits_link_clicked):
+		credits_text.meta_clicked.connect(_on_credits_link_clicked)
 
 	if not LobbyManager.lobby_created.is_connected(_on_lobby_created):
 		LobbyManager.lobby_created.connect(_on_lobby_created)
@@ -358,3 +368,14 @@ func _on_start_pressed():
 
 func _on_game_started():
 	status_label.text = "Loading game..."
+
+# ============ CREDITS ============
+
+func _on_credits_pressed():
+	credits_panel.visible = true
+
+func _on_close_credits_pressed():
+	credits_panel.visible = false
+
+func _on_credits_link_clicked(meta):
+	OS.shell_open(str(meta))
